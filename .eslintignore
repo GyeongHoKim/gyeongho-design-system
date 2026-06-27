@@ -1,7 +1,0 @@
-**/.storybook/
-**/dist/
-**/node_modules/
-**/*.d.ts
-**/*.conf.ts
-**/*.js
-**/*.config.ts
