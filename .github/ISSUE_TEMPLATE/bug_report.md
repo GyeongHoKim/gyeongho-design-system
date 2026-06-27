@@ -1,54 +1,44 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
+name: Bug Report
+about: Report something that doesn't work as intended
+title: "[Bug] "
 labels: bug
-assignees: GyeongHoKim
-
+assignees: ''
 ---
 
-# [Component Name] 버그 리포트
+## Affected Package
 
-## 버그 설명
+- [ ] `@ghds/tokens`
+- [ ] `@ghds/react`
+- [ ] `@ghds/web-components`
+- [ ] `@ghds/react-native`
+- [ ] Other (apps, build config, etc.)
 
-[Describe the bug and the unexpected behavior you encountered]
+## Description
 
-## 재현 단계
+A clear and concise description of what the bug is.
 
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+## Steps to Reproduce
 
-## 예상되는 동작
+1. ...
+2. ...
+3. ...
 
-[Describe what you expected to happen]
+## Expected Behavior
 
-## 실제 동작
+Describe what you expected to happen.
 
-[Describe what actually happened]
+## Actual Behavior
 
-## 스크린샷 또는 예시 코드
+Describe what actually happened. (Screenshots and error logs are welcome.)
 
-[Attach screenshots or provide a minimal example code that demonstrates the bug]
+## Environment
 
-## 환경
+- OS:
+- Browser / Runtime:
+- Package version:
+- Node / pnpm version:
 
-- 운영체제: [e.g., Windows, macOS, Linux]
-- 브라우저: [e.g., Chrome, Firefox, Safari]
-- 버전: [e.g., 1.2.3]
+## Additional Context
 
-## 추가 정보
-
-[Provide any additional information or context that might be helpful]
-
-## 라벨
-
-- `bug`
-
-## 할당대상자
-
-- @[Assignee]
-
-## 마일스톤
-
-- [Milestone]
+Add any other context about the problem here.

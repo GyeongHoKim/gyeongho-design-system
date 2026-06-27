@@ -1,51 +1,40 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: "[Feature]"
+name: Feature Request
+about: Suggest a new component, token, or feature
+title: "[Feature] "
 labels: enhancement
-assignees: GyeongHoKim
-
+assignees: ''
 ---
 
-# [Component Name] 기능 요청
+## Related Package
 
-## 설명
+- [ ] `@ghds/tokens`
+- [ ] `@ghds/react`
+- [ ] `@ghds/web-components`
+- [ ] `@ghds/react-native`
+- [ ] Other
 
-[Describe the feature you'd like to request for the component]
+## Problem to Solve
 
-## 문제점
+Describe the background or the pain point that motivates this request.
 
-[Explain the problem or limitation you're facing with the current component]
+## Proposed Solution
 
-## 제안하는 솔루션
+Describe the desired behavior or API in detail. (Example code is welcome.)
 
-[Propose a solution or enhancement to address the problem]
+```tsx
+// Example
+```
 
-## 예상되는 이점
+## Design Tokens (if applicable)
 
-- [Benefit 1]
-- [Benefit 2]
-- [Benefit 3]
+- Does this need a new token? If so, which tier (`ref` / `sys` / `comp`)?
+- Can it be solved with existing tokens?
 
-## 고려사항
+## Alternatives
 
-- [Consideration 1]
-- [Consideration 2]
+Describe any alternative approaches you considered.
 
-## 참고자료
+## Additional Context
 
-- [Reference 1]
-- [Reference 2]
-
-## 라벨
-
-- `feature request`
-- `enhancement`
-
-## 할당대상자
-
-- @[Assignee]
-
-## 마일스톤
-
-- [Milestone]
+Add references, links, or screenshots here.

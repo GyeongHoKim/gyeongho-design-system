@@ -1,21 +1,43 @@
-Closes #
+## Summary
 
-{{short description}}
+Briefly describe what this PR changes.
 
-#### Changelog
+## Related Issue
 
-**New**
+closes #
 
-- {{new thing}}
+## Type of Change
 
-**Changed**
+- [ ] Bug fix
+- [ ] New feature / component
+- [ ] Design token change
+- [ ] Refactor
+- [ ] Documentation
+- [ ] Build / config
 
-- {{change thing}}
+## Affected Packages
 
-**Removed**
+- [ ] `@ghds/tokens`
+- [ ] `@ghds/react`
+- [ ] `@ghds/web-components`
+- [ ] `@ghds/react-native`
 
-- {{removed thing}}
+## Checklist
 
-#### Testing / Reviewing
+- [ ] No hardcoded design values; all imported from `@ghds/tokens`.
+- [ ] Token tier boundaries respected (`comp -> sys -> ref`; components never reference `ref` directly).
+- [ ] Passes TypeScript strict mode with no use of `any`.
+- [ ] `pnpm test` passes.
+- [ ] `pnpm lint` passes.
+- [ ] Added a changeset where needed (`pnpm changeset`).
+- [ ] Verified accessibility (WCAG 2.1 AA contrast).
 
-{{ Add descriptions, steps or a checklist for how reviewers can verify this PR works or not }}
+## Screenshots (for UI changes)
+
+| Before | After |
+| --- | --- |
+|  |  |
+
+## Additional Notes
+
+Anything reviewers should be aware of.

@@ -1,0 +1,49 @@
+{
+  // GHDS workspace settings for Zed.
+  // Requires the Biome extension (Zed auto-suggests it when biome.json is present).
+  "formatter": "language_server",
+  "format_on_save": "on",
+  "tab_size": 2,
+  "hard_tabs": false,
+  "preferred_line_length": 100,
+  "ensure_final_newline_on_save": true,
+  "remove_trailing_whitespace_on_save": true,
+
+  // Run Biome's organize-imports assist on every save.
+  "code_actions_on_format": {
+    "source.organizeImports.biome": true
+  },
+
+  // Pin Biome as the formatter for the languages it owns in this repo.
+  "languages": {
+    "JavaScript": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "format_on_save": "on"
+    },
+    "TypeScript": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "format_on_save": "on"
+    },
+    "TSX": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "format_on_save": "on"
+    },
+    "JSON": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "format_on_save": "on"
+    },
+    "JSONC": {
+      "formatter": { "language_server": { "name": "biome" } },
+      "format_on_save": "on"
+    }
+  },
+
+  "file_scan_exclusions": [
+    "**/node_modules",
+    "**/dist",
+    "**/.turbo",
+    "**/coverage",
+    "**/storybook-static",
+    "**/.git"
+  ]
+}

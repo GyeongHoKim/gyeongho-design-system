@@ -1,0 +1,42 @@
+{
+  "name": "GHDS",
+  // Node 24 (project requires node >=24); Debian Bookworm base.
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bookworm",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // Activate the exact pnpm pinned in package.json (packageManager: pnpm@11.9.0)
+  // via Corepack, then install with the committed lockfile.
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@11.9.0 --activate && pnpm install --frozen-lockfile",
+
+  // Storybook dev server.
+  "forwardPorts": [6006],
+  "portsAttributes": {
+    "6006": { "label": "Storybook", "onAutoForward": "notify" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "biomejs.biome",
+        "redhat.vscode-yaml",
+        "runem.lit-plugin",
+        "github.vscode-github-actions",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports.biome": "explicit",
+          "quickfix.biome": "explicit"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib"
+      }
+    }
+  },
+
+  "remoteUser": "node"
+}
