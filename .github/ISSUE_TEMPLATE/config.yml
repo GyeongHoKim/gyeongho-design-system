@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions / Discussions
+    url: https://github.com/rlarudgh2017/ghds/discussions
+    about: For general questions that aren't bugs or feature requests, please use Discussions.
