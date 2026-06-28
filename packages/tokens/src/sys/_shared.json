@@ -1,0 +1,98 @@
+{
+  "sys": {
+    "spacing": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic spacing roles. Theme-invariant.",
+      "none": { "$value": "{ref.spacing.0}" },
+      "xs": { "$value": "{ref.spacing.1}" },
+      "sm": { "$value": "{ref.spacing.2}" },
+      "md": { "$value": "{ref.spacing.4}" },
+      "lg": { "$value": "{ref.spacing.6}" },
+      "xl": { "$value": "{ref.spacing.8}" },
+      "2xl": { "$value": "{ref.spacing.12}" }
+    },
+    "radius": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic radius roles. Theme-invariant.",
+      "sm": { "$value": "{ref.radius.sm}" },
+      "md": { "$value": "{ref.radius.md}" },
+      "lg": { "$value": "{ref.radius.lg}" },
+      "pill": { "$value": "{ref.radius.full}" }
+    },
+    "border": {
+      "width": {
+        "$type": "dimension",
+        "$description": "Tier 2 border widths. Theme-invariant.",
+        "default": { "$value": "{ref.borderWidth.medium}" },
+        "thin": { "$value": "{ref.borderWidth.thin}" },
+        "thick": { "$value": "{ref.borderWidth.thick}" }
+      }
+    },
+    "typography": {
+      "$description": "Tier 2 typography roles. Theme-invariant.",
+      "heading": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.sketch}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.2xl}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.tight}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.bold}" }
+      },
+      "title": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.sketch}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.xl}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.tight}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.bold}" }
+      },
+      "body": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.sans}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.md}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.normal}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.regular}" }
+      },
+      "label": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.sans}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.sm}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.normal}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.medium}" }
+      },
+      "caption": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.sans}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.xs}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.normal}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.regular}" }
+      }
+    },
+    "shadow": {
+      "$type": "shadow",
+      "$description": "Tier 2 elevation roles. Theme-invariant.",
+      "sm": { "$value": "{ref.shadow.sm}" },
+      "md": { "$value": "{ref.shadow.md}" },
+      "lg": { "$value": "{ref.shadow.lg}" },
+      "xl": { "$value": "{ref.shadow.xl}" }
+    },
+    "animation": {
+      "duration": {
+        "$type": "duration",
+        "$description": "Tier 2 motion durations. Theme-invariant.",
+        "fast": { "$value": "{ref.duration.fast}" },
+        "normal": { "$value": "{ref.duration.normal}" },
+        "slow": { "$value": "{ref.duration.slow}" }
+      },
+      "easing": {
+        "$type": "cubicBezier",
+        "$description": "Tier 2 motion easing. Theme-invariant.",
+        "standard": { "$value": "{ref.easing.standard}" },
+        "emphasized": { "$value": "{ref.easing.emphasized}" },
+        "enter": { "$value": "{ref.easing.decelerate}" },
+        "exit": { "$value": "{ref.easing.accelerate}" }
+      }
+    },
+    "sketch": {
+      "$type": "number",
+      "$description": "Tier 2 hand-drawn parameters fed to @ghds/sketch-core SketchOptions. Theme-invariant.",
+      "roughness": { "$value": "{ref.sketch.roughness.default}" },
+      "bowing": { "$value": "{ref.sketch.bowing.default}" },
+      "hachureGap": { "$value": "{ref.sketch.hachureGap.default}" },
+      "hachureAngle": { "$value": "{ref.sketch.hachureAngle.default}" }
+    }
+  }
+}

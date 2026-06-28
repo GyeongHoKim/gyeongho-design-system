@@ -1,0 +1,38 @@
+{
+  "ref": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "$description": "Tier 1 font stacks. A hand-drawn display face for headings, a legible sans for UI.",
+      "sketch": { "$value": "'Gochi Hand', 'Comic Sans MS', cursive" },
+      "sans": {
+        "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+      },
+      "mono": { "$value": "ui-monospace, 'SFMono-Regular', 'Menlo', monospace" }
+    },
+    "fontSize": {
+      "$type": "dimension",
+      "$description": "Tier 1 type scale.",
+      "xs": { "$value": "12px" },
+      "sm": { "$value": "14px" },
+      "md": { "$value": "16px" },
+      "lg": { "$value": "18px" },
+      "xl": { "$value": "22px" },
+      "2xl": { "$value": "28px" },
+      "3xl": { "$value": "36px" }
+    },
+    "lineHeight": {
+      "$type": "number",
+      "$description": "Tier 1 unitless line-height multipliers.",
+      "tight": { "$value": 1.2 },
+      "normal": { "$value": 1.5 },
+      "relaxed": { "$value": 1.7 }
+    },
+    "fontWeight": {
+      "$type": "fontWeight",
+      "$description": "Tier 1 font weights.",
+      "regular": { "$value": 400 },
+      "medium": { "$value": 500 },
+      "bold": { "$value": 700 }
+    }
+  }
+}

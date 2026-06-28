@@ -1,0 +1,60 @@
+{
+  "sys": {
+    "color": {
+      "$type": "color",
+      "$description": "Tier 2 semantic colors — light theme.",
+      "bg": {
+        "canvas": { "$value": "{ref.palette.gray.50}" },
+        "surface": { "$value": "{ref.palette.white}" },
+        "muted": { "$value": "{ref.palette.gray.100}" },
+        "subtle": { "$value": "{ref.palette.gray.200}" },
+        "primary": {
+          "default": { "$value": "{ref.palette.brand.600}" },
+          "hover": { "$value": "{ref.palette.brand.700}" },
+          "active": { "$value": "{ref.palette.brand.800}" },
+          "disabled": { "$value": "{ref.palette.gray.200}" }
+        },
+        "danger": {
+          "default": { "$value": "{ref.palette.danger.600}" },
+          "hover": { "$value": "{ref.palette.danger.700}" },
+          "active": { "$value": "{ref.palette.danger.800}" }
+        },
+        "success": {
+          "default": { "$value": "{ref.palette.success.600}" },
+          "hover": { "$value": "{ref.palette.success.700}" }
+        },
+        "warning": {
+          "default": { "$value": "{ref.palette.warning.600}" },
+          "hover": { "$value": "{ref.palette.warning.700}" }
+        },
+        "info": {
+          "default": { "$value": "{ref.palette.info.600}" },
+          "hover": { "$value": "{ref.palette.info.700}" }
+        }
+      },
+      "text": {
+        "primary": { "$value": "{ref.palette.gray.900}" },
+        "secondary": { "$value": "{ref.palette.gray.600}" },
+        "disabled": { "$value": "{ref.palette.gray.500}" },
+        "link": { "$value": "{ref.palette.brand.600}" },
+        "onPrimary": { "$value": "{ref.palette.white}" },
+        "onDanger": { "$value": "{ref.palette.white}" },
+        "onSuccess": { "$value": "{ref.palette.white}" },
+        "onWarning": { "$value": "{ref.palette.white}" },
+        "onInfo": { "$value": "{ref.palette.white}" }
+      },
+      "border": {
+        "default": { "$value": "{ref.palette.gray.300}" },
+        "strong": { "$value": "{ref.palette.gray.400}" },
+        "subtle": { "$value": "{ref.palette.gray.200}" },
+        "focus": { "$value": "{ref.palette.brand.500}" },
+        "danger": { "$value": "{ref.palette.danger.600}" }
+      },
+      "icon": {
+        "default": { "$value": "{ref.palette.gray.700}" },
+        "muted": { "$value": "{ref.palette.gray.500}" },
+        "onPrimary": { "$value": "{ref.palette.white}" }
+      }
+    }
+  }
+}
