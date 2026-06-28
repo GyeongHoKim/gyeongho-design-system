@@ -1,7 +1,9 @@
 import type { Point, SketchOptions } from '../types.js';
 import { crossHatch } from './cross-hatch.js';
+import { dots } from './dots.js';
 import { hachure } from './hachure.js';
 import { solid } from './solid.js';
+import { zigzag } from './zigzag.js';
 
 /**
  * Dispatch to the right filler for `o.fillStyle`. Returns `[]` (and consumes no
@@ -15,6 +17,10 @@ export function fill(points: Point[], o: SketchOptions, rng: () => number): stri
       return crossHatch(points, o, rng);
     case 'solid':
       return solid(points, o, rng);
+    case 'zigzag':
+      return zigzag(points, o, rng);
+    case 'dots':
+      return dots(points, o, rng);
     default:
       return [];
   }

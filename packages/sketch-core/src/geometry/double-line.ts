@@ -1,5 +1,5 @@
 import { serialize } from '../serialize.js';
-import type { Op, SketchOptions } from '../types.js';
+import type { Op, Point, SketchOptions } from '../types.js';
 import { offset, roughnessGain } from './offset.js';
 
 /**
@@ -88,4 +88,30 @@ export function doubleLinePaths(
   rng: () => number,
 ): string[] {
   return doubleLine(x1, y1, x2, y2, o, rng).map((ops) => serialize(ops));
+}
+
+/**
+ * Double-stroke every consecutive edge of a point list. When `closed`, the last
+ * point is also joined back to the first. The shared home of "walk a polyline,
+ * sketch each edge" — used by {@link polygon}, {@link path}, and shadow layers
+ * so polygon/path strokes and their elevation offsets can never drift apart.
+ */
+export function polylinePaths(
+  points: Point[],
+  closed: boolean,
+  o: SketchOptions,
+  rng: () => number,
+): string[] {
+  const out: string[] = [];
+  const n = points.length;
+  const edges = closed ? n : n - 1;
+  for (let i = 0; i < edges; i++) {
+    const a = points[i];
+    const b = points[(i + 1) % n];
+    if (!a || !b) {
+      continue;
+    }
+    out.push(...doubleLinePaths(a[0], a[1], b[0], b[1], o, rng));
+  }
+  return out;
 }

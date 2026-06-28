@@ -2,6 +2,7 @@ import { fill } from '../fillers/fill.js';
 import { mulberry32 } from '../prng.js';
 import { serialize } from '../serialize.js';
 import type { Op, Point, SketchDrawable, SketchOptions } from '../types.js';
+import { isElevated, offsetPoints, shadowRng } from './elevation.js';
 import { offset } from './offset.js';
 
 /** Ramanujan I perimeter approximation — used to scale the sample count. */
@@ -92,5 +93,17 @@ export function ellipse(
   ];
 
   const fillPaths = fill(jitteredRing(base, o, rng, 0), o, rng);
+
+  if (isElevated(o)) {
+    // Offset ring + its own PRNG stream → drop shadow that never disturbs the
+    // foreground passes above. Two passes mirror the double-stroke outline.
+    const srng = shadowRng(o.seed);
+    const shifted = offsetPoints(base, o.elevation ?? 0);
+    const shadowPaths = [
+      serialize(closedCurve(jitteredRing(shifted, o, srng, 1))),
+      serialize(closedCurve(jitteredRing(shifted, o, srng, 0.5))),
+    ];
+    return { strokePaths, fillPaths, shadowPaths };
+  }
   return { strokePaths, fillPaths };
 }

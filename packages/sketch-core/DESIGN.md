@@ -222,6 +222,79 @@ A single `fillPaths` entry: the polygon outline as one closed (lightly jittered)
 path. The renderer fills it with a token color and no stroke. Used when a shape
 needs a flat fill rather than the pencil look.
 
+### Zigzag (`fillers/zigzag.ts`)
+
+Same scan-line geometry as hachure, but each scan line is redrawn as a **triangle
+wave** instead of a straight segment — a denser, scribbled pencil-shade. Walk
+each hachure segment in steps of `step`, swinging the midpoints alternately
+`±amp` along the line's perpendicular; the wave lands flush on the end point.
+Both wavelength and amplitude derive from `hachureGap` (`step = gap`,
+`amp = gap/2`), so the texture stays coherent with the line spacing and adds **no
+new design knob**. Each wave edge is `doubleLine`d like every other stroke.
+
+### Dots (`fillers/dots.ts`)
+
+Stippling: a jittered grid of tiny circles clipped to the polygon by the same
+even-odd scan-line test (axis-aligned, so `hachureAngle` does not apply). Rows
+are spaced `hachureGap` apart; along each interior span, dots are placed every
+`hachureGap`. Each dot is one closed `fillPaths` entry — a circle approximated by
+four cubic Béziers (control arm `r·0.5523`), radius `max(gap/4, 0.5)`. Centres
+are nudged with `offset()` so the grid reads as hand-placed. The renderer fills
+or strokes them with a token color.
+
+---
+
+## 5b. Path / arc (`geometry/path.ts`)
+
+`path(d, o)` brings arbitrary SVG outlines (icons, curved components) into the
+engine. It is a two-stage pipeline:
+
+```
+d string ──▶ parse commands ──▶ flatten to subpaths ──▶ sketch each edge
+```
+
+1. **Parse.** A small hand-written scanner reads every standard command
+   (`M L H V C S Q T A Z`, absolute & relative), tolerating comma/space
+   separators, implicit repeated commands (`M x y x y` ⇒ moveto then lineto),
+   and arc flags packed without separators (`a… 0110 10`). Malformed input throws
+   rather than guessing; data must start with a moveto.
+2. **Flatten.** Each command becomes absolute and appends to the current
+   subpath's polyline. Curves and arcs are **decomposed into line segments**:
+   cubic/quadratic Béziers sampled at `ceil(controlPolygonLen / 10)` steps
+   (capped at 256); arcs converted to centre parameterization (SVG spec F.6.5)
+   and sampled every ~`π/8`. `S`/`T` reflect the previous control point. `Z`
+   marks the subpath closed and returns the cursor to the subpath start.
+3. **Sketch.** Each subpath's consecutive points are run through the same
+   `doubleLine` jitter as `polygon` (via the shared `polylinePaths` helper), so a
+   path looks identical in hand to the rest of the engine and is byte-stable for
+   a seed. Closed subpaths (≥ 3 points) are handed to the filler for `fillPaths`.
+
+Because flattening is deterministic and jitter flows through the one seeded
+`rng`, `path` honours the same determinism guarantee (trig-using arcs are
+byte-identical within a JS engine, like `ellipse`).
+
+---
+
+## 5c. Elevation / shadow (`geometry/elevation.ts`)
+
+Elevation is expressed as **pure IR** — a second, offset copy of the outline,
+never a platform shadow API. When `o.elevation > 0`, a shape emits
+`shadowPaths`: its outline re-stroked, translated down-right by `elevation` px
+(the conventional light-from-top-left direction). The renderer draws that layer
+behind `strokePaths` in a muted/token color to fake depth; colour and opacity
+stay the renderer's job (geometry only, per rule 1).
+
+Two properties make it safe:
+
+- **Independent PRNG.** The shadow uses `shadowRng(seed)` —
+  `mulberry32((seed ^ 0x9e3779b9) >>> 0)` — a stream decoupled from the
+  foreground. Turning elevation on or off therefore **never perturbs** the
+  foreground strokes: a flat shape and its elevated twin share byte-identical
+  `strokePaths`/`fillPaths`.
+- **Optional field.** `shadowPaths` is absent for flat shapes, so existing
+  consumers and snapshots are untouched. `line` does not cast a shadow (it is not
+  a surface); `rectangle`/`polygon`/`ellipse`/`path` all do.
+
 ---
 
 ## 6. Putting one shape together
