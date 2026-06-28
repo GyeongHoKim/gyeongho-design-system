@@ -2,7 +2,10 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-onlyBuiltDependencies:
-  - esbuild
+# pnpm v11: `allowBuilds` replaces the deprecated `onlyBuiltDependencies`.
+# Without it, esbuild's postinstall is ignored and a clean install (CI) fails
+# with ERR_PNPM_IGNORED_BUILDS.
+allowBuilds:
+  esbuild: true
 
 minimumReleaseAge: 180
