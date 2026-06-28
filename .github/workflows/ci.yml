@@ -1,15 +1,17 @@
 name: CI
 
 on:
+  # Run on every PR regardless of base branch (stacked/release branches included),
+  # so the lint/build/test gate is never skipped.
   pull_request:
-    branches: [main]
   push:
     branches: [main]
 
-# Cancel in-progress runs for the same ref (e.g. new push to a PR branch).
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Only cancel superseded PR runs. Never cancel a push-to-main run, or a main
+  # commit could be left without a green required check.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify:
@@ -19,19 +21,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
 
       - name: Lint
         run: pnpm lint
