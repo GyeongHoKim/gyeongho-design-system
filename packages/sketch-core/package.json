@@ -1,6 +1,6 @@
 {
   "name": "@ghds/sketch-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Platform-agnostic hand-drawn (sketchy) geometry engine for GHDS — emits SVG path data, zero runtime deps.",
   "license": "MIT",
   "type": "module",
