@@ -33,6 +33,12 @@
       "regular": { "$value": 400 },
       "medium": { "$value": 500 },
       "bold": { "$value": 700 }
+    },
+    "letterSpacing": {
+      "$type": "dimension",
+      "$description": "Tier 1 letter-spacing (tracking) values.",
+      "normal": { "$value": "0" },
+      "wide": { "$value": "0.08em" }
     }
   }
 }

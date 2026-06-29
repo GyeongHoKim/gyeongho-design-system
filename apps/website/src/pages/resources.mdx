@@ -1,0 +1,37 @@
+---
+layout: ../layouts/MarkdownLayout.astro
+title: 리소스
+description: 패키지, 저장소, 변경 이력 등 개발에 필요한 링크 모음.
+---
+
+GHDS를 사용하고 기여하는 데 필요한 자료를 모았습니다.
+
+## 패키지
+
+- `@ghds/tokens` — 디자인 토큰 (단일 진실 공급원)
+- `@ghds/react` — React 컴포넌트 라이브러리
+- `@ghds/web-components` — Lit 기반 프레임워크 무관 웹 컴포넌트
+- `@ghds/react-native` — React Native 컴포넌트 라이브러리
+
+## 저장소
+
+- [GitHub 저장소](https://github.com/GyeongHoKim/gyeongho-design-system) — 소스 코드, 이슈, 변경 이력
+
+## Storybook (로컬 실행)
+
+배포된 Storybook은 아직 없습니다. 저장소를 클론한 뒤 아래 명령으로 로컬에서 각 카탈로그를 띄울 수 있습니다.
+
+```bash
+# React 컴포넌트 카탈로그 → http://localhost:6006
+pnpm --filter storybook-react dev
+
+# 웹 컴포넌트(Lit) 카탈로그 → http://localhost:6007
+pnpm --filter @ghds/storybook-web-components dev
+```
+
+## 기여
+
+- 변경 사항은 Changesets로 버전을 관리합니다 (`pnpm changeset`).
+- 모든 변경은 루트 `AGENTS.md`의 **Code Quality Gate**를 통과해야 합니다.
+
+> 이 페이지는 IA 골격 스텁입니다. 배포된 Storybook URL이 생기면 이곳에 추가됩니다.

@@ -1,0 +1,35 @@
+{
+  "name": "@ghds/website",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GHDS promotional + documentation site (Astro) — KRDS-style IA, token-driven style pages, and live React/Lit component demos.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "clean": "rm -rf dist .astro .turbo node_modules/.cache"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/react": "^4.4.0",
+    "@ghds/react": "workspace:*",
+    "@ghds/tokens": "workspace:*",
+    "@ghds/web-components": "workspace:*",
+    "astro": "^5.16.0",
+    "lit": "^3.2.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@ghds/tsconfig": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -59,6 +59,18 @@
         "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.xs}" },
         "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.normal}" },
         "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.regular}" }
+      },
+      "code": {
+        "fontFamily": { "$type": "fontFamily", "$value": "{ref.fontFamily.mono}" },
+        "fontSize": { "$type": "dimension", "$value": "{ref.fontSize.sm}" },
+        "lineHeight": { "$type": "number", "$value": "{ref.lineHeight.normal}" },
+        "fontWeight": { "$type": "fontWeight", "$value": "{ref.fontWeight.regular}" }
+      },
+      "tracking": {
+        "$type": "dimension",
+        "$description": "Tier 2 letter-spacing (tracking) roles. Theme-invariant.",
+        "normal": { "$value": "{ref.letterSpacing.normal}" },
+        "wide": { "$value": "{ref.letterSpacing.wide}" }
       }
     },
     "shadow": {

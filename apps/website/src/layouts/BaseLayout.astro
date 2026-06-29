@@ -1,0 +1,129 @@
+---
+import '@ghds/tokens/css';
+import '../styles/global.css';
+import { NAV } from '../lib/nav';
+
+interface Props {
+  /** Document <title>; the site name is appended. */
+  title: string;
+  /** Meta description for the page. */
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+const normalize = (path: string): string => path.replace(/\/+$/, '') || '/';
+const here = normalize(Astro.url.pathname);
+
+// A link is current on its own page and any nested route beneath it. The home
+// link ('/') matches only the home page, so 시작하기 is no longer wrongly active.
+function isCurrent(href: string): boolean {
+  const target = normalize(href);
+  if (target === '/') {
+    return here === '/';
+  }
+  return here === target || here.startsWith(`${target}/`);
+}
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} · GHDS</title>
+    {description && <meta name="description" content={description} />}
+    {/* Apply the persisted theme before first paint to avoid a flash. */}
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('ghds-theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored;
+          }
+        } catch (_) {
+          /* localStorage unavailable — fall back to prefers-color-scheme */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">
+        GHDS <small>GH Design System</small>
+      </a>
+      <nav class="site-nav" aria-label="주요 메뉴">
+        <a href="/" aria-current={isCurrent('/') ? 'page' : undefined}>홈</a>
+        {
+          NAV.map((item) => (
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-live="polite">
+        <span data-theme-icon aria-hidden="true">🌗</span>
+        <span data-theme-label>테마</span>
+      </button>
+    </header>
+
+    <main class="site-main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>GHDS — GH Design System · 모든 디자인 값은 <code>@ghds/tokens</code>에서 옵니다.</p>
+    </footer>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+      const label = toggle?.querySelector('[data-theme-label]');
+      const icon = toggle?.querySelector('[data-theme-icon]');
+      const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function effectiveTheme(): 'light' | 'dark' {
+        const explicit = root.dataset.theme;
+        if (explicit === 'light' || explicit === 'dark') {
+          return explicit;
+        }
+        return darkQuery.matches ? 'dark' : 'light';
+      }
+
+      function paint(): void {
+        const current = effectiveTheme();
+        if (label) {
+          label.textContent = current === 'dark' ? '라이트 모드' : '다크 모드';
+        }
+        if (icon) {
+          icon.textContent = current === 'dark' ? '☀️' : '🌙';
+        }
+        toggle?.setAttribute('aria-label', current === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환');
+      }
+
+      toggle?.addEventListener('click', () => {
+        const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('ghds-theme', next);
+        } catch (_) {
+          /* ignore persistence failures */
+        }
+        paint();
+      });
+
+      // When the user has no explicit choice, follow live OS theme changes so the
+      // toggle's icon/label/aria never contradict the page (CSS already follows
+      // the OS via prefers-color-scheme).
+      darkQuery.addEventListener('change', () => {
+        if (!root.dataset.theme) {
+          paint();
+        }
+      });
+
+      paint();
+    </script>
+  </body>
+</html>

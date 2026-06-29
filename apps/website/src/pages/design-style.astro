@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { designStyle } from '../lib/tokens';
+
+// All data below is DERIVED from @ghds/tokens at build time — nothing is
+// hand-copied. Change a token and this page regenerates.
+const palette = designStyle.palette();
+const colors = designStyle.semanticColors();
+const typography = designStyle.typography();
+const spacing = designStyle.spacing();
+const radius = designStyle.radius();
+const shadow = designStyle.shadow();
+---
+
+<BaseLayout
+  title="디자인 스타일"
+  description="@ghds/tokens에서 자동 생성한 색상, 타이포그래피, 간격, 반경, 그림자 디자인 토큰."
+>
+  <section class="page-intro">
+    <span class="eyebrow">Design Style · 디자인 토큰</span>
+    <h1>디자인 스타일</h1>
+    <p>
+      이 페이지의 모든 값은 <code>@ghds/tokens</code> 빌드 산출물에서 직접 읽어 생성됩니다.
+      손으로 옮겨 적은 값은 하나도 없으며, 토큰이 바뀌면 이 페이지도 함께 갱신됩니다.
+      각 스와치는 생성된 CSS 변수(<code>var(--…)</code>)를 그대로 사용하므로 다크 모드도 즉시 반영됩니다.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>레퍼런스 팔레트 <code>ref.palette.*</code></h2>
+    {
+      palette.map((family) => (
+        <div class="section">
+          <p class="demo-label">{family.name}</p>
+          <div class="swatch-grid">
+            {family.swatches.map((swatch) => (
+              <div class="swatch">
+                <div class="chip" style={`background-color: var(${swatch.cssVar});`}></div>
+                <div class="meta">
+                  <div class="name">{swatch.path.replace('ref.palette.', '')}</div>
+                  <div class="value">{swatch.value}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="section">
+    <h2>시맨틱 색상 <code>sys.color.*</code></h2>
+    <table class="token-table">
+      <caption>역할(role) 기반 색상. 값이 다크 테마에서 달라지는 경우 함께 표기합니다.</caption>
+      <thead>
+        <tr>
+          <th scope="col">미리보기</th>
+          <th scope="col">토큰</th>
+          <th scope="col">CSS 변수</th>
+          <th scope="col">라이트</th>
+          <th scope="col">다크</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          colors.map((token) => (
+            <tr>
+              <td>
+                <span class="color-chip" style={`background-color: var(${token.cssVar});`} />
+              </td>
+              <td><code>{token.path}</code></td>
+              <td><code>{token.cssVar}</code></td>
+              <td><code>{token.value}</code></td>
+              <td>{token.darkValue ? <code>{token.darkValue}</code> : '—'}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>타이포그래피 <code>sys.typography.*</code></h2>
+    <div class="demo-stack">
+      {
+        typography.map((role) => (
+          <div class="panel">
+            <p class="demo-label">
+              sys.typography.{role.role} — {role.fontSize} / {role.lineHeight} / {role.fontWeight}
+            </p>
+            <div
+              style={`font-family: var(--sys-typography-${role.role}-fontFamily); font-size: var(--sys-typography-${role.role}-fontSize); line-height: var(--sys-typography-${role.role}-lineHeight); font-weight: var(--sys-typography-${role.role}-fontWeight);`}
+            >
+              다람쥐 헌 쳇바퀴에 타고파 — The quick brown fox 0123
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>간격 <code>sys.spacing.*</code></h2>
+    <table class="token-table">
+      <tbody>
+        {
+          spacing.map((token) => (
+            <tr>
+              <td>
+                <span
+                  class="token-sample-box"
+                  style={`width: var(${token.cssVar}); height: 1rem;`}
+                />
+              </td>
+              <td><code>{token.path}</code></td>
+              <td><code>{token.value}</code></td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>모서리 반경 <code>sys.radius.*</code></h2>
+    <div class="demo-row">
+      {
+        radius.map((token) => (
+          <div style="text-align:center;">
+            <div class="token-radius-box" style={`border-radius: var(${token.cssVar});`} />
+            <div class="value" style="margin-top: var(--sys-spacing-xs);">
+              <code>{token.path.replace('sys.radius.', '')}</code> · {token.value}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>그림자 <code>sys.shadow.*</code></h2>
+    <div class="demo-row" style="gap: var(--sys-spacing-lg);">
+      {
+        shadow.map((token) => (
+          <div style="text-align:center;">
+            <div class="token-shadow-box" style={`box-shadow: var(${token.cssVar});`} />
+            <div class="value" style="margin-top: var(--sys-spacing-sm);">
+              <code>{token.path.replace('sys.shadow.', '')}</code>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
