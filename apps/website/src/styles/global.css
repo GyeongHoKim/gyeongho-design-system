@@ -13,8 +13,25 @@
   box-sizing: border-box;
 }
 
-html {
-  color-scheme: light dark;
+/* Keep native UI (scrollbars, form controls) in sync with the active theme.
+ * Mirrors the tokens' own selector strategy: explicit data-theme wins, and an
+ * unset theme follows the OS preference. */
+:root {
+  color-scheme: light;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+  }
 }
 
 body {
@@ -59,11 +76,11 @@ h3 {
 }
 
 code {
-  font-family: var(--ref-fontFamily-mono, monospace);
+  font-family: var(--sys-typography-code-fontFamily);
   background-color: var(--sys-color-bg-muted);
   border-radius: var(--sys-radius-sm);
   padding: 0 var(--sys-spacing-xs);
-  font-size: var(--sys-typography-label-fontSize);
+  font-size: var(--sys-typography-code-fontSize);
 }
 
 /* ---- Layout shell ---------------------------------------------------- */
@@ -174,7 +191,7 @@ code {
   display: inline-block;
   font-family: var(--sys-typography-label-fontFamily);
   font-size: var(--sys-typography-caption-fontSize);
-  letter-spacing: 0.08em;
+  letter-spacing: var(--sys-typography-tracking-wide);
   text-transform: uppercase;
   color: var(--sys-color-text-link);
   margin-bottom: var(--sys-spacing-xs);
@@ -256,14 +273,14 @@ code {
 }
 
 .swatch .name {
-  font-family: var(--ref-fontFamily-mono, monospace);
+  font-family: var(--sys-typography-code-fontFamily);
   font-size: var(--sys-typography-caption-fontSize);
   color: var(--sys-color-text-primary);
   word-break: break-all;
 }
 
 .swatch .value {
-  font-family: var(--ref-fontFamily-mono, monospace);
+  font-family: var(--sys-typography-code-fontFamily);
   font-size: var(--sys-typography-caption-fontSize);
   color: var(--sys-color-text-secondary);
 }
@@ -296,6 +313,16 @@ code {
 .token-table code {
   background: none;
   padding: 0;
+}
+
+/* Small inline color preview used in the semantic-color table. The background
+ * is set per-row to the token's own CSS variable. */
+.color-chip {
+  display: inline-block;
+  width: var(--sys-spacing-xl);
+  height: var(--sys-spacing-lg);
+  border-radius: var(--sys-radius-sm);
+  border: var(--sys-border-width-thin) solid var(--sys-color-border-subtle);
 }
 
 .token-sample-box {

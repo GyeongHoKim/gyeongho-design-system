@@ -66,10 +66,7 @@ const shadow = designStyle.shadow();
           colors.map((token) => (
             <tr>
               <td>
-                <span
-                  class="chip"
-                  style={`display:inline-block;width:2.5rem;height:1.5rem;border-radius:var(--sys-radius-sm);border:var(--sys-border-width-thin) solid var(--sys-color-border-subtle);background-color: var(${token.cssVar});`}
-                />
+                <span class="color-chip" style={`background-color: var(${token.cssVar});`} />
               </td>
               <td><code>{token.path}</code></td>
               <td><code>{token.cssVar}</code></td>

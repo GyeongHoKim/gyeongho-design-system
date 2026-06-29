@@ -9,8 +9,12 @@
  */
 import { darkTokens, tokens } from '@ghds/tokens';
 
-/** A recursive, read-only tree of design tokens whose leaves are strings. */
-export type TokenTree = { readonly [key: string]: string | TokenTree };
+/** A token leaf value. Most leaves are strings, but `lineHeight` (1.5) and
+ * `fontWeight` (400) are emitted as numbers — both must be representable. */
+export type TokenLeaf = string | number;
+
+/** A recursive, read-only tree of design tokens whose leaves are scalars. */
+export type TokenTree = { readonly [key: string]: TokenLeaf | TokenTree };
 
 /** A resolved token: its dotted path plus its light (and optional dark) value. */
 export interface FlatToken {
@@ -18,16 +22,18 @@ export interface FlatToken {
   readonly path: string;
   /** The matching generated CSS custom property, e.g. `--sys-color-bg-primary-default`. */
   readonly cssVar: string;
-  /** Resolved value in the light theme, e.g. `#3e47c9`. */
-  readonly value: string;
+  /** Resolved value in the light theme, e.g. `#3e47c9` or `1.5`. */
+  readonly value: TokenLeaf;
   /** Resolved value in the dark theme, present only when it differs from light. */
-  readonly darkValue?: string;
+  readonly darkValue?: TokenLeaf;
 }
 
-const light = tokens as unknown as TokenTree;
-const dark = darkTokens as unknown as TokenTree;
+// `tokens`/`darkTokens` are deeply-readonly token trees with scalar leaves, so
+// they satisfy `TokenTree` structurally — no unsafe cast needed.
+const light: TokenTree = tokens;
+const dark: TokenTree = darkTokens;
 
-function isTree(node: string | TokenTree): node is TokenTree {
+function isTree(node: TokenLeaf | TokenTree): node is TokenTree {
   return typeof node === 'object';
 }
 
@@ -38,12 +44,12 @@ export function toCssVar(path: string): string {
 
 /** Walk to a nested subtree by dotted path (throws if the path is missing). */
 function at(root: TokenTree, path: string): TokenTree {
-  let node: string | TokenTree = root;
+  let node: TokenLeaf | TokenTree = root;
   for (const key of path.split('.')) {
     if (!isTree(node) || !(key in node)) {
       throw new Error(`Unknown token path: ${path}`);
     }
-    node = node[key] as string | TokenTree;
+    node = node[key] as TokenLeaf | TokenTree;
   }
   if (!isTree(node)) {
     throw new Error(`Token path is a leaf, expected a subtree: ${path}`);
@@ -66,15 +72,20 @@ function flatten(node: TokenTree, prefix: string): FlatToken[] {
 }
 
 /**
- * Flatten a subtree present in `dotted` of BOTH themes, attaching `darkValue`
- * wherever the dark theme resolves to a different value than light.
+ * Flatten a subtree into resolved token rows. When `withDark` is set, each row
+ * also gets a `darkValue` wherever the dark theme differs from light — the dark
+ * tree is only traversed when asked, so theme-invariant sections (spacing,
+ * radius, shadow) skip the extra work entirely.
  */
-export function section(dotted: string): FlatToken[] {
+export function section(dotted: string, withDark = false): FlatToken[] {
   const lightRows = flatten(at(light, dotted), dotted);
+  if (!withDark) {
+    return lightRows;
+  }
   const darkRows = new Map(flatten(at(dark, dotted), dotted).map((row) => [row.path, row.value]));
   return lightRows.map((row) => {
     const darkValue = darkRows.get(row.path);
-    return darkValue && darkValue !== row.value ? { ...row, darkValue } : row;
+    return darkValue !== undefined && darkValue !== row.value ? { ...row, darkValue } : row;
   });
 }
 
@@ -109,12 +120,14 @@ export interface TypographyRole {
   readonly fontWeight: string;
 }
 
-/** The semantic typography scale (`sys.typography.*`). */
+/** The semantic typography scale (`sys.typography.*`). Only role-shaped entries
+ * (those carrying a `fontSize`) are returned — sibling groups such as
+ * `tracking` are not type roles and are skipped. */
 export function typographyRoles(): TypographyRole[] {
   const typography = at(light, 'sys.typography');
   const roles: TypographyRole[] = [];
   for (const [role, value] of Object.entries(typography)) {
-    if (isTree(value)) {
+    if (isTree(value) && 'fontSize' in value) {
       roles.push({
         role,
         fontFamily: String(value.fontFamily ?? ''),
@@ -130,7 +143,8 @@ export function typographyRoles(): TypographyRole[] {
 /** Convenience accessors for the Design Style page sections. */
 export const designStyle = {
   palette: paletteFamilies,
-  semanticColors: (): FlatToken[] => section('sys.color'),
+  // Colors are the only theme-variant section, so they request dark values.
+  semanticColors: (): FlatToken[] => section('sys.color', true),
   typography: typographyRoles,
   spacing: (): FlatToken[] => section('sys.spacing'),
   radius: (): FlatToken[] => section('sys.radius'),
