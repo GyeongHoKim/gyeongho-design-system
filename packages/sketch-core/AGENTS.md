@@ -80,8 +80,10 @@ path(d: string, o: SketchOptions): SketchDrawable
 `line` produces only `strokePaths` (no fill). The closed shapes produce
 `fillPaths` only when a fill is requested by the renderer. `path` parses an SVG
 `d` string (for icons and curved components), flattening curves/arcs to segments
-and sketching each one; closed subpaths (`Z`) can be filled. Every shape except
-`line` emits `shadowPaths` when `o.elevation > 0`.
+and sketching each one; its closed subpaths fill together with the even-odd rule
+so holes stay hollow, and **invalid `d` input degrades** to an empty drawable
+(plus a `console.warn`) rather than throwing — use `linearizePath` for strict
+parsing. Every shape except `line` emits `shadowPaths` when `o.elevation > 0`.
 
 ---
 

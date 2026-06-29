@@ -92,7 +92,7 @@ export function ellipse(
     serialize(closedCurve(jitteredRing(base, o, rng, 0.5))),
   ];
 
-  const fillPaths = fill(jitteredRing(base, o, rng, 0), o, rng);
+  const fillPaths = fill([jitteredRing(base, o, rng, 0)], o, rng);
 
   if (isElevated(o)) {
     // Offset ring + its own PRNG stream → drop shadow that never disturbs the

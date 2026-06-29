@@ -1,5 +1,6 @@
 import { fill } from '../fillers/fill.js';
 import { mulberry32 } from '../prng.js';
+import { quantize } from '../serialize.js';
 import type { Point, SketchDrawable, SketchOptions } from '../types.js';
 import { polylinePaths } from './double-line.js';
 import { isElevated, offsetPoints, shadowRng } from './elevation.js';
@@ -133,6 +134,17 @@ function dist(a: Point, b: Point): number {
   return Math.hypot(b[0] - a[0], b[1] - a[1]);
 }
 
+/**
+ * Quantize a flattened sample point to the engine's standard precision. Curve
+ * and arc flattening use `Math.cos/sin/sqrt`, which ECMAScript does not require
+ * to be correctly rounded; snapping each emitted point to fixed decimals here —
+ * before it feeds `doubleLine` and the `d` string — keeps `path` output
+ * byte-identical across JS engines (no SSR hydration drift, stable snapshots).
+ */
+function qPoint(x: number, y: number): Point {
+  return [quantize(x), quantize(y)];
+}
+
 /** Segment count for a curve, from a control-polygon length estimate. */
 function segmentCount(length: number): number {
   return Math.min(Math.max(Math.ceil(length / SEGMENT_LENGTH), 1), MAX_CURVE_SEGMENTS);
@@ -149,10 +161,12 @@ function cubicPoints(p0: Point, p1: Point, p2: Point, p3: Point): Point[] {
     const b = 3 * u * u * t;
     const c = 3 * u * t * t;
     const e = t * t * t;
-    out.push([
-      a * p0[0] + b * p1[0] + c * p2[0] + e * p3[0],
-      a * p0[1] + b * p1[1] + c * p2[1] + e * p3[1],
-    ]);
+    out.push(
+      qPoint(
+        a * p0[0] + b * p1[0] + c * p2[0] + e * p3[0],
+        a * p0[1] + b * p1[1] + c * p2[1] + e * p3[1],
+      ),
+    );
   }
   return out;
 }
@@ -167,7 +181,7 @@ function quadPoints(p0: Point, p1: Point, p2: Point): Point[] {
     const a = u * u;
     const b = 2 * u * t;
     const c = t * t;
-    out.push([a * p0[0] + b * p1[0] + c * p2[0], a * p0[1] + b * p1[1] + c * p2[1]]);
+    out.push(qPoint(a * p0[0] + b * p1[0] + c * p2[0], a * p0[1] + b * p1[1] + c * p2[1]));
   }
   return out;
 }
@@ -200,7 +214,7 @@ function arcPoints(
   let rx = Math.abs(rxIn);
   let ry = Math.abs(ryIn);
   if (rx === 0 || ry === 0 || (p0[0] === end[0] && p0[1] === end[1])) {
-    return [end];
+    return [qPoint(end[0], end[1])];
   }
   const phi = (rotationDeg * Math.PI) / 180;
   const cosPhi = Math.cos(phi);
@@ -255,10 +269,12 @@ function arcPoints(
     const t = theta1 + (dTheta * i) / n;
     const cosT = Math.cos(t);
     const sinT = Math.sin(t);
-    out.push([
-      cx + rx * cosT * cosPhi - ry * sinT * sinPhi,
-      cy + rx * cosT * sinPhi + ry * sinT * cosPhi,
-    ]);
+    out.push(
+      qPoint(
+        cx + rx * cosT * cosPhi - ry * sinT * sinPhi,
+        cy + rx * cosT * sinPhi + ry * sinT * cosPhi,
+      ),
+    );
   }
   return out;
 }
@@ -294,8 +310,17 @@ export function linearizePath(d: string): Subpath[] {
     const rel = key === key.toLowerCase();
     const bx = rel ? cur[0] : 0;
     const by = rel ? cur[1] : 0;
+    const lower = key.toLowerCase();
 
-    switch (key.toLowerCase()) {
+    // Bind a fresh subpath at the CURRENT point before the command moves it, so
+    // a draw after `Z` (or a path that omits the leading moveto) starts at the
+    // close/origin point rather than at its own destination.
+    if (lower !== 'm' && lower !== 'z' && !current) {
+      current = { points: [[cur[0], cur[1]]], closed: false };
+      subpaths.push(current);
+    }
+
+    switch (lower) {
       case 'm': {
         cur = [bx + (data[0] ?? 0), by + (data[1] ?? 0)];
         start = [cur[0], cur[1]];
@@ -387,6 +412,10 @@ export function linearizePath(d: string): Subpath[] {
           current.closed = true;
         }
         cur = [start[0], start[1]];
+        // A draw command after Z without a new M is valid SVG and starts a fresh
+        // subpath at the close point — clear `current` so it is not appended to
+        // the already-closed contour.
+        current = null;
         prevCubicCtrl = null;
         prevQuadCtrl = null;
         break;
@@ -396,16 +425,9 @@ export function linearizePath(d: string): Subpath[] {
   return subpaths;
 }
 
-/**
- * Parse an SVG path `d` string and render it as sketchy, jittered path data —
- * the entry point for icons and curved components. Curves (`C/S/Q/T`) and arcs
- * (`A`) are flattened to line segments, then every segment is double-stroked
- * with the same seeded jitter as {@link line}/{@link polygon}, so a path's hand
- * drawn look is identical to the rest of the engine and fully deterministic for
- * a given seed. Closed subpaths (`Z`) can be filled via `o.fillStyle`, and the
- * whole path casts a drop shadow when `o.elevation > 0`.
- */
-export function path(d: string, o: SketchOptions): SketchDrawable {
+/** Build the drawable from parsed subpaths. Throws on malformed `d` (via the
+ *  strict parser); {@link path} wraps this and degrades instead. */
+function buildPath(d: string, o: SketchOptions): SketchDrawable {
   const subpaths = linearizePath(d);
   const rng = mulberry32(o.seed);
 
@@ -417,14 +439,15 @@ export function path(d: string, o: SketchOptions): SketchDrawable {
     strokePaths.push(...polylinePaths(sp.points, sp.closed, o, rng));
   }
 
-  // Stroke first, then fill (closed subpaths only) — one shared rng keeps the
-  // whole path reproducible as a unit, matching polygon's ordering.
-  const fillPaths: string[] = [];
-  for (const sp of subpaths) {
-    if (sp.closed && sp.points.length >= 3) {
-      fillPaths.push(...fill(sp.points, o, rng));
-    }
-  }
+  // Stroke first, then fill — one shared rng keeps the whole path reproducible
+  // as a unit, matching polygon's ordering. Every closed subpath is passed to
+  // the filler together as one set of contours, so a compound glyph (a hole —
+  // 'O', 'a', '@', a donut) hollows via the even-odd rule instead of filling
+  // each contour solid.
+  const closedContours = subpaths
+    .filter((sp) => sp.closed && sp.points.length >= 3)
+    .map((sp) => sp.points);
+  const fillPaths = fill(closedContours, o, rng);
 
   if (isElevated(o)) {
     const srng = shadowRng(o.seed);
@@ -440,4 +463,31 @@ export function path(d: string, o: SketchOptions): SketchDrawable {
     return { strokePaths, fillPaths, shadowPaths };
   }
   return { strokePaths, fillPaths };
+}
+
+/**
+ * Parse an SVG path `d` string and render it as sketchy, jittered path data —
+ * the entry point for icons and curved components. Curves (`C/S/Q/T`) and arcs
+ * (`A`) are flattened to line segments, then every segment is double-stroked
+ * with the same seeded jitter as {@link line}/{@link polygon}, so a path's hand
+ * drawn look is identical to the rest of the engine and fully deterministic for
+ * a given seed. Closed subpaths (`Z`) fill together with the even-odd rule (so
+ * holes stay hollow), and the whole path casts a drop shadow when
+ * `o.elevation > 0`.
+ *
+ * Malformed or unsupported `d` input must never crash a render tree or 500 an
+ * SSR pass, so parse failures **degrade gracefully**: this returns an empty
+ * drawable and `console.warn`s the reason rather than throwing. The strict,
+ * throwing parser is still available as {@link linearizePath} for callers that
+ * want to validate up front.
+ */
+export function path(d: string, o: SketchOptions): SketchDrawable {
+  try {
+    return buildPath(d, o);
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    // biome-ignore lint/suspicious/noConsole: intentional, actionable warning when a renderer feeds an invalid `d` — see graceful-degradation contract above.
+    console.warn(`@ghds/sketch-core: path() ignoring invalid d string — ${reason}`);
+    return { strokePaths: [], fillPaths: [] };
+  }
 }

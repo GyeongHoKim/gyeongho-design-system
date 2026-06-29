@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { SketchOptions } from '../types.js';
 import { linearizePath, path } from './path.js';
 
@@ -124,6 +124,74 @@ describe('path', () => {
   it('does not fill an open subpath', () => {
     const r = path('M0 0 L40 0 L40 40', { ...base, fillStyle: 'hachure', hachureGap: 6 });
     expect(r.fillPaths).toEqual([]);
+  });
+
+  it('hollows a hole in a compound path (even-odd across subpaths)', () => {
+    // Outer 100×100 square + inner 40×40 hole, both closed, filled with axis
+    // aligned hachure (no jitter). The hole must NOT be filled solid: fill must
+    // cover the centre of a plain square yet leave the donut's hole centre
+    // empty (the scan line splits into two spans flanking the hole).
+    const opts = {
+      ...base,
+      roughness: 0,
+      bowing: 0,
+      fillStyle: 'hachure' as const,
+      hachureGap: 10,
+      hachureAngle: 0,
+    };
+
+    // With angle 0 + roughness 0 every fill stroke is a horizontal segment; the
+    // first/last coordinate pairs of its `d` string are its endpoints.
+    const coversCentre = (paths: string[]): boolean => {
+      for (const d of paths) {
+        const n = [...d.matchAll(/-?\d+(?:\.\d+)?/g)].map((m) => Number(m[0]));
+        const y1 = n[1] ?? Number.NaN;
+        const x1 = n[0] ?? Number.NaN;
+        const x2 = n[n.length - 2] ?? Number.NaN;
+        if (Math.abs(y1 - 45) < 1 && Math.min(x1, x2) <= 50 && Math.max(x1, x2) >= 50) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const solidSquare = path('M0 0 H100 V100 H0 Z', opts);
+    const donut = path('M0 0 H100 V100 H0 Z M30 30 H70 V70 H30 Z', opts);
+    expect(donut.fillPaths.length).toBeGreaterThan(0);
+    expect(coversCentre(solidSquare.fillPaths)).toBe(true); // solid: filled through (50,45)
+    expect(coversCentre(donut.fillPaths)).toBe(false); // donut: (50,45) is in the hole
+  });
+
+  it('continues a fresh subpath after Z without a new M', () => {
+    // M0 0 H10 V10 Z draws a closed triangle; the trailing `L20 20` must start a
+    // new OPEN subpath at the close point, not corrupt the closed one.
+    const sp = linearizePath('M0 0 H10 V10 Z L20 20');
+    expect(sp).toHaveLength(2);
+    expect(sp[0]?.closed).toBe(true);
+    expect(sp[0]?.points).toEqual([
+      [0, 0],
+      [10, 0],
+      [10, 10],
+    ]);
+    expect(sp[1]?.closed).toBe(false);
+    expect(sp[1]?.points).toEqual([
+      [0, 0],
+      [20, 20],
+    ]);
+  });
+
+  it('degrades gracefully on malformed input (returns empty, does not throw)', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      let r: ReturnType<typeof path> | undefined;
+      expect(() => {
+        r = path('not a path !!!', base);
+      }).not.toThrow();
+      expect(r).toEqual({ strokePaths: [], fillPaths: [] });
+      expect(warn).toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
   });
 
   it('same seed → byte-identical output (determinism)', () => {

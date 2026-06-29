@@ -16,7 +16,7 @@ export function polygon(points: Point[], o: SketchOptions): SketchDrawable {
   const strokePaths = polylinePaths(points, true, o, rng);
 
   // Stroke first, then fill — both share the one rng so the shape is stable.
-  const fillPaths = fill(points, o, rng);
+  const fillPaths = fill([points], o, rng);
 
   if (isElevated(o)) {
     const shifted = offsetPoints(points, o.elevation ?? 0);

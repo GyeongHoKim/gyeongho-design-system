@@ -211,6 +211,15 @@ The half-open comparison (`<=` on one side, `>` on the other) is what makes
 vertices and horizontal edges behave — it avoids double-counting at shared
 endpoints. All hachure segments land in `fillPaths`.
 
+**Compound shapes / holes.** `hachureSegments` takes a *list of contours*
+(`Point[][]`), not one ring. A single scan line gathers crossings from **every**
+contour's edges, sorts them together, then pairs them — so an inner contour (a
+hole: the centre of an `O`, ring, or donut) subtracts via even-odd instead of
+being painted solid. Simple shapes pass a single-contour list (`[points]`);
+`path` passes all of its closed subpaths at once. `isPointInContours` exposes the
+same even-odd test for fillers that need point containment (see zigzag). Every
+filler routes through `fill(contours, …)`, so they all inherit hole support.
+
 ### Cross-hatch (`fillers/cross-hatch.ts`)
 
 Run hachure twice: once at `hachureAngle`, once at `hachureAngle + 90`. Concat
@@ -218,29 +227,34 @@ the segment sets.
 
 ### Solid (`fillers/solid.ts`)
 
-A single `fillPaths` entry: the polygon outline as one closed (lightly jittered)
-path. The renderer fills it with a token color and no stroke. Used when a shape
-needs a flat fill rather than the pencil look.
+One lightly-jittered closed outline **per contour**. The renderer fills them with
+a token color and the even-odd fill-rule, so a compound shape's hole stays
+hollow. Used when a shape needs a flat fill rather than the pencil look.
 
 ### Zigzag (`fillers/zigzag.ts`)
 
 Same scan-line geometry as hachure, but each scan line is redrawn as a **triangle
 wave** instead of a straight segment — a denser, scribbled pencil-shade. Walk
-each hachure segment in steps of `step`, swinging the midpoints alternately
-`±amp` along the line's perpendicular; the wave lands flush on the end point.
-Both wavelength and amplitude derive from `hachureGap` (`step = gap`,
-`amp = gap/2`), so the texture stays coherent with the line spacing and adds **no
-new design knob**. Each wave edge is `doubleLine`d like every other stroke.
+each scan segment in steps of `step`, swinging the midpoints alternately `±amp`
+along the line's perpendicular; the wave lands flush on the end point. Both
+wavelength and amplitude derive from `hachureGap` (`step = gap`, `amp = gap/2`),
+so the texture stays coherent with the line spacing and adds **no new design
+knob**. Each wave edge is `doubleLine`d like every other stroke.
+
+Like hachure/ellipse, zigzag must **stay inside the outline**. A perpendicular
+peak can poke past a slanted or curved boundary, so any peak that fails the
+`isPointInContours` even-odd test is clamped back onto the scan line (guaranteed
+inside between its two crossings).
 
 ### Dots (`fillers/dots.ts`)
 
-Stippling: a jittered grid of tiny circles clipped to the polygon by the same
-even-odd scan-line test (axis-aligned, so `hachureAngle` does not apply). Rows
-are spaced `hachureGap` apart; along each interior span, dots are placed every
-`hachureGap`. Each dot is one closed `fillPaths` entry — a circle approximated by
-four cubic Béziers (control arm `r·0.5523`), radius `max(gap/4, 0.5)`. Centres
-are nudged with `offset()` so the grid reads as hand-placed. The renderer fills
-or strokes them with a token color.
+Stippling: a jittered grid of tiny circles. It **reuses** `hachureSegments`
+(rather than reimplementing a scan), so it honours `hachureAngle` exactly like
+cross-hatch/zigzag and hollows holes via the same even-odd rule. Along each
+returned span, dots are placed every `hachureGap`. Each dot is one closed
+`fillPaths` entry — a circle approximated by four cubic Béziers (control arm
+`r·0.5523`), radius `max(gap/4, 0.5)`. Centres are nudged with `offset()` so the
+grid reads as hand-placed. The renderer fills or strokes them with a token color.
 
 ---
 
@@ -256,22 +270,35 @@ d string ──▶ parse commands ──▶ flatten to subpaths ──▶ sketch
 1. **Parse.** A small hand-written scanner reads every standard command
    (`M L H V C S Q T A Z`, absolute & relative), tolerating comma/space
    separators, implicit repeated commands (`M x y x y` ⇒ moveto then lineto),
-   and arc flags packed without separators (`a… 0110 10`). Malformed input throws
-   rather than guessing; data must start with a moveto.
+   and arc flags packed without separators (`a… 0110 10`). The strict parser
+   (`linearizePath`) throws on malformed input; data must start with a moveto.
 2. **Flatten.** Each command becomes absolute and appends to the current
    subpath's polyline. Curves and arcs are **decomposed into line segments**:
    cubic/quadratic Béziers sampled at `ceil(controlPolygonLen / 10)` steps
    (capped at 256); arcs converted to centre parameterization (SVG spec F.6.5)
    and sampled every ~`π/8`. `S`/`T` reflect the previous control point. `Z`
-   marks the subpath closed and returns the cursor to the subpath start.
+   marks the subpath closed, returns the cursor to the subpath start, **and ends
+   the subpath** — a draw command after `Z` (valid SVG, e.g. `M0 0H10V10Z L20 20`)
+   begins a fresh subpath at the close point rather than corrupting the closed
+   one. Every flattened sample point is `quantize`d to the engine's fixed
+   precision (2 dp) *before* it leaves the trig: `Math.cos/sin/sqrt` are not
+   required to be correctly-rounded, so snapping here keeps `path` output
+   byte-identical across JS engines (no SSR hydration drift).
 3. **Sketch.** Each subpath's consecutive points are run through the same
    `doubleLine` jitter as `polygon` (via the shared `polylinePaths` helper), so a
    path looks identical in hand to the rest of the engine and is byte-stable for
-   a seed. Closed subpaths (≥ 3 points) are handed to the filler for `fillPaths`.
+   a seed. All closed subpaths (≥ 3 points) are handed to the filler **together**
+   as one contour set, so a compound glyph's holes hollow via even-odd (§5).
 
-Because flattening is deterministic and jitter flows through the one seeded
-`rng`, `path` honours the same determinism guarantee (trig-using arcs are
-byte-identical within a JS engine, like `ellipse`).
+**Graceful degradation.** The public `path(d, o)` must never crash a render tree
+or 500 an SSR pass on bad input. It wraps the strict pipeline in a `try/catch`:
+on any parse failure it `console.warn`s the reason and returns an empty drawable
+(`{ strokePaths: [], fillPaths: [] }`, no shadow) instead of throwing. Callers
+that want hard validation can use `linearizePath` directly.
+
+Because flattening is deterministic and quantized and jitter flows through the
+one seeded `rng`, `path` honours the full determinism guarantee — trig-using
+arcs are now byte-identical *across* engines, not merely within one.
 
 ---
 

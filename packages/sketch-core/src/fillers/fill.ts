@@ -6,21 +6,24 @@ import { solid } from './solid.js';
 import { zigzag } from './zigzag.js';
 
 /**
- * Dispatch to the right filler for `o.fillStyle`. Returns `[]` (and consumes no
- * randomness) when no fill is requested, so unfilled shapes stay byte-stable.
+ * Dispatch to the right filler for `o.fillStyle`. Takes a list of **contours**
+ * (the outer ring plus any inner holes) so compound shapes fill with the
+ * even-odd rule — inner contours subtract. Simple shapes pass a single-contour
+ * list (`[points]`). Returns `[]` (and consumes no randomness) when no fill is
+ * requested, so unfilled shapes stay byte-stable.
  */
-export function fill(points: Point[], o: SketchOptions, rng: () => number): string[] {
+export function fill(contours: Point[][], o: SketchOptions, rng: () => number): string[] {
   switch (o.fillStyle) {
     case 'hachure':
-      return hachure(points, o, rng);
+      return hachure(contours, o, rng);
     case 'cross-hatch':
-      return crossHatch(points, o, rng);
+      return crossHatch(contours, o, rng);
     case 'solid':
-      return solid(points, o, rng);
+      return solid(contours, o, rng);
     case 'zigzag':
-      return zigzag(points, o, rng);
+      return zigzag(contours, o, rng);
     case 'dots':
-      return dots(points, o, rng);
+      return dots(contours, o, rng);
     default:
       return [];
   }
