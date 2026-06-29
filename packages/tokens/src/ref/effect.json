@@ -51,6 +51,11 @@
         "$description": "Hachure fill angle, in degrees.",
         "default": { "$value": -41 },
         "cross": { "$value": 41 }
+      },
+      "elevation": {
+        "$description": "Sketch drop-shadow offset (px) fed to SketchOptions.elevation. 0 = flat.",
+        "flat": { "$value": 0 },
+        "raised": { "$value": 4 }
       }
     }
   }

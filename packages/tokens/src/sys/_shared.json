@@ -92,7 +92,8 @@
       "roughness": { "$value": "{ref.sketch.roughness.default}" },
       "bowing": { "$value": "{ref.sketch.bowing.default}" },
       "hachureGap": { "$value": "{ref.sketch.hachureGap.default}" },
-      "hachureAngle": { "$value": "{ref.sketch.hachureAngle.default}" }
+      "hachureAngle": { "$value": "{ref.sketch.hachureAngle.default}" },
+      "elevation": { "$value": "{ref.sketch.elevation.raised}" }
     }
   }
 }
