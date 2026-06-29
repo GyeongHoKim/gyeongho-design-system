@@ -2,6 +2,8 @@ export { doubleLine } from './geometry/double-line.js';
 export { ellipse } from './geometry/ellipse.js';
 export { line } from './geometry/line.js';
 export { offset, roughnessGain } from './geometry/offset.js';
+export type { Subpath } from './geometry/path.js';
+export { linearizePath, path } from './geometry/path.js';
 export { polygon } from './geometry/polygon.js';
 export { rectangle } from './geometry/rectangle.js';
 export { mulberry32 } from './prng.js';

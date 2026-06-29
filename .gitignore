@@ -30,8 +30,5 @@ dist/
 # Turborepo cache
 .turbo
 
-# Changeset temporary files (keep config.json)
-.changeset/*.md
-
 # Storybook build output
 storybook-static

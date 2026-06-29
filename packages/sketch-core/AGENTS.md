@@ -48,18 +48,22 @@ export interface SketchOptions {
   /** Deterministic seed. REQUIRED — see "Determinism" below. */
   seed: number;
   /** Fill strategy for closed shapes. Omit for no fill. */
-  fillStyle?: 'hachure' | 'solid' | 'cross-hatch';
-  /** Gap between hachure lines (px). Comes from a token. */
+  fillStyle?: 'hachure' | 'solid' | 'cross-hatch' | 'zigzag' | 'dots';
+  /** Gap between fill lines / dots (px). Comes from a token. */
   hachureGap?: number;
   /** Hachure angle in degrees. Comes from a token. */
   hachureAngle?: number;
+  /** Drop-shadow offset (px) for elevation. Omit/0 ⇒ no shadow. From a token. */
+  elevation?: number;
 }
 
 export interface SketchDrawable {
   /** Outline strokes. Double-stroke is already baked in (2 paths per edge). */
   strokePaths: string[];
-  /** Fill lines (hachure/cross-hatch). Empty when the shape has no fill. */
+  /** Fill lines (hachure/cross-hatch/solid/zigzag/dots). Empty when no fill. */
   fillPaths: string[];
+  /** Offset "drop shadow" strokes. Present only when `elevation > 0`. */
+  shadowPaths?: string[];
 }
 ```
 
@@ -70,10 +74,16 @@ rectangle(x: number, y: number, w: number, h: number, o: SketchOptions): SketchD
 ellipse(x: number, y: number, w: number, h: number, o: SketchOptions): SketchDrawable
 line(x1: number, y1: number, x2: number, y2: number, o: SketchOptions): SketchDrawable
 polygon(points: Point[], o: SketchOptions): SketchDrawable
+path(d: string, o: SketchOptions): SketchDrawable
 ```
 
 `line` produces only `strokePaths` (no fill). The closed shapes produce
-`fillPaths` only when a fill is requested by the renderer.
+`fillPaths` only when a fill is requested by the renderer. `path` parses an SVG
+`d` string (for icons and curved components), flattening curves/arcs to segments
+and sketching each one; its closed subpaths fill together with the even-odd rule
+so holes stay hollow, and **invalid `d` input degrades** to an empty drawable
+(plus a `console.warn`) rather than throwing — use `linearizePath` for strict
+parsing. Every shape except `line` emits `shadowPaths` when `o.elevation > 0`.
 
 ---
 
@@ -135,15 +145,20 @@ src/
 ├── prng.ts             # seeded PRNG (Mulberry32)
 ├── geometry/
 │   ├── offset.ts       # roughness-driven jitter helpers
-│   ├── double-line.ts  # the core sketchy stroke (one edge → two paths)
+│   ├── double-line.ts  # the core sketchy stroke (one edge → two paths) + polyline
 │   ├── line.ts
 │   ├── rectangle.ts
 │   ├── ellipse.ts
-│   └── polygon.ts
+│   ├── polygon.ts
+│   ├── path.ts         # SVG `d` parser + curve/arc flattening → sketchy paths
+│   └── elevation.ts    # offset drop-shadow IR (independent PRNG stream)
 ├── fillers/
+│   ├── fill.ts         # fillStyle → filler dispatch
 │   ├── hachure.ts      # scan-line polygon fill
 │   ├── solid.ts
-│   └── cross-hatch.ts
+│   ├── cross-hatch.ts
+│   ├── zigzag.ts       # triangle-wave scan-line fill
+│   └── dots.ts         # stippled grid of small circles
 └── serialize.ts        # Op[] → SVG path `d` string
 ```
 

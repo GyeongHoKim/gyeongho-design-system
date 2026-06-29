@@ -14,11 +14,18 @@ export interface SketchOptions {
   /** Deterministic seed. REQUIRED — drives the PRNG so output is stable. */
   seed: number;
   /** Fill strategy for closed shapes. Omit for no fill. */
-  fillStyle?: 'hachure' | 'solid' | 'cross-hatch';
-  /** Gap between hachure lines (px). Sourced from a token. */
+  fillStyle?: 'hachure' | 'solid' | 'cross-hatch' | 'zigzag' | 'dots';
+  /** Gap between fill lines / dots (px). Sourced from a token. */
   hachureGap?: number;
   /** Hachure angle in degrees. Sourced from a token. */
   hachureAngle?: number;
+  /**
+   * Drop-shadow offset in px expressing elevation. When set and `> 0`, shapes
+   * emit an extra offset outline in {@link SketchDrawable.shadowPaths}. Omit or
+   * `0` ⇒ no shadow. Geometry only (no color/opacity); the renderer sources it
+   * from a token (e.g. `ref.dimension`) and styles the shadow layer itself.
+   */
+  elevation?: number;
 }
 
 /**
@@ -28,8 +35,15 @@ export interface SketchOptions {
 export interface SketchDrawable {
   /** Outline strokes. Double-stroke is baked in (2 paths per edge). */
   strokePaths: string[];
-  /** Fill lines (hachure/cross-hatch/solid). Empty when there is no fill. */
+  /** Fill lines (hachure/cross-hatch/solid/zigzag/dots). Empty when no fill. */
   fillPaths: string[];
+  /**
+   * Offset "drop shadow" outline strokes expressing elevation. Present (and
+   * non-empty) only when `SketchOptions.elevation > 0`. The renderer draws
+   * these behind {@link strokePaths} in a muted/token color to fake depth —
+   * purely IR, no platform shadow API. Absent for flat shapes.
+   */
+  shadowPaths?: string[];
 }
 
 /** Internal drawing operation, serialized to a path `d` string. */
