@@ -1,0 +1,29 @@
+{
+  "comp": {
+    "card": {
+      "$description": "Tier 3 component tokens for the hand-drawn Card. References sys only.",
+      "bg": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.surface}" },
+        "muted": { "$value": "{sys.color.bg.muted}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "title": { "$value": "{sys.color.text.primary}" },
+        "body": { "$value": "{sys.color.text.secondary}" }
+      },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.lg}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.lg}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
