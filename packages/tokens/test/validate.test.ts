@@ -62,14 +62,15 @@ function jsonFilesIn(dir: string): string[] {
 const REF_FILES = jsonFilesIn(path.join(SRC, 'ref'));
 const COMP_FILES = jsonFilesIn(path.join(SRC, 'comp'));
 const SHARED_FILE = path.join(SRC, 'sys', '_shared.json');
+const THEMES = ['light', 'dark'] as const;
+type Theme = (typeof THEMES)[number];
 
-function themeMap(theme: 'light' | 'dark'): TokenMap {
-  return loadFiles([
-    ...REF_FILES,
-    SHARED_FILE,
-    path.join(SRC, 'sys', `${theme}.json`),
-    ...COMP_FILES,
-  ]);
+function themeFile(theme: Theme): string {
+  return path.join(SRC, 'sys', `${theme}.json`);
+}
+
+function themeMap(theme: Theme): TokenMap {
+  return loadFiles([...REF_FILES, SHARED_FILE, themeFile(theme), ...COMP_FILES]);
 }
 
 function tierOf(tokenPath: string): Tier {
@@ -122,36 +123,65 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-interface Pair {
-  text: string;
-  bg: string;
-  large?: boolean;
-}
+// --- Contrast matrix (generated, not a hardcoded subset) ---
+//
+// Thresholds per WCAG 2.1: 4.5:1 for normal body text (1.4.3); 3:1 for large
+// text and informational non-text UI such as icons and state-bearing borders
+// (1.4.11). Every text/icon/border role is checked against EVERY neutral
+// background surface, so a regression in any pairing fails the build.
+//
+// EXEMPT (WCAG 1.4.3): `disabled` text/background and purely decorative borders
+// (`border.default`/`strong`/`subtle`) carry no contrast requirement and are
+// intentionally excluded from the required matrix.
+const BG_SURFACES = ['bg.canvas', 'bg.surface', 'bg.muted', 'bg.subtle'] as const;
+const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link'] as const;
+const ICON_ROLES = ['icon.default', 'icon.muted'] as const;
+const BORDER_INFO_ROLES = ['border.focus', 'border.danger'] as const;
 
-const CONTRAST_PAIRS: Pair[] = [
-  { text: 'sys.color.text.primary', bg: 'sys.color.bg.surface' },
-  { text: 'sys.color.text.primary', bg: 'sys.color.bg.canvas' },
-  { text: 'sys.color.text.secondary', bg: 'sys.color.bg.surface' },
-  { text: 'sys.color.text.secondary', bg: 'sys.color.bg.canvas' },
-  { text: 'sys.color.text.link', bg: 'sys.color.bg.surface' },
-  { text: 'sys.color.text.link', bg: 'sys.color.bg.canvas' },
-  { text: 'sys.color.text.disabled', bg: 'sys.color.bg.surface', large: true },
-  { text: 'sys.color.text.disabled', bg: 'sys.color.bg.canvas', large: true },
-  { text: 'sys.color.text.onPrimary', bg: 'sys.color.bg.primary.default' },
-  { text: 'sys.color.text.onPrimary', bg: 'sys.color.bg.primary.hover' },
-  { text: 'sys.color.text.onPrimary', bg: 'sys.color.bg.primary.active' },
-  { text: 'sys.color.text.onDanger', bg: 'sys.color.bg.danger.default' },
-  { text: 'sys.color.text.onDanger', bg: 'sys.color.bg.danger.hover' },
-  { text: 'sys.color.text.onDanger', bg: 'sys.color.bg.danger.active' },
-  { text: 'sys.color.text.onSuccess', bg: 'sys.color.bg.success.default' },
-  { text: 'sys.color.text.onSuccess', bg: 'sys.color.bg.success.hover' },
-  { text: 'sys.color.text.onWarning', bg: 'sys.color.bg.warning.default' },
-  { text: 'sys.color.text.onWarning', bg: 'sys.color.bg.warning.hover' },
-  { text: 'sys.color.text.onInfo', bg: 'sys.color.bg.info.default' },
-  { text: 'sys.color.text.onInfo', bg: 'sys.color.bg.info.hover' },
+// Text drawn on filled semantic backgrounds (its own foreground/background pair).
+const ON_PAIRS: ReadonlyArray<readonly [string, string]> = [
+  ['text.onPrimary', 'bg.primary.default'],
+  ['text.onPrimary', 'bg.primary.hover'],
+  ['text.onPrimary', 'bg.primary.active'],
+  ['text.onDanger', 'bg.danger.default'],
+  ['text.onDanger', 'bg.danger.hover'],
+  ['text.onDanger', 'bg.danger.active'],
+  ['text.onSuccess', 'bg.success.default'],
+  ['text.onSuccess', 'bg.success.hover'],
+  ['text.onWarning', 'bg.warning.default'],
+  ['text.onWarning', 'bg.warning.hover'],
+  ['text.onInfo', 'bg.info.default'],
+  ['text.onInfo', 'bg.info.hover'],
 ];
 
-const THEMES = ['light', 'dark'] as const;
+interface Pair {
+  fg: string;
+  bg: string;
+  min: number;
+}
+
+function contrastMatrix(): Pair[] {
+  const pairs: Pair[] = [];
+  for (const text of TEXT_ROLES) {
+    for (const bg of BG_SURFACES) {
+      pairs.push({ fg: text, bg, min: 4.5 });
+    }
+  }
+  for (const icon of ICON_ROLES) {
+    for (const bg of BG_SURFACES) {
+      pairs.push({ fg: icon, bg, min: 3 });
+    }
+  }
+  for (const border of BORDER_INFO_ROLES) {
+    for (const bg of BG_SURFACES) {
+      pairs.push({ fg: border, bg, min: 3 });
+    }
+  }
+  for (const [fg, bg] of ON_PAIRS) {
+    pairs.push({ fg, bg, min: 4.5 });
+  }
+  return pairs;
+}
 
 describe('alias resolution', () => {
   for (const theme of THEMES) {
@@ -225,21 +255,55 @@ describe('no circular references', () => {
   }
 });
 
+describe('theme parity', () => {
+  function semanticKeys(theme: Theme): string[] {
+    const map: TokenMap = new Map();
+    flatten(JSON.parse(readFileSync(themeFile(theme), 'utf8')), '', undefined, map);
+    return [...map.keys()].sort();
+  }
+
+  it('light and dark define an identical set of semantic keys', () => {
+    const light = semanticKeys('light');
+    const dark = semanticKeys('dark');
+    const onlyLight = light.filter((key) => !dark.includes(key));
+    const onlyDark = dark.filter((key) => !light.includes(key));
+    expect(onlyLight, `keys missing from dark.json: ${onlyLight.join(', ')}`).toEqual([]);
+    expect(onlyDark, `keys missing from light.json: ${onlyDark.join(', ')}`).toEqual([]);
+  });
+});
+
 describe('WCAG 2.1 AA contrast', () => {
   for (const theme of THEMES) {
     const map = themeMap(theme);
-    for (const pair of CONTRAST_PAIRS) {
-      const threshold = pair.large ? 3 : 4.5;
-      it(`${theme}: ${pair.text} on ${pair.bg} ≥ ${threshold}:1`, () => {
-        const ratio = contrast(resolve(pair.text, map), resolve(pair.bg, map));
-        expect(ratio).toBeGreaterThanOrEqual(threshold);
+    for (const pair of contrastMatrix()) {
+      it(`${theme}: ${pair.fg} on ${pair.bg} ≥ ${pair.min}:1`, () => {
+        const ratio = contrast(
+          resolve(`sys.color.${pair.fg}`, map),
+          resolve(`sys.color.${pair.bg}`, map),
+        );
+        expect(ratio).toBeGreaterThanOrEqual(pair.min);
       });
     }
   }
 });
 
-describe('orphan tokens (warning only)', () => {
-  it('reports ref tokens that no sys/comp token consumes', () => {
+describe('token map integrity & orphans', () => {
+  it('loads a non-empty token map with the expected core roles', () => {
+    const map = themeMap('light');
+    // A glob/path regression that returns zero (or too few) tokens must FAIL here.
+    expect(map.size).toBeGreaterThan(100);
+    for (const required of [
+      'ref.palette.brand.500',
+      'sys.color.bg.surface',
+      'sys.color.text.primary',
+      'sys.sketch.roughness',
+      'comp.button.bg.primary.default',
+    ]) {
+      expect(map.has(required), `missing required token ${required}`).toBe(true);
+    }
+  });
+
+  it('reports ref tokens that no sys/comp token consumes (warning only)', () => {
     const referenced = new Set<string>();
     for (const theme of THEMES) {
       for (const [, entry] of themeMap(theme)) {
@@ -249,16 +313,13 @@ describe('orphan tokens (warning only)', () => {
       }
     }
     const map = themeMap('light');
-    const orphans: string[] = [];
-    for (const tokenPath of map.keys()) {
-      if (tierOf(tokenPath) === 'ref' && !referenced.has(tokenPath)) {
-        orphans.push(tokenPath);
-      }
-    }
+    const orphans = [...map.keys()].filter(
+      (tokenPath) => tierOf(tokenPath) === 'ref' && !referenced.has(tokenPath),
+    );
     if (orphans.length > 0) {
-      // Warning, not a failure — orphan ref tokens are allowed (palette completeness).
+      // Orphan ref tokens are allowed (palette completeness) — warn, do not fail.
       console.warn(`[tokens] ${orphans.length} orphan ref token(s):\n  ${orphans.join('\n  ')}`);
     }
-    expect(Array.isArray(orphans)).toBe(true);
+    expect(referenced.size).toBeGreaterThan(0);
   });
 });

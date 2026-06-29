@@ -51,18 +51,47 @@ function toDts(value, indent = '  ') {
   return `{\n${entries.join('\n')}\n${indent}}`;
 }
 
+/** Strip a length/duration unit (`16px` → 16, `200ms` → 200); pass through otherwise. */
+function rnNumber(value) {
+  const px = /^(-?\d*\.?\d+)px$/.exec(value);
+  if (px) return Number(px[1]);
+  const ms = /^(-?\d*\.?\d+)ms$/.exec(value);
+  if (ms) return Number(ms[1]);
+  return value;
+}
+
+/**
+ * Convert a CSS `box-shadow` string into a React Native shadow object that RN can
+ * actually consume (`shadowColor`/`shadowOffset`/`shadowOpacity`/`shadowRadius` for iOS,
+ * `elevation` for Android). Input shape: `<x> <y> <blur> <spread> rgba(r, g, b, a)`.
+ */
+function rnShadow(value) {
+  const rgba = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)/.exec(value);
+  const lengths = value
+    .replace(/rgba?\([^)]*\)/, '')
+    .trim()
+    .split(/\s+/)
+    .map((part) => rnNumber(part));
+  const [x = 0, y = 0, blur = 0] = lengths;
+  const toHex = (n) => Number(n).toString(16).padStart(2, '0');
+  const shadowColor = rgba ? `#${toHex(rgba[1])}${toHex(rgba[2])}${toHex(rgba[3])}` : '#000000';
+  const shadowOpacity = rgba?.[4] !== undefined ? Number(rgba[4]) : 1;
+  return {
+    shadowColor,
+    shadowOffset: { width: x, height: y },
+    shadowOpacity,
+    shadowRadius: blur,
+    elevation: Math.round(blur),
+  };
+}
+
 StyleDictionary.registerTransform({
   name: 'ghds/value/rn',
   type: 'value',
   transitive: true,
   filter: (token) => typeof token.$value === 'string',
-  transform: (token) => {
-    const px = /^(-?\d*\.?\d+)px$/.exec(token.$value);
-    if (px) return Number(px[1]);
-    const ms = /^(-?\d*\.?\d+)ms$/.exec(token.$value);
-    if (ms) return Number(ms[1]);
-    return token.$value;
-  },
+  transform: (token) =>
+    token.$type === 'shadow' ? rnShadow(token.$value) : rnNumber(token.$value),
 });
 
 StyleDictionary.registerFormat({
@@ -181,13 +210,16 @@ async function main() {
     .split('\n')
     .map((line) => `  ${line}`)
     .join('\n');
+  // `:root` is the light default. `[data-theme="dark"]` (higher specificity) always wins.
+  // The OS-preference fallback is scoped to `:root:not([data-theme])` so an explicit
+  // `data-theme="light"` is NOT overridden by a dark OS setting.
   const combined = [
     HEADER,
     `:root {\n${cssBody(lightCss)}\n}`,
     '',
     `[data-theme="dark"] {\n${darkBody}\n}`,
     '',
-    `@media (prefers-color-scheme: dark) {\n  :root {\n${mediaBody}\n  }\n}`,
+    `@media (prefers-color-scheme: dark) {\n  :root:not([data-theme]) {\n${mediaBody}\n  }\n}`,
     '',
   ].join('\n');
   await fs.writeFile('dist/css/variables.css', combined);
