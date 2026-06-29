@@ -12,14 +12,31 @@
         },
         "danger": {
           "default": { "$value": "{sys.color.bg.danger.default}" },
-          "hover": { "$value": "{sys.color.bg.danger.hover}" }
+          "hover": { "$value": "{sys.color.bg.danger.hover}" },
+          "active": { "$value": "{sys.color.bg.danger.active}" }
+        },
+        "neutral": {
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "hover": { "$value": "{sys.color.bg.muted}" },
+          "active": { "$value": "{sys.color.bg.subtle}" }
         }
+      },
+      "stroke": {
+        "$type": "color",
+        "primary": { "$value": "{sys.color.bg.primary.active}" },
+        "danger": { "$value": "{sys.color.bg.danger.active}" },
+        "neutral": { "$value": "{sys.color.border.strong}" }
       },
       "text": {
         "$type": "color",
         "primary": { "$value": "{sys.color.text.onPrimary}" },
         "danger": { "$value": "{sys.color.text.onDanger}" },
+        "neutral": { "$value": "{sys.color.text.primary}" },
         "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": { "$value": "{sys.color.border.focus}" }
       },
       "padding": {
         "$type": "dimension",

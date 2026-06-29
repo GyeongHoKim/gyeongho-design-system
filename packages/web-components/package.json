@@ -1,0 +1,42 @@
+{
+  "name": "@ghds/web-components",
+  "version": "0.0.0",
+  "description": "Framework-agnostic hand-drawn (sketchy) web components for GHDS, authored with Lit. Outlines from @ghds/sketch-core, design values from @ghds/tokens.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/components/*.js",
+    "./dist/index.js"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@ghds/sketch-core": "workspace:*",
+    "@ghds/tokens": "workspace:*",
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "@ghds/tsconfig": "workspace:*",
+    "@types/node": "^24.0.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

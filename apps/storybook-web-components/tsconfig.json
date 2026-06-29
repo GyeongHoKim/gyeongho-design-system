@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@ghds/tsconfig/lit-library",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [".storybook/**/*.ts", "src/**/*.ts"]
+}
