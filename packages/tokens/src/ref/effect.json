@@ -1,0 +1,57 @@
+{
+  "ref": {
+    "shadow": {
+      "$type": "shadow",
+      "$description": "Tier 1 elevation shadows expressed as CSS box-shadow strings (warm-tinted).",
+      "sm": { "$value": "0px 1px 2px 0px rgba(28, 25, 22, 0.08)" },
+      "md": { "$value": "0px 2px 6px 0px rgba(28, 25, 22, 0.12)" },
+      "lg": { "$value": "0px 6px 16px 0px rgba(28, 25, 22, 0.16)" },
+      "xl": { "$value": "0px 12px 32px 0px rgba(28, 25, 22, 0.20)" }
+    },
+    "duration": {
+      "$type": "duration",
+      "$description": "Tier 1 animation durations.",
+      "instant": { "$value": "0ms" },
+      "fast": { "$value": "120ms" },
+      "normal": { "$value": "200ms" },
+      "slow": { "$value": "320ms" }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$description": "Tier 1 easing curves as CSS timing functions.",
+      "standard": { "$value": "cubic-bezier(0.2, 0, 0, 1)" },
+      "emphasized": { "$value": "cubic-bezier(0.2, 0, 0, 1.2)" },
+      "decelerate": { "$value": "cubic-bezier(0, 0, 0, 1)" },
+      "accelerate": { "$value": "cubic-bezier(0.3, 0, 1, 1)" }
+    },
+    "sketch": {
+      "$type": "number",
+      "$description": "Tier 1 hand-drawn engine primitives consumed by @ghds/sketch-core. Pure values.",
+      "roughness": {
+        "$description": "Point-jitter magnitude (0-3).",
+        "none": { "$value": 0 },
+        "subtle": { "$value": 0.8 },
+        "default": { "$value": 1.4 },
+        "rough": { "$value": 2.4 }
+      },
+      "bowing": {
+        "$description": "Edge bow-out amount (0-6).",
+        "none": { "$value": 0 },
+        "subtle": { "$value": 1 },
+        "default": { "$value": 2 },
+        "strong": { "$value": 4 }
+      },
+      "hachureGap": {
+        "$description": "Gap between hachure fill lines, in px.",
+        "tight": { "$value": 4 },
+        "default": { "$value": 8 },
+        "loose": { "$value": 14 }
+      },
+      "hachureAngle": {
+        "$description": "Hachure fill angle, in degrees.",
+        "default": { "$value": -41 },
+        "cross": { "$value": 41 }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "ref": {
+    "spacing": {
+      "$type": "dimension",
+      "$description": "Tier 1 spacing scale on a 4px base grid.",
+      "0": { "$value": "0px" },
+      "1": { "$value": "4px" },
+      "2": { "$value": "8px" },
+      "3": { "$value": "12px" },
+      "4": { "$value": "16px" },
+      "5": { "$value": "20px" },
+      "6": { "$value": "24px" },
+      "8": { "$value": "32px" },
+      "10": { "$value": "40px" },
+      "12": { "$value": "48px" },
+      "16": { "$value": "64px" }
+    },
+    "radius": {
+      "$type": "dimension",
+      "$description": "Tier 1 corner radius scale.",
+      "none": { "$value": "0px" },
+      "sm": { "$value": "4px" },
+      "md": { "$value": "8px" },
+      "lg": { "$value": "12px" },
+      "xl": { "$value": "20px" },
+      "full": { "$value": "9999px" }
+    },
+    "borderWidth": {
+      "$type": "dimension",
+      "$description": "Tier 1 border / stroke widths.",
+      "thin": { "$value": "1px" },
+      "medium": { "$value": "2px" },
+      "thick": { "$value": "3px" }
+    }
+  }
+}
