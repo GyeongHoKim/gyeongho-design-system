@@ -1,0 +1,33 @@
+{
+  "name": "@ghds/storybook-web-components",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Storybook for @ghds/web-components — Button, Card, Input with interaction tests.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6007",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "lint": "biome check ."
+  },
+  "dependencies": {
+    "@ghds/tokens": "workspace:*",
+    "@ghds/web-components": "workspace:*",
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "@ghds/tsconfig": "workspace:*",
+    "@storybook/addon-a11y": "^8.4.7",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@storybook/test-runner": "^0.21.0",
+    "@storybook/web-components": "^8.4.7",
+    "@storybook/web-components-vite": "^8.4.7",
+    "storybook": "^8.4.7",
+    "typescript": "^6.0.0",
+    "vite": "^5.4.11"
+  }
+}
