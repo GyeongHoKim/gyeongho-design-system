@@ -6,6 +6,8 @@ packages:
 # Without it, esbuild's postinstall is ignored and a clean install (CI) fails
 # with ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
+  '@bundled-es-modules/glob': true
   esbuild: true
+  style-dictionary: true
 
 minimumReleaseAge: 180

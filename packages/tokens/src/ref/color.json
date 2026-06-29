@@ -1,0 +1,89 @@
+{
+  "ref": {
+    "palette": {
+      "$type": "color",
+      "$description": "Tier 1 primitive color ramps. Pure values with no semantic meaning.",
+      "white": { "$value": "#ffffff" },
+      "black": { "$value": "#000000" },
+      "gray": {
+        "$description": "Slightly warm neutral gray ramp.",
+        "50": { "$value": "#faf9f7" },
+        "100": { "$value": "#f2f0ec" },
+        "200": { "$value": "#e4e1db" },
+        "300": { "$value": "#cfcac2" },
+        "400": { "$value": "#a8a29a" },
+        "500": { "$value": "#837d74" },
+        "600": { "$value": "#645e56" },
+        "700": { "$value": "#4a453f" },
+        "750": { "$value": "#3e3a34" },
+        "800": { "$value": "#322e29" },
+        "900": { "$value": "#1c1916" }
+      },
+      "brand": {
+        "$description": "Confident indigo brand hue, playful for the hand-drawn aesthetic.",
+        "50": { "$value": "#eef0ff" },
+        "100": { "$value": "#dce0ff" },
+        "200": { "$value": "#bbc2ff" },
+        "300": { "$value": "#94a0ff" },
+        "400": { "$value": "#6f7bff" },
+        "500": { "$value": "#4f5bf2" },
+        "600": { "$value": "#3e47c9" },
+        "700": { "$value": "#313aa0" },
+        "800": { "$value": "#272f7a" },
+        "900": { "$value": "#1e2557" }
+      },
+      "success": {
+        "$description": "Green status ramp.",
+        "50": { "$value": "#e7f6ee" },
+        "100": { "$value": "#c6e9d5" },
+        "200": { "$value": "#97d6b3" },
+        "300": { "$value": "#5fbe8b" },
+        "400": { "$value": "#34a86c" },
+        "500": { "$value": "#279455" },
+        "600": { "$value": "#1e7d45" },
+        "700": { "$value": "#155c32" },
+        "800": { "$value": "#0f4626" },
+        "900": { "$value": "#0a3019" }
+      },
+      "danger": {
+        "$description": "Red status ramp.",
+        "50": { "$value": "#fdecec" },
+        "100": { "$value": "#fad1d2" },
+        "200": { "$value": "#f3a6a8" },
+        "300": { "$value": "#ec7a7d" },
+        "400": { "$value": "#e5484d" },
+        "500": { "$value": "#d93338" },
+        "600": { "$value": "#c62a2f" },
+        "700": { "$value": "#9e2226" },
+        "800": { "$value": "#781a1d" },
+        "900": { "$value": "#531214" }
+      },
+      "warning": {
+        "$description": "Amber status ramp.",
+        "50": { "$value": "#fcf3e2" },
+        "100": { "$value": "#f8e2b0" },
+        "200": { "$value": "#f0c766" },
+        "300": { "$value": "#e3a21c" },
+        "400": { "$value": "#c8870a" },
+        "500": { "$value": "#a87100" },
+        "600": { "$value": "#8a5a00" },
+        "700": { "$value": "#6b4500" },
+        "800": { "$value": "#4f3300" },
+        "900": { "$value": "#352200" }
+      },
+      "info": {
+        "$description": "Blue status ramp.",
+        "50": { "$value": "#e8f2fb" },
+        "100": { "$value": "#c7e0f5" },
+        "200": { "$value": "#93c3ec" },
+        "300": { "$value": "#57a2df" },
+        "400": { "$value": "#2e86cc" },
+        "500": { "$value": "#2479bd" },
+        "600": { "$value": "#1f6fb8" },
+        "700": { "$value": "#185488" },
+        "800": { "$value": "#123f66" },
+        "900": { "$value": "#0c2a44" }
+      }
+    }
+  }
+}

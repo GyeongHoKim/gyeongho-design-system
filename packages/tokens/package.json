@@ -1,0 +1,42 @@
+{
+  "name": "@ghds/tokens",
+  "version": "0.0.0",
+  "description": "Single source of truth for GHDS design values — W3C DTCG tokens (ref/sys/comp) built to CSS, TS, React Native, and platform-agnostic JSON via Style Dictionary.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./rn": {
+      "types": "./dist/rn/index.d.ts",
+      "default": "./dist/rn/index.js"
+    },
+    "./css": "./dist/css/variables.css",
+    "./json": "./dist/json/tokens.json",
+    "./json/dark": "./dist/json/tokens.dark.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node style-dictionary.config.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "style-dictionary": "^4.0.0"
+  },
+  "devDependencies": {
+    "@ghds/tsconfig": "workspace:*",
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

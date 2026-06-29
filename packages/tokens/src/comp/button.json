@@ -1,0 +1,37 @@
+{
+  "comp": {
+    "button": {
+      "$description": "Tier 3 component tokens for the hand-drawn Button. References sys only.",
+      "bg": {
+        "$type": "color",
+        "primary": {
+          "default": { "$value": "{sys.color.bg.primary.default}" },
+          "hover": { "$value": "{sys.color.bg.primary.hover}" },
+          "active": { "$value": "{sys.color.bg.primary.active}" },
+          "disabled": { "$value": "{sys.color.bg.primary.disabled}" }
+        },
+        "danger": {
+          "default": { "$value": "{sys.color.bg.danger.default}" },
+          "hover": { "$value": "{sys.color.bg.danger.hover}" }
+        }
+      },
+      "text": {
+        "$type": "color",
+        "primary": { "$value": "{sys.color.text.onPrimary}" },
+        "danger": { "$value": "{sys.color.text.onDanger}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.lg}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

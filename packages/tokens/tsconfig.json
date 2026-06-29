@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@ghds/tsconfig/node-library",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["style-dictionary.config.js", "src/**/*.ts", "test/**/*.ts"]
+}
