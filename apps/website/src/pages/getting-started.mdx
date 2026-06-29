@@ -1,0 +1,51 @@
+---
+layout: ../layouts/MarkdownLayout.astro
+title: 시작하기
+description: GHDS를 설치하고 첫 컴포넌트를 화면에 그려봅니다.
+---
+
+GHDS는 pnpm 워크스페이스로 배포되는 모노레포입니다. 프레임워크에 맞는 패키지와 토큰을 함께 설치하세요.
+
+## 설치
+
+```bash
+# React 앱
+pnpm add @ghds/react @ghds/tokens
+
+# 프레임워크 무관 (Lit 웹 컴포넌트)
+pnpm add @ghds/web-components @ghds/tokens
+```
+
+## 토큰 CSS 변수 불러오기
+
+모든 컴포넌트는 `@ghds/tokens`의 CSS 변수에서 색·간격·반경 등을 읽습니다.
+앱 진입점에서 한 번만 불러오면 됩니다.
+
+```ts
+import '@ghds/tokens/css';
+```
+
+## React에서 사용하기
+
+```tsx
+import { Button } from '@ghds/react';
+
+export function Example() {
+  return <Button variant="primary">안녕하세요</Button>;
+}
+```
+
+## Lit 웹 컴포넌트로 사용하기
+
+```ts
+import '@ghds/web-components';
+```
+
+```html
+<gh-button variant="primary">안녕하세요</gh-button>
+```
+
+## 다음 단계
+
+- [디자인 스타일](/design-style/) — 토큰으로 자동 생성된 색상·타이포·간격 갤러리
+- [컴포넌트 가이드](/components/) — React와 Lit을 나란히 비교하는 라이브 데모

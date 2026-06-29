@@ -1,0 +1,38 @@
+---
+// Live demo of the `@ghds/web-components` (Lit) library. The custom elements
+// are registered as a client-side island: the module script below imports the
+// package, whose `@customElement` side-effects define <gh-button>, <gh-card>
+// and <gh-input>. The same `@ghds/tokens` values drive their visuals.
+---
+
+<div class="demo-stack">
+  <div>
+    <p class="demo-label">Button</p>
+    <div class="demo-row">
+      <gh-button variant="primary">기본</gh-button>
+      <gh-button variant="danger">위험</gh-button>
+      <gh-button variant="neutral">중립</gh-button>
+      <gh-button variant="primary" disabled>비활성</gh-button>
+    </div>
+  </div>
+
+  <div>
+    <p class="demo-label">Input</p>
+    <div class="demo-stack">
+      <gh-input label="이메일" placeholder="you@example.com" type="email"></gh-input>
+      <gh-input label="비밀번호" type="password" required></gh-input>
+    </div>
+  </div>
+
+  <div>
+    <p class="demo-label">Card</p>
+    <gh-card label="손으로 그린 카드" elevated>
+      <p>이 카드의 테두리와 채움은 sketch-core가 그리고, 색·간격·반경은 토큰에서 옵니다.</p>
+    </gh-card>
+  </div>
+</div>
+
+<script>
+  // Registers <gh-button> / <gh-card> / <gh-input> on the client.
+  import '@ghds/web-components';
+</script>

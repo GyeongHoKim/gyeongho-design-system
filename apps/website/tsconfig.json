@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "types": ["vitest/globals"]
+  },
+  "include": [".astro/types.d.ts", "src", "*.config.mjs", "test"],
+  "exclude": ["dist"]
+}
