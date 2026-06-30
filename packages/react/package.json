@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Hand-drawn (sketchy) React component library for GHDS — token-driven visuals rendered from @ghds/sketch-core.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/react"
+  },
+  "keywords": ["design-system", "react", "components", "sketchy", "hand-drawn", "ui", "ghds"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

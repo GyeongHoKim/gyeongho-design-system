@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Platform-agnostic hand-drawn (sketchy) geometry engine for GHDS — emits SVG path data, zero runtime deps.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/sketch-core"
+  },
+  "keywords": ["design-system", "sketchy", "hand-drawn", "svg", "geometry", "canvas", "ghds"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

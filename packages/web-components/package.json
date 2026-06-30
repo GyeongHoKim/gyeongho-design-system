@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Framework-agnostic hand-drawn (sketchy) web components for GHDS, authored with Lit. Outlines from @ghds/sketch-core, design values from @ghds/tokens.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/web-components"
+  },
+  "keywords": ["design-system", "web-components", "custom-elements", "lit", "sketchy", "hand-drawn", "ghds"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

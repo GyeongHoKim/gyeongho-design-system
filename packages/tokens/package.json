@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Single source of truth for GHDS design values — W3C DTCG tokens (ref/sys/comp) built to CSS, TS, React Native, and platform-agnostic JSON via Style Dictionary.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/tokens"
+  },
+  "keywords": ["design-system", "design-tokens", "dtcg", "style-dictionary", "css-variables", "react-native", "ghds"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -30,12 +40,10 @@
     "lint": "biome check .",
     "clean": "rm -rf dist .turbo"
   },
-  "dependencies": {
-    "style-dictionary": "^4.0.0"
-  },
   "devDependencies": {
     "@ghds/tsconfig": "workspace:*",
     "@types/node": "^24.0.0",
+    "style-dictionary": "^4.0.0",
     "typescript": "^6.0.0",
     "vitest": "^3.0.0"
   }

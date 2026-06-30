@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "React Native component library for GHDS — hand-drawn (sketchy) Button/Card/Input built with @shopify/restyle + react-native-svg, themed from @ghds/tokens.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/react-native"
+  },
+  "keywords": ["design-system", "react-native", "components", "sketchy", "hand-drawn", "mobile", "ghds"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -23,15 +33,15 @@
     "lint": "biome check .",
     "clean": "rm -rf dist .turbo"
   },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0",
+    "react-native-svg": ">=15.0.0"
+  },
   "dependencies": {
     "@ghds/sketch-core": "workspace:*",
     "@ghds/tokens": "workspace:*",
-    "@shopify/restyle": "^2.4.5",
-    "react-native-svg": "^15.0.0"
-  },
-  "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-native": ">=0.74.0"
+    "@shopify/restyle": "^2.4.5"
   },
   "devDependencies": {
     "@ghds/tsconfig": "workspace:*",
@@ -44,6 +54,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-native": "^0.79.0",
+    "react-native-svg": "^15.0.0",
     "react-native-web": "^0.20.0",
     "typescript": "^6.0.0",
     "vitest": "^3.0.0"
