@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { NAV } from '../lib/nav';
+import { withBase } from '../lib/withBase';
 ---
 
 <BaseLayout
@@ -16,8 +17,8 @@ import { NAV } from '../lib/nav';
       아래 문서에서 토큰, 컴포넌트, 패턴을 둘러보세요.
     </p>
     <p class="demo-row">
-      <a class="theme-toggle" href="/getting-started/">시작하기 →</a>
-      <a class="theme-toggle" href="/components/">컴포넌트 보기</a>
+      <a class="theme-toggle" href={withBase('/getting-started/')}>시작하기 →</a>
+      <a class="theme-toggle" href={withBase('/components/')}>컴포넌트 보기</a>
     </p>
   </section>
 
@@ -26,7 +27,7 @@ import { NAV } from '../lib/nav';
     <div class="card-grid">
       {
         NAV.map((item) => (
-          <a class="io-card" href={item.href}>
+          <a class="io-card" href={withBase(item.href)}>
             <h3>{item.label}</h3>
             <span class="io-en">{item.labelEn}</span>
             <p>{item.summary}</p>
