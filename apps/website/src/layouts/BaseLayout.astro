@@ -2,6 +2,7 @@
 import '@ghds/tokens/css';
 import '../styles/global.css';
 import { NAV } from '../lib/nav';
+import { withBase } from '../lib/withBase';
 
 interface Props {
   /** Document <title>; the site name is appended. */
@@ -17,10 +18,12 @@ const here = normalize(Astro.url.pathname);
 
 // A link is current on its own page and any nested route beneath it. The home
 // link ('/') matches only the home page, so 시작하기 is no longer wrongly active.
+// `here` includes the configured base path, so compare against base-aware hrefs.
+const home = normalize(withBase('/'));
 function isCurrent(href: string): boolean {
-  const target = normalize(href);
-  if (target === '/') {
-    return here === '/';
+  const target = normalize(withBase(href));
+  if (target === home) {
+    return here === home;
   }
   return here === target || here.startsWith(`${target}/`);
 }
@@ -50,14 +53,14 @@ function isCurrent(href: string): boolean {
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="/">
+      <a class="brand" href={withBase('/')}>
         GHDS <small>GH Design System</small>
       </a>
       <nav class="site-nav" aria-label="주요 메뉴">
-        <a href="/" aria-current={isCurrent('/') ? 'page' : undefined}>홈</a>
+        <a href={withBase('/')} aria-current={isCurrent('/') ? 'page' : undefined}>홈</a>
         {
           NAV.map((item) => (
-            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+            <a href={withBase(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
           ))
