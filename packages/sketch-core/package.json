@@ -8,7 +8,15 @@
     "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
     "directory": "packages/sketch-core"
   },
-  "keywords": ["design-system", "sketchy", "hand-drawn", "svg", "geometry", "canvas", "ghds"],
+  "keywords": [
+    "design-system",
+    "sketchy",
+    "hand-drawn",
+    "svg",
+    "geometry",
+    "canvas",
+    "ghds"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true

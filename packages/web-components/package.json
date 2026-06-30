@@ -8,7 +8,15 @@
     "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
     "directory": "packages/web-components"
   },
-  "keywords": ["design-system", "web-components", "custom-elements", "lit", "sketchy", "hand-drawn", "ghds"],
+  "keywords": [
+    "design-system",
+    "web-components",
+    "custom-elements",
+    "lit",
+    "sketchy",
+    "hand-drawn",
+    "ghds"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true

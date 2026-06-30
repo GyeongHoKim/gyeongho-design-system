@@ -8,7 +8,15 @@
     "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
     "directory": "packages/tokens"
   },
-  "keywords": ["design-system", "design-tokens", "dtcg", "style-dictionary", "css-variables", "react-native", "ghds"],
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "dtcg",
+    "style-dictionary",
+    "css-variables",
+    "react-native",
+    "ghds"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true
