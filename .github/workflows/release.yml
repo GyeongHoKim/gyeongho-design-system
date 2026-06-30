@@ -14,12 +14,13 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: write       # changeset version commit + tags
+  pull-requests: write  # open/update the Version Packages PR
+  id-token: write       # npm OIDC trusted publishing (no NPM_TOKEN needed)
 
 jobs:
   release:
-    name: version (publish on hold)
+    name: version + publish (OIDC)
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -29,25 +30,20 @@ jobs:
       - name: Setup toolchain
         uses: ./.github/actions/setup
 
-      # Opens/updates a "Version Packages" PR from accumulated changesets.
-      # No build step: this path only bumps versions + changelogs (publish is on
-      # hold). The publish path below rebuilds via `pnpm run release`.
+      # When changesets exist: opens/updates a "Version Packages" PR (bumps
+      # versions + changelogs). When none remain (i.e. that PR was merged):
+      # runs `pnpm run release` (turbo build + changeset publish) which publishes
+      # to npm via OIDC trusted publishing — no NPM_TOKEN, provenance automatic.
       #
       # KNOWN LIMITATION: the version PR is authored with the default GITHUB_TOKEN,
       # and GitHub does not trigger workflows for token-authored events — so CI
-      # does NOT run on the "Version Packages" PR itself. To make that PR run CI
-      # (and to publish), supply a PAT/app token as `GITHUB_TOKEN` below.
-      #
-      # TO ENABLE NPM PUBLISH LATER:
-      #   1. Add an NPM_TOKEN repo secret (npm automation token).
-      #   2. Uncomment the `publish:` line below.
-      #   3. Add `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` to this step's env.
-      #   The action then publishes whenever the Version Packages PR is merged.
-      - name: Changesets — version PR
+      # does NOT run on the "Version Packages" PR itself. Supply a PAT/app token
+      # as `GITHUB_TOKEN` below if you want that PR to run CI.
+      - name: Changesets — version PR / publish
         uses: changesets/action@v1
         with:
           version: pnpm run version-packages
-          # publish: pnpm run release
+          publish: pnpm run release
           commit: "chore(release): version packages"
           title: "chore(release): version packages"
         env:
