@@ -134,6 +134,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const rootStyle: CSSProperties = {
     position: 'relative',
+    // Establish a stacking context so the decorative `SketchSurface` (painted at
+    // `z-index: -1`) stays scoped to this button. Without it, the negative layer
+    // is hoisted to an ancestor's stacking context and hidden behind any
+    // opaque-background container (card, panel, section) — the sketch and, for
+    // filled variants, the light label become invisible.
+    isolation: 'isolate',
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',

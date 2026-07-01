@@ -79,6 +79,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   const controlStyle: CSSProperties = {
     position: 'relative',
+    // Scope the decorative `SketchSurface` (`z-index: -1`) to this control so an
+    // opaque-background ancestor can't paint over it. See Button for details.
+    isolation: 'isolate',
     display: 'flex',
     boxSizing: 'border-box',
   };

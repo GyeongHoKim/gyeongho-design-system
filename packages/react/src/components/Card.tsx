@@ -46,6 +46,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   const rootStyle: CSSProperties = {
     position: 'relative',
+    // Scope the decorative `SketchSurface` (`z-index: -1`) to this card so an
+    // opaque-background ancestor can't paint over it. See Button for details.
+    isolation: 'isolate',
     display: 'flex',
     flexDirection: 'column',
     gap: card.gap,
