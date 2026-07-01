@@ -1,5 +1,7 @@
+export type { IconName } from '@ghds/icons';
 export { Button, type ButtonProps, type ButtonVariant } from './components/Button.js';
 export { Card, type CardProps } from './components/Card.js';
+export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
 export {
   type FillRendering,

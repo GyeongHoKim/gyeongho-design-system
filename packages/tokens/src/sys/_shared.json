@@ -106,6 +106,15 @@
       "hachureGap": { "$value": "{ref.sketch.hachureGap.default}" },
       "hachureAngle": { "$value": "{ref.sketch.hachureAngle.default}" },
       "elevation": { "$value": "{ref.sketch.elevation.raised}" }
+    },
+    "icon": {
+      "size": {
+        "$type": "dimension",
+        "$description": "Tier 2 semantic icon sizes. Theme-invariant.",
+        "sm": { "$value": "{ref.iconSize.sm}" },
+        "md": { "$value": "{ref.iconSize.md}" },
+        "lg": { "$value": "{ref.iconSize.lg}" }
+      }
     }
   }
 }

@@ -1,0 +1,49 @@
+{
+  "name": "@ghds/icons",
+  "version": "0.0.0",
+  "description": "Platform-agnostic icon path data for GHDS — SVG `d` strings on a 24×24 grid, sketched at render time. Zero runtime deps.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyeongHoKim/gyeongho-design-system.git",
+    "directory": "packages/icons"
+  },
+  "keywords": [
+    "design-system",
+    "icons",
+    "svg",
+    "sketchy",
+    "hand-drawn",
+    "ghds"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "clean": "rm -rf dist .turbo"
+  },
+  "devDependencies": {
+    "@ghds/tsconfig": "workspace:*",
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

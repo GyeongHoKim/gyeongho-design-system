@@ -31,6 +31,13 @@
       "thin": { "$value": "1px" },
       "medium": { "$value": "2px" },
       "thick": { "$value": "3px" }
+    },
+    "iconSize": {
+      "$type": "dimension",
+      "$description": "Tier 1 icon size scale.",
+      "sm": { "$value": "16px" },
+      "md": { "$value": "24px" },
+      "lg": { "$value": "32px" }
     }
   }
 }

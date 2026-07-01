@@ -202,8 +202,26 @@ importers:
         specifier: ^3.0.0
         version: 3.2.6(@types/debug@4.1.13)(@types/node@24.13.2)(jiti@2.6.1)(jsdom@26.1.0)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/icons:
+    devDependencies:
+      '@ghds/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.2
+      typescript:
+        specifier: ^6.0.0
+        version: 6.0.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.6(@types/debug@4.1.13)(@types/node@24.13.2)(jiti@2.6.1)(jsdom@26.1.0)(terser@5.48.0)(yaml@2.9.0)
+
   packages/react:
     dependencies:
+      '@ghds/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@ghds/sketch-core':
         specifier: workspace:*
         version: link:../sketch-core
