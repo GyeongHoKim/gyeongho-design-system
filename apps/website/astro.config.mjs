@@ -13,5 +13,10 @@ import { defineConfig } from 'astro/config';
 //   register `<gh-button>` / `<gh-card>` / `<gh-input>`. No SSR integration is
 //   required for them.
 export default defineConfig({
+  // Deployed to GitHub Pages as a project site, so the app lives under the
+  // repository-name subpath. `base` makes Astro prefix processed assets and
+  // injected tags; authored links are made base-aware via `src/lib/withBase`.
+  site: 'https://gyeonghokim.github.io',
+  base: '/gyeongho-design-system',
   integrations: [react(), mdx()],
 });

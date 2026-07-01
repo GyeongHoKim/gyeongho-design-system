@@ -40,7 +40,10 @@ export const DisabledDoesNotFire: Story = {
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const button = await canvas.findByRole('button', { name: 'No-op' });
-    await userEvent.click(button);
+    // A disabled react-native-web Pressable sets `pointer-events: none`, which
+    // userEvent refuses to click by default. Skip that guard so we can assert
+    // the actual behaviour: the press never reaches onPress.
+    await userEvent.click(button, { pointerEventsCheck: 0 });
     await expect(args.onPress).not.toHaveBeenCalled();
   },
 };
