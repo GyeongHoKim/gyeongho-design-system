@@ -56,6 +56,10 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
   return (
     <svg
       ref={ref}
+      // `...rest` is spread first so the token-driven sizing and the computed
+      // accessibility contract below always win — a consumer can't silently
+      // override `role`/`aria-*` (use the `label` prop to name an icon).
+      {...rest}
       width={dimension}
       height={dimension}
       viewBox={`0 0 ${ICON_VIEWBOX} ${ICON_VIEWBOX}`}
@@ -67,7 +71,6 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(
       aria-hidden={label ? undefined : true}
       focusable={false}
       style={rootStyle}
-      {...rest}
     >
       {label ? <title>{label}</title> : null}
       {drawable.strokePaths.map((d, i) => (

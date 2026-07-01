@@ -16,7 +16,7 @@ export function isIconName(name: string): name is IconName {
   return Object.hasOwn(iconPaths, name);
 }
 
-/** Look up an icon's path `d` string, or `undefined` if the name is unknown. */
+/** Look up the path `d` string for a known {@link IconName}. */
 export function getIconPath(name: IconName): string {
   return iconPaths[name];
 }
