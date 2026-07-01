@@ -1,6 +1,7 @@
+import { setForcedSeed } from '@ghds/sketch-core';
 import { render } from '@testing-library/react';
 import { type JSX, useRef } from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { type UseSketchResult, useSketch } from './useSketch.js';
 
 function capture(result: { current: UseSketchResult<HTMLDivElement> | null }) {
@@ -13,6 +14,8 @@ function capture(result: { current: UseSketchResult<HTMLDivElement> | null }) {
 }
 
 describe('useSketch', () => {
+  afterEach(() => setForcedSeed(null));
+
   it('generates deterministic geometry once a size is measured', () => {
     const result = { current: null as UseSketchResult<HTMLDivElement> | null };
     const Probe = capture(result);
@@ -42,5 +45,26 @@ describe('useSketch', () => {
     rerender(<Probe />);
     // Every observed seed value is identical (no per-render reshuffle).
     expect(new Set(seeds).size).toBe(1);
+  });
+
+  it('uses the host-pinned seed for snapshot determinism (GHD-45)', () => {
+    // With a forced seed, separate mounts must produce byte-identical geometry —
+    // this is what stops Chromatic from reporting false diffs every run.
+    setForcedSeed(0x5eed);
+    const a = { current: null as UseSketchResult<HTMLDivElement> | null };
+    const b = { current: null as UseSketchResult<HTMLDivElement> | null };
+    const ProbeA = capture(a);
+    const ProbeB = capture(b);
+    render(
+      <>
+        <ProbeA />
+        <ProbeB />
+      </>,
+    );
+
+    expect(a.current?.seed).toBe(0x5eed);
+    expect(b.current?.seed).toBe(0x5eed);
+    expect(a.current?.drawable?.strokePaths).toEqual(b.current?.drawable?.strokePaths);
+    expect(a.current?.drawable?.fillPaths).toEqual(b.current?.drawable?.fillPaths);
   });
 });
