@@ -1,4 +1,10 @@
-import { ellipse, rectangle, type SketchDrawable, type SketchOptions } from '@ghds/sketch-core';
+import {
+  ellipse,
+  forcedSeed,
+  rectangle,
+  type SketchDrawable,
+  type SketchOptions,
+} from '@ghds/sketch-core';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 /** Which sketch-core primitive to draw around the measured box. */
@@ -47,9 +53,9 @@ export interface UseSketchResult<E extends Element> {
   readonly seed: number;
 }
 
-/** A positive 31-bit seed. */
+/** A positive 31-bit seed, or the host-pinned seed when one is set (snapshots). */
 function randomSeed(): number {
-  return Math.floor(Math.random() * 0x7fffffff) + 1;
+  return forcedSeed() ?? Math.floor(Math.random() * 0x7fffffff) + 1;
 }
 
 /**

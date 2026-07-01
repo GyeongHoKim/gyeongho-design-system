@@ -1,4 +1,4 @@
-import { rectangle, type SketchDrawable, type SketchOptions } from '@ghds/sketch-core';
+import { forcedSeed, rectangle, type SketchDrawable, type SketchOptions } from '@ghds/sketch-core';
 
 /** Measured pixel size of a component, supplied by `onLayout`. */
 export interface Size {
@@ -78,8 +78,15 @@ let seedCounter = 0;
  * geometry core) owns seed creation; sketch-core then derives every random
  * decision deterministically from it, so re-renders never re-roll the look.
  * The counter disambiguates instances mounted within the same millisecond.
+ *
+ * When a host has pinned a seed (via `setForcedSeed`, e.g. Storybook under
+ * Chromatic) that value is returned instead, making snapshots deterministic.
  */
 export function makeSeed(): number {
+  const forced = forcedSeed();
+  if (forced !== null) {
+    return forced;
+  }
   seedCounter = (seedCounter + 1) >>> 0;
   const entropy = Math.floor(Math.random() * 0xffffffff);
   return (entropy ^ (Date.now() + seedCounter)) >>> 0;

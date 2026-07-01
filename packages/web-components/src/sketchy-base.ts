@@ -1,4 +1,4 @@
-import type { SketchDrawable, SketchOptions } from '@ghds/sketch-core';
+import { forcedSeed, type SketchDrawable, type SketchOptions } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
 import { type CSSResultGroup, css, html, LitElement, nothing, svg } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -86,8 +86,11 @@ export abstract class SketchyBase extends LitElement {
   /** Measured frame height in CSS px (border box, rounded). */
   @state() protected sketchHeight = 0;
 
-  /** Random seed fixed once per instance; only used when `seed` is unset. */
-  private readonly autoSeed: number = Math.floor(Math.random() * 0x1_0000_0000);
+  /**
+   * Random seed fixed once per instance; only used when `seed` is unset. A
+   * host-pinned seed (via `setForcedSeed`, for snapshots) takes precedence.
+   */
+  private readonly autoSeed: number = forcedSeed() ?? Math.floor(Math.random() * 0x1_0000_0000);
   private resizeObserver?: ResizeObserver;
 
   /** The effective, lifetime-stable seed for this instance. */
