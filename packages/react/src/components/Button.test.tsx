@@ -23,8 +23,9 @@ describe('Button', () => {
     // host does not establish a stacking context, an opaque-background ancestor
     // paints over it and the button (with its light label) disappears.
     const { container } = render(<Button>Draw</Button>);
-    const host = container.querySelector('svg')?.parentElement;
-    expect(host).toHaveStyle({ isolation: 'isolate' });
+    const svg = container.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg?.parentElement).toHaveStyle({ isolation: 'isolate' });
   });
 
   it('fires onClick when activated', async () => {

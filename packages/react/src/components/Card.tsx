@@ -4,7 +4,7 @@ import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
 import { toPx } from '../lib/units.js';
-import { SketchSurface } from './SketchSurface.js';
+import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -45,10 +45,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   const ref = mergeRefs(sketchRef, forwardedRef);
 
   const rootStyle: CSSProperties = {
-    position: 'relative',
-    // Scope the decorative `SketchSurface` (`z-index: -1`) to this card so an
-    // opaque-background ancestor can't paint over it. See Button for details.
-    isolation: 'isolate',
+    // Scopes the `SketchSurface` (`z-index: -1`) to this card so an opaque
+    // ancestor can't paint over it (see `sketchHostStyle`).
+    ...sketchHostStyle,
     display: 'flex',
     flexDirection: 'column',
     gap: card.gap,

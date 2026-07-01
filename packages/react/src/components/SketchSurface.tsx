@@ -29,6 +29,23 @@ export interface SketchSurfaceProps {
   style?: CSSProperties;
 }
 
+/**
+ * The style every host of a {@link SketchSurface} must apply to its root
+ * element. The surface paints at `z-index: -1` (see {@link BASE_STYLE}), so the
+ * host has to establish its own stacking context — otherwise that negative
+ * layer is hoisted to an ancestor's stacking context and painted behind any
+ * opaque-background container (card, panel, section), hiding the sketch and,
+ * for filled components, the light label (GHD-44). `position: relative` also
+ * makes the absolutely-positioned surface size to the host's border box.
+ *
+ * Exported so the requirement lives next to the `z-index: -1` it compensates
+ * for, rather than being re-derived by each consumer.
+ */
+export const sketchHostStyle: CSSProperties = {
+  position: 'relative',
+  isolation: 'isolate',
+};
+
 const BASE_STYLE: CSSProperties = {
   position: 'absolute',
   inset: 0,

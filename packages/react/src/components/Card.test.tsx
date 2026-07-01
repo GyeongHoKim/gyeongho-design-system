@@ -26,8 +26,9 @@ describe('Card', () => {
     // Regression (GHD-44): the sketch surface paints at `z-index: -1` and must
     // stay scoped to the card, or an opaque-background ancestor paints over it.
     const { container } = render(<Card>content</Card>);
-    const host = container.querySelector('svg')?.parentElement;
-    expect(host).toHaveStyle({ isolation: 'isolate' });
+    const svg = container.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg?.parentElement).toHaveStyle({ isolation: 'isolate' });
   });
 
   it('forwards arbitrary props such as role to the root element', () => {

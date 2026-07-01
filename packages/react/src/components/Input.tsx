@@ -11,7 +11,7 @@ import {
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { toPx } from '../lib/units.js';
-import { SketchSurface } from './SketchSurface.js';
+import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
 
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** Visible label. Associated to the input via Radix `Label` for accessibility. */
@@ -78,10 +78,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   };
 
   const controlStyle: CSSProperties = {
-    position: 'relative',
-    // Scope the decorative `SketchSurface` (`z-index: -1`) to this control so an
-    // opaque-background ancestor can't paint over it. See Button for details.
-    isolation: 'isolate',
+    // Scopes the `SketchSurface` (`z-index: -1`) to this control so an opaque
+    // ancestor can't paint over it (see `sketchHostStyle`).
+    ...sketchHostStyle,
     display: 'flex',
     boxSizing: 'border-box',
   };

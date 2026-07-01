@@ -24,6 +24,21 @@ export const Neutral: Story = { args: { variant: 'neutral', children: 'Cancel' }
 
 export const Disabled: Story = { args: { disabled: true, children: 'Disabled' } };
 
+/**
+ * Visual-regression guard for GHD-44: the button is placed inside an
+ * opaque-background container. If its root ever loses its stacking context, the
+ * `z-index: -1` sketch surface (and the light label) paint behind this white
+ * box and vanish — a change Chromatic will flag.
+ */
+export const OnOpaqueSurface: Story = {
+  args: { variant: 'primary', children: 'Primary' },
+  render: (args) => (
+    <div style={{ background: '#ffffff', padding: 24 }}>
+      <Button {...args} />
+    </div>
+  ),
+};
+
 export const AsLink: Story = {
   render: (args) => (
     <Button {...args} asChild>
