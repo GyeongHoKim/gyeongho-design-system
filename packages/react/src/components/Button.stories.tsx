@@ -26,14 +26,27 @@ export const Disabled: Story = { args: { disabled: true, children: 'Disabled' } 
 
 /**
  * Visual-regression guard for GHD-44: the button is placed inside an
- * opaque-background container. If its root ever loses its stacking context, the
- * `z-index: -1` sketch surface (and the light label) paint behind this white
- * box and vanish — a change Chromatic will flag.
+ * opaque-background container (colors/spacing from `@ghds/tokens` CSS vars). If
+ * its root ever loses its stacking context, the `z-index: -1` sketch surface
+ * (and the light label) paint behind this box and vanish — a change Chromatic
+ * will flag. The dark variant is where a light label most visibly disappears.
  */
 export const OnOpaqueSurface: Story = {
   args: { variant: 'primary', children: 'Primary' },
   render: (args) => (
-    <div style={{ background: '#ffffff', padding: 24 }}>
+    <div style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}>
+      <Button {...args} />
+    </div>
+  ),
+};
+
+export const OnOpaqueSurfaceDark: Story = {
+  args: { variant: 'primary', children: 'Primary' },
+  render: (args) => (
+    <div
+      data-theme="dark"
+      style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}
+    >
       <Button {...args} />
     </div>
   ),
