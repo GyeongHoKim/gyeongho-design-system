@@ -1,5 +1,13 @@
 # @ghds/react-native
 
+## 0.1.1
+
+### Patch Changes
+
+- 75195a7: Add a deterministic sketch-seed override so visual-regression snapshots are stable (GHD-45). `@ghds/sketch-core` now exports `forcedSeed()` / `setForcedSeed()`: when a host pins a seed, every adapter (`useSketch` in React/React Native, `SketchyBase` in web components) uses it instead of a random per-instance seed, making the hand-drawn geometry byte-identical across runs. Production and local dev are unchanged — the seed stays random unless explicitly pinned (e.g. by Storybook under Chromatic).
+- Updated dependencies [75195a7]
+  - @ghds/sketch-core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
