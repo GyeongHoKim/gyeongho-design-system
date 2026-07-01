@@ -1,6 +1,6 @@
 {
   "name": "@ghds/storybook-web-components",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "Storybook for @ghds/web-components — Button, Card, Input with interaction tests.",
   "license": "MIT",

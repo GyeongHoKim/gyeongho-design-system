@@ -1,5 +1,12 @@
 # @ghds/react-native
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [a81d243]
+  - @ghds/tokens@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes

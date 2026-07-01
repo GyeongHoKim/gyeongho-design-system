@@ -1,6 +1,6 @@
 {
   "name": "@ghds/icons",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Platform-agnostic icon path data for GHDS — SVG `d` strings on a 24×24 grid, sketched at render time. Zero runtime deps.",
   "license": "MIT",
   "repository": {
