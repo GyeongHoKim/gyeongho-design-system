@@ -40,6 +40,39 @@ export const Hachure: Story = {
   },
 };
 
+/**
+ * Visual-regression guard for GHD-44: the card sits inside an opaque-background
+ * container (colors/spacing from `@ghds/tokens` CSS vars). If its root loses its
+ * stacking context, the `z-index: -1` sketch outline paints behind this box and
+ * disappears — flagged by Chromatic in both light and dark schemes.
+ */
+export const OnOpaqueSurface: Story = {
+  args: {
+    style: { maxWidth: 320 },
+    children: <span>Sketch outline stays visible on an opaque surface.</span>,
+  },
+  render: (args) => (
+    <div style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}>
+      <Card {...args} />
+    </div>
+  ),
+};
+
+export const OnOpaqueSurfaceDark: Story = {
+  args: {
+    style: { maxWidth: 320 },
+    children: <span>Sketch outline stays visible on a dark opaque surface.</span>,
+  },
+  render: (args) => (
+    <div
+      data-theme="dark"
+      style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}
+    >
+      <Card {...args} />
+    </div>
+  ),
+};
+
 export const AsRegion: Story = {
   args: {
     role: 'region',

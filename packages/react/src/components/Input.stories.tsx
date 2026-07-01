@@ -22,6 +22,33 @@ export const Disabled: Story = {
   args: { disabled: true, value: 'locked@example.com' },
 };
 
+/**
+ * Visual-regression guard for GHD-44: the field sits inside an opaque-background
+ * container (colors/spacing from `@ghds/tokens` CSS vars). If its control loses
+ * its stacking context, the `z-index: -1` sketch box paints behind this box and
+ * disappears — flagged by Chromatic in both light and dark schemes.
+ */
+export const OnOpaqueSurface: Story = {
+  args: { label: 'On an opaque surface' },
+  render: (args) => (
+    <div style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}>
+      <Input {...args} />
+    </div>
+  ),
+};
+
+export const OnOpaqueSurfaceDark: Story = {
+  args: { label: 'On a dark opaque surface' },
+  render: (args) => (
+    <div
+      data-theme="dark"
+      style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}
+    >
+      <Input {...args} />
+    </div>
+  ),
+};
+
 export const TypingInteraction: Story = {
   args: { label: 'Name' },
   play: async ({ canvasElement }) => {

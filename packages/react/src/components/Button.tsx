@@ -6,7 +6,7 @@ import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
 import { toPx } from '../lib/units.js';
-import { SketchSurface } from './SketchSurface.js';
+import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
 
 /** Visual intent of the button. */
 export type ButtonVariant = 'primary' | 'danger' | 'neutral';
@@ -133,7 +133,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const colors = resolveColors(variant, state, disabled);
 
   const rootStyle: CSSProperties = {
-    position: 'relative',
+    // `position: relative` + `isolation: isolate` — scopes the `SketchSurface`
+    // (`z-index: -1`) to this button so an opaque ancestor can't paint over it.
+    ...sketchHostStyle,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',

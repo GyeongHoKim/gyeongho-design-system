@@ -18,6 +18,16 @@ describe('Button', () => {
     expect(container.querySelectorAll('svg path').length).toBeGreaterThan(0);
   });
 
+  it('isolates the sketch layer in its own stacking context', () => {
+    // Regression (GHD-44): the sketch surface paints at `z-index: -1`. If the
+    // host does not establish a stacking context, an opaque-background ancestor
+    // paints over it and the button (with its light label) disappears.
+    const { container } = render(<Button>Draw</Button>);
+    const svg = container.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg?.parentElement).toHaveStyle({ isolation: 'isolate' });
+  });
+
   it('fires onClick when activated', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
