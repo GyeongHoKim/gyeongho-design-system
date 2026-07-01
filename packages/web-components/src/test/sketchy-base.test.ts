@@ -1,3 +1,4 @@
+import { setForcedSeed } from '@ghds/sketch-core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { GhButton } from '../components/button.js';
 import { cleanup, mount, setSize } from './fixture.js';
@@ -33,6 +34,21 @@ describe('SketchyBase', () => {
     await setSize(a, 120, 40);
     await setSize(b, 120, 40);
     expect(strokeData(a)).toEqual(strokeData(b));
+  });
+
+  it('uses the host-pinned auto seed for snapshot determinism (GHD-45)', async () => {
+    // No explicit `seed` — two instances must still match because `autoSeed`
+    // picks up the host-pinned seed (what stops Chromatic false diffs).
+    setForcedSeed(0x5eed);
+    try {
+      const a = await mount(new GhButton());
+      const b = await mount(new GhButton());
+      await setSize(a, 120, 40);
+      await setSize(b, 120, 40);
+      expect(strokeData(a)).toEqual(strokeData(b));
+    } finally {
+      setForcedSeed(null);
+    }
   });
 
   it('does not regenerate geometry on unrelated re-renders (no jitter)', async () => {

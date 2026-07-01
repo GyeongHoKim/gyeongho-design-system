@@ -1,3 +1,4 @@
+import { setForcedSeed } from '@ghds/sketch-core';
 import { describe, expect, it } from 'vitest';
 import { buildRectangleOutline, makeSeed, type SketchParams } from './options.js';
 
@@ -65,5 +66,15 @@ describe('makeSeed', () => {
   it('varies across instances mounted in the same tick', () => {
     const seeds = new Set(Array.from({ length: 50 }, () => makeSeed()));
     expect(seeds.size).toBeGreaterThan(1);
+  });
+
+  it('returns the host-pinned seed for snapshot determinism (GHD-45)', () => {
+    setForcedSeed(0x5eed);
+    try {
+      const seeds = new Set(Array.from({ length: 10 }, () => makeSeed()));
+      expect([...seeds]).toEqual([0x5eed]);
+    } finally {
+      setForcedSeed(null);
+    }
   });
 });
