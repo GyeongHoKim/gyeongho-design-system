@@ -109,6 +109,11 @@ function buildTheme(t: Tokens) {
       default: t.sys.border.width.default,
       thick: t.sys.border.width.thick,
     },
+    iconSizes: {
+      sm: t.sys.icon.size.sm,
+      md: t.sys.icon.size.md,
+      lg: t.sys.icon.size.lg,
+    },
     textVariants: {
       defaults: toTextVariant(t.sys.typography.body),
       heading: toTextVariant(t.sys.typography.heading),

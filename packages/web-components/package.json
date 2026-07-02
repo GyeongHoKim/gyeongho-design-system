@@ -46,6 +46,7 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
+    "@ghds/icons": "workspace:*",
     "@ghds/sketch-core": "workspace:*",
     "@ghds/tokens": "workspace:*",
     "lit": "^3.2.1"
