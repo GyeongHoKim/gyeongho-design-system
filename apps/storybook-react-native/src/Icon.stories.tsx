@@ -1,5 +1,4 @@
-import { iconNames } from '@ghds/icons';
-import { Box, Icon, Text } from '@ghds/react-native';
+import { Box, Icon, iconNames, Text } from '@ghds/react-native';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Icon> = {

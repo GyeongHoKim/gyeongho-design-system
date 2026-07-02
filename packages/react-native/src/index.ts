@@ -7,7 +7,7 @@
  * `darkTheme` (the host app chooses; this library ships both).
  */
 
-export type { IconName } from '@ghds/icons';
+export { type IconName, iconNames } from '@ghds/icons';
 export { ThemeProvider } from '@shopify/restyle';
 export type { ButtonProps, ButtonVariant } from './components/Button.js';
 export { Button } from './components/Button.js';

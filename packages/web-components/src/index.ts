@@ -1,4 +1,4 @@
-export type { IconName } from '@ghds/icons';
+export { type IconName, iconNames } from '@ghds/icons';
 export type { GhButtonType, GhButtonVariant } from './components/button.js';
 export { GhButton } from './components/button.js';
 export { GhCard } from './components/card.js';

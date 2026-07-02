@@ -1,4 +1,4 @@
-import { iconNames } from '@ghds/icons';
+import { iconNames } from '@ghds/web-components';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 
