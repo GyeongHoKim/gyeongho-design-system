@@ -47,6 +47,7 @@
     "react-native-svg": ">=15.0.0"
   },
   "dependencies": {
+    "@ghds/icons": "workspace:*",
     "@ghds/sketch-core": "workspace:*",
     "@ghds/tokens": "workspace:*",
     "@shopify/restyle": "^2.4.5"

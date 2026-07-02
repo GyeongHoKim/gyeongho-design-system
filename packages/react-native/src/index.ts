@@ -7,11 +7,14 @@
  * `darkTheme` (the host app chooses; this library ships both).
  */
 
+export type { IconName } from '@ghds/icons';
 export { ThemeProvider } from '@shopify/restyle';
 export type { ButtonProps, ButtonVariant } from './components/Button.js';
 export { Button } from './components/Button.js';
 export type { CardProps } from './components/Card.js';
 export { Card } from './components/Card.js';
+export type { IconProps, IconSize } from './components/Icon.js';
+export { Icon } from './components/Icon.js';
 export type { InputProps } from './components/Input.js';
 export { Input } from './components/Input.js';
 export type { Size, SketchParams } from './sketch/options.js';

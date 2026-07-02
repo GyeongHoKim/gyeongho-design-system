@@ -280,6 +280,9 @@ importers:
 
   packages/react-native:
     dependencies:
+      '@ghds/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@ghds/sketch-core':
         specifier: workspace:*
         version: link:../sketch-core
@@ -370,6 +373,9 @@ importers:
 
   packages/web-components:
     dependencies:
+      '@ghds/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@ghds/sketch-core':
         specifier: workspace:*
         version: link:../sketch-core
