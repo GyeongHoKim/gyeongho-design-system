@@ -58,4 +58,25 @@ describe('gh-icon', () => {
       el.remove();
     }
   });
+
+  it('is theme-invariant: identical geometry in light and dark schemes', async () => {
+    // Icon colour comes from `currentColor` (a `sys.color.icon` CSS var), so only
+    // the colour re-themes — the sketched geometry must be byte-identical, and an
+    // icon never re-rolls its look when the ancestor `data-theme` flips.
+    const light = new GhIcon();
+    light.name = 'star';
+    document.documentElement.setAttribute('data-theme', 'light');
+    await mount(light);
+    const lightGeometry = Array.from(paths(light), (p) => p.getAttribute('d'));
+
+    const dark = new GhIcon();
+    dark.name = 'star';
+    document.documentElement.setAttribute('data-theme', 'dark');
+    await mount(dark);
+    const darkGeometry = Array.from(paths(dark), (p) => p.getAttribute('d'));
+
+    document.documentElement.removeAttribute('data-theme');
+    expect(darkGeometry).toEqual(lightGeometry);
+    expect(lightGeometry.length).toBeGreaterThan(0);
+  });
 });
