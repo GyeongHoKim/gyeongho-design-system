@@ -14,11 +14,11 @@ export default function ReactDemo(): React.JSX.Element {
       <div>
         <p className="demo-label">Button</p>
         <div className="demo-row">
-          <Button variant="primary">기본</Button>
-          <Button variant="danger">위험</Button>
-          <Button variant="neutral">중립</Button>
+          <Button variant="primary">Default</Button>
+          <Button variant="danger">Danger</Button>
+          <Button variant="neutral">Neutral</Button>
           <Button variant="primary" disabled>
-            비활성
+            Disabled
           </Button>
         </div>
       </div>
@@ -27,20 +27,23 @@ export default function ReactDemo(): React.JSX.Element {
         <p className="demo-label">Input</p>
         <div className="demo-stack">
           <Input
-            label="이메일"
+            label="Email"
             placeholder="you@example.com"
             value={email}
             onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
           />
-          <Input label="비밀번호" type="password" error="8자 이상 입력해 주세요." />
+          <Input label="Password" type="password" error="Please enter at least 8 characters." />
         </div>
       </div>
 
       <div>
         <p className="demo-label">Card</p>
         <Card>
-          <h3>손으로 그린 카드</h3>
-          <p>이 카드의 테두리와 채움은 sketch-core가 그리고, 색·간격·반경은 토큰에서 옵니다.</p>
+          <h3>Hand-drawn Card</h3>
+          <p>
+            This card's outline and fill are drawn by sketch-core, while its color, spacing, and
+            radius come from the tokens.
+          </p>
         </Card>
       </div>
     </div>
