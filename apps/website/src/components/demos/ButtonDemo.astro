@@ -1,0 +1,16 @@
+---
+// Live demo of the `<gh-button>` web component. Registered as a client-side
+// island: the module script below imports the package, whose `@customElement`
+// side-effect defines <gh-button>.
+---
+
+<div class="demo-row">
+  <gh-button variant="primary">Primary</gh-button>
+  <gh-button variant="danger">Delete</gh-button>
+  <gh-button variant="neutral">Cancel</gh-button>
+  <gh-button variant="primary" disabled>Disabled</gh-button>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

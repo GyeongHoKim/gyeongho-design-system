@@ -1,0 +1,14 @@
+---
+// Live demo of `<gh-input>`. Shows `required` (its native constraint-validation
+// prop) instead of an error state — gh-input has no error/invalid prop today.
+---
+
+<div class="demo-stack">
+  <gh-input label="Email" placeholder="you@example.com" type="email"></gh-input>
+  <gh-input label="Username" required></gh-input>
+  <gh-input label="Disabled" disabled value="Can't edit this"></gh-input>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

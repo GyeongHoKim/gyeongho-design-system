@@ -1,0 +1,59 @@
+---
+/**
+ * Renders one props table per platform. Cross-platform prop names genuinely
+ * diverge (see GHD-28/30) — a single merged table would misrepresent them, so
+ * each platform group gets its own table rather than one shared column set.
+ */
+interface PropRow {
+  name: string;
+  type: string;
+  default?: string;
+  description: string;
+}
+
+interface PlatformGroup {
+  platform: string;
+  packageName: string;
+  rows: PropRow[];
+}
+
+interface Props {
+  groups: PlatformGroup[];
+}
+
+const { groups } = Astro.props;
+---
+
+{
+  groups.map((group) => (
+    <div class="props-group">
+      <h3>
+        {group.platform} <code>{group.packageName}</code>
+      </h3>
+      <table class="token-table">
+        <thead>
+          <tr>
+            <th scope="col">Prop</th>
+            <th scope="col">Type</th>
+            <th scope="col">Default</th>
+            <th scope="col">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {group.rows.map((row) => (
+            <tr>
+              <td>
+                <code>{row.name}</code>
+              </td>
+              <td>
+                <code>{row.type}</code>
+              </td>
+              <td>{row.default !== undefined ? <code>{row.default}</code> : '—'}</td>
+              <td>{row.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ))
+}

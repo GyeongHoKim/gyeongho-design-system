@@ -1,0 +1,17 @@
+---
+// Live demo of `<gh-card>`. Uses `elevated` + `label`, not React's `fill` —
+// gh-card has no `fill` prop, matching its real API (see components/card.mdx).
+---
+
+<div class="demo-stack">
+  <gh-card label="Flat">
+    <p>Default sketch outline, no elevation.</p>
+  </gh-card>
+  <gh-card label="Elevated" elevated>
+    <p>Drop-shadow sketch outline suggests elevation.</p>
+  </gh-card>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

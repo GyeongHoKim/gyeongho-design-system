@@ -1,0 +1,40 @@
+---
+/**
+ * Renders a component's variant/state matrix as an explicit table, including
+ * states the component does NOT implement — an absent state renders as a
+ * "Not implemented" row instead of being silently omitted, so a retrofit never
+ * quietly invents behavior a component doesn't actually have.
+ */
+interface StateRow {
+  name: string;
+  present: boolean;
+  note?: string;
+}
+
+interface Props {
+  states: StateRow[];
+}
+
+const { states } = Astro.props;
+---
+
+<table class="token-table">
+  <thead>
+    <tr>
+      <th scope="col">State</th>
+      <th scope="col">Status</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      states.map((state) => (
+        <tr>
+          <td>{state.name}</td>
+          <td>{state.present ? 'Implemented' : 'Not implemented'}</td>
+          <td>{state.note ?? '—'}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

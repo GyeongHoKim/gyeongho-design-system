@@ -1,0 +1,144 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Button
+description: The reference implementation of the GHDS component documentation standard.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import ButtonDemoReact from '../../components/demos/ButtonDemo.tsx';
+import ButtonDemoLit from '../../components/demos/ButtonDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+This page is the reference implementation of the GHDS component documentation standard — every
+future component page (Card, Input, and everything in M10/M11) follows the same eight sections in
+the same order.
+
+## Overview
+
+A `Button` triggers a single, immediate, user-initiated action — submitting a form, confirming a
+choice, opening something. Use a link (or `asChild` with an `<a>`) instead when the destination is
+navigation, not an action.
+
+## Anatomy
+
+A real `<button>` (or a Radix `Slot`-rendered element via `asChild`) carries all native keyboard
+and click semantics. A hand-drawn `SketchSurface` outline sits behind the label, purely decorative
+(`aria-hidden="true"`, `focusable="false"`, with an SVG `<title>` for tooling) — it never carries
+meaning, so removing it never changes what the button does or how it's announced.
+
+## Variants & States
+
+Exactly three variants exist: `primary`, `danger`, `neutral` — there is no `secondary`, `ghost`, or
+`link` variant.
+
+<StateList
+  states={[
+    { name: 'Default', present: true },
+    { name: 'Hover', present: true, note: 'Fill/text color shifts per variant.' },
+    { name: 'Active / pressed', present: true },
+    {
+      name: 'Focus',
+      present: true,
+      note: 'A manual focus ring (comp.button.focus.ring), not native :focus-visible.',
+    },
+    { name: 'Disabled', present: true },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use danger only for destructive or irreversible actions.',
+    'Use asChild to keep link semantics when a button needs to look and behave like a link.',
+    'Keep one primary button per view — it should be obvious what the main action is.',
+  ]}
+  dont={[
+    "Don't rely on color alone to convey a danger action — the label should say what happens.",
+    "Don't disable a button without explaining why somewhere else on screen.",
+    "Don't nest an <a> inside a native <button> — use asChild instead.",
+  ]}
+/>
+
+## Accessibility
+
+- Native `<button>` keyboard behavior (Space/Enter activates, native tab order) comes for free —
+  no custom `onKeyDown` or `tabIndex` exists in the implementation.
+- Disabling is **not** uniform across the two render paths: the native `<button disabled>` path
+  removes the element from the tab order entirely (the browser's native behavior), while the
+  `asChild` path only sets `aria-disabled` — which does *not* remove the element from the tab
+  order. If you disable an `asChild` button, you're responsible for also preventing activation.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for the general keyboard
+  and ARIA conventions shared across all components.
+
+## Content
+
+Labels are short verb phrases — "Delete", "Cancel", "Save changes" — not sentences, and carry no
+trailing punctuation.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'primary' | 'danger' | 'neutral'", default: "'primary'", description: 'Visual intent.' },
+        { name: 'asChild', type: 'boolean', default: 'false', description: 'Render as the single child element (Radix Slot) instead of a <button>.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: 'Native button type.' },
+        { name: '...rest', type: 'ButtonHTMLAttributes', description: 'All other native <button> attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'primary' | 'danger' | 'neutral'", default: "'primary'", description: 'Reflected attribute.' },
+        { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: 'Drives form association (formAssociated = true).' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible, accessible label — required (no children).' },
+        { name: 'onPress', type: '(event: GestureResponderEvent) => void', description: 'Press handler.' },
+        { name: 'variant', type: "'primary' | 'danger'", default: "'primary'", description: 'No neutral variant on React Native.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+        { name: 'accessibilityHint', type: 'string', description: "Supplementary a11y hint describing the action's outcome." },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ButtonDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ButtonDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Button } from '@ghds/react-native';
+
+<Button label="Delete" variant="danger" onPress={() => {}} />;
+```
