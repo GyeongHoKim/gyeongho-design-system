@@ -115,6 +115,59 @@
         "md": { "$value": "{ref.iconSize.md}" },
         "lg": { "$value": "{ref.iconSize.lg}" }
       }
+    },
+    "breakpoint": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic breakpoints. Theme-invariant.",
+      "mobile": { "$value": "{ref.breakpoint.mobile}" },
+      "tablet": { "$value": "{ref.breakpoint.tablet}" },
+      "desktop": { "$value": "{ref.breakpoint.desktop}" },
+      "wide": { "$value": "{ref.breakpoint.wide}" }
+    },
+    "container": {
+      "maxWidth": {
+        "$type": "dimension",
+        "$description": "Tier 2 semantic container max-widths. Theme-invariant.",
+        "tablet": { "$value": "{ref.container.maxWidth.tablet}" },
+        "desktop": { "$value": "{ref.container.maxWidth.desktop}" },
+        "wide": { "$value": "{ref.container.maxWidth.wide}" }
+      }
+    },
+    "grid": {
+      "columns": {
+        "$type": "number",
+        "$description": "Tier 2 semantic grid column counts. Theme-invariant.",
+        "mobile": { "$value": "{ref.grid.columns.mobile}" },
+        "tablet": { "$value": "{ref.grid.columns.tablet}" },
+        "desktop": { "$value": "{ref.grid.columns.desktop}" },
+        "wide": { "$value": "{ref.grid.columns.wide}" }
+      },
+      "gutter": {
+        "$type": "dimension",
+        "$description": "Tier 2 grid gutters. Reuses the spacing scale directly (no dedicated ref.grid.gutter) to avoid a redundant parallel scale.",
+        "mobile": { "$value": "{ref.spacing.4}" },
+        "tablet": { "$value": "{ref.spacing.6}" },
+        "desktop": { "$value": "{ref.spacing.6}" },
+        "wide": { "$value": "{ref.spacing.8}" }
+      }
+    },
+    "zIndex": {
+      "$type": "number",
+      "$description": "Tier 2 semantic stacking layers. Theme-invariant. Consumed by future overlay-style components (Modal, Toast, Tooltip, Menu/Dropdown — see M11).",
+      "base": { "$value": "{ref.zIndex.base}" },
+      "dropdown": { "$value": "{ref.zIndex.dropdown}" },
+      "sticky": { "$value": "{ref.zIndex.sticky}" },
+      "overlay": { "$value": "{ref.zIndex.overlay}" },
+      "modal": { "$value": "{ref.zIndex.modal}" },
+      "toast": { "$value": "{ref.zIndex.toast}" },
+      "tooltip": { "$value": "{ref.zIndex.tooltip}" }
+    },
+    "opacity": {
+      "$type": "number",
+      "$description": "Tier 2 semantic opacity roles. Theme-invariant.",
+      "disabled": { "$value": "{ref.opacity.disabled}" },
+      "hover": { "$value": "{ref.opacity.hover}" },
+      "scrim": { "$value": "{ref.opacity.scrim}" }
     }
   }
 }

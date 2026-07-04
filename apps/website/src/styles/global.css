@@ -61,6 +61,9 @@ h3 {
   font-family: var(--sys-typography-heading-fontFamily);
   line-height: var(--sys-typography-heading-lineHeight);
   margin: 0 0 var(--sys-spacing-md);
+  /* Clears the sticky `.site-header` when a heading is the target of an
+   * in-page anchor link (e.g. #shadow), so it isn't scrolled under it. */
+  scroll-margin-top: 6rem;
 }
 
 h1 {
@@ -88,7 +91,7 @@ code {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--sys-zIndex-sticky);
   display: flex;
   align-items: center;
   justify-content: space-between;

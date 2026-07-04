@@ -150,3 +150,14 @@ export const designStyle = {
   radius: (): FlatToken[] => section('sys.radius'),
   shadow: (): FlatToken[] => section('sys.shadow'),
 };
+
+/** Convenience accessors for the Foundations page sections. */
+export const foundations = {
+  breakpoint: (): FlatToken[] => section('sys.breakpoint'),
+  grid: (): FlatToken[] => section('sys.grid'),
+  container: (): FlatToken[] => section('sys.container'),
+  zIndex: (): FlatToken[] => section('sys.zIndex'),
+  opacity: (): FlatToken[] => section('sys.opacity'),
+  duration: (): FlatToken[] => section('sys.animation.duration'),
+  easing: (): FlatToken[] => section('sys.animation.easing'),
+};

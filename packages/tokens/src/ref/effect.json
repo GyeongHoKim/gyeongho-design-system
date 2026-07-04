@@ -57,6 +57,24 @@
         "flat": { "$value": 0 },
         "raised": { "$value": 4 }
       }
+    },
+    "zIndex": {
+      "$type": "number",
+      "$description": "Tier 1 stacking layers. Spaced by 100 to leave room for future insertions.",
+      "base": { "$value": 0 },
+      "dropdown": { "$value": 1000 },
+      "sticky": { "$value": 1100 },
+      "overlay": { "$value": 1200 },
+      "modal": { "$value": 1300 },
+      "toast": { "$value": 1400 },
+      "tooltip": { "$value": 1500 }
+    },
+    "opacity": {
+      "$type": "number",
+      "$description": "Tier 1 opacity scale. Unitless 0-1, matching the ref.sketch precedent for unitless number scales.",
+      "disabled": { "$value": 0.4 },
+      "hover": { "$value": 0.08 },
+      "scrim": { "$value": 0.5 }
     }
   }
 }

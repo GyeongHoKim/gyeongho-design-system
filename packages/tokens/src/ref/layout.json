@@ -1,0 +1,31 @@
+{
+  "ref": {
+    "breakpoint": {
+      "$type": "dimension",
+      "$description": "Tier 1 responsive breakpoints. Mobile-first: each is a min-width for @media queries.",
+      "mobile": { "$value": "0px" },
+      "tablet": { "$value": "768px" },
+      "desktop": { "$value": "1024px" },
+      "wide": { "$value": "1440px" }
+    },
+    "container": {
+      "maxWidth": {
+        "$type": "dimension",
+        "$description": "Tier 1 content max-widths per breakpoint. Mobile is intentionally fluid (100%) and has no entry.",
+        "tablet": { "$value": "720px" },
+        "desktop": { "$value": "960px" },
+        "wide": { "$value": "1280px" }
+      }
+    },
+    "grid": {
+      "columns": {
+        "$type": "number",
+        "$description": "Tier 1 grid column counts per breakpoint.",
+        "mobile": { "$value": 4 },
+        "tablet": { "$value": 8 },
+        "desktop": { "$value": 12 },
+        "wide": { "$value": 12 }
+      }
+    }
+  }
+}
