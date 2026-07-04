@@ -31,6 +31,12 @@ export const NAV: readonly NavItem[] = [
     summary: 'Reusable composition patterns for forms, feedback, and more.',
   },
   {
+    label: 'Design Principles',
+    href: '/principles/',
+    summary:
+      'Five principles and the voice & tone that guide every token, component, and word in GHDS.',
+  },
+  {
     label: 'About & Accessibility',
     href: '/about/',
     summary: "The design system's philosophy and its WCAG 2.1 AA accessibility commitment.",
