@@ -39,10 +39,10 @@ has to hold up under real product use, including high-stakes moments.
 
 **Do**
 - Reference `sys.*` or `comp.*` tokens for every color, spacing, radius, and sketch parameter.
-- Add a comment explaining any one-off `ref.*` override at the `comp` tier.
+- Add a comment explaining any new `sys`-tier role introduced for a documented one-off variant.
 
 **Don't**
-- Hardcode a hex value, pixel value, or numeric roughness — or silently break the `ref → sys → comp` chain.
+- Hardcode a hex value, pixel value, or numeric roughness — or silently break the `comp → sys → ref` chain by having a `comp` token reference `ref` directly.
 
 ### 3. Accessibility is default
 
