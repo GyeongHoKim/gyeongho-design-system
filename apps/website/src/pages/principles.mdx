@@ -1,0 +1,114 @@
+---
+layout: ../layouts/MarkdownLayout.astro
+title: Design Principles & Voice
+description: The five principles and the voice & tone that guide every design and writing decision in GHDS.
+---
+
+import { withBase } from '../lib/withBase';
+
+Design Style, Components, and Patterns describe what GHDS looks like and how its pieces fit
+together. This page describes **why**: the principles behind every token and component decision,
+and the voice & tone behind every word GHDS ships with.
+
+## Design Principles
+
+Five principles guide GHDS today. The set is intentionally small and may grow toward seven as the
+system matures — but every principle below already shapes real decisions in the codebase.
+
+### 1. Human but trustworthy
+
+**Definition.** The hand-drawn look adds warmth without reading as unfinished or amateurish.
+
+**Rationale.** Sketchy rendering is a deliberate identity choice, not a placeholder aesthetic — it
+has to hold up under real product use, including high-stakes moments.
+
+**Do**
+- Use the sketch fill and hand-drawn stroke on illustrative or decorative surfaces (cards, buttons, empty-state art).
+- Keep numeric values, legal text, and form inputs in precise, non-sketchy type and iconography.
+
+**Don't**
+- Apply roughness to safety-critical confirmation dialogs or dense data tables, where precision reads as trust.
+
+> See <a href={withBase('/about/#why-hand-drawn')}>About &amp; Accessibility → Why Hand-Drawn?</a> for the full rationale and roughness-token guidance.
+
+### 2. Tokens are truth, exceptions are documented
+
+**Definition.** Every design value traces back to `@ghds/tokens`; any deviation is a documented, deliberate exception.
+
+**Rationale.** A single source of truth is what keeps three platforms (React, Web Components, React Native) visually consistent — silent drift breaks that guarantee.
+
+**Do**
+- Reference `sys.*` or `comp.*` tokens for every color, spacing, radius, and sketch parameter.
+- Add a comment explaining any one-off `ref.*` override at the `comp` tier.
+
+**Don't**
+- Hardcode a hex value, pixel value, or numeric roughness — or silently break the `ref → sys → comp` chain.
+
+### 3. Accessibility is default
+
+**Definition.** Accessible behavior ships automatically, not as an opt-in.
+
+**Rationale.** Retrofitting accessibility is expensive and unreliable; building it into every component's default state is not.
+
+**Do**
+- Ship keyboard focus states, `aria-*` attributes, and meaningful labels on every component by default.
+- Validate color/background pairings against WCAG 2.1 AA at build time.
+
+**Don't**
+- Treat accessibility as a prop consumers must remember to enable.
+
+### 4. Platform-neutral, consistent experience
+
+**Definition.** React, Web Components, and React Native all consume the same tokens and produce the same experience.
+
+**Rationale.** Teams shouldn't have to re-learn or re-approve a design when it moves from web to native — the platform is an implementation detail.
+
+**Do**
+- Build every component against the same `sys`/`comp` token set across all three packages.
+- Verify visual parity across platforms before shipping a component.
+
+**Don't**
+- Let one platform's implementation quietly diverge with platform-specific colors, spacing, or behavior.
+
+### 5. Clarity over decoration
+
+**Definition.** The hand-drawn texture adds warmth, but never at the cost of legibility or hierarchy.
+
+**Rationale.** Personality is a means to an end — a system nobody can read fast has failed its actual job.
+
+**Do**
+- Use sketch texture to soften and humanize surfaces while keeping type, contrast, and spacing doing the real work of hierarchy.
+
+**Don't**
+- Let decorative roughness reduce legibility, obscure state, or increase the effort it takes to scan a screen.
+
+## Voice & Tone
+
+### Voice
+
+GHDS writing is:
+
+- **Warm** — not cutesy. Friendly without performing enthusiasm.
+- **Direct** — not blunt. Says what happened and what to do next, without padding.
+- **Honest** — not alarming. Names problems plainly without dramatizing them.
+- **Calm** — not flat. Steady under error and success alike.
+
+### Tone by context
+
+| Context | Tone adjustment |
+| --- | --- |
+| Success | Brief, matter-of-fact affirmation — no extra enthusiasm. |
+| Error | Calm, specific, and actionable. Explain what happened and what to do next; never blame the user. |
+| Empty state | Encouraging and low-pressure, with one clear next action. |
+| Onboarding | Friendly and confidence-building, free of jargon. |
+
+### Don't do this
+
+- Exaggeration or hype language ("Amazing!", "You're crushing it!").
+- Threatening or blame-laden error copy ("You broke the form.", "Fatal error.").
+- Forced cuteness that undercuts trust — see [principle 1](#1-human-but-trustworthy).
+- Corporate or legalese stiffness that breaks the human voice.
+- Tone that's inconsistent across similar states — e.g. playful onboarding paired with robotic errors.
+
+Detailed microcopy rules — specific error message templates, button label conventions, and more —
+are covered in the UX Writing Guide (in progress).
