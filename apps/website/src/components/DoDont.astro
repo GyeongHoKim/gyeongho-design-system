@@ -5,18 +5,23 @@ interface Props {
 }
 
 const { do: doItems, dont: dontItems } = Astro.props;
+
+// Unique per render so multiple <DoDont> instances on one page don't collide.
+const uid = crypto.randomUUID();
+const doLabelId = `do-dont-do-${uid}`;
+const dontLabelId = `do-dont-dont-${uid}`;
 ---
 
 <div class="do-dont">
   <div>
-    <p class="demo-label">Do</p>
-    <ul>
+    <p class="demo-label" id={doLabelId}>Do</p>
+    <ul aria-labelledby={doLabelId}>
       {doItems.map((item) => <li>{item}</li>)}
     </ul>
   </div>
   <div>
-    <p class="demo-label">Don't</p>
-    <ul>
+    <p class="demo-label" id={dontLabelId}>Don't</p>
+    <ul aria-labelledby={dontLabelId}>
       {dontItems.map((item) => <li>{item}</li>)}
     </ul>
   </div>
