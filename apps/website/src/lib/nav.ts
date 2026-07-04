@@ -21,6 +21,12 @@ export const NAV: readonly NavItem[] = [
       'Color, typography, spacing, radius, and shadow — design tokens generated automatically from @ghds/tokens.',
   },
   {
+    label: 'Foundations',
+    href: '/foundations/',
+    summary:
+      'Layout & grid, icons, motion, elevation, and z-index layering — the structural and interaction primitives behind every component.',
+  },
+  {
     label: 'Components',
     href: '/components/',
     summary: 'Live-render React and Lit components side by side on one screen.',

@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { foundations } from '../lib/tokens';
+import { withBase } from '../lib/withBase';
+
+// All data below is DERIVED from @ghds/tokens at build time — nothing is
+// hand-copied. Change a token and this page regenerates.
+const breakpoint = foundations.breakpoint();
+const grid = foundations.grid();
+const container = foundations.container();
+const zIndex = foundations.zIndex();
+const opacity = foundations.opacity();
+const duration = foundations.duration();
+const easing = foundations.easing();
+
+/** Build a `key -> token` lookup from a `FlatToken[]`, stripping a shared path prefix. */
+function byKey<T extends { path: string; value: unknown }>(tokens: T[], prefix: string) {
+  return new Map(tokens.map((t) => [t.path.replace(prefix, ''), t]));
+}
+
+const gridColumnsByKey = byKey(
+  grid.filter((t) => t.path.startsWith('sys.grid.columns.')),
+  'sys.grid.columns.',
+);
+const gridGutterByKey = byKey(
+  grid.filter((t) => t.path.startsWith('sys.grid.gutter.')),
+  'sys.grid.gutter.',
+);
+const containerMaxWidthByKey = byKey(container, 'sys.container.maxWidth.');
+const durationByKey = byKey(duration, 'sys.animation.duration.');
+
+const durationSummary = duration
+  .map((t) => `${t.path.replace('sys.animation.duration.', '')} = ${t.value}`)
+  .join(', ');
+const easingSummary = easing.map((t) => t.path.replace('sys.animation.easing.', '')).join(', ');
+const opacitySummary = opacity
+  .map((t) => `${t.path.replace('sys.opacity.', '')} = ${t.value}`)
+  .join(', ');
+
+const zIndexNotes: Record<string, string> = {
+  base: 'Default stacking context. Most in-flow content never needs to set z-index at all.',
+  dropdown: 'Select menus, comboboxes, and other inline popovers anchored to a trigger.',
+  sticky: 'Elements pinned within the normal document flow, e.g. the site header.',
+  overlay: 'Full-viewport scrims that sit behind a modal or drawer.',
+  modal: 'Modal and dialog surfaces themselves, above their scrim.',
+  toast: 'Toast/snackbar notifications, above modals so they stay visible.',
+  tooltip: 'Tooltips — always on top, since they must never be obscured by anything else.',
+};
+---
+
+<BaseLayout
+  title="Foundations"
+  description="Layout & grid, icons, motion, elevation, and z-index layering — the structural and interaction primitives behind every component."
+>
+  <section class="page-intro">
+    <span class="eyebrow">Foundations</span>
+    <h1>Foundations</h1>
+    <p>
+      The structural and interaction primitives every component builds on: responsive layout,
+      icon sizing, motion, elevation, and stacking order. Like <a href={withBase('/design-style/')}>Design
+      Style</a>, every value below is read directly from the <code>@ghds/tokens</code> build
+      output.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Layout &amp; Grid <code>sys.breakpoint.*</code> <code>sys.grid.*</code> <code>sys.container.*</code></h2>
+    <p>
+      Breakpoints are mobile-first: each value is a <code>min-width</code> for
+      <code>@media</code> queries, so mobile styles are the default and larger breakpoints layer
+      on top. Grid column counts and container max-widths scale together — more columns and a
+      wider container as the viewport grows.
+    </p>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">Breakpoint</th>
+          <th scope="col"><code>sys.breakpoint.*</code></th>
+          <th scope="col">Columns</th>
+          <th scope="col">Container max-width</th>
+          <th scope="col">Gutter</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          breakpoint.map((bp) => {
+            const key = bp.path.replace('sys.breakpoint.', '');
+            const columns = gridColumnsByKey.get(key);
+            const maxWidth = containerMaxWidthByKey.get(key);
+            const gutter = gridGutterByKey.get(key);
+            return (
+              <tr>
+                <td>{key}</td>
+                <td><code set:text={bp.value} /></td>
+                <td>{columns ? columns.value : '—'}</td>
+                <td>{maxWidth ? <code set:text={maxWidth.value} /> : <em>fluid (100%)</em>}</td>
+                <td>{gutter ? <code set:text={gutter.value} /> : '—'}</td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+    <p>
+      <strong>Stack/Grid layout primitive:</strong> no dedicated <code>Stack</code>/<code>Grid</code>
+      component exists yet in any of the three platform packages. Until one ships (recommended for
+      a future component milestone), consume these tokens directly: on the web,
+      <code>@media (min-width: var(--sys-breakpoint-tablet))</code>; in React Native, which has no
+      native media queries, compare <code>useWindowDimensions()</code> against the same token
+      values read from <code>@ghds/tokens</code>.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Icons <code>sys.icon.size.*</code></h2>
+    <p>
+      Icon sizing follows the <code>sys.icon.size.sm/md/lg</code> scale (see the <code>Icon</code>
+      component across all three platforms). A full icon catalog page doesn't exist yet — this
+      section will link to one once it's built.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Motion <code>sys.animation.duration.*</code> <code>sys.animation.easing.*</code></h2>
+    <p>Named transition patterns and which duration/easing pair backs each one:</p>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">Pattern</th>
+          <th scope="col">Duration</th>
+          <th scope="col">Easing</th>
+          <th scope="col">When to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Enter</td>
+          <td><code set:text={durationByKey.get('normal')?.value} /></td>
+          <td><code>sys.animation.easing.enter</code></td>
+          <td>An element appearing — modal open, dropdown open, toast in. Decelerates into place so arrival feels responsive, not abrupt.</td>
+        </tr>
+        <tr>
+          <td>Exit</td>
+          <td><code set:text={durationByKey.get('fast')?.value} /></td>
+          <td><code>sys.animation.easing.exit</code></td>
+          <td>An element disappearing — modal close, dropdown close, toast out. Faster than enter and accelerates away, so it never blocks the next action.</td>
+        </tr>
+        <tr>
+          <td>Emphasis</td>
+          <td><code set:text={durationByKey.get('slow')?.value} /></td>
+          <td><code>sys.animation.easing.emphasized</code></td>
+          <td>Drawing attention without appearing/disappearing — a validation-error nudge, a pulse. Product judgment call on exact duration.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>Raw values</strong> — <code>sys.animation.duration.*</code>: <code set:text={durationSummary} />.
+      <code>sys.animation.easing.*</code>: <code set:text={easingSummary} />.
+    </p>
+    <p>
+      <strong>Accessibility:</strong> when <code>prefers-reduced-motion</code> matches, skip the
+      transition entirely or substitute an instant/opacity-only crossfade at
+      <code>ref.duration.instant</code> (<code>0ms</code>). This is an implementation-layer concern
+      for each component package, not a separate token.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Elevation <code>sys.shadow.*</code></h2>
+    <p>
+      Elevation is covered on the <a href={withBase('/design-style/#shadow')}>Design Style</a> page.
+      Reach for a higher shadow tier as an element's stacking layer rises (dropdown → modal →
+      toast); <code>sys.sketch.elevation</code> drives the same idea for the hand-drawn drop-shadow
+      on cards and raised surfaces.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Z-index / Layering <code>sys.zIndex.*</code></h2>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">Layer</th>
+          <th scope="col">Value</th>
+          <th scope="col">When to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          zIndex.map((token) => {
+            const key = token.path.replace('sys.zIndex.', '');
+            return (
+              <tr>
+                <td><code set:text={key} /></td>
+                <td><code set:text={token.value} /></td>
+                <td>{zIndexNotes[key]}</td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+    <p>
+      Worked example: this site's <code>.site-header</code> is <code>position: sticky</code>, so
+      it uses <code>var(--sys-zIndex-sticky)</code> rather than a hardcoded number.
+    </p>
+    <p>
+      <strong>Opacity</strong> <code>sys.opacity.*</code>: <code set:text={opacitySummary} />.
+    </p>
+  </section>
+</BaseLayout>
