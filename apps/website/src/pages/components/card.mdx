@@ -1,0 +1,126 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Card
+description: A generic hand-drawn surface container for grouping related content.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import CardDemoReact from '../../components/demos/CardDemo.tsx';
+import CardDemoLit from '../../components/demos/CardDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A `Card` is a generic surface for grouping related content — it isn't interactive by itself and
+carries no built-in meaning beyond "these things belong together."
+
+## Anatomy
+
+A sketchy rectangle outline drawn behind plain children. On Web Components, content slotted as
+`<h1>`/`<h2>`/`<h3>`/`[slot="title"]` gets special title styling (`::slotted` CSS); React and
+React Native have no equivalent title slot — content is just plain children.
+
+## Variants & States
+
+Unlike Button and Input, Card is mostly a **static container** — this section is intentionally
+thin rather than force-fitting states that don't exist.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: 'Card is not interactive.' },
+    { name: 'Focus', present: false, note: 'Card is not focusable.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+The one real variation is a **different prop per platform**, not a shared state: React's `fill`
+(`'solid' | 'hachure'`) controls the fill pattern; Web Components and React Native instead expose
+`elevated` (a boolean drop-shadow effect) — a genuinely different API, not a superset of React's.
+
+## Usage
+
+<DoDont
+  do={[
+    "Supply your own role/aria-label (React) or label (WC/RN) when the card functions as a landmark or region.",
+    'Use Card for visual grouping (a settings panel, a list item) rather than as a substitute for semantic HTML.',
+  ]}
+  dont={[
+    "Don't expect a role or accessible name automatically on React — the caller is fully responsible for it there.",
+    "Don't rely on fill and elevated meaning the same thing across platforms — they're different props with different visual effects.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: renders a plain `<div>`. No role or label is set automatically — "any ARIA role/
+  landmark is the caller's to set" (per the component's own doc comment).
+- **Web Components**: when a `label` is supplied, `gh-card` automatically sets
+  `internals.role = 'group'` and `internals.ariaLabel` — a real behavior React does *not* replicate.
+- **React Native**: sets `accessibilityRole="summary"` only when `accessibilityLabel` is passed.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
+
+## Content
+
+N/A — Card has no fixed content model. Content is whatever the caller passes as children (React/RN)
+or slots (Web Components).
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'fill', type: "'solid' | 'hachure'", default: "'solid'", description: 'Fill style of the card body.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (e.g. role, aria-label) pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'elevated', type: 'boolean', default: 'false', description: 'Renders a sketch drop-shadow outline. No fill prop exists.' },
+        { name: 'label', type: 'string', description: 'When set, exposes the card as an ARIA group with this label.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'elevated', type: 'boolean', default: 'false', description: 'Same effect as Web Components. No fill prop.' },
+        { name: 'accessibilityLabel', type: 'string', description: 'When set, accessibilityRole becomes "summary".' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React uses `fill`; Web Components uses `elevated` + `label` — the demo below deliberately shows
+each platform's *actual* prop, not a unified example.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CardDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <CardDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Card } from '@ghds/react-native';
+
+<Card elevated accessibilityLabel="Summary">
+  <Text>Elevated card content</Text>
+</Card>;
+```

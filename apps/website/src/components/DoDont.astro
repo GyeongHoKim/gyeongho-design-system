@@ -1,0 +1,23 @@
+---
+interface Props {
+  do: string[];
+  dont: string[];
+}
+
+const { do: doItems, dont: dontItems } = Astro.props;
+---
+
+<div class="do-dont">
+  <div>
+    <p class="demo-label">Do</p>
+    <ul>
+      {doItems.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+  <div>
+    <p class="demo-label">Don't</p>
+    <ul>
+      {dontItems.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</div>

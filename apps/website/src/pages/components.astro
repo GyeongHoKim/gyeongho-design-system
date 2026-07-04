@@ -2,6 +2,7 @@
 import LitDemo from '../components/LitDemo.astro';
 import ReactDemo from '../components/ReactDemo';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/withBase';
 ---
 
 <BaseLayout
@@ -42,5 +43,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       but the visual result is identical. This is why tokens are kept as the single source of
       truth — change a value in one place, and every framework changes with it.
     </p>
+  </section>
+
+  <section class="section">
+    <h2>Component Documentation</h2>
+    <p>Anatomy, variants &amp; states, accessibility, props, and a live demo for each component:</p>
+    <ul>
+      <li>
+        <a href={withBase('/components/button/')}>Button</a> — variants, states, accessibility,
+        and props
+      </li>
+      <li>
+        <a href={withBase('/components/card/')}>Card</a> — a generic hand-drawn surface container
+      </li>
+      <li>
+        <a href={withBase('/components/input/')}>Input</a> — a labeled text field with an error
+        state
+      </li>
+    </ul>
   </section>
 </BaseLayout>

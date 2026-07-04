@@ -401,6 +401,18 @@ code {
   margin-bottom: var(--sys-spacing-sm);
 }
 
+/* ---- Component doc primitives (PropsTable / StateList / DoDont) ----- */
+
+.props-group {
+  margin-bottom: var(--sys-spacing-xl);
+}
+
+.do-dont {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--sys-spacing-lg);
+}
+
 /* ---- Prose (MDX content pages) -------------------------------------- */
 
 .prose {

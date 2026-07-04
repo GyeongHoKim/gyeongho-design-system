@@ -1,0 +1,34 @@
+---
+/** Reused by each component page's Accessibility section and the standalone Accessibility Guide. */
+interface KeyRow {
+  keys: string;
+  action: string;
+}
+
+interface Props {
+  rows: KeyRow[];
+}
+
+const { rows } = Astro.props;
+---
+
+<table class="token-table">
+  <thead>
+    <tr>
+      <th scope="col">Key</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          <td>
+            <code>{row.keys}</code>
+          </td>
+          <td>{row.action}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
