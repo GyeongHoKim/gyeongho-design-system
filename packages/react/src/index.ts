@@ -1,13 +1,26 @@
 export type { IconName } from '@ghds/icons';
 export { Button, type ButtonProps, type ButtonVariant } from './components/Button.js';
 export { Card, type CardProps } from './components/Card.js';
+export { Checkbox, type CheckboxProps } from './components/Checkbox.js';
+export {
+  CheckboxGroup,
+  type CheckboxGroupContextValue,
+  type CheckboxGroupProps,
+} from './components/CheckboxGroup.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
+export { Radio, type RadioProps } from './components/Radio.js';
+export {
+  RadioGroup,
+  type RadioGroupContextValue,
+  type RadioGroupProps,
+} from './components/RadioGroup.js';
 export {
   type FillRendering,
   SketchSurface,
   type SketchSurfaceProps,
 } from './components/SketchSurface.js';
+export { Switch, type SwitchProps } from './components/Switch.js';
 export {
   type SketchShape,
   type SketchSize,

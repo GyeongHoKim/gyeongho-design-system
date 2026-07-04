@@ -1,10 +1,19 @@
-import { forcedSeed, rectangle, type SketchDrawable, type SketchOptions } from '@ghds/sketch-core';
+import {
+  ellipse,
+  forcedSeed,
+  rectangle,
+  type SketchDrawable,
+  type SketchOptions,
+} from '@ghds/sketch-core';
 
 /** Measured pixel size of a component, supplied by `onLayout`. */
 export interface Size {
   width: number;
   height: number;
 }
+
+/** Which sketch-core primitive to draw around the measured box. */
+export type SketchShape = 'rectangle' | 'ellipse';
 
 /**
  * Geometry + sketch parameters for one outline. Every numeric value here is a
@@ -32,14 +41,15 @@ export interface SketchParams {
 const MIN_DIMENSION = 1;
 
 /**
- * Build the sketchy rectangle outline for a measured component.
+ * Build the sketchy outline for a measured component.
  *
- * The rectangle is inset by `inset` px on every side so the (token-driven)
- * stroke width is not clipped at the component's bounds. Returns `null` when
- * the component has not been measured yet (or is degenerate), so the renderer
- * can skip drawing until a real size arrives from `onLayout`.
+ * The shape is inset by `inset` px on every side so the (token-driven) stroke
+ * width is not clipped at the component's bounds. Returns `null` when the
+ * component has not been measured yet (or is degenerate), so the renderer can
+ * skip drawing until a real size arrives from `onLayout`.
  */
-export function buildRectangleOutline(
+export function buildOutline(
+  shape: SketchShape,
   size: Size,
   inset: number,
   params: SketchParams,
@@ -68,7 +78,8 @@ export function buildRectangleOutline(
     options.elevation = params.elevation;
   }
 
-  return rectangle(inset, inset, width, height, options);
+  const draw = shape === 'ellipse' ? ellipse : rectangle;
+  return draw(inset, inset, width, height, options);
 }
 
 let seedCounter = 0;

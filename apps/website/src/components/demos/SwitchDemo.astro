@@ -1,0 +1,15 @@
+---
+// Live demo of `<gh-switch>`. Registered as a client-side island: the module
+// script below imports the package, whose `@customElement` side-effect
+// defines <gh-switch>.
+---
+
+<div class="demo-stack">
+  <gh-switch label="Enable notifications"></gh-switch>
+  <gh-switch label="Always on" checked></gh-switch>
+  <gh-switch label="Disabled" disabled></gh-switch>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>
