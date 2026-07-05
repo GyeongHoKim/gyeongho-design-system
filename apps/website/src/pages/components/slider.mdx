@@ -1,0 +1,153 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Slider
+description: A hand-drawn range slider for selecting a numeric value.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import SliderDemoReact from '../../components/demos/SliderDemo.tsx';
+import SliderDemoLit from '../../components/demos/SliderDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A `Slider` selects a numeric value from a continuous or stepped range by dragging a thumb along a
+track. Use `Input type="number"` instead when a precise typed value matters more than a quick
+visual adjustment.
+
+## Anatomy
+
+A sketchy rail (a thin rectangle) with a filled portion (from the start to the thumb) and a round
+thumb — all three shapes computed directly from `@ghds/sketch-core`, sharing one measured box and
+seed. On React and Web Components, a real, invisible `<input type="range">` spans the full track
+and carries every interaction (dragging, clicking the track, and native Arrow/Home/End/PageUp/
+PageDown keyboard behavior) with zero custom pointer/keydown code. React Native has no such native
+primitive, so dragging is hand-rolled with `PanResponder` (built into React Native core — no new
+gesture-library dependency).
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Default', present: true },
+    { name: 'Hover', present: true, note: 'The filled portion and thumb darken slightly (CSS/native pseudo-states — no JS-tracked hover flag needed).' },
+    { name: 'Focus', present: true, note: 'A focus ring appears around the thumb.' },
+    { name: 'Disabled', present: true },
+    { name: 'Two-thumb range', present: false, note: 'Not in v1 — "range" in the ticket names a possible future dual-thumb mode, not a v1 requirement.' },
+    { name: 'Vertical orientation', present: false },
+    { name: 'Value tooltip while dragging', present: false, note: 'A consumer wanting a live readout derives it from a controlled value.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use Slider for a value with a clear, visible min/max range (e.g. volume, rating, brightness).',
+    'Label the value being set ("Volume"), not the current reading.',
+  ]}
+  dont={[
+    "Don't use Slider when the exact value must be typed precisely — use Input type=\"number\" instead.",
+    "Don't expect a two-thumb range mode in v1 — a single thumb only.",
+  ]}
+/>
+
+## Accessibility
+
+- **React / Web Components**: the real, invisible `<input type="range">` gives an implicit
+  `role="slider"` plus browser-computed `aria-valuenow`/`aria-valuemin`/`aria-valuemax` for free —
+  no custom ARIA wiring needed. `aria-valuetext` passes through as a plain attribute for a custom
+  spoken value.
+- **React Native**: `accessibilityRole="adjustable"` plus `accessibilityValue={{min, max, now}}`
+  and `accessibilityActions`/`onAccessibilityAction` (`increment`/`decrement`) are the standard RN
+  pattern for VoiceOver/TalkBack. Neither `accessibilityValue` nor `accessibilityState.disabled`
+  has a React Native Web equivalent mapping — confirmed directly against `createDOMProps` — so
+  `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/`aria-disabled` are set directly for the web
+  target, the same gap class already documented for Select's `aria-expanded` and Switch's
+  `aria-checked`. `onAccessibilityAction` itself has no React Native Web wiring at all (confirmed
+  directly) — it is a native-only (iOS/Android) affordance, verified manually per
+  `packages/react-native/AGENTS.md`'s device/simulator requirement rather than by automated test.
+  `focusable`/`tabIndex` make the control a real keyboard tab-stop on the web target (`role="slider"`
+  isn't one of React Native Web's auto-focusable roles), but arrow-key step adjustment while
+  focused is not yet wired there in v1 — `onKeyDown` isn't part of real React Native's `View` props,
+  so it isn't a lightweight addition; dragging with a mouse/touch works on every platform.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
+
+## Content
+
+The label names the value being adjusted ("Volume", "Rating"), not the current reading or an
+instruction.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible label, associated via Radix Label.' },
+        { name: 'value', type: 'number', description: 'Controlled value.' },
+        { name: 'defaultValue', type: 'number', description: 'Initial value when uncontrolled.' },
+        { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'step', type: 'number', default: '1', description: 'Increment step.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: 'All other native input attributes pass through (e.g. onChange, aria-valuetext, name).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'number', default: '0', description: 'Reflected attribute. Mirrored to the form value.' },
+        { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'step', type: 'number', default: '1', description: 'Increment step.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction and form participation.' },
+        { name: 'name', type: 'string', description: 'Submitted control name.' },
+        { name: 'label', type: 'string', description: 'Optional visible label, also the accessible name.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible, accessible label — required.' },
+        { name: 'value', type: 'number', description: 'Controlled value.' },
+        { name: 'defaultValue', type: 'number', description: 'Initial value when uncontrolled.' },
+        { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'step', type: 'number', default: '1', description: 'Increment step.' },
+        { name: 'onValueChange', type: '(value: number) => void', description: 'Fires with the next value while dragging.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React and Web Components render live below. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SliderDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SliderDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Slider } from '@ghds/react-native';
+
+<Slider label="Volume" value={volume} onValueChange={setVolume} />;
+```

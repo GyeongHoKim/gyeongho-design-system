@@ -30,6 +30,8 @@ export type { RadioGroupContextValue, RadioGroupProps } from './components/Radio
 export { RadioGroup } from './components/RadioGroup.js';
 export type { SelectOption, SelectProps } from './components/Select.js';
 export { Select } from './components/Select.js';
+export type { SliderProps } from './components/Slider.js';
+export { Slider } from './components/Slider.js';
 export type { SwitchProps } from './components/Switch.js';
 export { Switch } from './components/Switch.js';
 export type { TextareaProps } from './components/Textarea.js';

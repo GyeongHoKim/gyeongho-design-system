@@ -1,0 +1,22 @@
+---
+// Live demo of `<gh-slider>`. Registered as a client-side island: the module
+// script below imports the package, whose `@customElement` side-effect
+// defines <gh-slider>.
+---
+
+<div class="demo-stack">
+  <gh-slider label="Volume" value="30" style="display: block; width: 260px;"></gh-slider>
+  <gh-slider
+    label="Rating"
+    min="0"
+    max="10"
+    step="1"
+    value="7"
+    style="display: block; width: 260px;"
+  ></gh-slider>
+  <gh-slider label="Disabled" value="40" disabled style="display: block; width: 260px;"></gh-slider>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>
