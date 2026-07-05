@@ -1,0 +1,76 @@
+{
+  "comp": {
+    "select": {
+      "$description": "Tier 3 component tokens for the hand-drawn Select (trigger + floating listbox panel + options). References sys only.",
+      "trigger": {
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "disabled": { "$value": "{sys.color.bg.muted}" }
+        },
+        "stroke": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.border.default}" },
+          "hover": { "$value": "{sys.color.border.strong}" },
+          "focus": { "$value": "{sys.color.border.focus}" },
+          "disabled": { "$value": "{sys.color.border.subtle}" }
+        },
+        "text": {
+          "$type": "color",
+          "value": { "$value": "{sys.color.text.primary}" },
+          "placeholder": { "$value": "{sys.color.text.secondary}" },
+          "disabled": { "$value": "{sys.color.text.disabled}" },
+          "label": { "$value": "{sys.color.text.primary}" }
+        },
+        "padding": {
+          "$type": "dimension",
+          "horizontal": { "$value": "{sys.spacing.md}" },
+          "vertical": { "$value": "{sys.spacing.sm}" }
+        },
+        "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" }
+      },
+      "panel": {
+        "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+        "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+        "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
+        "zIndex": { "$type": "number", "$value": "{sys.zIndex.dropdown}" },
+        "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+        "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "offset": {
+          "$type": "dimension",
+          "$description": "Gap between the trigger and the floating panel (floating-ui `offset()` middleware distance).",
+          "$value": "{sys.spacing.xs}"
+        }
+      },
+      "option": {
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "highlighted": { "$value": "{sys.color.bg.muted}" },
+          "selected": { "$value": "{sys.color.bg.primary.default}" },
+          "selectedHover": { "$value": "{sys.color.bg.primary.hover}" }
+        },
+        "text": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.text.primary}" },
+          "selected": { "$value": "{sys.color.text.onPrimary}" },
+          "disabled": { "$value": "{sys.color.text.disabled}" }
+        },
+        "padding": {
+          "$type": "dimension",
+          "horizontal": { "$value": "{sys.spacing.sm}" },
+          "vertical": { "$value": "{sys.spacing.xs}" }
+        },
+        "radius": { "$type": "dimension", "$value": "{sys.radius.sm}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" },
+        "elevation": { "$value": "{sys.sketch.elevation}" }
+      }
+    }
+  }
+}

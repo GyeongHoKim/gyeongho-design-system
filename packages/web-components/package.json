@@ -46,6 +46,7 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.6",
     "@ghds/icons": "workspace:*",
     "@ghds/sketch-core": "workspace:*",
     "@ghds/tokens": "workspace:*",

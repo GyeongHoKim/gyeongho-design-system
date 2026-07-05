@@ -1,0 +1,21 @@
+---
+// Live demo of `<gh-select>`. `options` is a data array, not slotted children
+// (light DOM has no context mechanism to bridge selection state to slotted
+// elements) — Lit's default Array-type converter parses a JSON attribute
+// string into the real property, so it can be authored as plain HTML here.
+const fruitOptions = JSON.stringify([
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'cherry', label: 'Cherry (out of stock)', disabled: true },
+  { value: 'date', label: 'Date' },
+]);
+---
+
+<div class="demo-stack">
+  <gh-select label="Fruit" placeholder="Choose a fruit" options={fruitOptions}></gh-select>
+  <gh-select label="Disabled" placeholder="Choose a fruit" options={fruitOptions} disabled></gh-select>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

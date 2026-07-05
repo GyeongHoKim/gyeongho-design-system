@@ -43,6 +43,15 @@ describe('GHDS Restyle theme', () => {
     expect(lightTheme.switchSketch.roughness).toBe(lightTokens.comp.switch.sketch.roughness);
   });
 
+  it('derives select colors and sketch params (incl. elevation) from comp.select tokens', () => {
+    expect(lightTheme.colors.selectOptionBgSelected).toBe(
+      lightTokens.comp.select.option.bg.selected,
+    );
+    expect(lightTheme.colors.selectPanelStroke).toBe(lightTokens.comp.select.panel.stroke);
+    expect(lightTheme.selectSketch.roughness).toBe(lightTokens.comp.select.sketch.roughness);
+    expect(lightTheme.selectSketch.elevation).toBe(lightTokens.comp.select.sketch.elevation);
+  });
+
   it('light and dark themes share an identical structure', () => {
     const keys = (o: object): string[] => Object.keys(o).sort();
     expect(keys(lightTheme.colors)).toEqual(keys(darkTheme.colors));

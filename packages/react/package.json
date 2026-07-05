@@ -48,6 +48,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
+    "@floating-ui/react-dom": "^2.1.8",
     "@ghds/icons": "workspace:*",
     "@ghds/sketch-core": "workspace:*",
     "@ghds/tokens": "workspace:*",
