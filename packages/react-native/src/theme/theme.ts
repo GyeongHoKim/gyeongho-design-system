@@ -131,7 +131,7 @@ function buildTheme(t: Tokens) {
       selectTriggerStrokeHover: t.comp.select.trigger.stroke.hover,
       selectTriggerStrokeFocus: t.comp.select.trigger.stroke.focus,
       selectTriggerStrokeDisabled: t.comp.select.trigger.stroke.disabled,
-      selectTriggerTextValue: t.comp.select.trigger.text.value,
+      selectTriggerTextDefault: t.comp.select.trigger.text.default,
       selectTriggerTextPlaceholder: t.comp.select.trigger.text.placeholder,
       selectTriggerTextDisabled: t.comp.select.trigger.text.disabled,
       selectTriggerTextLabel: t.comp.select.trigger.text.label,

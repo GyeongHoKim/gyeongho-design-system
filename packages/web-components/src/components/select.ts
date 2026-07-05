@@ -89,7 +89,7 @@ export class GhSelect extends SketchyBase {
         background: transparent;
         border: none;
         outline: none;
-        color: var(--comp-select-trigger-text-value);
+        color: var(--comp-select-trigger-text-default);
         font-family: var(--sys-typography-body-fontFamily);
         font-size: var(--sys-typography-body-fontSize);
         font-weight: var(--sys-typography-body-fontWeight);
@@ -440,6 +440,7 @@ export class GhSelect extends SketchyBase {
         aria-haspopup="listbox"
         aria-expanded=${this.open}
         aria-controls=${listboxId}
+        aria-labelledby=${this.label ? labelId : nothing}
         ?disabled=${this.disabled}
         @click=${this.handleTriggerClick}
         @keydown=${this.handleKeyDown}

@@ -391,7 +391,7 @@ export function Select({
     border: 'none',
     outline: 'none',
     background: 'transparent',
-    color: disabled ? c.trigger.text.disabled : c.trigger.text.value,
+    color: disabled ? c.trigger.text.disabled : c.trigger.text.default,
     fontFamily: tokens.sys.typography.body.fontFamily,
     fontSize: tokens.sys.typography.body.fontSize,
     fontWeight: tokens.sys.typography.body.fontWeight,

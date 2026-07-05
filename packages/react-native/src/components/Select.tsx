@@ -145,10 +145,14 @@ export function Select({
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
-          backgroundColor="bgSurface"
           borderRadius="sm"
           paddingHorizontal="md"
           paddingVertical="sm"
+          style={{
+            backgroundColor: disabled
+              ? theme.colors.selectTriggerBgDisabled
+              : theme.colors.selectTriggerBgDefault,
+          }}
         >
           <SketchBackground
             drawable={drawable}
@@ -161,7 +165,7 @@ export function Select({
               color: selectedOption
                 ? disabled
                   ? theme.colors.selectTriggerTextDisabled
-                  : theme.colors.selectTriggerTextValue
+                  : theme.colors.selectTriggerTextDefault
                 : theme.colors.selectTriggerTextPlaceholder,
               fontFamily: theme.textVariants.body.fontFamily,
               fontSize: theme.textVariants.body.fontSize,
@@ -172,11 +176,18 @@ export function Select({
           <Icon name="chevron-down" size="sm" color={strokeColor} />
         </Box>
       </Pressable>
-      <Modal visible={open} transparent animationType="none" onRequestClose={() => setOpen(false)}>
+      <Modal
+        visible={open}
+        transparent
+        animationType="none"
+        statusBarTranslucent
+        onRequestClose={() => setOpen(false)}
+      >
         <Pressable
           style={StyleSheet.absoluteFill}
           onPress={() => setOpen(false)}
           accessibilityRole="none"
+          testID={testID ? `${testID}-scrim` : undefined}
         />
         <Box
           onLayout={onPanelLayout}

@@ -67,6 +67,7 @@ describe('gh-select', () => {
     const el = await mountSelect();
     const label = el.shadowRoot?.querySelector('label');
     expect(label?.textContent).toBe('Fruit');
+    expect(trigger(el).getAttribute('aria-labelledby')).toBe(label?.id);
   });
 
   it('opens the listbox on click and closes on option click, dispatching change', async () => {

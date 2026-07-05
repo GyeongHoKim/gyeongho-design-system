@@ -17,7 +17,7 @@
         },
         "text": {
           "$type": "color",
-          "value": { "$value": "{sys.color.text.primary}" },
+          "default": { "$value": "{sys.color.text.primary}" },
           "placeholder": { "$value": "{sys.color.text.secondary}" },
           "disabled": { "$value": "{sys.color.text.disabled}" },
           "label": { "$value": "{sys.color.text.primary}" }

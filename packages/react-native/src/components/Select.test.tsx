@@ -62,4 +62,28 @@ describe('Select', () => {
     renderWithTheme(<Select label="Fruit" options={FRUIT_OPTIONS} value="banana" />);
     expect(screen.getByRole('combobox')).toHaveTextContent('Banana');
   });
+
+  it('closes the panel when pressing the scrim outside it', async () => {
+    renderWithTheme(<Select label="Fruit" options={FRUIT_OPTIONS} testID="fruit-select" />);
+    const trigger = screen.getByRole('combobox');
+    fireEvent.click(trigger);
+    await waitForOpen(trigger);
+
+    fireEvent.click(screen.getByTestId('fruit-select-scrim'));
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('updates the trigger stroke color on focus and blur', () => {
+    const { container } = renderWithTheme(
+      <Select label="Fruit" options={FRUIT_OPTIONS} testID="fruit-select" />,
+    );
+    const trigger = screen.getByRole('combobox');
+    const strokePath = () => container.querySelector('path[stroke]');
+
+    const defaultStroke = strokePath()?.getAttribute('stroke');
+    fireEvent.focus(trigger);
+    expect(strokePath()?.getAttribute('stroke')).not.toBe(defaultStroke);
+    fireEvent.blur(trigger);
+    expect(strokePath()?.getAttribute('stroke')).toBe(defaultStroke);
+  });
 });

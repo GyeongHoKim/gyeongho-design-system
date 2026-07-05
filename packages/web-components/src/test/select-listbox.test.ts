@@ -71,6 +71,28 @@ describe('gh-select-listbox', () => {
     expect(selected).toBe('apple');
   });
 
+  it('dispatches option-highlight on mouseenter only for enabled options', async () => {
+    const el = new GhSelectListbox();
+    el.options = OPTIONS;
+    el.hostId = 'gh-select-1';
+    await mount(el);
+
+    let highlighted: string | undefined;
+    el.addEventListener('option-highlight', (event) => {
+      highlighted = (event as CustomEvent<{ value: string }>).detail.value;
+    });
+
+    (
+      el.shadowRoot?.querySelector(`#${getSelectOptionId('gh-select-1', 'banana')}`) as HTMLElement
+    ).dispatchEvent(new Event('mouseenter', { bubbles: true }));
+    expect(highlighted).toBeUndefined();
+
+    (
+      el.shadowRoot?.querySelector(`#${getSelectOptionId('gh-select-1', 'apple')}`) as HTMLElement
+    ).dispatchEvent(new Event('mouseenter', { bubbles: true }));
+    expect(highlighted).toBe('apple');
+  });
+
   it('exposes a listbox role via ElementInternals', async () => {
     const el = new GhSelectListbox();
     el.options = OPTIONS;

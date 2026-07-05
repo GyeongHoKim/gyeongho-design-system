@@ -62,6 +62,7 @@ export const Open: Story = {
     const host = requireEl<GhSelect>(canvasElement, 'gh-select');
     const trigger = requireEl<HTMLButtonElement>(host.shadowRoot, 'button');
     trigger.click();
+    await host.updateComplete;
   },
 };
 
@@ -82,6 +83,7 @@ export const OpenDark: Story = {
     const host = requireEl<GhSelect>(canvasElement, 'gh-select');
     const trigger = requireEl<HTMLButtonElement>(host.shadowRoot, 'button');
     trigger.click();
+    await host.updateComplete;
   },
 };
 
