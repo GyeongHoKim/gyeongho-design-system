@@ -13,6 +13,7 @@ export { GhRadioGroup } from './components/radio-group.js';
 export type { GhSelectOption } from './components/select.js';
 export { GhSelect } from './components/select.js';
 export { GhSelectListbox, getSelectOptionId } from './components/select-listbox.js';
+export { GhSlider } from './components/slider.js';
 export { GhSwitch } from './components/switch.js';
 export { GhTextarea } from './components/textarea.js';
 export type { SketchParams } from './sketchy-base.js';

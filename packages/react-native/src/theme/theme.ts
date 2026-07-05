@@ -144,6 +144,23 @@ function buildTheme(t: Tokens) {
       selectOptionTextDefault: t.comp.select.option.text.default,
       selectOptionTextSelected: t.comp.select.option.text.selected,
       selectOptionTextDisabled: t.comp.select.option.text.disabled,
+
+      // comp.slider colors
+      sliderBgRailDefault: t.comp.slider.bg.rail.default,
+      sliderBgRailDisabled: t.comp.slider.bg.rail.disabled,
+      sliderBgFillDefault: t.comp.slider.bg.fill.default,
+      sliderBgFillHover: t.comp.slider.bg.fill.hover,
+      sliderBgFillDisabled: t.comp.slider.bg.fill.disabled,
+      sliderStrokeDefault: t.comp.slider.stroke.default,
+      sliderStrokeDisabled: t.comp.slider.stroke.disabled,
+      sliderThumbBgDefault: t.comp.slider.thumb.bg.default,
+      sliderThumbBgDisabled: t.comp.slider.thumb.bg.disabled,
+      sliderThumbStrokeDefault: t.comp.slider.thumb.stroke.default,
+      sliderThumbStrokeHover: t.comp.slider.thumb.stroke.hover,
+      sliderThumbStrokeFocus: t.comp.slider.thumb.stroke.focus,
+      sliderThumbStrokeDisabled: t.comp.slider.thumb.stroke.disabled,
+      sliderTextLabel: t.comp.slider.text.label,
+      sliderTextDisabled: t.comp.slider.text.disabled,
     },
     spacing: {
       none: t.sys.spacing.none,
@@ -211,6 +228,19 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.select.sketch.roughness,
       bowing: t.comp.select.sketch.bowing,
       elevation: t.comp.select.sketch.elevation,
+    },
+    sliderSketch: {
+      roughness: t.comp.slider.sketch.roughness,
+      bowing: t.comp.slider.sketch.bowing,
+    },
+    // Slider's track height/thumb size, read directly from `comp.slider` (not
+    // the generic `spacing`/`iconSizes` scales) so a future retargeting of
+    // `comp.slider.track.height`/`thumb.size` to a different `sys` value is
+    // picked up here too, the same way React/Web Components read
+    // `tokens.comp.slider.*` directly rather than through a generic bridge.
+    sliderDimensions: {
+      trackHeight: t.comp.slider.track.height,
+      thumbSize: t.comp.slider.thumb.size,
     },
   });
 }

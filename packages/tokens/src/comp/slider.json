@@ -1,0 +1,54 @@
+{
+  "comp": {
+    "slider": {
+      "$description": "Tier 3 component tokens for the hand-drawn Slider. References sys only.",
+      "track": {
+        "$type": "dimension",
+        "height": { "$value": "{sys.spacing.sm}" }
+      },
+      "bg": {
+        "$type": "color",
+        "rail": {
+          "default": { "$value": "{sys.color.bg.muted}" },
+          "disabled": { "$value": "{sys.color.bg.subtle}" }
+        },
+        "fill": {
+          "default": { "$value": "{sys.color.bg.primary.default}" },
+          "hover": { "$value": "{sys.color.bg.primary.hover}" },
+          "disabled": { "$value": "{sys.color.bg.primary.disabled}" }
+        }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "disabled": { "$value": "{sys.color.border.subtle}" }
+      },
+      "thumb": {
+        "size": { "$type": "dimension", "$value": "{sys.icon.size.md}" },
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "disabled": { "$value": "{sys.color.bg.muted}" }
+        },
+        "stroke": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.border.default}" },
+          "hover": { "$value": "{sys.color.border.strong}" },
+          "focus": { "$value": "{sys.color.border.focus}" },
+          "disabled": { "$value": "{sys.color.border.subtle}" }
+        }
+      },
+      "text": {
+        "$type": "color",
+        "label": { "$value": "{sys.color.text.primary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
