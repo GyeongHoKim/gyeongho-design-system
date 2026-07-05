@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { FormField } from './FormField.js';
 import { Input } from './Input.js';
 
 describe('Input', () => {
@@ -47,5 +48,23 @@ describe('Input', () => {
     expect(field).toBeDisabled();
     await user.type(field, 'x');
     expect(field).toHaveValue('');
+  });
+
+  it('reads id/aria-invalid/aria-describedby from a wrapping FormField', () => {
+    render(
+      <FormField label="Email" error="Required">
+        <Input />
+      </FormField>,
+    );
+    const field = screen.getByLabelText('Email');
+    expect(field).toHaveAttribute('aria-invalid', 'true');
+    expect(field).toHaveAttribute('aria-describedby', screen.getByRole('alert').id);
+  });
+
+  it('remains unaffected by FormField when not wrapped (regression guard)', () => {
+    render(<Input label="Email" error="Required" />);
+    const field = screen.getByLabelText('Email');
+    expect(field).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByRole('alert')).toHaveTextContent('Required');
   });
 });

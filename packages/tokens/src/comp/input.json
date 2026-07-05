@@ -19,7 +19,7 @@
         "placeholder": { "$value": "{sys.color.text.secondary}" },
         "disabled": { "$value": "{sys.color.text.disabled}" },
         "label": { "$value": "{sys.color.text.primary}" },
-        "danger": { "$value": "{sys.color.text.secondary}" }
+        "danger": { "$value": "{sys.color.text.danger}" }
       },
       "padding": {
         "$type": "dimension",

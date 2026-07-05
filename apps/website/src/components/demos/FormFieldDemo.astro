@@ -1,0 +1,40 @@
+---
+// Live demo of `<gh-form-field>`. Registered as a client-side island: the
+// module script below imports the package, whose `@customElement`
+// side-effect defines <gh-form-field>. It auto-wires id/aria-describedby/
+// aria-invalid onto its slotted control, so a plain native <input> needs no
+// manual ARIA attributes.
+const inputStyle =
+  'width: 100%; box-sizing: border-box; padding: var(--sys-spacing-sm) var(--sys-spacing-md); ' +
+  'border: var(--sys-border-width-default) solid var(--sys-color-border-default); ' +
+  'border-radius: var(--sys-radius-md); font-family: var(--sys-typography-body-fontFamily); ' +
+  'font-size: var(--sys-typography-body-fontSize);';
+---
+
+<div class="demo-stack">
+  <gh-form-field for="demo-email" label="Email" style="width: 100%;">
+    <input type="email" placeholder="you@example.com" style={inputStyle} />
+  </gh-form-field>
+
+  <gh-form-field
+    for="demo-username"
+    label="Username"
+    helper-text="Letters, numbers, and underscores only"
+    style="width: 100%;"
+  >
+    <input style={inputStyle} />
+  </gh-form-field>
+
+  <gh-form-field
+    for="demo-password"
+    label="Password"
+    error="Must be at least 8 characters"
+    style="width: 100%;"
+  >
+    <input type="password" style={inputStyle} />
+  </gh-form-field>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

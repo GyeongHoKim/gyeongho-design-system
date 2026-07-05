@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { FormField } from './FormField.js';
 import { Textarea } from './Textarea.js';
 
 function mockScrollHeight(el: HTMLElement, value: number): void {
@@ -91,5 +92,23 @@ describe('Textarea', () => {
 
     rerender(<Textarea label="Bio" autoResize={false} />);
     expect(field.style.height).toBe('');
+  });
+
+  it('reads id/aria-invalid/aria-describedby from a wrapping FormField', () => {
+    render(
+      <FormField label="Bio" error="Required">
+        <Textarea />
+      </FormField>,
+    );
+    const field = screen.getByLabelText('Bio');
+    expect(field).toHaveAttribute('aria-invalid', 'true');
+    expect(field).toHaveAttribute('aria-describedby', screen.getByRole('alert').id);
+  });
+
+  it('remains unaffected by FormField when not wrapped (regression guard)', () => {
+    render(<Textarea label="Bio" error="Required" />);
+    const field = screen.getByLabelText('Bio');
+    expect(field).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByRole('alert')).toHaveTextContent('Required');
   });
 });

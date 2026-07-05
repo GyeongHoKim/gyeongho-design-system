@@ -5,9 +5,9 @@ import {
   type FocusEvent,
   forwardRef,
   type InputHTMLAttributes,
-  useId,
   useState,
 } from 'react';
+import { useFormFieldWiring } from '../hooks/useFormFieldWiring.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { toPx } from '../lib/units.js';
@@ -40,13 +40,28 @@ function resolveStroke(focused: boolean, hasError: boolean): string {
  * exposed via `aria-invalid` + `aria-describedby` and an `role="alert"` message.
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, error, id, disabled = false, style, onFocus, onBlur, ...rest },
+  {
+    label,
+    error,
+    id,
+    disabled = false,
+    style,
+    onFocus,
+    onBlur,
+    'aria-describedby': ariaDescribedByProp,
+    'aria-invalid': ariaInvalidProp,
+    ...rest
+  },
   forwardedRef,
 ) {
-  const reactId = useId();
-  const inputId = id ?? reactId;
-  const errorId = `${inputId}-error`;
-  const hasError = error !== undefined && error !== '';
+  const {
+    fieldId: inputId,
+    errorId,
+    hasError,
+    describedBy,
+    showLabel,
+    showOwnError,
+  } = useFormFieldWiring(id, label, error);
 
   const [focused, setFocused] = useState(false);
 
@@ -103,7 +118,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   };
 
   const errorStyle: CSSProperties = {
-    color: c.stroke.danger,
+    color: c.text.danger,
     fontFamily: tokens.sys.typography.caption.fontFamily,
     fontSize: tokens.sys.typography.caption.fontSize,
     fontWeight: tokens.sys.typography.caption.fontWeight,
@@ -112,7 +127,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   return (
     <div style={fieldStyle}>
-      {label !== undefined && (
+      {showLabel && (
         <Label htmlFor={inputId} style={labelStyle}>
           {label}
         </Label>
@@ -131,8 +146,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           ref={forwardedRef}
           id={inputId}
           disabled={disabled}
-          aria-invalid={hasError || undefined}
-          aria-describedby={hasError ? errorId : undefined}
+          aria-invalid={ariaInvalidProp ?? (hasError || undefined)}
+          aria-describedby={ariaDescribedByProp ?? describedBy}
           style={inputStyle}
           onFocus={(event: FocusEvent<HTMLInputElement>) => {
             setFocused(true);
@@ -145,7 +160,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           {...rest}
         />
       </div>
-      {hasError && (
+      {showOwnError && (
         <span id={errorId} role="alert" style={errorStyle}>
           {error}
         </span>

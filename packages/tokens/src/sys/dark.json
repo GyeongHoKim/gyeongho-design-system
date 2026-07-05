@@ -37,6 +37,7 @@
         "secondary": { "$value": "{ref.palette.gray.300}" },
         "disabled": { "$value": "{ref.palette.gray.500}" },
         "link": { "$value": "{ref.palette.brand.200}" },
+        "danger": { "$value": "{ref.palette.danger.200}" },
         "onPrimary": { "$value": "{ref.palette.white}" },
         "onDanger": { "$value": "{ref.palette.white}" },
         "onSuccess": { "$value": "{ref.palette.white}" },

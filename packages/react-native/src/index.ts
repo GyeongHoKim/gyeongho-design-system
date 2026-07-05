@@ -20,6 +20,8 @@ export type {
   CheckboxGroupProps,
 } from './components/CheckboxGroup.js';
 export { CheckboxGroup } from './components/CheckboxGroup.js';
+export type { FormFieldProps } from './components/FormField.js';
+export { FormField } from './components/FormField.js';
 export type { IconProps, IconSize } from './components/Icon.js';
 export { Icon } from './components/Icon.js';
 export type { InputProps } from './components/Input.js';
