@@ -1,6 +1,6 @@
 {
   "name": "@ghds/storybook-react-native",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "description": "Web-based Storybook for @ghds/react-native (react-native-web).",
   "license": "MIT",
