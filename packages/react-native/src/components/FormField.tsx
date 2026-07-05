@@ -32,12 +32,13 @@ export interface FormFieldProps {
  * label.
  */
 export function FormField({ label, helperText, error, children, testID }: FormFieldProps) {
+  const hasLabel = label !== undefined && label !== '';
   const hasHelperText = helperText !== undefined && helperText !== '';
   const hasError = error !== undefined && error !== '';
 
   return (
     <Box testID={testID}>
-      {label !== undefined && (
+      {hasLabel && (
         <Text variant="label" color="textSecondary" paddingBottom="xs">
           {label}
         </Text>

@@ -147,7 +147,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           id={inputId}
           disabled={disabled}
           aria-invalid={ariaInvalidProp ?? (hasError || undefined)}
-          aria-describedby={ariaDescribedByProp ?? describedBy}
+          aria-describedby={
+            [ariaDescribedByProp, describedBy].filter(Boolean).join(' ') || undefined
+          }
           style={inputStyle}
           onFocus={(event: FocusEvent<HTMLInputElement>) => {
             setFocused(true);

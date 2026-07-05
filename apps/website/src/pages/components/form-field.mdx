@@ -109,8 +109,8 @@ error text explains what went wrong and how to fix it, after validation.
         { name: 'label', type: 'string', description: 'Visible label for the wrapped control.' },
         { name: 'helper-text', type: 'string', description: 'Non-error descriptive text (property: helperText).' },
         { name: 'error', type: 'string', description: 'Error message. Rendered with role="alert" when set; also sets aria-invalid on the slotted control.' },
-        { name: 'helperId', type: 'string (readonly getter)', description: 'Computed as `${for}-helper`.' },
-        { name: 'errorId', type: 'string (readonly getter)', description: 'Computed as `${for}-error`.' },
+        { name: 'helperId', type: 'string (readonly getter)', description: 'Computed as `${baseId}-helper`, where `baseId` is `for` if set, otherwise an internally generated id.' },
+        { name: 'errorId', type: 'string (readonly getter)', description: 'Computed as `${baseId}-error`, where `baseId` is `for` if set, otherwise an internally generated id.' },
       ],
     },
     {

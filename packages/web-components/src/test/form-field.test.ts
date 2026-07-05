@@ -128,4 +128,49 @@ describe('gh-form-field', () => {
     await el.updateComplete;
     expect(el.querySelector('#second')?.getAttribute('aria-invalid')).toBe('true');
   });
+
+  it('associates the label with the slotted control even when `for` is unset', async () => {
+    const el = new GhFormField();
+    el.label = 'Email';
+    el.innerHTML = '<input />';
+    await mount(el);
+    const input = el.querySelector('input');
+    const label = el.shadowRoot?.querySelector('label');
+    expect(input?.id).not.toBe('');
+    expect(label?.getAttribute('for')).toBe(input?.id);
+  });
+
+  it('refreshes the assigned control id when `for` changes after mount', async () => {
+    const el = new GhFormField();
+    el.for = 'first-id';
+    el.innerHTML = '<input />';
+    await mount(el);
+    expect(el.querySelector('input')?.id).toBe('first-id');
+
+    el.for = 'second-id';
+    await el.updateComplete;
+    expect(el.querySelector('input')?.id).toBe('second-id');
+  });
+
+  it('merges its own describedby ids into an existing aria-describedby instead of replacing it', async () => {
+    const el = new GhFormField();
+    el.for = 'email';
+    el.error = 'Required';
+    el.innerHTML = '<input aria-describedby="external-hint" />';
+    await mount(el);
+    const input = el.querySelector('input');
+    expect(input?.getAttribute('aria-describedby')).toBe('external-hint email-error');
+
+    el.error = '';
+    await el.updateComplete;
+    expect(el.querySelector('input')?.getAttribute('aria-describedby')).toBe('external-hint');
+  });
+
+  it('preserves an externally set aria-invalid when it never asserts an error itself', async () => {
+    const el = new GhFormField();
+    el.for = 'email';
+    el.innerHTML = '<input aria-invalid="true" />';
+    await mount(el);
+    expect(el.querySelector('input')?.getAttribute('aria-invalid')).toBe('true');
+  });
 });

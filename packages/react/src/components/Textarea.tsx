@@ -197,7 +197,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
           value={value}
           disabled={disabled}
           aria-invalid={ariaInvalidProp ?? (hasError || undefined)}
-          aria-describedby={ariaDescribedByProp ?? describedBy}
+          aria-describedby={
+            [ariaDescribedByProp, describedBy].filter(Boolean).join(' ') || undefined
+          }
           style={textareaStyle}
           onChange={handleChange}
           onFocus={(event: FocusEvent<HTMLTextAreaElement>) => {

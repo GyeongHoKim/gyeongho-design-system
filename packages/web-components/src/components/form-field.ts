@@ -1,5 +1,5 @@
 import { css, html, LitElement, nothing, type PropertyValues } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 
 let formFieldIdCounter = 0;
 
@@ -74,8 +74,25 @@ export class GhFormField extends LitElement {
 
   private readonly internalId = `gh-form-field-${++formFieldIdCounter}`;
 
+  /** The slotted control's actual id, once known — see `syncSlottedControl`. */
+  @state() private controlId: string | null = null;
+  /** The id `syncSlottedControl` itself last assigned, so a later sync can tell
+   *  "still ours, safe to refresh" apart from "consumer set their own after us". */
+  private lastAssignedId: string | undefined;
+  /** The describedby ids `syncSlottedControl` itself last added, so a later
+   *  sync can strip only those and preserve anything else already present. */
+  private ownDescribedByIds: string[] = [];
+  /** Whether `syncSlottedControl` itself is the one currently asserting `aria-invalid`. */
+  private weSetAriaInvalid = false;
+
   private get baseId(): string {
     return this.for || this.internalId;
+  }
+
+  /** Id the rendered `<label for>` should point at — the slotted control's real
+   *  id once known, falling back to `baseId` before the first sync runs. */
+  private get labelForId(): string {
+    return this.controlId ?? this.baseId;
   }
 
   /** Id of the rendered helper-text element. */
@@ -116,27 +133,52 @@ export class GhFormField extends LitElement {
   private syncSlottedControl(): void {
     const control = this.slottedControl;
     if (!control) {
+      this.controlId = null;
       return;
     }
-    if (this.for && !control.id) {
-      control.id = this.for;
+
+    // Assign `baseId` unless the control already carries its own id we didn't
+    // set — that's a consumer-chosen id (e.g. targeted elsewhere) and must be
+    // left alone. An id we previously assigned is fair game to refresh (e.g.
+    // `for` changed after mount), since it's not consumer-chosen.
+    if (!control.id || control.id === this.lastAssignedId) {
+      control.id = this.baseId;
+      this.lastAssignedId = this.baseId;
     }
-    const describedByIds: string[] = [];
+    this.controlId = control.id;
+
+    // Merge our helper/error ids into any existing aria-describedby instead
+    // of overwriting it — a consumer may already point it at something else
+    // (e.g. a tooltip). Only the ids *we* previously added are ever removed.
+    const ownIds: string[] = [];
     if (this.helperText !== '') {
-      describedByIds.push(this.helperId);
+      ownIds.push(this.helperId);
     }
     if (this.error !== '') {
-      describedByIds.push(this.errorId);
+      ownIds.push(this.errorId);
     }
-    if (describedByIds.length > 0) {
-      control.setAttribute('aria-describedby', describedByIds.join(' '));
+    const externalIds = (control.getAttribute('aria-describedby') ?? '')
+      .split(' ')
+      .filter(
+        (describedById) => describedById !== '' && !this.ownDescribedByIds.includes(describedById),
+      );
+    const mergedIds = [...externalIds, ...ownIds];
+    if (mergedIds.length > 0) {
+      control.setAttribute('aria-describedby', mergedIds.join(' '));
     } else {
       control.removeAttribute('aria-describedby');
     }
+    this.ownDescribedByIds = ownIds;
+
+    // Same non-destructive principle for aria-invalid: only touch it while
+    // asserting an error, or clearing an assertion we made ourselves —
+    // never clobber a value a consumer set independently.
     if (this.error !== '') {
       control.setAttribute('aria-invalid', 'true');
-    } else {
+      this.weSetAriaInvalid = true;
+    } else if (this.weSetAriaInvalid) {
       control.removeAttribute('aria-invalid');
+      this.weSetAriaInvalid = false;
     }
   }
 
@@ -144,7 +186,7 @@ export class GhFormField extends LitElement {
     const hasHelperText = this.helperText !== '';
     const hasError = this.error !== '';
     return html`
-      ${this.label ? html`<label for=${this.for || nothing}>${this.label}</label>` : nothing}
+      ${this.label ? html`<label for=${this.labelForId}>${this.label}</label>` : nothing}
       <slot></slot>
       ${
         hasHelperText

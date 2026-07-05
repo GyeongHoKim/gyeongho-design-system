@@ -61,7 +61,7 @@ export function FormField({ label, helperText, error, id, children }: FormFieldP
     return ids;
   }, [hasHelperText, hasError, helperId, errorId]);
 
-  const hasLabel = label !== undefined;
+  const hasLabel = label !== undefined && label !== '';
 
   const contextValue = useMemo<FormFieldContextValue>(
     () => ({ id: fieldId, describedByIds, invalid: hasError, hasLabel }),
@@ -101,7 +101,7 @@ export function FormField({ label, helperText, error, id, children }: FormFieldP
 
   return (
     <div style={fieldStyle}>
-      {label !== undefined && (
+      {hasLabel && (
         <Label htmlFor={fieldId} style={labelStyle}>
           {label}
         </Label>
