@@ -123,6 +123,27 @@ function buildTheme(t: Tokens) {
       switchThumbColorDisabled: t.comp.switch.thumb.color.disabled,
       switchTextLabel: t.comp.switch.text.label,
       switchTextDisabled: t.comp.switch.text.disabled,
+
+      // comp.select colors
+      selectTriggerBgDefault: t.comp.select.trigger.bg.default,
+      selectTriggerBgDisabled: t.comp.select.trigger.bg.disabled,
+      selectTriggerStrokeDefault: t.comp.select.trigger.stroke.default,
+      selectTriggerStrokeHover: t.comp.select.trigger.stroke.hover,
+      selectTriggerStrokeFocus: t.comp.select.trigger.stroke.focus,
+      selectTriggerStrokeDisabled: t.comp.select.trigger.stroke.disabled,
+      selectTriggerTextDefault: t.comp.select.trigger.text.default,
+      selectTriggerTextPlaceholder: t.comp.select.trigger.text.placeholder,
+      selectTriggerTextDisabled: t.comp.select.trigger.text.disabled,
+      selectTriggerTextLabel: t.comp.select.trigger.text.label,
+      selectPanelBg: t.comp.select.panel.bg,
+      selectPanelStroke: t.comp.select.panel.stroke,
+      selectOptionBgDefault: t.comp.select.option.bg.default,
+      selectOptionBgHighlighted: t.comp.select.option.bg.highlighted,
+      selectOptionBgSelected: t.comp.select.option.bg.selected,
+      selectOptionBgSelectedHover: t.comp.select.option.bg.selectedHover,
+      selectOptionTextDefault: t.comp.select.option.text.default,
+      selectOptionTextSelected: t.comp.select.option.text.selected,
+      selectOptionTextDisabled: t.comp.select.option.text.disabled,
     },
     spacing: {
       none: t.sys.spacing.none,
@@ -185,6 +206,11 @@ function buildTheme(t: Tokens) {
     switchSketch: {
       roughness: t.comp.switch.sketch.roughness,
       bowing: t.comp.switch.sketch.bowing,
+    },
+    selectSketch: {
+      roughness: t.comp.select.sketch.roughness,
+      bowing: t.comp.select.sketch.bowing,
+      elevation: t.comp.select.sketch.elevation,
     },
   });
 }

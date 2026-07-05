@@ -16,6 +16,12 @@ export {
   type RadioGroupProps,
 } from './components/RadioGroup.js';
 export {
+  Select,
+  SelectOption,
+  type SelectOptionProps,
+  type SelectProps,
+} from './components/Select.js';
+export {
   type FillRendering,
   SketchSurface,
   type SketchSurfaceProps,
