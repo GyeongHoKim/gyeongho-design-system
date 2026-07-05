@@ -1,0 +1,19 @@
+---
+// Live demo of `<gh-textarea>`. Shows `required` (its native constraint-validation
+// prop) instead of an error state — gh-textarea has no error/invalid prop today.
+---
+
+<div class="demo-stack">
+  <gh-textarea label="Bio" placeholder="Tell us about yourself"></gh-textarea>
+  <gh-textarea
+    label="Message"
+    autoresize
+    value="This textarea grows to fit its content. Add more lines and watch it expand."
+  ></gh-textarea>
+  <gh-textarea label="Feedback" required></gh-textarea>
+  <gh-textarea label="Disabled" disabled value="Can't edit this"></gh-textarea>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

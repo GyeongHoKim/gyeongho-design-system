@@ -1,0 +1,153 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Textarea
+description: A multi-line hand-drawn text field with an optional label, error message, and auto-resize.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import TextareaDemoReact from '../../components/demos/TextareaDemo.tsx';
+import TextareaDemoLit from '../../components/demos/TextareaDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A multi-line text field for collecting longer, free-form data, with an optional visible label,
+(on React) an error message, and an opt-in `autoResize` mode that grows the field to fit its
+content instead of scrolling.
+
+## Anatomy
+
+An optional label above a sketchy-outlined text box; on React, an error message renders below the
+box as a `role="alert"` element when `error` is set. The native resize handle is always disabled —
+it visually collides with the hand-drawn border, so growth (when `autoResize` is set) is the only
+way the box changes size.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Default', present: true },
+    { name: 'Focused', present: true, note: 'Stroke color swaps to a focus token.' },
+    { name: 'Disabled', present: true },
+    {
+      name: 'Error / invalid',
+      present: true,
+      note: 'React only — aria-invalid + aria-describedby + role="alert". Not implemented on Web Components or React Native, matching Input.',
+    },
+    {
+      name: 'Auto-resize',
+      present: true,
+      note: 'Opt-in via autoResize. Measures scrollHeight (or onContentSizeChange on React Native) in JS rather than CSS field-sizing, for cross-browser determinism.',
+    },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+Web Components instead has `required` (native constraint validation via `ElementInternals`) —
+React and React Native don't expose that as a prop at all. These are two separate, real gaps, not
+documentation omissions — same platform split as Input.
+
+## Usage
+
+<DoDont
+  do={[
+    'Use Textarea for free-form, multi-line input (comments, bios, feedback) — use Input for a single line of text.',
+    'Set autoResize for short-to-medium free-form fields where scrolling inside a fixed box would hide content the user just typed.',
+  ]}
+  dont={[
+    "Don't rely on placeholder text as the only accessible name — it disappears once the user types.",
+    "Don't expect autoResize to cap growth — v1 has no minRows/maxRows or a max-height-with-scroll option; the box grows to fit all typed content.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: `aria-invalid` + `aria-describedby` (pointing at the error `<span role="alert">`) +
+  Radix `Label`/`htmlFor` association.
+- **Web Components**: `label`/`for` association; `aria-label` falls back to the placeholder when no
+  label is set. No invalid-state ARIA exists today.
+- **React Native**: `label` is required (there is no separate label element on RN) and doubles as
+  `accessibilityLabel`; `accessibilityState={{disabled}}` has no error/invalid concept.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
+
+## Content
+
+The label names the data being collected ("Bio", "Feedback"), not an action — contrast with
+Button, whose label names an action. Error messages state what's wrong and how to fix it.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible label, associated via Radix Label.' },
+        { name: 'error', type: 'string', description: 'Error message. When set, marks the field invalid and announces it.' },
+        { name: 'autoResize', type: 'boolean', default: 'false', description: 'Grows the field to fit its content instead of scrolling.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables editing.' },
+        { name: '...rest', type: 'TextareaHTMLAttributes', description: 'All other native <textarea> attributes (value, onChange, rows, etc.) pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'string', default: "''", description: 'Current field value, mirrored to the form value.' },
+        { name: 'name', type: 'string', description: 'Submitted control name.' },
+        { name: 'placeholder', type: 'string', description: 'Placeholder text.' },
+        { name: 'label', type: 'string', description: 'Optional visible label, also the accessible name.' },
+        { name: 'rows', type: 'number', default: '2', description: 'Visible row count — also the minimum height once measured.' },
+        { name: 'autoResize', type: 'boolean', default: 'false', description: 'Grows the field to fit its content instead of scrolling. Reflected as autoresize.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables editing and form participation.' },
+        { name: 'required', type: 'boolean', default: 'false', description: 'Native constraint validation. No error prop exists.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible, accessible label — required (there is no separate label element on RN).' },
+        { name: 'value', type: 'string', description: 'Controlled text value.' },
+        { name: 'onChangeText', type: '(text: string) => void', description: 'Change handler.' },
+        { name: 'placeholder', type: 'string', description: 'Placeholder text.' },
+        { name: 'rows', type: 'number', default: '2', description: 'Visible row count — also the minimum height once measured. RN has no native rows attribute.' },
+        { name: 'autoResize', type: 'boolean', default: 'false', description: 'Grows the field to fit its content via onContentSizeChange. No error prop exists.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables editing.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React's demo includes the error state; the Web Components demo intentionally does not (it has no
+error prop) and shows `required` instead. Both demos include an `autoResize` example.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <TextareaDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <TextareaDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Textarea } from '@ghds/react-native';
+
+<Textarea
+  label="Bio"
+  placeholder="Tell us about yourself"
+  value={bio}
+  onChangeText={setBio}
+  autoResize
+/>;
+```

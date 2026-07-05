@@ -21,6 +21,7 @@ export {
   type SketchSurfaceProps,
 } from './components/SketchSurface.js';
 export { Switch, type SwitchProps } from './components/Switch.js';
+export { Textarea, type TextareaProps } from './components/Textarea.js';
 export {
   type SketchShape,
   type SketchSize,
