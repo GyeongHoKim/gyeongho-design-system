@@ -1,6 +1,6 @@
 {
   "name": "@ghds/website",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "description": "GHDS promotional + documentation site (Astro) — KRDS-style IA, token-driven style pages, and live React/Lit component demos.",
   "license": "MIT",
