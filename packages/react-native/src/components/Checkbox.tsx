@@ -12,7 +12,10 @@ import { Icon } from './Icon.js';
 export interface CheckboxProps {
   /** Visible, accessible label — required (there is no separate label element on RN). */
   label: string;
-  /** Controlled checked state. */
+  /**
+   * Controlled checked state. Ignored when rendered inside a `CheckboxGroup`
+   * with `value` set — the group's own `value` array takes precedence.
+   */
   checked?: boolean;
   /** Initial checked state when uncontrolled. */
   defaultChecked?: boolean;

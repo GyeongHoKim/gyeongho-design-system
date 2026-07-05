@@ -51,6 +51,29 @@ describe('gh-radio-group', () => {
     expect(medium.checked).toBe(true);
   });
 
+  it('unchecks siblings when `checked` is set programmatically (no `change` event)', async () => {
+    const el = await mount(new GhRadioGroup());
+    el.innerHTML =
+      '<gh-radio name="size" value="sm" checked></gh-radio><gh-radio name="size" value="md"></gh-radio>';
+    await el.updateComplete;
+    const [small, medium] = Array.from(el.querySelectorAll<GhRadio>('gh-radio'));
+    if (!small || !medium) {
+      throw new Error('radios not rendered');
+    }
+    await small.updateComplete;
+    await medium.updateComplete;
+    expect(small.checked).toBe(true);
+
+    medium.checked = true;
+    await medium.updateComplete;
+    // The MutationObserver callback fires as a microtask after the attribute reflects.
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(small.checked).toBe(false);
+    expect(medium.checked).toBe(true);
+  });
+
   it('lays out slotted radios in a row when layout="row"', async () => {
     const el = await mount(new GhRadioGroup());
     el.layout = 'row';

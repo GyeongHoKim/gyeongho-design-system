@@ -1,5 +1,5 @@
 import { tokens } from '@ghds/tokens';
-import { type CSSProperties, createContext, type ReactNode } from 'react';
+import { type CSSProperties, createContext, type ReactNode, useMemo } from 'react';
 
 export interface CheckboxGroupContextValue {
   readonly value: string[];
@@ -14,7 +14,7 @@ export interface CheckboxGroupProps {
   /** Currently checked values. */
   value: string[];
   onValueChange: (value: string[]) => void;
-  /** Accessible name for the group (exposed via `aria-label`). */
+  /** Accessible name for the group, rendered as the `<fieldset>`'s `<legend>`. */
   label?: string;
   /** Direction to stack child checkboxes. Defaults to `'column'`. */
   layout?: 'row' | 'column';
@@ -51,11 +51,16 @@ export function CheckboxGroup({
     gap: tokens.sys.spacing.sm,
   };
 
+  const contextValue = useMemo(
+    () => ({ value, onValueChange, disabled }),
+    [value, onValueChange, disabled],
+  );
+
   return (
     <fieldset style={fieldsetStyle}>
       {label !== undefined && <legend>{label}</legend>}
       <div style={listStyle}>
-        <CheckboxGroupContext.Provider value={{ value, onValueChange, disabled }}>
+        <CheckboxGroupContext.Provider value={contextValue}>
           {children}
         </CheckboxGroupContext.Provider>
       </div>

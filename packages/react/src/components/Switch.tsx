@@ -16,7 +16,8 @@ import { mergeRefs } from '../lib/mergeRefs.js';
 import { toPx } from '../lib/units.js';
 import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
 
-export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface SwitchProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'role' | 'aria-checked'> {
   /** Visible label. Associated to the input via Radix `Label` for accessibility. */
   label?: string;
 }
@@ -176,6 +177,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
           />
         )}
         <input
+          {...rest}
           ref={ref}
           type="checkbox"
           role="switch"
@@ -201,7 +203,6 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
             setFocused(false);
             onBlur?.(event);
           }}
-          {...rest}
         />
       </span>
       {label !== undefined && (

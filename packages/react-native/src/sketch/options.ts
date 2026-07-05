@@ -43,6 +43,8 @@ const MIN_DIMENSION = 1;
 /**
  * Build the sketchy outline for a measured component.
  *
+ * `shape` selects the sketch-core primitive (`'rectangle'` | `'ellipse'`) used
+ * to trace the outline.
  * The shape is inset by `inset` px on every side so the (token-driven) stroke
  * width is not clipped at the component's bounds. Returns `null` when the
  * component has not been measured yet (or is degenerate), so the renderer can

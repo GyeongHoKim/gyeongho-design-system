@@ -68,7 +68,7 @@ export class GhRadioGroup extends LitElement {
 
   private uncheckSiblings(target: GhRadio): void {
     for (const radio of this.querySelectorAll<GhRadio>('gh-radio')) {
-      if (radio !== target) {
+      if (radio !== target && radio.name === target.name) {
         radio.checked = false;
       }
     }

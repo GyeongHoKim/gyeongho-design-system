@@ -30,4 +30,17 @@ describe('Switch', () => {
     fireEvent.click(screen.getByRole('switch', { name: 'Notifications' }));
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
+
+  it('reflects a controlled `checked` prop without toggling itself', () => {
+    const onCheckedChange = vi.fn();
+    renderWithTheme(
+      <Switch label="Notifications" checked={false} onCheckedChange={onCheckedChange} />,
+    );
+    const field = screen.getByRole('switch', { name: 'Notifications' });
+    expect(field).toHaveAttribute('aria-checked', 'false');
+    fireEvent.click(field);
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+    // The parent didn't update `checked`, so the rendered state doesn't change.
+    expect(field).toHaveAttribute('aria-checked', 'false');
+  });
 });

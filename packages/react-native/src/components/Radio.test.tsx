@@ -30,4 +30,26 @@ describe('Radio', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Small' }));
     expect(onCheckedChange).not.toHaveBeenCalled();
   });
+
+  it('reflects a controlled `checked` prop without toggling itself', () => {
+    const onCheckedChange = vi.fn();
+    renderWithTheme(
+      <Radio label="Small" value="sm" checked={false} onCheckedChange={onCheckedChange} />,
+    );
+    const field = screen.getByRole('radio', { name: 'Small' });
+    expect(field).toHaveAttribute('aria-checked', 'false');
+    fireEvent.click(field);
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+    // The parent didn't update `checked`, so the rendered state doesn't change.
+    expect(field).toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('does not call onCheckedChange when pressing an already-checked radio', () => {
+    const onCheckedChange = vi.fn();
+    renderWithTheme(
+      <Radio label="Small" value="sm" defaultChecked onCheckedChange={onCheckedChange} />,
+    );
+    fireEvent.click(screen.getByRole('radio', { name: 'Small' }));
+    expect(onCheckedChange).not.toHaveBeenCalled();
+  });
 });

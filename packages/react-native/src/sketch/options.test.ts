@@ -84,6 +84,16 @@ describe('buildOutline (ellipse)', () => {
     expect(unfilled?.fillPaths.length).toBe(0);
     expect(filled?.fillPaths.length).toBeGreaterThan(0);
   });
+
+  it('emits shadow paths only when elevation is positive', () => {
+    const flat = buildOutline('ellipse', { width: 24, height: 24 }, 2, { ...PARAMS, elevation: 0 });
+    const raised = buildOutline('ellipse', { width: 24, height: 24 }, 2, {
+      ...PARAMS,
+      elevation: 4,
+    });
+    expect(flat?.shadowPaths ?? []).toHaveLength(0);
+    expect(raised?.shadowPaths?.length ?? 0).toBeGreaterThan(0);
+  });
 });
 
 describe('makeSeed', () => {

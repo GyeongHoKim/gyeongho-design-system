@@ -53,7 +53,12 @@ export const OnOpaqueSurface: Story = {
   args: { label: 'On an opaque surface', checked: true },
   render: (args) => html`
     <div style="background: var(--sys-color-bg-surface); padding: var(--sys-spacing-lg);">
-      <gh-radio label=${args.label} value=${args.value} ?checked=${args.checked}></gh-radio>
+      <gh-radio
+        label=${args.label}
+        value=${args.value}
+        ?checked=${args.checked}
+        ?disabled=${args.disabled}
+      ></gh-radio>
     </div>
   `,
 };
@@ -65,7 +70,12 @@ export const OnOpaqueSurfaceDark: Story = {
       data-theme="dark"
       style="background: var(--sys-color-bg-surface); padding: var(--sys-spacing-lg);"
     >
-      <gh-radio label=${args.label} value=${args.value} ?checked=${args.checked}></gh-radio>
+      <gh-radio
+        label=${args.label}
+        value=${args.value}
+        ?checked=${args.checked}
+        ?disabled=${args.disabled}
+      ></gh-radio>
     </div>
   `,
 };

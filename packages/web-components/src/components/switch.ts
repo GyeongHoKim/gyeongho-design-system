@@ -133,9 +133,17 @@ export class GhSwitch extends SketchyBase {
 
   private readonly internals: ElementInternals = this.attachInternals();
   private readonly switchId = `gh-switch-${Math.random().toString(36).slice(2)}`;
+  // Captured once on first render — the authored `checked` state, restored by
+  // `formResetCallback`, matching native `<input type="checkbox" checked>` reset behavior.
+  private defaultChecked = false;
 
   protected override get frame(): HTMLElement {
     return this.trackEl ?? this;
+  }
+
+  protected override firstUpdated(): void {
+    super.firstUpdated();
+    this.defaultChecked = this.checked;
   }
 
   get form(): HTMLFormElement | null {
@@ -190,7 +198,7 @@ export class GhSwitch extends SketchyBase {
   };
 
   formResetCallback(): void {
-    this.checked = false;
+    this.checked = this.defaultChecked;
   }
 
   formDisabledCallback(disabled: boolean): void {

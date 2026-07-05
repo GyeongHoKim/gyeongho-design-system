@@ -1,5 +1,5 @@
 import { tokens } from '@ghds/tokens';
-import { type CSSProperties, createContext, type ReactNode, useId } from 'react';
+import { type CSSProperties, createContext, type ReactNode, useId, useMemo } from 'react';
 
 export interface RadioGroupContextValue {
   readonly name: string;
@@ -60,13 +60,16 @@ export function RadioGroup({
     gap: tokens.sys.spacing.sm,
   };
 
+  const contextValue = useMemo(
+    () => ({ name: groupName, value, onValueChange, disabled }),
+    [groupName, value, onValueChange, disabled],
+  );
+
   return (
     <fieldset style={fieldsetStyle}>
       {label !== undefined && <legend>{label}</legend>}
-      <div role="radiogroup" aria-label={label} style={listStyle}>
-        <RadioGroupContext.Provider value={{ name: groupName, value, onValueChange, disabled }}>
-          {children}
-        </RadioGroupContext.Provider>
+      <div style={listStyle}>
+        <RadioGroupContext.Provider value={contextValue}>{children}</RadioGroupContext.Provider>
       </div>
     </fieldset>
   );

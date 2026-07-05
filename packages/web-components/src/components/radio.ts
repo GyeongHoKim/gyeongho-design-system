@@ -113,7 +113,7 @@ export class GhRadio extends SketchyBase {
   /** Disables interaction and form participation. */
   @property({ type: Boolean, reflect: true }) disabled = false;
   /** Submitted control name — repeat the same name across a group. */
-  @property({ type: String }) name = '';
+  @property({ type: String, reflect: true }) name = '';
   /** This radio's own value. */
   @property({ type: String }) value = '';
   /** Optional visible label, also the accessible name. */
@@ -124,9 +124,17 @@ export class GhRadio extends SketchyBase {
 
   private readonly internals: ElementInternals = this.attachInternals();
   private readonly radioId = `gh-radio-${Math.random().toString(36).slice(2)}`;
+  // Captured once on first render — the authored `checked` state, restored by
+  // `formResetCallback`, matching native `<input type="radio" checked>` reset behavior.
+  private defaultChecked = false;
 
   protected override get frame(): HTMLElement {
     return this.ringEl ?? this;
+  }
+
+  protected override firstUpdated(): void {
+    super.firstUpdated();
+    this.defaultChecked = this.checked;
   }
 
   get form(): HTMLFormElement | null {
@@ -183,7 +191,7 @@ export class GhRadio extends SketchyBase {
   };
 
   formResetCallback(): void {
-    this.checked = false;
+    this.checked = this.defaultChecked;
   }
 
   formDisabledCallback(disabled: boolean): void {

@@ -19,7 +19,7 @@ function ControlledGroup() {
 describe('RadioGroup', () => {
   it('exposes an accessible group name', () => {
     render(<ControlledGroup />);
-    expect(screen.getByRole('radiogroup', { name: 'Size' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Size' })).toBeInTheDocument();
   });
 
   it('shares one `name` across every radio so only one can be checked', () => {

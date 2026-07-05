@@ -114,7 +114,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
     ref: sketchRef,
     drawable,
     size,
-  } = useSketch<HTMLDivElement>({
+  } = useSketch<HTMLInputElement>({
     shape: 'rectangle',
     roughness: checkbox.sketch.roughness,
     bowing: checkbox.sketch.bowing,
@@ -199,6 +199,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           ref={ref}
           type="checkbox"
           id={inputId}
+          value={value}
           checked={isChecked}
           disabled={isDisabled}
           style={inputStyle}

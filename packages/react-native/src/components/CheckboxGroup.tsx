@@ -1,4 +1,4 @@
-import { createContext, type ReactNode } from 'react';
+import { createContext, type ReactNode, useId, useMemo } from 'react';
 import type { ViewStyle } from 'react-native';
 import { Box, Text } from '../theme/primitives.js';
 
@@ -40,18 +40,23 @@ export function CheckboxGroup({
   children,
 }: CheckboxGroupProps) {
   const style: ViewStyle = { flexDirection: layout === 'row' ? 'row' : 'column' };
+  const labelId = useId();
+  const contextValue = useMemo(
+    () => ({ value, onValueChange, disabled }),
+    [value, onValueChange, disabled],
+  );
 
   return (
-    <Box accessibilityLabel={label}>
+    <Box accessibilityLabelledBy={label !== undefined ? labelId : undefined}>
       {label !== undefined && (
         <Box paddingBottom="xs">
-          <Text variant="label" color="textSecondary">
+          <Text variant="label" color="textSecondary" nativeID={labelId}>
             {label}
           </Text>
         </Box>
       )}
       <Box style={style} gap="sm">
-        <CheckboxGroupContext.Provider value={{ value, onValueChange, disabled }}>
+        <CheckboxGroupContext.Provider value={contextValue}>
           {children}
         </CheckboxGroupContext.Provider>
       </Box>
