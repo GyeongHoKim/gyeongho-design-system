@@ -11,5 +11,6 @@ export { GhInput } from './components/input.js';
 export { GhRadio } from './components/radio.js';
 export { GhRadioGroup } from './components/radio-group.js';
 export { GhSwitch } from './components/switch.js';
+export { GhTextarea } from './components/textarea.js';
 export type { SketchParams } from './sketchy-base.js';
 export { SketchyBase } from './sketchy-base.js';

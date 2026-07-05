@@ -1,0 +1,38 @@
+{
+  "comp": {
+    "textarea": {
+      "$description": "Tier 3 component tokens for the hand-drawn Textarea. References sys only.",
+      "bg": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.surface}" },
+        "disabled": { "$value": "{sys.color.bg.muted}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "focus": { "$value": "{sys.color.border.focus}" },
+        "danger": { "$value": "{sys.color.border.danger}" }
+      },
+      "text": {
+        "$type": "color",
+        "value": { "$value": "{sys.color.text.primary}" },
+        "placeholder": { "$value": "{sys.color.text.secondary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" },
+        "label": { "$value": "{sys.color.text.primary}" },
+        "danger": { "$value": "{sys.color.text.secondary}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.md}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

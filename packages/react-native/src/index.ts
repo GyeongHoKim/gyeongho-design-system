@@ -30,6 +30,8 @@ export type { RadioGroupContextValue, RadioGroupProps } from './components/Radio
 export { RadioGroup } from './components/RadioGroup.js';
 export type { SwitchProps } from './components/Switch.js';
 export { Switch } from './components/Switch.js';
+export type { TextareaProps } from './components/Textarea.js';
+export { Textarea } from './components/Textarea.js';
 export type { Size, SketchParams, SketchShape } from './sketch/options.js';
 export { buildOutline, makeSeed } from './sketch/options.js';
 export type { SketchBackgroundProps } from './sketch/SketchBackground.js';
