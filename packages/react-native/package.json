@@ -1,6 +1,6 @@
 {
   "name": "@ghds/react-native",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "React Native component library for GHDS — hand-drawn (sketchy) Button/Card/Input built with @shopify/restyle + react-native-svg, themed from @ghds/tokens.",
   "license": "MIT",
   "repository": {
