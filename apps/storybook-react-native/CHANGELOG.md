@@ -1,5 +1,12 @@
 # @ghds/storybook-react-native
 
+## 0.0.6
+
+### Patch Changes
+
+- Updated dependencies [498063b]
+  - @ghds/react-native@0.4.0
+
 ## 0.0.5
 
 ### Patch Changes
