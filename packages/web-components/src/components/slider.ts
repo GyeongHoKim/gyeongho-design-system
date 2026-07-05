@@ -196,10 +196,23 @@ export class GhSlider extends SketchyBase {
     }
   }
 
+  private railGeometry(
+    width: number,
+    height: number,
+  ): {
+    railY: number;
+    railWidth: number;
+    railHeight: number;
+  } {
+    return {
+      railY: (height - TRACK_HEIGHT) / 2 + INSET,
+      railWidth: width - INSET * 2,
+      railHeight: Math.max(1, TRACK_HEIGHT - INSET * 2),
+    };
+  }
+
   protected override sketch(width: number, height: number, options: SketchOptions): SketchDrawable {
-    const railY = (height - TRACK_HEIGHT) / 2 + INSET;
-    const railWidth = width - INSET * 2;
-    const railHeight = Math.max(1, TRACK_HEIGHT - INSET * 2);
+    const { railY, railWidth, railHeight } = this.railGeometry(width, height);
     return rectangle(INSET, railY, railWidth, railHeight, options);
   }
 
@@ -215,9 +228,7 @@ export class GhSlider extends SketchyBase {
     if (this.sketchWidth <= 0 || this.sketchHeight <= 0) {
       return nothing;
     }
-    const railY = (this.sketchHeight - TRACK_HEIGHT) / 2 + INSET;
-    const railWidth = this.sketchWidth - INSET * 2;
-    const railHeight = Math.max(1, TRACK_HEIGHT - INSET * 2);
+    const { railY, railWidth, railHeight } = this.railGeometry(this.sketchWidth, this.sketchHeight);
     const thumbCenterX = this.percent() * (this.sketchWidth - THUMB_SIZE) + THUMB_SIZE / 2;
     const fillWidth = Math.max(0, Math.min(railWidth, thumbCenterX - INSET));
     if (fillWidth <= 0) {
@@ -276,7 +287,8 @@ export class GhSlider extends SketchyBase {
   }
 
   protected override render(): unknown {
-    return html`<div class="track">
+    return html`${this.label ? html`<label for=${this.sliderId}>${this.label}</label>` : nothing}
+      <div class="track">
         ${this.renderSketch()} ${this.renderFill()} ${this.renderThumb()}
         <input
           id=${this.sliderId}
@@ -290,8 +302,7 @@ export class GhSlider extends SketchyBase {
           @input=${this.handleInput}
           @change=${this.handleChange}
         />
-      </div>
-      ${this.label ? html`<label for=${this.sliderId}>${this.label}</label>` : nothing}`;
+      </div>`;
   }
 }
 

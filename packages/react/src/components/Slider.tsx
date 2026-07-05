@@ -80,7 +80,14 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
 
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [internalValue, setInternalValue] = useState(() => Number(defaultValue ?? min));
+  // A real `<input type="range">` with neither a `value` nor `defaultValue`
+  // attribute defaults to the midpoint between min/max per the HTML spec —
+  // not `min` — so the JS-tracked fallback (driving the decorative
+  // rail/fill/thumb) must match, or the sketch would show the thumb at the
+  // wrong end until the first interaction corrects it.
+  const [internalValue, setInternalValue] = useState(() =>
+    defaultValue !== undefined ? Number(defaultValue) : (Number(min) + Number(max)) / 2,
+  );
 
   const currentValue = value !== undefined ? Number(value) : internalValue;
   const numericMin = Number(min);

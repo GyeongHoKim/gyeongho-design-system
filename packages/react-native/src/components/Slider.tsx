@@ -1,11 +1,23 @@
 import { ellipse, rectangle } from '@ghds/sketch-core';
 import { useTheme } from '@shopify/restyle';
-import { useCallback, useMemo, useState } from 'react';
+import { type ComponentProps, type ComponentType, useCallback, useMemo, useState } from 'react';
 import { type GestureResponderEvent, PanResponder } from 'react-native';
 import { SketchBackground } from '../sketch/SketchBackground.js';
 import { useSketch } from '../sketch/useSketch.js';
 import { Box, Text } from '../theme/primitives.js';
 import type { Theme } from '../theme/theme.js';
+
+/**
+ * `Box` (→ RN `View`) has no `onFocus`/`onBlur` in real React Native's types
+ * (those exist on `Pressable`/`TextInput`, not plain `View`), but
+ * react-native-web forwards them for any host component regardless
+ * (confirmed directly against RNW's `forwardedProps.focusProps` list) — used
+ * here to drive a visible focus ring on the web target now that the track is
+ * a real keyboard tab-stop.
+ */
+const FocusableBox = Box as unknown as ComponentType<
+  ComponentProps<typeof Box> & { onFocus?: () => void; onBlur?: () => void }
+>;
 
 /** Props for {@link Slider}. */
 export interface SliderProps {
@@ -58,7 +70,13 @@ export function Slider({
 }: SliderProps) {
   const theme = useTheme<Theme>();
   const [internalValue, setInternalValue] = useState(defaultValue ?? min);
-  const currentValue = value !== undefined ? value : internalValue;
+  const [focused, setFocused] = useState(false);
+  const rawValue = value !== undefined ? value : internalValue;
+  // Clamped once here so the rendered thumb/fill position and the announced
+  // aria-valuenow/accessibilityValue.now never disagree — a consumer-supplied
+  // `value` outside [min, max] would otherwise render clamped (via `percent`)
+  // while still announcing the raw, out-of-range number.
+  const currentValue = Math.min(max, Math.max(min, rawValue));
 
   const { onLayout, size, seed } = useSketch({
     shape: 'rectangle',
@@ -154,7 +172,9 @@ export function Slider({
     : theme.colors.sliderThumbBgDefault;
   const thumbStroke = disabled
     ? theme.colors.sliderThumbStrokeDisabled
-    : theme.colors.sliderThumbStrokeDefault;
+    : focused
+      ? theme.colors.sliderThumbStrokeFocus
+      : theme.colors.sliderThumbStrokeDefault;
 
   const clampToStep = useCallback(
     (raw: number): number => {
@@ -174,13 +194,20 @@ export function Slider({
   // measured origin was ready, snapping the thumb to the wrong value.
   const valueFromLocationX = useCallback(
     (locationX: number): number => {
-      if (size.width <= 0) {
+      // Inverts the exact mapping `thumbCenterX` uses to position the thumb
+      // (`percent * (size.width - thumbSize) + thumbSize / 2`) — the thumb's
+      // center travels only from `thumbSize / 2` to `size.width - thumbSize /
+      // 2`, not the full track width. Using a different domain here would
+      // mean touching directly under the rendered thumb doesn't reproduce
+      // the value that put it there, drifting worse near the track's ends.
+      const travelWidth = size.width - thumbSize;
+      if (travelWidth <= 0) {
         return currentValue;
       }
-      const ratio = locationX / size.width;
+      const ratio = Math.min(1, Math.max(0, (locationX - thumbSize / 2) / travelWidth));
       return clampToStep(min + ratio * (max - min));
     },
-    [size.width, currentValue, min, max, clampToStep],
+    [size.width, thumbSize, currentValue, min, max, clampToStep],
   );
 
   const commitValue = useCallback(
@@ -228,11 +255,13 @@ export function Slider({
       >
         {label}
       </Text>
-      <Box
+      <FocusableBox
         onLayout={onLayout}
         height={thumbSize}
         justifyContent="center"
         testID={testID}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         accessible
         // `role="slider"` (what `accessibilityRole="adjustable"` maps to on
         // react-native-web) is not one of RNW's auto-focusable roles
@@ -295,7 +324,7 @@ export function Slider({
             strokeWidth={theme.borderWidths.default}
           />
         )}
-      </Box>
+      </FocusableBox>
     </Box>
   );
 }
