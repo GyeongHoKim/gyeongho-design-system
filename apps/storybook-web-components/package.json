@@ -1,6 +1,6 @@
 {
   "name": "@ghds/storybook-web-components",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "description": "Storybook for @ghds/web-components — Button, Card, Input, Checkbox, CheckboxGroup, Radio, RadioGroup, Switch with interaction tests.",
   "license": "MIT",
