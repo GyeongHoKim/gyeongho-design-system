@@ -134,7 +134,7 @@ function contrast(a: string, b: string): number {
 // (`border.default`/`strong`/`subtle`) carry no contrast requirement and are
 // intentionally excluded from the required matrix.
 const BG_SURFACES = ['bg.canvas', 'bg.surface', 'bg.muted', 'bg.subtle'] as const;
-const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link'] as const;
+const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link', 'text.danger'] as const;
 const ICON_ROLES = ['icon.default', 'icon.muted'] as const;
 const BORDER_INFO_ROLES = ['border.focus', 'border.danger'] as const;
 

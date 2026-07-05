@@ -61,6 +61,7 @@ function buildTheme(t: Tokens) {
       textSecondary: t.sys.color.text.secondary,
       textDisabled: t.sys.color.text.disabled,
       textLink: t.sys.color.text.link,
+      textDanger: t.sys.color.text.danger,
 
       // sys borders
       borderDefault: t.sys.color.border.default,

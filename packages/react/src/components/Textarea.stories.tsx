@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
+import { FormField } from './FormField.js';
 import { Textarea } from './Textarea.js';
 
 const meta = {
@@ -65,4 +66,17 @@ export const TypingInteraction: Story = {
     await userEvent.type(field, 'Ada Lovelace');
     await expect(field).toHaveValue('Ada Lovelace');
   },
+};
+
+/**
+ * When wrapped in `FormField`, don't also pass `label`/`error` to `Textarea`
+ * directly — `FormField` owns rendering those, and `Textarea` reads its id/
+ * aria-invalid/aria-describedby from context instead.
+ */
+export const WrappedInFormField: Story = {
+  render: () => (
+    <FormField label="Bio" error="Bio is required">
+      <Textarea placeholder="Tell us about yourself" />
+    </FormField>
+  ),
 };

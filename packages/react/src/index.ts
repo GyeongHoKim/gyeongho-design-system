@@ -7,6 +7,11 @@ export {
   type CheckboxGroupContextValue,
   type CheckboxGroupProps,
 } from './components/CheckboxGroup.js';
+export {
+  FormField,
+  type FormFieldContextValue,
+  type FormFieldProps,
+} from './components/FormField.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
 export { Radio, type RadioProps } from './components/Radio.js';

@@ -6,11 +6,11 @@ import {
   type FocusEvent,
   forwardRef,
   type TextareaHTMLAttributes,
-  useId,
   useLayoutEffect,
   useRef,
   useState,
 } from 'react';
+import { useFormFieldWiring } from '../hooks/useFormFieldWiring.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -69,14 +69,20 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     onFocus,
     onBlur,
     onChange,
+    'aria-describedby': ariaDescribedByProp,
+    'aria-invalid': ariaInvalidProp,
     ...rest
   },
   forwardedRef,
 ) {
-  const reactId = useId();
-  const inputId = id ?? reactId;
-  const errorId = `${inputId}-error`;
-  const hasError = error !== undefined && error !== '';
+  const {
+    fieldId: inputId,
+    errorId,
+    hasError,
+    describedBy,
+    showLabel,
+    showOwnError,
+  } = useFormFieldWiring(id, label, error);
 
   const [focused, setFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -159,7 +165,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   };
 
   const errorStyle: CSSProperties = {
-    color: c.stroke.danger,
+    color: c.text.danger,
     fontFamily: tokens.sys.typography.caption.fontFamily,
     fontSize: tokens.sys.typography.caption.fontSize,
     fontWeight: tokens.sys.typography.caption.fontWeight,
@@ -170,7 +176,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
 
   return (
     <div style={fieldStyle}>
-      {label !== undefined && (
+      {showLabel && (
         <Label htmlFor={inputId} style={labelStyle}>
           {label}
         </Label>
@@ -190,8 +196,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
           id={inputId}
           value={value}
           disabled={disabled}
-          aria-invalid={hasError || undefined}
-          aria-describedby={hasError ? errorId : undefined}
+          aria-invalid={ariaInvalidProp ?? (hasError || undefined)}
+          aria-describedby={
+            [ariaDescribedByProp, describedBy].filter(Boolean).join(' ') || undefined
+          }
           style={textareaStyle}
           onChange={handleChange}
           onFocus={(event: FocusEvent<HTMLTextAreaElement>) => {
@@ -205,7 +213,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
           {...rest}
         />
       </div>
-      {hasError && (
+      {showOwnError && (
         <span id={errorId} role="alert" style={errorStyle}>
           {error}
         </span>

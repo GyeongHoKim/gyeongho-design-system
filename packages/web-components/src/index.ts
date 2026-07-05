@@ -4,6 +4,7 @@ export { GhButton } from './components/button.js';
 export { GhCard } from './components/card.js';
 export { GhCheckbox } from './components/checkbox.js';
 export { GhCheckboxGroup } from './components/checkbox-group.js';
+export { GhFormField } from './components/form-field.js';
 export type { GhIconSize } from './components/icon.js';
 export { GhIcon } from './components/icon.js';
 export type { GhInputType } from './components/input.js';
