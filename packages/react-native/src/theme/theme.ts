@@ -83,6 +83,46 @@ function buildTheme(t: Tokens) {
       buttonTextPrimary: t.comp.button.text.primary,
       buttonTextDanger: t.comp.button.text.danger,
       buttonTextDisabled: t.comp.button.text.disabled,
+
+      // comp.checkbox colors
+      checkboxBgUncheckedDefault: t.comp.checkbox.bg.unchecked.default,
+      checkboxBgUncheckedDisabled: t.comp.checkbox.bg.unchecked.disabled,
+      checkboxBgCheckedDefault: t.comp.checkbox.bg.checked.default,
+      checkboxBgCheckedHover: t.comp.checkbox.bg.checked.hover,
+      checkboxBgCheckedDisabled: t.comp.checkbox.bg.checked.disabled,
+      checkboxStrokeDefault: t.comp.checkbox.stroke.default,
+      checkboxStrokeHover: t.comp.checkbox.stroke.hover,
+      checkboxStrokeChecked: t.comp.checkbox.stroke.checked,
+      checkboxStrokeDisabled: t.comp.checkbox.stroke.disabled,
+      checkboxMark: t.comp.checkbox.mark,
+      checkboxTextLabel: t.comp.checkbox.text.label,
+      checkboxTextDisabled: t.comp.checkbox.text.disabled,
+
+      // comp.radio colors
+      radioBgDefault: t.comp.radio.bg.default,
+      radioBgDisabled: t.comp.radio.bg.disabled,
+      radioStrokeDefault: t.comp.radio.stroke.default,
+      radioStrokeHover: t.comp.radio.stroke.hover,
+      radioStrokeChecked: t.comp.radio.stroke.checked,
+      radioStrokeDisabled: t.comp.radio.stroke.disabled,
+      radioDotDefault: t.comp.radio.dot.default,
+      radioDotDisabled: t.comp.radio.dot.disabled,
+      radioTextLabel: t.comp.radio.text.label,
+      radioTextDisabled: t.comp.radio.text.disabled,
+
+      // comp.switch colors
+      switchBgOffDefault: t.comp.switch.bg.off.default,
+      switchBgOffDisabled: t.comp.switch.bg.off.disabled,
+      switchBgOnDefault: t.comp.switch.bg.on.default,
+      switchBgOnHover: t.comp.switch.bg.on.hover,
+      switchBgOnDisabled: t.comp.switch.bg.on.disabled,
+      switchStrokeDefault: t.comp.switch.stroke.default,
+      switchStrokeChecked: t.comp.switch.stroke.checked,
+      switchStrokeDisabled: t.comp.switch.stroke.disabled,
+      switchThumbColorDefault: t.comp.switch.thumb.color.default,
+      switchThumbColorDisabled: t.comp.switch.thumb.color.disabled,
+      switchTextLabel: t.comp.switch.text.label,
+      switchTextDisabled: t.comp.switch.text.disabled,
     },
     spacing: {
       none: t.sys.spacing.none,
@@ -133,6 +173,18 @@ function buildTheme(t: Tokens) {
     buttonSketch: {
       roughness: t.comp.button.sketch.roughness,
       bowing: t.comp.button.sketch.bowing,
+    },
+    checkboxSketch: {
+      roughness: t.comp.checkbox.sketch.roughness,
+      bowing: t.comp.checkbox.sketch.bowing,
+    },
+    radioSketch: {
+      roughness: t.comp.radio.sketch.roughness,
+      bowing: t.comp.radio.sketch.bowing,
+    },
+    switchSketch: {
+      roughness: t.comp.switch.sketch.roughness,
+      bowing: t.comp.switch.sketch.bowing,
     },
   });
 }

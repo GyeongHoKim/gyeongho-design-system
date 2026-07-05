@@ -30,6 +30,19 @@ describe('GHDS Restyle theme', () => {
     expect(lightTheme.buttonSketch.bowing).toBe(lightTokens.comp.button.sketch.bowing);
   });
 
+  it('derives checkbox/radio/switch colors and sketch params from their own comp tokens', () => {
+    expect(lightTheme.colors.checkboxBgCheckedDefault).toBe(
+      lightTokens.comp.checkbox.bg.checked.default,
+    );
+    expect(lightTheme.colors.radioDotDefault).toBe(lightTokens.comp.radio.dot.default);
+    expect(lightTheme.colors.switchThumbColorDefault).toBe(
+      lightTokens.comp.switch.thumb.color.default,
+    );
+    expect(lightTheme.checkboxSketch.roughness).toBe(lightTokens.comp.checkbox.sketch.roughness);
+    expect(lightTheme.radioSketch.bowing).toBe(lightTokens.comp.radio.sketch.bowing);
+    expect(lightTheme.switchSketch.roughness).toBe(lightTokens.comp.switch.sketch.roughness);
+  });
+
   it('light and dark themes share an identical structure', () => {
     const keys = (o: object): string[] => Object.keys(o).sort();
     expect(keys(lightTheme.colors)).toEqual(keys(darkTheme.colors));

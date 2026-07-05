@@ -1,0 +1,15 @@
+---
+// Live demo of `<gh-radio>` inside `<gh-radio-group>`. Registered as a
+// client-side island: the module script below imports the package, whose
+// `@customElement` side-effects define both custom elements.
+---
+
+<gh-radio-group label="Size">
+  <gh-radio label="Small" name="size" value="sm" checked></gh-radio>
+  <gh-radio label="Medium" name="size" value="md"></gh-radio>
+  <gh-radio label="Large" name="size" value="lg" disabled></gh-radio>
+</gh-radio-group>
+
+<script>
+  import '@ghds/web-components';
+</script>

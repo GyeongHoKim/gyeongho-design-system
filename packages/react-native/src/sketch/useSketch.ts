@@ -1,10 +1,18 @@
 import type { SketchDrawable } from '@ghds/sketch-core';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
-import { buildRectangleOutline, makeSeed, type Size, type SketchParams } from './options.js';
+import {
+  buildOutline,
+  makeSeed,
+  type Size,
+  type SketchParams,
+  type SketchShape,
+} from './options.js';
 
 /** Inputs to {@link useSketch}: token-derived sketch params + the stroke inset. */
 export interface UseSketchParams {
+  /** Primitive to draw. Defaults to `'rectangle'`. */
+  shape?: SketchShape;
   /** Inset (px) so the stroke is not clipped — usually the border width token. */
   inset: number;
   /** Point-jitter magnitude (`sketch.roughness` token). */
@@ -45,7 +53,16 @@ export interface UseSketchResult {
  * when the measured size or a sketch parameter actually changes.
  */
 export function useSketch(params: UseSketchParams): UseSketchResult {
-  const { inset, roughness, bowing, fillStyle, hachureGap, hachureAngle, elevation } = params;
+  const {
+    shape = 'rectangle',
+    inset,
+    roughness,
+    bowing,
+    fillStyle,
+    hachureGap,
+    hachureAngle,
+    elevation,
+  } = params;
 
   const seedRef = useRef<number | null>(null);
   if (seedRef.current === null) {
@@ -62,7 +79,7 @@ export function useSketch(params: UseSketchParams): UseSketchResult {
 
   const drawable = useMemo(
     () =>
-      buildRectangleOutline(size, inset, {
+      buildOutline(shape, size, inset, {
         seed,
         roughness,
         bowing,
@@ -71,7 +88,7 @@ export function useSketch(params: UseSketchParams): UseSketchResult {
         hachureAngle,
         elevation,
       }),
-    [size, inset, seed, roughness, bowing, fillStyle, hachureGap, hachureAngle, elevation],
+    [shape, size, inset, seed, roughness, bowing, fillStyle, hachureGap, hachureAngle, elevation],
   );
 
   return { onLayout, size, drawable, seed };

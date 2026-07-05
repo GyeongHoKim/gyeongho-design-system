@@ -47,6 +47,16 @@ class GhButton extends LitElement {
 
 Before starting work on a component, confirm the required tokens exist in `@ghds/tokens`. If they are missing, add them in a separate changeset before the component changeset.
 
+### Boolean toggle state — `ElementInternals.states`
+
+Form-associated components with genuine boolean toggle state (`gh-checkbox`, `gh-radio`,
+`gh-switch`) expose it two ways: a reflected boolean attribute (`checked`, `indeterminate`) for
+simple attribute-selector styling, **and** `internals.states` (`CustomStateSet`) for the
+spec-correct `:state(checked)`/`:state(indeterminate)` CSS pseudo-class hook consumers can style
+by without depending on the reflected attribute. Guard every `internals.states` call with
+optional chaining (`this.internals.states?.add(...)`) — the API isn't implemented in every
+environment yet (e.g. jsdom, used by this package's own tests).
+
 ---
 
 ## Testing

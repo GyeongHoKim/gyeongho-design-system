@@ -1,0 +1,40 @@
+{
+  "comp": {
+    "checkbox": {
+      "$description": "Tier 3 component tokens for the hand-drawn Checkbox. References sys only.",
+      "size": { "$type": "dimension", "$value": "{sys.icon.size.md}" },
+      "bg": {
+        "$type": "color",
+        "unchecked": {
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "disabled": { "$value": "{sys.color.bg.muted}" }
+        },
+        "checked": {
+          "default": { "$value": "{sys.color.bg.primary.default}" },
+          "hover": { "$value": "{sys.color.bg.primary.hover}" },
+          "disabled": { "$value": "{sys.color.bg.primary.disabled}" }
+        }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "hover": { "$value": "{sys.color.border.strong}" },
+        "checked": { "$value": "{sys.color.bg.primary.active}" },
+        "focus": { "$value": "{sys.color.border.focus}" },
+        "disabled": { "$value": "{sys.color.border.subtle}" }
+      },
+      "mark": { "$type": "color", "$value": "{sys.color.text.onPrimary}" },
+      "text": {
+        "$type": "color",
+        "label": { "$value": "{sys.color.text.primary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

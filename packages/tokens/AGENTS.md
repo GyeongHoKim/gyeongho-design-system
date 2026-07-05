@@ -122,8 +122,8 @@ comp.input.border.focus
    ```json
    { "comp.button.bg.primary": { "$value": "{sys.color.bg.brand}" } }
    ```
-3. Ensure the component file is included in the tokens build entry point.
-4. Run `pnpm build --filter @ghds/tokens`.
+3. Run `pnpm build --filter @ghds/tokens`. `src/comp/**/*.json` is globbed automatically by
+   `style-dictionary.config.js` and by the validation suite — no registration step is needed.
 
 ---
 

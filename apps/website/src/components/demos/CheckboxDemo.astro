@@ -1,0 +1,15 @@
+---
+// Live demo of `<gh-checkbox>`. Registered as a client-side island: the module
+// script below imports the package, whose `@customElement` side-effect
+// defines <gh-checkbox>.
+---
+
+<div class="demo-stack">
+  <gh-checkbox label="Subscribe to updates"></gh-checkbox>
+  <gh-checkbox label="Select all" indeterminate></gh-checkbox>
+  <gh-checkbox label="Disabled" disabled></gh-checkbox>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>
