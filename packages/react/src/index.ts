@@ -1,6 +1,11 @@
 export type { IconName } from '@ghds/icons';
 export { Avatar, type AvatarProps, type AvatarSize, initialsFrom } from './components/Avatar.js';
 export { Badge, type BadgeProps, type BadgeVariant } from './components/Badge.js';
+export {
+  Breadcrumb,
+  type BreadcrumbItem,
+  type BreadcrumbProps,
+} from './components/Breadcrumb.js';
 export { Button, type ButtonProps, type ButtonVariant } from './components/Button.js';
 export { Card, type CardProps } from './components/Card.js';
 export { Checkbox, type CheckboxProps } from './components/Checkbox.js';
@@ -16,6 +21,11 @@ export {
 } from './components/FormField.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
+export {
+  Pagination,
+  type PaginationProps,
+  paginationRange,
+} from './components/Pagination.js';
 export { Progress, type ProgressProps } from './components/Progress.js';
 export { Radio, type RadioProps } from './components/Radio.js';
 export {

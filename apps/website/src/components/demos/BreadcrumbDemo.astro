@@ -1,0 +1,17 @@
+---
+// Live demo of a three-level breadcrumb trail (Lit).
+---
+
+<gh-breadcrumb id="demo-breadcrumb"></gh-breadcrumb>
+
+<script>
+  import '@ghds/web-components';
+  const el = document.getElementById('demo-breadcrumb');
+  if (el) {
+    (el as HTMLElement & { items: unknown }).items = [
+      { label: 'Home', href: '#' },
+      { label: 'Components', href: '#' },
+      { label: 'Breadcrumb' },
+    ];
+  }
+</script>

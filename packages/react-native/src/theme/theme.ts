@@ -149,6 +149,22 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.pagination colors
+      paginationItemBgDefault: t.comp.pagination.item.bg.default,
+      paginationItemBgSelected: t.comp.pagination.item.bg.selected,
+      paginationItemBgDisabled: t.comp.pagination.item.bg.disabled,
+      paginationItemTextDefault: t.comp.pagination.item.text.default,
+      paginationItemTextSelected: t.comp.pagination.item.text.selected,
+      paginationItemTextDisabled: t.comp.pagination.item.text.disabled,
+      paginationItemStrokeDefault: t.comp.pagination.item.stroke.default,
+      paginationItemStrokeSelected: t.comp.pagination.item.stroke.selected,
+      paginationItemStrokeDisabled: t.comp.pagination.item.stroke.disabled,
+
+      // comp.breadcrumb colors
+      breadcrumbTextLink: t.comp.breadcrumb.text.link,
+      breadcrumbTextCurrent: t.comp.breadcrumb.text.current,
+      breadcrumbSeparator: t.comp.breadcrumb.separator,
+
       // comp.skeleton colors
       skeletonBg: t.comp.skeleton.bg,
       skeletonStroke: t.comp.skeleton.stroke,
@@ -301,6 +317,11 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.skeleton.sketch.roughness,
       bowing: t.comp.skeleton.sketch.bowing,
     },
+    paginationSketch: {
+      roughness: t.comp.pagination.sketch.roughness,
+      bowing: t.comp.pagination.sketch.bowing,
+    },
+    paginationSize: t.comp.pagination.size,
     skeletonRadius: t.comp.skeleton.radius,
     skeletonDuration: t.comp.skeleton.duration,
     // Dimmed opacity the pulse animates toward (sys.opacity.disabled).
