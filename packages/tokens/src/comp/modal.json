@@ -1,0 +1,30 @@
+{
+  "comp": {
+    "modal": {
+      "$description": "Tier 3 component tokens for the hand-drawn Modal/Dialog. References sys only.",
+      "scrim": {
+        "color": { "$type": "color", "$value": "{sys.color.bg.overlay}" },
+        "opacity": { "$type": "number", "$value": "{sys.opacity.scrim}" }
+      },
+      "panel": {
+        "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+        "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+        "shadow": { "$type": "shadow", "$value": "{sys.shadow.lg}" },
+        "radius": { "$type": "dimension", "$value": "{sys.radius.lg}" },
+        "padding": { "$type": "dimension", "$value": "{sys.spacing.lg}" },
+        "gap": { "$type": "dimension", "$value": "{sys.spacing.md}" }
+      },
+      "text": {
+        "$type": "color",
+        "title": { "$value": "{sys.color.text.primary}" },
+        "body": { "$value": "{sys.color.text.secondary}" }
+      },
+      "zIndex": { "$type": "number", "$value": "{sys.zIndex.modal}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

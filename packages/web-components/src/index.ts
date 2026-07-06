@@ -20,6 +20,7 @@ export type { GhInputType } from './components/input.js';
 export { GhInput } from './components/input.js';
 export type { GhMenuItem } from './components/menu.js';
 export { GhMenu } from './components/menu.js';
+export { GhModal } from './components/modal.js';
 export { GhPagination, paginationRange } from './components/pagination.js';
 export { GhPaginationItem } from './components/pagination-item.js';
 export { GhProgress } from './components/progress.js';

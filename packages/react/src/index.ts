@@ -27,6 +27,7 @@ export {
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
 export { Menu, type MenuItem, type MenuProps } from './components/Menu.js';
+export { Modal, type ModalProps } from './components/Modal.js';
 export {
   Pagination,
   type PaginationProps,

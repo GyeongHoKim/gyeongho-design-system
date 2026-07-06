@@ -36,6 +36,8 @@ export type { InputProps } from './components/Input.js';
 export { Input } from './components/Input.js';
 export type { MenuItem, MenuProps } from './components/Menu.js';
 export { Menu } from './components/Menu.js';
+export type { ModalProps } from './components/Modal.js';
+export { Modal } from './components/Modal.js';
 export type { PaginationProps } from './components/Pagination.js';
 export { Pagination, paginationRange } from './components/Pagination.js';
 export type { ProgressProps } from './components/Progress.js';

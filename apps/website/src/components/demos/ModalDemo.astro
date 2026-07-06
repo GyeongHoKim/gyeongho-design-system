@@ -1,0 +1,22 @@
+---
+// Live Modal demo (Lit).
+---
+
+<div style="padding: 24px;">
+  <gh-button id="demo-modal-open">Open dialog</gh-button>
+  <gh-modal id="demo-modal" heading="Delete item?">
+    <p style="margin-top: 0;">This action cannot be undone.</p>
+  </gh-modal>
+</div>
+
+<script>
+  import '@ghds/web-components';
+  const openBtn = document.getElementById('demo-modal-open');
+  const modal = document.getElementById('demo-modal') as (HTMLElement & { open: boolean }) | null;
+  openBtn?.addEventListener('click', () => {
+    if (modal) modal.open = true;
+  });
+  modal?.addEventListener('close', () => {
+    if (modal) modal.open = false;
+  });
+</script>

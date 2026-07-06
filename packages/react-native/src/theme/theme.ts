@@ -149,6 +149,13 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.modal colors
+      modalScrimColor: t.comp.modal.scrim.color,
+      modalPanelBg: t.comp.modal.panel.bg,
+      modalPanelStroke: t.comp.modal.panel.stroke,
+      modalTextTitle: t.comp.modal.text.title,
+      modalTextBody: t.comp.modal.text.body,
+
       // comp.menu colors
       menuTriggerBg: t.comp.menu.trigger.bg.default,
       menuTriggerStroke: t.comp.menu.trigger.stroke.default,
@@ -365,6 +372,11 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.menu.sketch.roughness,
       bowing: t.comp.menu.sketch.bowing,
     },
+    modalSketch: {
+      roughness: t.comp.modal.sketch.roughness,
+      bowing: t.comp.modal.sketch.bowing,
+    },
+    modalScrimOpacity: t.comp.modal.scrim.opacity,
     paginationSketch: {
       roughness: t.comp.pagination.sketch.roughness,
       bowing: t.comp.pagination.sketch.bowing,
