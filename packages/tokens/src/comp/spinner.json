@@ -1,0 +1,20 @@
+{
+  "comp": {
+    "spinner": {
+      "$description": "Tier 3 component tokens for the hand-drawn Spinner. References sys only.",
+      "indicator": { "$type": "color", "$value": "{sys.color.bg.primary.default}" },
+      "size": {
+        "$type": "dimension",
+        "sm": { "$value": "{sys.icon.size.sm}" },
+        "md": { "$value": "{sys.icon.size.md}" },
+        "lg": { "$value": "{sys.icon.size.lg}" }
+      },
+      "duration": { "$type": "duration", "$value": "{sys.animation.duration.slow}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

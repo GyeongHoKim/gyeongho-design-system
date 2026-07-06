@@ -1,4 +1,6 @@
 export type { IconName } from '@ghds/icons';
+export { Avatar, type AvatarProps, type AvatarSize, initialsFrom } from './components/Avatar.js';
+export { Badge, type BadgeProps, type BadgeVariant } from './components/Badge.js';
 export { Button, type ButtonProps, type ButtonVariant } from './components/Button.js';
 export { Card, type CardProps } from './components/Card.js';
 export { Checkbox, type CheckboxProps } from './components/Checkbox.js';
@@ -14,6 +16,7 @@ export {
 } from './components/FormField.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
+export { Progress, type ProgressProps } from './components/Progress.js';
 export { Radio, type RadioProps } from './components/Radio.js';
 export {
   RadioGroup,
@@ -32,6 +35,7 @@ export {
   type SketchSurfaceProps,
 } from './components/SketchSurface.js';
 export { Slider, type SliderProps } from './components/Slider.js';
+export { Spinner, type SpinnerProps, type SpinnerSize } from './components/Spinner.js';
 export { Switch, type SwitchProps } from './components/Switch.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
 export {

@@ -1,0 +1,21 @@
+{
+  "comp": {
+    "avatar": {
+      "$description": "Tier 3 component tokens for the hand-drawn Avatar. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.muted}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.secondary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "size": {
+        "$type": "dimension",
+        "sm": { "$value": "{sys.spacing.lg}" },
+        "md": { "$value": "{sys.spacing.xl}" },
+        "lg": { "$value": "{sys.spacing.2xl}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

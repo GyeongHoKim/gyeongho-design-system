@@ -9,6 +9,10 @@
 
 export { type IconName, iconNames } from '@ghds/icons';
 export { ThemeProvider } from '@shopify/restyle';
+export type { AvatarProps, AvatarSize } from './components/Avatar.js';
+export { Avatar, initialsFrom } from './components/Avatar.js';
+export type { BadgeProps, BadgeVariant } from './components/Badge.js';
+export { Badge } from './components/Badge.js';
 export type { ButtonProps, ButtonVariant } from './components/Button.js';
 export { Button } from './components/Button.js';
 export type { CardProps } from './components/Card.js';
@@ -26,6 +30,8 @@ export type { IconProps, IconSize } from './components/Icon.js';
 export { Icon } from './components/Icon.js';
 export type { InputProps } from './components/Input.js';
 export { Input } from './components/Input.js';
+export type { ProgressProps } from './components/Progress.js';
+export { Progress } from './components/Progress.js';
 export type { RadioProps } from './components/Radio.js';
 export { Radio } from './components/Radio.js';
 export type { RadioGroupContextValue, RadioGroupProps } from './components/RadioGroup.js';
@@ -34,6 +40,8 @@ export type { SelectOption, SelectProps } from './components/Select.js';
 export { Select } from './components/Select.js';
 export type { SliderProps } from './components/Slider.js';
 export { Slider } from './components/Slider.js';
+export type { SpinnerProps, SpinnerSize } from './components/Spinner.js';
+export { Spinner } from './components/Spinner.js';
 export type { SwitchProps } from './components/Switch.js';
 export { Switch } from './components/Switch.js';
 export type { TextareaProps } from './components/Textarea.js';

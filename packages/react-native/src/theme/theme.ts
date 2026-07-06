@@ -146,6 +146,40 @@ function buildTheme(t: Tokens) {
       selectOptionTextSelected: t.comp.select.option.text.selected,
       selectOptionTextDisabled: t.comp.select.option.text.disabled,
 
+      // comp.spinner colors
+      spinnerIndicator: t.comp.spinner.indicator,
+
+      // comp.progress colors
+      progressBgRail: t.comp.progress.bg.rail,
+      progressBgFill: t.comp.progress.bg.fill,
+      progressStrokeRail: t.comp.progress.stroke.rail,
+      progressStrokeFill: t.comp.progress.stroke.fill,
+
+      // comp.avatar colors
+      avatarBg: t.comp.avatar.bg,
+      avatarText: t.comp.avatar.text,
+      avatarStroke: t.comp.avatar.stroke,
+
+      // comp.badge colors
+      badgeBgNeutral: t.comp.badge.bg.neutral,
+      badgeBgPrimary: t.comp.badge.bg.primary,
+      badgeBgSuccess: t.comp.badge.bg.success,
+      badgeBgWarning: t.comp.badge.bg.warning,
+      badgeBgDanger: t.comp.badge.bg.danger,
+      badgeBgInfo: t.comp.badge.bg.info,
+      badgeTextNeutral: t.comp.badge.text.neutral,
+      badgeTextPrimary: t.comp.badge.text.primary,
+      badgeTextSuccess: t.comp.badge.text.success,
+      badgeTextWarning: t.comp.badge.text.warning,
+      badgeTextDanger: t.comp.badge.text.danger,
+      badgeTextInfo: t.comp.badge.text.info,
+      badgeStrokeNeutral: t.comp.badge.stroke.neutral,
+      badgeStrokePrimary: t.comp.badge.stroke.primary,
+      badgeStrokeSuccess: t.comp.badge.stroke.success,
+      badgeStrokeWarning: t.comp.badge.stroke.warning,
+      badgeStrokeDanger: t.comp.badge.stroke.danger,
+      badgeStrokeInfo: t.comp.badge.stroke.info,
+
       // comp.slider colors
       sliderBgRailDefault: t.comp.slider.bg.rail.default,
       sliderBgRailDisabled: t.comp.slider.bg.rail.disabled,
@@ -233,6 +267,38 @@ function buildTheme(t: Tokens) {
     sliderSketch: {
       roughness: t.comp.slider.sketch.roughness,
       bowing: t.comp.slider.sketch.bowing,
+    },
+    badgeSketch: {
+      roughness: t.comp.badge.sketch.roughness,
+      bowing: t.comp.badge.sketch.bowing,
+    },
+    avatarSketch: {
+      roughness: t.comp.avatar.sketch.roughness,
+      bowing: t.comp.avatar.sketch.bowing,
+    },
+    spinnerSketch: {
+      roughness: t.comp.spinner.sketch.roughness,
+      bowing: t.comp.spinner.sketch.bowing,
+    },
+    // Spinner diameters + spin duration (ms), read directly from `comp.spinner`.
+    spinnerSizes: {
+      sm: t.comp.spinner.size.sm,
+      md: t.comp.spinner.size.md,
+      lg: t.comp.spinner.size.lg,
+    },
+    spinnerDuration: t.comp.spinner.duration,
+    progressSketch: {
+      roughness: t.comp.progress.sketch.roughness,
+      bowing: t.comp.progress.sketch.bowing,
+    },
+    progressTrackHeight: t.comp.progress.track.height,
+    progressDuration: t.comp.progress.duration,
+    // Avatar diameters, read directly from `comp.avatar.size` (not the generic
+    // `spacing` scale) so a retarget of the avatar size tokens is picked up here.
+    avatarSizes: {
+      sm: t.comp.avatar.size.sm,
+      md: t.comp.avatar.size.md,
+      lg: t.comp.avatar.size.lg,
     },
     // Slider's track height/thumb size, read directly from `comp.slider` (not
     // the generic `spacing`/`iconSizes` scales) so a future retargeting of

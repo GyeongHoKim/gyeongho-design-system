@@ -1,0 +1,28 @@
+{
+  "comp": {
+    "progress": {
+      "$description": "Tier 3 component tokens for the hand-drawn Progress bar. References sys only.",
+      "track": {
+        "$type": "dimension",
+        "height": { "$value": "{sys.spacing.sm}" }
+      },
+      "bg": {
+        "$type": "color",
+        "rail": { "$value": "{sys.color.bg.muted}" },
+        "fill": { "$value": "{sys.color.bg.primary.default}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "rail": { "$value": "{sys.color.border.default}" },
+        "fill": { "$value": "{sys.color.bg.primary.hover}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.pill}" },
+      "duration": { "$type": "duration", "$value": "{sys.animation.duration.slow}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
