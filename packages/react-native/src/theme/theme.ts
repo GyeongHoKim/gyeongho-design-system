@@ -149,6 +149,20 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.accordion colors
+      accordionBg: t.comp.accordion.bg,
+      accordionStroke: t.comp.accordion.stroke,
+      accordionTextHeader: t.comp.accordion.text.header,
+      accordionTextContent: t.comp.accordion.text.content,
+      accordionIcon: t.comp.accordion.text.icon,
+
+      // comp.tabs colors
+      tabsTabBgSelected: t.comp.tabs.tab.bg.selected,
+      tabsTabTextDefault: t.comp.tabs.tab.text.default,
+      tabsTabTextSelected: t.comp.tabs.tab.text.selected,
+      tabsTabTextDisabled: t.comp.tabs.tab.text.disabled,
+      tabsTabStrokeSelected: t.comp.tabs.tab.stroke.selected,
+
       // comp.pagination colors
       paginationItemBgDefault: t.comp.pagination.item.bg.default,
       paginationItemBgSelected: t.comp.pagination.item.bg.selected,
@@ -317,6 +331,16 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.skeleton.sketch.roughness,
       bowing: t.comp.skeleton.sketch.bowing,
     },
+    tabsSketch: {
+      roughness: t.comp.tabs.sketch.roughness,
+      bowing: t.comp.tabs.sketch.bowing,
+    },
+    tabsGap: t.comp.tabs.gap,
+    accordionSketch: {
+      roughness: t.comp.accordion.sketch.roughness,
+      bowing: t.comp.accordion.sketch.bowing,
+    },
+    accordionGap: t.comp.accordion.gap,
     paginationSketch: {
       roughness: t.comp.pagination.sketch.roughness,
       bowing: t.comp.pagination.sketch.bowing,

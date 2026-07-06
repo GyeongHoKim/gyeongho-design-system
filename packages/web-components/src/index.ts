@@ -1,4 +1,7 @@
 export { type IconName, iconNames } from '@ghds/icons';
+export type { GhAccordionItemData } from './components/accordion.js';
+export { GhAccordion } from './components/accordion.js';
+export { GhAccordionItem } from './components/accordion-item.js';
 export type { GhAvatarSize } from './components/avatar.js';
 export { GhAvatar } from './components/avatar.js';
 export type { GhBadgeVariant } from './components/badge.js';
@@ -29,6 +32,9 @@ export { GhSlider } from './components/slider.js';
 export type { GhSpinnerSize } from './components/spinner.js';
 export { GhSpinner } from './components/spinner.js';
 export { GhSwitch } from './components/switch.js';
+export { GhTab } from './components/tab.js';
+export type { GhTabItem } from './components/tabs.js';
+export { GhTabs } from './components/tabs.js';
 export { GhTextarea } from './components/textarea.js';
 export type { SketchParams } from './sketchy-base.js';
 export { SketchyBase } from './sketchy-base.js';

@@ -1,0 +1,22 @@
+{
+  "comp": {
+    "accordion": {
+      "$description": "Tier 3 component tokens for the hand-drawn Accordion. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "text": {
+        "$type": "color",
+        "header": { "$value": "{sys.color.text.primary}" },
+        "content": { "$value": "{sys.color.text.secondary}" },
+        "icon": { "$value": "{sys.color.icon.default}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

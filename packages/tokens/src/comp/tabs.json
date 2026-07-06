@@ -1,0 +1,29 @@
+{
+  "comp": {
+    "tabs": {
+      "$description": "Tier 3 component tokens for the hand-drawn Tabs. References sys only.",
+      "tab": {
+        "bg": {
+          "$type": "color",
+          "selected": { "$value": "{sys.color.bg.muted}" }
+        },
+        "text": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.text.secondary}" },
+          "selected": { "$value": "{sys.color.text.primary}" },
+          "disabled": { "$value": "{sys.color.text.disabled}" }
+        },
+        "stroke": {
+          "$type": "color",
+          "selected": { "$value": "{sys.color.border.default}" }
+        }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

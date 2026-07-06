@@ -1,0 +1,23 @@
+---
+// Live Accordion demo, single-open (Lit).
+---
+
+<gh-accordion id="demo-accordion" style="max-width: 480px; display: block;"></gh-accordion>
+
+<script>
+  import '@ghds/web-components';
+  const el = document.getElementById('demo-accordion');
+  if (el) {
+    const acc = el as HTMLElement & { items: unknown; type: string; value: string[] };
+    acc.type = 'single';
+    acc.value = ['shipping'];
+    acc.items = [
+      { value: 'shipping', label: 'Shipping', content: 'Ships in 2–3 business days.' },
+      { value: 'returns', label: 'Returns', content: 'Free returns within 30 days.' },
+      { value: 'warranty', label: 'Warranty', content: 'Covered for one year.' },
+    ];
+    el.addEventListener('value-change', (e) => {
+      acc.value = (e as CustomEvent<string[]>).detail;
+    });
+  }
+</script>

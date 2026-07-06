@@ -9,6 +9,8 @@
 
 export { type IconName, iconNames } from '@ghds/icons';
 export { ThemeProvider } from '@shopify/restyle';
+export type { AccordionItem, AccordionProps } from './components/Accordion.js';
+export { Accordion } from './components/Accordion.js';
 export type { AvatarProps, AvatarSize } from './components/Avatar.js';
 export { Avatar, initialsFrom } from './components/Avatar.js';
 export type { BadgeProps, BadgeVariant } from './components/Badge.js';
@@ -50,6 +52,8 @@ export type { SpinnerProps, SpinnerSize } from './components/Spinner.js';
 export { Spinner } from './components/Spinner.js';
 export type { SwitchProps } from './components/Switch.js';
 export { Switch } from './components/Switch.js';
+export type { TabItem, TabsProps } from './components/Tabs.js';
+export { Tabs } from './components/Tabs.js';
 export type { TextareaProps } from './components/Textarea.js';
 export { Textarea } from './components/Textarea.js';
 export type { Size, SketchParams, SketchShape } from './sketch/options.js';

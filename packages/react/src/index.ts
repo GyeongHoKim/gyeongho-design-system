@@ -1,4 +1,9 @@
 export type { IconName } from '@ghds/icons';
+export {
+  Accordion,
+  type AccordionItem,
+  type AccordionProps,
+} from './components/Accordion.js';
 export { Avatar, type AvatarProps, type AvatarSize, initialsFrom } from './components/Avatar.js';
 export { Badge, type BadgeProps, type BadgeVariant } from './components/Badge.js';
 export {
@@ -52,6 +57,7 @@ export {
 export { Slider, type SliderProps } from './components/Slider.js';
 export { Spinner, type SpinnerProps, type SpinnerSize } from './components/Spinner.js';
 export { Switch, type SwitchProps } from './components/Switch.js';
+export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
 export {
   type SketchShape,
