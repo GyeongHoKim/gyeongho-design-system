@@ -1,0 +1,20 @@
+---
+// Live Menu demo (Lit).
+---
+
+<div id="demo-menu-wrap" style="padding: 24px;">
+  <gh-menu id="demo-menu" label="Actions"></gh-menu>
+</div>
+
+<script>
+  import '@ghds/web-components';
+  const el = document.getElementById('demo-menu');
+  if (el) {
+    (el as HTMLElement & { items: unknown }).items = [
+      { value: 'edit', label: 'Edit' },
+      { value: 'duplicate', label: 'Duplicate' },
+      { value: 'archive', label: 'Archive', disabled: true },
+      { value: 'delete', label: 'Delete' },
+    ];
+  }
+</script>

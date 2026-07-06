@@ -21,6 +21,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useClickOutside } from '../hooks/useClickOutside.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -235,22 +236,13 @@ export function Select({
     ],
   );
 
-  // Click-outside-to-close. `pointerdown` (capture-equivalent timing) beats
-  // the trigger's own `click` handler, avoiding the classic "outside click
-  // also re-triggers the trigger and reopens" bug.
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!triggerRef.current?.contains(target) && !panelRef.current?.contains(target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('pointerdown', handlePointerDown);
-    return () => document.removeEventListener('pointerdown', handlePointerDown);
-  }, [open]);
+  // Click-outside-to-close (shared with Menu via useClickOutside).
+  const outsideRefs = useMemo(() => [triggerRef, panelRef], []);
+  useClickOutside(
+    outsideRefs,
+    open,
+    useCallback(() => setOpen(false), []),
+  );
 
   const openWithInitialHighlight = () => {
     setOpen(true);

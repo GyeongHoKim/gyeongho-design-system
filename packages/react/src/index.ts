@@ -26,6 +26,7 @@ export {
 } from './components/FormField.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
+export { Menu, type MenuItem, type MenuProps } from './components/Menu.js';
 export {
   Pagination,
   type PaginationProps,
@@ -59,6 +60,7 @@ export { Spinner, type SpinnerProps, type SpinnerSize } from './components/Spinn
 export { Switch, type SwitchProps } from './components/Switch.js';
 export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
+export { Tooltip, type TooltipProps } from './components/Tooltip.js';
 export {
   type SketchShape,
   type SketchSize,

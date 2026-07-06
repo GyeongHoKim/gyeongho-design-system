@@ -149,6 +149,22 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.menu colors
+      menuTriggerBg: t.comp.menu.trigger.bg.default,
+      menuTriggerStroke: t.comp.menu.trigger.stroke.default,
+      menuTriggerText: t.comp.menu.trigger.text.default,
+      menuPanelBg: t.comp.menu.panel.bg,
+      menuPanelStroke: t.comp.menu.panel.stroke,
+      menuItemBgDefault: t.comp.menu.item.bg.default,
+      menuItemBgHighlighted: t.comp.menu.item.bg.highlighted,
+      menuItemTextDefault: t.comp.menu.item.text.default,
+      menuItemTextDisabled: t.comp.menu.item.text.disabled,
+
+      // comp.tooltip colors
+      tooltipBg: t.comp.tooltip.bg,
+      tooltipText: t.comp.tooltip.text,
+      tooltipStroke: t.comp.tooltip.stroke,
+
       // comp.accordion colors
       accordionBg: t.comp.accordion.bg,
       accordionStroke: t.comp.accordion.stroke,
@@ -341,6 +357,14 @@ function buildTheme(t: Tokens) {
       bowing: t.comp.accordion.sketch.bowing,
     },
     accordionGap: t.comp.accordion.gap,
+    tooltipSketch: {
+      roughness: t.comp.tooltip.sketch.roughness,
+      bowing: t.comp.tooltip.sketch.bowing,
+    },
+    menuSketch: {
+      roughness: t.comp.menu.sketch.roughness,
+      bowing: t.comp.menu.sketch.bowing,
+    },
     paginationSketch: {
       roughness: t.comp.pagination.sketch.roughness,
       bowing: t.comp.pagination.sketch.bowing,
