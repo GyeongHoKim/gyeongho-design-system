@@ -1,0 +1,16 @@
+{
+  "comp": {
+    "skeleton": {
+      "$description": "Tier 3 component tokens for the hand-drawn Skeleton loading placeholder. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.muted}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.subtle}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "duration": { "$type": "duration", "$value": "{sys.animation.duration.slow}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

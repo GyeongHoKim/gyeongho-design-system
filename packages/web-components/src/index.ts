@@ -19,6 +19,8 @@ export { GhRadioGroup } from './components/radio-group.js';
 export type { GhSelectOption } from './components/select.js';
 export { GhSelect } from './components/select.js';
 export { GhSelectListbox, getSelectOptionId } from './components/select-listbox.js';
+export type { GhSkeletonVariant } from './components/skeleton.js';
+export { GhSkeleton } from './components/skeleton.js';
 export { GhSlider } from './components/slider.js';
 export type { GhSpinnerSize } from './components/spinner.js';
 export { GhSpinner } from './components/spinner.js';

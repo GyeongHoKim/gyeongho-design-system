@@ -1,5 +1,6 @@
 import { tokens } from '@ghds/tokens';
-import { type CSSProperties, forwardRef, type HTMLAttributes, useEffect, useRef } from 'react';
+import { type CSSProperties, forwardRef, type HTMLAttributes, useRef } from 'react';
+import { useLoopingAnimation } from '../hooks/useLoopingAnimation.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -50,22 +51,9 @@ export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(function Spinne
   const hostRef = useRef<HTMLSpanElement>(null);
   const ref = mergeRefs(sketchRef, hostRef, forwardedRef);
 
-  useEffect(() => {
-    const el = hostRef.current;
-    if (!el || typeof el.animate !== 'function') {
-      return;
-    }
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      return;
-    }
-    const animation = el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], {
-      duration: SPIN_DURATION_MS,
-      iterations: Number.POSITIVE_INFINITY,
-      easing: 'linear',
-    });
-    return () => animation.cancel();
-  }, []);
+  useLoopingAnimation(hostRef, [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], {
+    durationMs: SPIN_DURATION_MS,
+  });
 
   const dimension = spinner.size[size];
 

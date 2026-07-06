@@ -149,6 +149,10 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.skeleton colors
+      skeletonBg: t.comp.skeleton.bg,
+      skeletonStroke: t.comp.skeleton.stroke,
+
       // comp.progress colors
       progressBgRail: t.comp.progress.bg.rail,
       progressBgFill: t.comp.progress.bg.fill,
@@ -293,6 +297,14 @@ function buildTheme(t: Tokens) {
     },
     progressTrackHeight: t.comp.progress.track.height,
     progressDuration: t.comp.progress.duration,
+    skeletonSketch: {
+      roughness: t.comp.skeleton.sketch.roughness,
+      bowing: t.comp.skeleton.sketch.bowing,
+    },
+    skeletonRadius: t.comp.skeleton.radius,
+    skeletonDuration: t.comp.skeleton.duration,
+    // Dimmed opacity the pulse animates toward (sys.opacity.disabled).
+    skeletonPulseMin: t.sys.opacity.disabled,
     // Avatar diameters, read directly from `comp.avatar.size` (not the generic
     // `spacing` scale) so a retarget of the avatar size tokens is picked up here.
     avatarSizes: {

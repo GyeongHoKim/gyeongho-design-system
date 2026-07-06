@@ -30,6 +30,11 @@ export {
   type SelectProps,
 } from './components/Select.js';
 export {
+  Skeleton,
+  type SkeletonProps,
+  type SkeletonVariant,
+} from './components/Skeleton.js';
+export {
   type FillRendering,
   SketchSurface,
   type SketchSurfaceProps,

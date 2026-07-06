@@ -1,5 +1,6 @@
 import { tokens } from '@ghds/tokens';
-import { type CSSProperties, forwardRef, type HTMLAttributes, useEffect, useRef } from 'react';
+import { type CSSProperties, forwardRef, type HTMLAttributes, useRef } from 'react';
+import { useLoopingAnimation } from '../hooks/useLoopingAnimation.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -68,24 +69,11 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progr
   const rootRef = mergeRefs(railRef, forwardedRef);
   const fillWrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!indeterminate) {
-      return;
-    }
-    const el = fillWrapperRef.current;
-    if (!el || typeof el.animate !== 'function') {
-      return;
-    }
-    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      return;
-    }
-    const animation = el.animate(
-      [{ transform: 'translateX(-100%)' }, { transform: 'translateX(250%)' }],
-      { duration: DURATION_MS * 3, iterations: Number.POSITIVE_INFINITY, easing: 'ease-in-out' },
-    );
-    return () => animation.cancel();
-  }, [indeterminate]);
+  useLoopingAnimation(
+    fillWrapperRef,
+    [{ transform: 'translateX(-100%)' }, { transform: 'translateX(250%)' }],
+    { durationMs: DURATION_MS * 3, easing: 'ease-in-out', enabled: indeterminate },
+  );
 
   const trackStyle: CSSProperties = {
     ...sketchHostStyle,

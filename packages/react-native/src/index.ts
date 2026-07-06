@@ -38,6 +38,8 @@ export type { RadioGroupContextValue, RadioGroupProps } from './components/Radio
 export { RadioGroup } from './components/RadioGroup.js';
 export type { SelectOption, SelectProps } from './components/Select.js';
 export { Select } from './components/Select.js';
+export type { SkeletonProps, SkeletonVariant } from './components/Skeleton.js';
+export { Skeleton } from './components/Skeleton.js';
 export type { SliderProps } from './components/Slider.js';
 export { Slider } from './components/Slider.js';
 export type { SpinnerProps, SpinnerSize } from './components/Spinner.js';

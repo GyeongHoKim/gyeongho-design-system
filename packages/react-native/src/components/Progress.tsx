@@ -1,6 +1,7 @@
 import { useTheme } from '@shopify/restyle';
-import { useEffect, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, type LayoutChangeEvent, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Animated, Easing, type LayoutChangeEvent, View } from 'react-native';
+import { useReducedMotionLoop } from '../motion.js';
 import { SketchBackground } from '../sketch/SketchBackground.js';
 import { useSketch } from '../sketch/useSketch.js';
 import { Box } from '../theme/primitives.js';
@@ -58,31 +59,19 @@ export function Progress({ value, max = 100, label, testID }: ProgressProps) {
 
   const duration = theme.progressDuration;
 
-  useEffect(() => {
-    if (!indeterminate) {
-      return;
-    }
-    let cancelled = false;
-    let loop: Animated.CompositeAnimation | undefined;
-    AccessibilityInfo.isReduceMotionEnabled().then((reduce) => {
-      if (cancelled || reduce) {
-        return;
-      }
-      loop = Animated.loop(
+  useReducedMotionLoop(
+    () =>
+      Animated.loop(
         Animated.timing(sweep, {
           toValue: 1,
           duration: duration * 3,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      );
-      loop.start();
-    });
-    return () => {
-      cancelled = true;
-      loop?.stop();
-    };
-  }, [indeterminate, duration, sweep]);
+      ),
+    [duration, sweep],
+    indeterminate,
+  );
 
   const handleTrackLayout = (event: LayoutChangeEvent) => {
     setTrackWidth(event.nativeEvent.layout.width);

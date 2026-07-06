@@ -1,6 +1,7 @@
 import { useTheme } from '@shopify/restyle';
-import { useEffect, useRef } from 'react';
-import { AccessibilityInfo, Animated, Easing } from 'react-native';
+import { useRef } from 'react';
+import { Animated, Easing } from 'react-native';
+import { useReducedMotionLoop } from '../motion.js';
 import { SketchBackground } from '../sketch/SketchBackground.js';
 import { useSketch } from '../sketch/useSketch.js';
 import { Box } from '../theme/primitives.js';
@@ -46,28 +47,18 @@ export function Spinner({ size = 'md', label = 'Loading', testID }: SpinnerProps
 
   const duration = theme.spinnerDuration;
 
-  useEffect(() => {
-    let cancelled = false;
-    let loop: Animated.CompositeAnimation | undefined;
-    AccessibilityInfo.isReduceMotionEnabled().then((reduce) => {
-      if (cancelled || reduce) {
-        return;
-      }
-      loop = Animated.loop(
+  useReducedMotionLoop(
+    () =>
+      Animated.loop(
         Animated.timing(rotation, {
           toValue: 1,
           duration,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
-      );
-      loop.start();
-    });
-    return () => {
-      cancelled = true;
-      loop?.stop();
-    };
-  }, [rotation, duration]);
+      ),
+    [rotation, duration],
+  );
 
   const dimension = theme.spinnerSizes[size];
   const rotate = rotation.interpolate({ inputRange: [0, 1], outputRange: FULL });
