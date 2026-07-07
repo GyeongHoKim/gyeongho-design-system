@@ -1,0 +1,46 @@
+{
+  "comp": {
+    "badge": {
+      "$description": "Tier 3 component tokens for the hand-drawn Badge. References sys only.",
+      "bg": {
+        "$type": "color",
+        "neutral": { "$value": "{sys.color.bg.muted}" },
+        "primary": { "$value": "{sys.color.bg.primary.default}" },
+        "success": { "$value": "{sys.color.bg.success.default}" },
+        "warning": { "$value": "{sys.color.bg.warning.default}" },
+        "danger": { "$value": "{sys.color.bg.danger.default}" },
+        "info": { "$value": "{sys.color.bg.info.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "neutral": { "$value": "{sys.color.text.primary}" },
+        "primary": { "$value": "{sys.color.text.onPrimary}" },
+        "success": { "$value": "{sys.color.text.onSuccess}" },
+        "warning": { "$value": "{sys.color.text.onWarning}" },
+        "danger": { "$value": "{sys.color.text.onDanger}" },
+        "info": { "$value": "{sys.color.text.onInfo}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "neutral": { "$value": "{sys.color.border.default}" },
+        "primary": { "$value": "{sys.color.bg.primary.hover}" },
+        "success": { "$value": "{sys.color.bg.success.hover}" },
+        "warning": { "$value": "{sys.color.bg.warning.hover}" },
+        "danger": { "$value": "{sys.color.bg.danger.hover}" },
+        "info": { "$value": "{sys.color.bg.info.hover}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.sm}" },
+        "vertical": { "$value": "{sys.spacing.xs}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.pill}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

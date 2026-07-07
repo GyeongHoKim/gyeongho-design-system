@@ -1,0 +1,28 @@
+{
+  "comp": {
+    "table": {
+      "$description": "Tier 3 component tokens for the hand-drawn Table. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "headerBg": { "$type": "color", "$value": "{sys.color.bg.muted}" },
+      "rowBorder": { "$type": "color", "$value": "{sys.color.border.subtle}" },
+      "selectedBg": { "$type": "color", "$value": "{sys.color.bg.subtle}" },
+      "text": {
+        "$type": "color",
+        "header": { "$value": "{sys.color.text.primary}" },
+        "cell": { "$value": "{sys.color.text.secondary}" },
+        "icon": { "$value": "{sys.color.icon.default}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "vertical": { "$value": "{sys.spacing.sm}" },
+        "horizontal": { "$value": "{sys.spacing.md}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

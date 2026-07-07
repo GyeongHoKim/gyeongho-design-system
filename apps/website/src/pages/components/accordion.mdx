@@ -1,0 +1,136 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Accordion
+description: A hand-drawn accordion of collapsible sections (disclosure pattern).
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import KeyboardTable from '../../components/KeyboardTable.astro';
+import AccordionDemoReact from '../../components/demos/AccordionDemo.tsx';
+import AccordionDemoLit from '../../components/demos/AccordionDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+An `Accordion` stacks collapsible sections so people can expand just the content they need. Use
+`type="single"` to keep at most one section open (like an FAQ), or `type="multiple"` to let several
+stay open at once.
+
+## Anatomy
+
+A vertical stack of sketchy boxes (`@ghds/sketch-core`), each with a header button (`aria-expanded`,
+`aria-controls`) and a collapsible `role="region"`. The header's chevron rotates when open. The API
+is **data-driven** — pass an `items` array of `{ value, label, content }`. Open state is a set of
+values (`string[]`), controlled or uncontrolled.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Collapsed', present: true, note: 'Default; content hidden, aria-expanded=false.' },
+    { name: 'Expanded', present: true, note: 'Content revealed, chevron rotated, aria-expanded=true.' },
+    { name: 'Single vs multiple', present: true, note: 'type controls whether one or many can be open.' },
+    { name: 'Disabled', present: true, note: 'Per-item; header not togglable and skipped by arrow keys.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use single mode for mutually-exclusive content (FAQs); multiple when sections are independent.',
+    'Write concise, scannable header labels.',
+    'Keep it controlled (value + onValueChange) if open state must sync with other UI.',
+  ]}
+  dont={[
+    "Don't hide critical content behind an accordion that users must see.",
+    "Don't nest accordions deeply — it buries content.",
+  ]}
+/>
+
+## Accessibility
+
+- **React / Web Components**: each header is a `<button>` with `aria-expanded` and `aria-controls`
+  pointing at its `role="region"` (labelled back via `aria-labelledby`). Arrow Up/Down and Home/End
+  move focus between headers; Enter/Space toggles. Web Components dispatches a `value-change` event.
+- **React Native**: headers are `accessibilityRole="button"` with `accessibilityState.expanded`;
+  toggle by tap. Arrow-key header navigation is web-only (no `onKeyDown` on RN `Pressable`).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Enter / Space', description: 'Toggle the focused section.' },
+    { keys: 'Arrow Up / Down', description: 'Move focus to the previous / next header (wraps).' },
+    { keys: 'Home / End', description: 'Move focus to the first / last header.' },
+  ]}
+/>
+
+## Content
+
+A short header label per section and the revealed content. Content is a `ReactNode` on
+React/React Native; on Web Components it is section **text** (`content` string).
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'items', type: 'AccordionItem[]', description: '{ value, label, content, disabled? } per section.' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: 'How many sections may be open.' },
+        { name: 'value', type: 'string[]', description: 'Controlled set of open values.' },
+        { name: 'defaultValue', type: 'string[]', description: 'Initial open values when uncontrolled.' },
+        { name: 'onValueChange', type: '(values: string[]) => void', description: 'Fires when the open set changes.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'items', type: 'GhAccordionItemData[]', description: '{ value, label, content?: string, disabled? } (property).' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: 'How many sections may be open.' },
+        { name: 'value', type: 'string[]', description: 'Controlled set of open values (property).' },
+        { name: 'value-change event', type: 'CustomEvent<string[]>', description: 'Dispatched with the open set.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'items', type: 'AccordionItem[]', description: '{ value, label, content, disabled? } per section.' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: 'How many sections may be open.' },
+        { name: 'value', type: 'string[]', description: 'Controlled set of open values.' },
+        { name: 'defaultValue', type: 'string[]', description: 'Initial open values when uncontrolled.' },
+        { name: 'onValueChange', type: '(values: string[]) => void', description: 'Fires when the open set changes.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AccordionDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AccordionDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Accordion, Text } from '@ghds/react-native';
+
+<Accordion
+  type="single"
+  items={[{ value: 'a', label: 'Shipping', content: <Text>Ships in 2–3 days.</Text> }]}
+/>;
+```

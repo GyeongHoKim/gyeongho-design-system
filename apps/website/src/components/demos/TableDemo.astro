@@ -1,0 +1,44 @@
+---
+// Live, sortable + selectable Table demo (Lit).
+---
+
+<gh-table id="demo-table" caption="Contributors"></gh-table>
+
+<script>
+  import '@ghds/web-components';
+  type Row = { id: string; [k: string]: string | number };
+  const DATA: Row[] = [
+    { id: '1', name: 'Ada', role: 'Engineer', commits: 128 },
+    { id: '2', name: 'Grace', role: 'Admiral', commits: 342 },
+    { id: '3', name: 'Alan', role: 'Researcher', commits: 87 },
+  ];
+  const el = document.getElementById('demo-table') as
+    | (HTMLElement & { columns: unknown; rows: Row[]; sort?: { key: string; direction: 'asc' | 'desc' }; selectedIds?: string[] })
+    | null;
+  if (el) {
+    el.columns = [
+      { key: 'name', header: 'Name', sortable: true },
+      { key: 'role', header: 'Role', sortable: true },
+      { key: 'commits', header: 'Commits', sortable: true, align: 'right' },
+    ];
+    el.selectedIds = [];
+    const render = () => {
+      const sort = el.sort;
+      el.rows = [...DATA].sort((a, b) => {
+        if (!sort) return 0;
+        const av = a[sort.key];
+        const bv = b[sort.key];
+        const cmp = typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv));
+        return sort.direction === 'asc' ? cmp : -cmp;
+      });
+    };
+    el.addEventListener('sort-change', (e) => {
+      el.sort = (e as CustomEvent<{ key: string; direction: 'asc' | 'desc' }>).detail;
+      render();
+    });
+    el.addEventListener('selection-change', (e) => {
+      el.selectedIds = (e as CustomEvent<string[]>).detail;
+    });
+    render();
+  }
+</script>

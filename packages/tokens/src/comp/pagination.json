@@ -1,0 +1,34 @@
+{
+  "comp": {
+    "pagination": {
+      "$description": "Tier 3 component tokens for the hand-drawn Pagination. References sys only.",
+      "item": {
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "selected": { "$value": "{sys.color.bg.primary.default}" },
+          "disabled": { "$value": "{sys.color.bg.muted}" }
+        },
+        "text": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.text.primary}" },
+          "selected": { "$value": "{sys.color.text.onPrimary}" },
+          "disabled": { "$value": "{sys.color.text.disabled}" }
+        },
+        "stroke": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.border.default}" },
+          "selected": { "$value": "{sys.color.bg.primary.hover}" },
+          "disabled": { "$value": "{sys.color.border.subtle}" }
+        }
+      },
+      "size": { "$type": "dimension", "$value": "{sys.spacing.xl}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

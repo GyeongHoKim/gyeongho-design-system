@@ -1,0 +1,23 @@
+---
+// Live Toast demo (Lit).
+---
+
+<div style="padding: 24px;">
+  <gh-button id="demo-toast-btn">Show toast</gh-button>
+  <gh-toast id="demo-toast" variant="success" heading="Saved">
+    Your changes have been saved.
+  </gh-toast>
+</div>
+
+<script>
+  import '@ghds/web-components';
+  const btn = document.getElementById('demo-toast-btn');
+  const toast = document.getElementById('demo-toast') as (HTMLElement & { open: boolean; duration: number }) | null;
+  if (toast) toast.duration = 0;
+  btn?.addEventListener('click', () => {
+    if (toast) toast.open = true;
+  });
+  toast?.addEventListener('close', () => {
+    if (toast) toast.open = false;
+  });
+</script>

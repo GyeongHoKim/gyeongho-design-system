@@ -146,6 +146,125 @@ function buildTheme(t: Tokens) {
       selectOptionTextSelected: t.comp.select.option.text.selected,
       selectOptionTextDisabled: t.comp.select.option.text.disabled,
 
+      // comp.spinner colors
+      spinnerIndicator: t.comp.spinner.indicator,
+
+      // comp.table colors
+      tableBg: t.comp.table.bg,
+      tableStroke: t.comp.table.stroke,
+      tableHeaderBg: t.comp.table.headerBg,
+      tableRowBorder: t.comp.table.rowBorder,
+      tableSelectedBg: t.comp.table.selectedBg,
+      tableTextHeader: t.comp.table.text.header,
+      tableTextCell: t.comp.table.text.cell,
+      tableIcon: t.comp.table.text.icon,
+
+      // comp.alert colors (icon reuses the variant stroke colour)
+      alertBg: t.comp.alert.bg,
+      alertStrokeInfo: t.comp.alert.stroke.info,
+      alertStrokeSuccess: t.comp.alert.stroke.success,
+      alertStrokeWarning: t.comp.alert.stroke.warning,
+      alertStrokeDanger: t.comp.alert.stroke.danger,
+      alertTextTitle: t.comp.alert.text.title,
+      alertTextBody: t.comp.alert.text.body,
+
+      // comp.toast colors
+      toastBg: t.comp.toast.bg,
+      toastStrokeInfo: t.comp.toast.stroke.info,
+      toastStrokeSuccess: t.comp.toast.stroke.success,
+      toastStrokeWarning: t.comp.toast.stroke.warning,
+      toastStrokeDanger: t.comp.toast.stroke.danger,
+      toastTextTitle: t.comp.toast.text.title,
+      toastTextBody: t.comp.toast.text.body,
+
+      // comp.modal colors
+      modalScrimColor: t.comp.modal.scrim.color,
+      modalPanelBg: t.comp.modal.panel.bg,
+      modalPanelStroke: t.comp.modal.panel.stroke,
+      modalTextTitle: t.comp.modal.text.title,
+      modalTextBody: t.comp.modal.text.body,
+
+      // comp.menu colors
+      menuTriggerBg: t.comp.menu.trigger.bg.default,
+      menuTriggerStroke: t.comp.menu.trigger.stroke.default,
+      menuTriggerText: t.comp.menu.trigger.text.default,
+      menuPanelBg: t.comp.menu.panel.bg,
+      menuPanelStroke: t.comp.menu.panel.stroke,
+      menuItemBgDefault: t.comp.menu.item.bg.default,
+      menuItemBgHighlighted: t.comp.menu.item.bg.highlighted,
+      menuItemTextDefault: t.comp.menu.item.text.default,
+      menuItemTextDisabled: t.comp.menu.item.text.disabled,
+
+      // comp.tooltip colors
+      tooltipBg: t.comp.tooltip.bg,
+      tooltipText: t.comp.tooltip.text,
+      tooltipStroke: t.comp.tooltip.stroke,
+
+      // comp.accordion colors
+      accordionBg: t.comp.accordion.bg,
+      accordionStroke: t.comp.accordion.stroke,
+      accordionTextHeader: t.comp.accordion.text.header,
+      accordionTextContent: t.comp.accordion.text.content,
+      accordionIcon: t.comp.accordion.text.icon,
+
+      // comp.tabs colors
+      tabsTabBgSelected: t.comp.tabs.tab.bg.selected,
+      tabsTabTextDefault: t.comp.tabs.tab.text.default,
+      tabsTabTextSelected: t.comp.tabs.tab.text.selected,
+      tabsTabTextDisabled: t.comp.tabs.tab.text.disabled,
+      tabsTabStrokeSelected: t.comp.tabs.tab.stroke.selected,
+
+      // comp.pagination colors
+      paginationItemBgDefault: t.comp.pagination.item.bg.default,
+      paginationItemBgSelected: t.comp.pagination.item.bg.selected,
+      paginationItemBgDisabled: t.comp.pagination.item.bg.disabled,
+      paginationItemTextDefault: t.comp.pagination.item.text.default,
+      paginationItemTextSelected: t.comp.pagination.item.text.selected,
+      paginationItemTextDisabled: t.comp.pagination.item.text.disabled,
+      paginationItemStrokeDefault: t.comp.pagination.item.stroke.default,
+      paginationItemStrokeSelected: t.comp.pagination.item.stroke.selected,
+      paginationItemStrokeDisabled: t.comp.pagination.item.stroke.disabled,
+
+      // comp.breadcrumb colors
+      breadcrumbTextLink: t.comp.breadcrumb.text.link,
+      breadcrumbTextCurrent: t.comp.breadcrumb.text.current,
+      breadcrumbSeparator: t.comp.breadcrumb.separator,
+
+      // comp.skeleton colors
+      skeletonBg: t.comp.skeleton.bg,
+      skeletonStroke: t.comp.skeleton.stroke,
+
+      // comp.progress colors
+      progressBgRail: t.comp.progress.bg.rail,
+      progressBgFill: t.comp.progress.bg.fill,
+      progressStrokeRail: t.comp.progress.stroke.rail,
+      progressStrokeFill: t.comp.progress.stroke.fill,
+
+      // comp.avatar colors
+      avatarBg: t.comp.avatar.bg,
+      avatarText: t.comp.avatar.text,
+      avatarStroke: t.comp.avatar.stroke,
+
+      // comp.badge colors
+      badgeBgNeutral: t.comp.badge.bg.neutral,
+      badgeBgPrimary: t.comp.badge.bg.primary,
+      badgeBgSuccess: t.comp.badge.bg.success,
+      badgeBgWarning: t.comp.badge.bg.warning,
+      badgeBgDanger: t.comp.badge.bg.danger,
+      badgeBgInfo: t.comp.badge.bg.info,
+      badgeTextNeutral: t.comp.badge.text.neutral,
+      badgeTextPrimary: t.comp.badge.text.primary,
+      badgeTextSuccess: t.comp.badge.text.success,
+      badgeTextWarning: t.comp.badge.text.warning,
+      badgeTextDanger: t.comp.badge.text.danger,
+      badgeTextInfo: t.comp.badge.text.info,
+      badgeStrokeNeutral: t.comp.badge.stroke.neutral,
+      badgeStrokePrimary: t.comp.badge.stroke.primary,
+      badgeStrokeSuccess: t.comp.badge.stroke.success,
+      badgeStrokeWarning: t.comp.badge.stroke.warning,
+      badgeStrokeDanger: t.comp.badge.stroke.danger,
+      badgeStrokeInfo: t.comp.badge.stroke.info,
+
       // comp.slider colors
       sliderBgRailDefault: t.comp.slider.bg.rail.default,
       sliderBgRailDisabled: t.comp.slider.bg.rail.disabled,
@@ -233,6 +352,86 @@ function buildTheme(t: Tokens) {
     sliderSketch: {
       roughness: t.comp.slider.sketch.roughness,
       bowing: t.comp.slider.sketch.bowing,
+    },
+    badgeSketch: {
+      roughness: t.comp.badge.sketch.roughness,
+      bowing: t.comp.badge.sketch.bowing,
+    },
+    avatarSketch: {
+      roughness: t.comp.avatar.sketch.roughness,
+      bowing: t.comp.avatar.sketch.bowing,
+    },
+    spinnerSketch: {
+      roughness: t.comp.spinner.sketch.roughness,
+      bowing: t.comp.spinner.sketch.bowing,
+    },
+    // Spinner diameters + spin duration (ms), read directly from `comp.spinner`.
+    spinnerSizes: {
+      sm: t.comp.spinner.size.sm,
+      md: t.comp.spinner.size.md,
+      lg: t.comp.spinner.size.lg,
+    },
+    spinnerDuration: t.comp.spinner.duration,
+    progressSketch: {
+      roughness: t.comp.progress.sketch.roughness,
+      bowing: t.comp.progress.sketch.bowing,
+    },
+    progressTrackHeight: t.comp.progress.track.height,
+    progressDuration: t.comp.progress.duration,
+    skeletonSketch: {
+      roughness: t.comp.skeleton.sketch.roughness,
+      bowing: t.comp.skeleton.sketch.bowing,
+    },
+    tabsSketch: {
+      roughness: t.comp.tabs.sketch.roughness,
+      bowing: t.comp.tabs.sketch.bowing,
+    },
+    tabsGap: t.comp.tabs.gap,
+    accordionSketch: {
+      roughness: t.comp.accordion.sketch.roughness,
+      bowing: t.comp.accordion.sketch.bowing,
+    },
+    accordionGap: t.comp.accordion.gap,
+    tooltipSketch: {
+      roughness: t.comp.tooltip.sketch.roughness,
+      bowing: t.comp.tooltip.sketch.bowing,
+    },
+    menuSketch: {
+      roughness: t.comp.menu.sketch.roughness,
+      bowing: t.comp.menu.sketch.bowing,
+    },
+    modalSketch: {
+      roughness: t.comp.modal.sketch.roughness,
+      bowing: t.comp.modal.sketch.bowing,
+    },
+    tableSketch: {
+      roughness: t.comp.table.sketch.roughness,
+      bowing: t.comp.table.sketch.bowing,
+    },
+    alertSketch: {
+      roughness: t.comp.alert.sketch.roughness,
+      bowing: t.comp.alert.sketch.bowing,
+    },
+    toastSketch: {
+      roughness: t.comp.toast.sketch.roughness,
+      bowing: t.comp.toast.sketch.bowing,
+    },
+    modalScrimOpacity: t.comp.modal.scrim.opacity,
+    paginationSketch: {
+      roughness: t.comp.pagination.sketch.roughness,
+      bowing: t.comp.pagination.sketch.bowing,
+    },
+    paginationSize: t.comp.pagination.size,
+    skeletonRadius: t.comp.skeleton.radius,
+    skeletonDuration: t.comp.skeleton.duration,
+    // Dimmed opacity the pulse animates toward (sys.opacity.disabled).
+    skeletonPulseMin: t.sys.opacity.disabled,
+    // Avatar diameters, read directly from `comp.avatar.size` (not the generic
+    // `spacing` scale) so a retarget of the avatar size tokens is picked up here.
+    avatarSizes: {
+      sm: t.comp.avatar.size.sm,
+      md: t.comp.avatar.size.md,
+      lg: t.comp.avatar.size.lg,
     },
     // Slider's track height/thumb size, read directly from `comp.slider` (not
     // the generic `spacing`/`iconSizes` scales) so a future retargeting of

@@ -1,0 +1,34 @@
+{
+  "comp": {
+    "alert": {
+      "$description": "Tier 3 component tokens for the hand-drawn Alert/Banner. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "stroke": {
+        "$type": "color",
+        "info": { "$value": "{sys.color.bg.info.default}" },
+        "success": { "$value": "{sys.color.bg.success.default}" },
+        "warning": { "$value": "{sys.color.bg.warning.default}" },
+        "danger": { "$value": "{sys.color.bg.danger.default}" }
+      },
+      "icon": {
+        "$type": "color",
+        "info": { "$value": "{sys.color.bg.info.default}" },
+        "success": { "$value": "{sys.color.bg.success.default}" },
+        "warning": { "$value": "{sys.color.bg.warning.default}" },
+        "danger": { "$value": "{sys.color.bg.danger.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "title": { "$value": "{sys.color.text.primary}" },
+        "body": { "$value": "{sys.color.text.secondary}" }
+      },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

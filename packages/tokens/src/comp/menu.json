@@ -1,0 +1,54 @@
+{
+  "comp": {
+    "menu": {
+      "$description": "Tier 3 component tokens for the hand-drawn Menu/Dropdown. References sys only.",
+      "trigger": {
+        "bg": { "$type": "color", "default": { "$value": "{sys.color.bg.surface}" } },
+        "stroke": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.border.default}" },
+          "focus": { "$value": "{sys.color.border.focus}" }
+        },
+        "text": { "$type": "color", "default": { "$value": "{sys.color.text.primary}" } },
+        "padding": {
+          "$type": "dimension",
+          "vertical": { "$value": "{sys.spacing.xs}" },
+          "horizontal": { "$value": "{sys.spacing.md}" }
+        }
+      },
+      "panel": {
+        "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+        "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+        "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
+        "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+        "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "offset": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "zIndex": { "$type": "number", "$value": "{sys.zIndex.dropdown}" }
+      },
+      "item": {
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "highlighted": { "$value": "{sys.color.bg.muted}" }
+        },
+        "text": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.text.primary}" },
+          "disabled": { "$value": "{sys.color.text.disabled}" }
+        },
+        "padding": {
+          "$type": "dimension",
+          "vertical": { "$value": "{sys.spacing.xs}" },
+          "horizontal": { "$value": "{sys.spacing.sm}" }
+        },
+        "radius": { "$type": "dimension", "$value": "{sys.radius.sm}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

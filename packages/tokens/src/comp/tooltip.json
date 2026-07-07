@@ -1,0 +1,22 @@
+{
+  "comp": {
+    "tooltip": {
+      "$description": "Tier 3 component tokens for the hand-drawn Tooltip. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": {
+        "$type": "dimension",
+        "vertical": { "$value": "{sys.spacing.xs}" },
+        "horizontal": { "$value": "{sys.spacing.sm}" }
+      },
+      "offset": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

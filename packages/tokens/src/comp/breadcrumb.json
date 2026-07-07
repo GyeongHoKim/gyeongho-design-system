@@ -1,0 +1,15 @@
+{
+  "comp": {
+    "breadcrumb": {
+      "$description": "Tier 3 component tokens for the Breadcrumb navigation. References sys only.",
+      "text": {
+        "$type": "color",
+        "link": { "$value": "{sys.color.text.link}" },
+        "linkHover": { "$value": "{sys.color.text.primary}" },
+        "current": { "$value": "{sys.color.text.primary}" }
+      },
+      "separator": { "$type": "color", "$value": "{sys.color.icon.muted}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" }
+    }
+  }
+}

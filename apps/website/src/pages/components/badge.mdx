@@ -1,0 +1,124 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Badge
+description: A small hand-drawn pill for status, counts, and short labels.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import BadgeDemoReact from '../../components/demos/BadgeDemo.tsx';
+import BadgeDemoLit from '../../components/demos/BadgeDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A `Badge` is a small, non-interactive pill for a short status, count, or category label — "3 unread",
+"Beta", "Success". It carries no behaviour of its own; it just labels the thing next to it.
+
+## Anatomy
+
+A sketchy rectangle outline drawn behind a short text label, filled with a solid, token-driven
+background. Six semantic variants — `neutral` (default), `primary`, `success`, `warning`, `danger`,
+`info` — each pair a background with the matching on-colour text and a slightly darker hand-drawn
+outline.
+
+## Variants & States
+
+Badge is a **static, presentational** element — it has no interactive states.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: 'Badge is not interactive.' },
+    { name: 'Focus', present: false, note: 'Badge is not focusable.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false, note: 'Use the danger variant to convey an error state.' },
+  ]}
+/>
+
+The only variation is the semantic `variant` colour.
+
+## Usage
+
+<DoDont
+  do={[
+    'Keep the label short — a word or two, or a small count.',
+    'Match the variant to meaning: success for done, danger for errors, warning for caution.',
+    'Add role="status" (React) or a label (WC/RN) when the badge conveys live, changing state such as an unread count.',
+  ]}
+  dont={[
+    "Don't put interactive controls inside a Badge — it isn't focusable or clickable.",
+    "Don't rely on colour alone to convey meaning; include text so the state is readable without colour.",
+    "Don't use a Badge for long body copy — it is a label, not a container.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: renders a plain `<span>`. It is presentational by default — pass `role="status"` and an
+  `aria-label` when the badge reflects a live value (e.g. a notification count) so assistive tech
+  announces changes.
+- **Web Components**: when a `label` is supplied, `gh-badge` sets `internals.role = 'status'` and
+  `internals.ariaLabel`; otherwise it stays presentational.
+- **React Native**: pass `accessibilityLabel` for icon-only or numeric badges that need a spoken name.
+- Colour is never the only signal — the variant background always pairs with a WCAG-AA on-colour text
+  token. See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+A short label: a single word, a category, or a small number. For counts over a threshold, cap the
+text yourself (e.g. `99+`) — Badge does not truncate.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Semantic colour role.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: 'Native <span> attributes (e.g. role, aria-label) pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Semantic colour role (reflected attribute).' },
+        { name: 'label', type: 'string', description: 'When set, exposes the badge as an ARIA status region with this label.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Semantic colour role.' },
+        { name: 'children', type: 'ReactNode', description: 'Badge label (rendered inside a themed Text).' },
+        { name: 'accessibilityLabel', type: 'string', description: 'Spoken name for icon-only or numeric badges.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <BadgeDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <BadgeDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Badge } from '@ghds/react-native';
+
+<Badge variant="success">Done</Badge>;
+```

@@ -1,0 +1,119 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Skeleton
+description: A hand-drawn loading placeholder that pulses while content loads.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import SkeletonDemoReact from '../../components/demos/SkeletonDemo.tsx';
+import SkeletonDemoLit from '../../components/demos/SkeletonDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A `Skeleton` is a placeholder that stands in for content while it loads, preserving layout and
+hinting at the shape of what's coming. Prefer it over a bare <a href={withBase('/components/spinner/')}>Spinner</a>
+when you can approximate the final layout (a list row, a card, a paragraph).
+
+## Anatomy
+
+A sketchy filled shape (`@ghds/sketch-core`) in the muted surface colour that gently pulses its
+opacity. Three variants — `rect` (default), `text` (a rounded line), and `circle` (e.g. an avatar
+placeholder) — set the default shape, radius, and size; `width`/`height` override them.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Pulsing', present: true, note: 'Opacity animates between full and dimmed while loading.' },
+    { name: 'Reduced motion', present: true, note: 'The pulse is suppressed under prefers-reduced-motion; the placeholder is shown static.' },
+    { name: 'Hover / Focus / Disabled', present: false, note: 'Skeleton is not interactive.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Match the skeleton to the real content it replaces — same rough size and shape.',
+    'Compose several (circle + text lines) to mirror a card or list row.',
+    'Set aria-busy on the region that contains the skeletons so assistive tech knows it is loading.',
+  ]}
+  dont={[
+    "Don't leave skeletons up indefinitely — swap in real content (or an error state) when the request settles.",
+    "Don't rely on the skeleton itself for a busy announcement — it is aria-hidden by design.",
+  ]}
+/>
+
+## Accessibility
+
+- All three platforms render the Skeleton as **decorative and hidden** from assistive tech
+  (`aria-hidden` on web; `accessibilityElementsHidden` / `importantForAccessibility` on React Native).
+- Announce the loading state on the **containing region** instead — e.g. `aria-busy="true"` on the
+  card or list that the skeletons occupy.
+- **Reduced motion**: the pulse is suppressed under `prefers-reduced-motion` (web) or the OS "reduce
+  motion" setting (React Native).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+No content — a Skeleton is a shape only. Use `width`/`height` and multiple instances to approximate
+the incoming layout.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: 'Placeholder shape.' },
+        { name: 'width', type: 'number | string', description: 'Width (number ⇒ px). Defaults to 100% (diameter for circle).' },
+        { name: 'height', type: 'number | string', description: 'Height (number ⇒ px). Defaults per variant.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: 'Native <span> attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: 'Placeholder shape (reflected attribute).' },
+        { name: 'width', type: 'string', description: 'CSS width. Defaults to 100% (diameter for circle).' },
+        { name: 'height', type: 'string', description: 'CSS height. Defaults per variant.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: 'Placeholder shape.' },
+        { name: 'width', type: 'DimensionValue', description: 'Width. Defaults to 100% (diameter for circle).' },
+        { name: 'height', type: 'DimensionValue', description: 'Height. Defaults per variant.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SkeletonDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SkeletonDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Skeleton } from '@ghds/react-native';
+
+<Skeleton variant="text" width="70%" />;
+```

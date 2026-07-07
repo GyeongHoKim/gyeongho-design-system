@@ -8,6 +8,7 @@
         "surface": { "$value": "{ref.palette.gray.800}" },
         "muted": { "$value": "{ref.palette.gray.750}" },
         "subtle": { "$value": "{ref.palette.gray.700}" },
+        "overlay": { "$value": "{ref.palette.black}" },
         "primary": {
           "default": { "$value": "{ref.palette.brand.500}" },
           "hover": { "$value": "{ref.palette.brand.600}" },
