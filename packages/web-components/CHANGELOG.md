@@ -1,5 +1,93 @@
 # @ghds/web-components
 
+## 0.8.0
+
+### Minor Changes
+
+- a8a69a2: Add the feedback components Alert/Banner and Toast across all three platforms (GHD-35, M11 slice 7).
+
+  - **`@ghds/tokens`** — new `comp.alert` and `comp.toast` token files (severity-coloured outline/icon over a surface fill; toast uses `sys.zIndex.toast` + `sys.shadow.lg`), aliasing `sys` only.
+  - **`@ghds/react`** — `Alert` (inline banner, four severities, optional dismiss, `role="alert"` for danger / `role="status"` otherwise) and `Toast` (fixed, auto-dismisses after `duration`, same live-region semantics).
+  - **`@ghds/web-components`** — `<gh-alert>` (dispatches `dismiss`) and `<gh-toast>` (reflects `open`, auto-dismiss timer, dispatches `close`).
+  - **`@ghds/react-native`** — `Alert` (inline) and `Toast` (transparent `Modal` overlay with `pointerEvents="box-none"`); both set `accessibilityLiveRegion` + `role`.
+
+  Each ships unit tests, Storybook stories, and an eight-section documentation page. Auto-dismiss timing is a behavioural default (5000ms), not a motion token.
+
+- a8a69a2: Add the navigation components Breadcrumb and Pagination across all three platforms (GHD-34, slice 1 of 2 — the M11 탐색 group; Tabs/Accordion follow).
+
+  - **`@ghds/tokens`** — new `comp.breadcrumb` and `comp.pagination` token files, aliasing `sys` only.
+  - **`@ghds/react`** — `Breadcrumb` (data-driven `items`, `nav` landmark, `aria-current` on the current page, chevron separators) and `Pagination` (Prev/Next + numbered sketch page buttons, ellipsis collapsing via the exported `paginationRange` helper, `aria-current` on the current page).
+  - **`@ghds/web-components`** — `<gh-breadcrumb>` (dispatches a `select` event) and `<gh-pagination>` composed from an internal `<gh-pagination-item>` (dispatches `page-change`).
+  - **`@ghds/react-native`** — `Breadcrumb` (navigate via `onSelect`, no `href`) and `Pagination` (per-item sketch buttons; current page via `accessibilityState.selected`).
+
+  Each ships unit tests (including `paginationRange` cases), Storybook stories, and an eight-section documentation page. Breadcrumb is a text navigation component and carries no sketch surface; Pagination's page buttons are hand-drawn.
+
+- a8a69a2: Add the Modal/Dialog across all three platforms and the scrim colour token (GHD-35, M11 slice 6).
+
+  - **`@ghds/tokens`** — new `sys.color.bg.overlay` scrim colour (light + dark) and a `comp.modal` token file (scrim colour/opacity, panel surface/stroke/shadow/radius/padding, `sys.zIndex.modal`).
+  - **`@ghds/react`** — `Modal` renders through a portal with a scrim, `role="dialog"` + `aria-modal`, a self-contained focus trap (Tab cycles within, focus restored on close), Escape-to-close, and body scroll lock.
+  - **`@ghds/web-components`** — `<gh-modal>` built on the native `<dialog>` (`showModal()`) for focus trapping, the top layer, and Escape; the `::backdrop` is the token scrim. Dispatches a `close` event.
+  - **`@ghds/react-native`** — `Modal` built on RN's `Modal` (focus containment + hardware back) with a token scrim and a sketchy panel.
+
+  Each ships unit tests, Storybook stories, and an eight-section documentation page.
+
+- a8a69a2: Add the presentational display components Badge, Avatar, Spinner, and Progress across all three platforms (GHD-36, slice 1 of 3 — the M11 표현·상태 group; Skeleton and Table follow in later slices).
+
+  - **`@ghds/tokens`** — new `comp.badge`, `comp.avatar`, `comp.spinner`, and `comp.progress` token files, aliasing `sys` only (semantic colours, sizes, and the shared `sketch` roughness/bowing; spinner/progress also alias `sys.animation.duration` for their motion).
+  - **`@ghds/react`** — `Badge` (six semantic variants), `Avatar` (image → initials → empty fallback, `initialsFrom` helper), `Spinner` (rotating sketch ring via the Web Animations API), and `Progress` (determinate + indeterminate). Spinner/Progress suppress motion under `prefers-reduced-motion`.
+  - **`@ghds/web-components`** — `<gh-badge>`, `<gh-avatar>`, `<gh-spinner>`, `<gh-progress>` extending `SketchyBase`; motion via CSS animation with a `prefers-reduced-motion` guard. `<gh-progress>` draws its rail and fill as two token-coloured sketch layers.
+  - **`@ghds/react-native`** — `Badge`, `Avatar`, `Spinner`, `Progress` themed via Restyle; Spinner/Progress animate with the `Animated` API and honour the OS "reduce motion" setting. Note: `Progress` sets `accessibilityValue`, which react-native-web does not forward to the DOM (documented on the component page).
+
+  Each component ships with unit tests, Storybook stories (light + dark visual-regression variants), and an eight-section documentation page on the website.
+
+- a8a69a2: Add the Skeleton loading placeholder across all three platforms (GHD-36, slice 2 of 3 — the M11 표현·상태 group; Table follows).
+
+  - **`@ghds/tokens`** — new `comp.skeleton` token file (muted fill, subtle outline, radius, pulse duration), aliasing `sys` only.
+  - **`@ghds/react`** — `Skeleton` with `rect` / `text` / `circle` variants and `width`/`height` overrides; a sketchy filled shape that pulses opacity toward `sys.opacity.disabled` via the Web Animations API.
+  - **`@ghds/web-components`** — `<gh-skeleton>` extending `SketchyBase`; CSS-keyframe opacity pulse, region-fill override, and an inner measured frame so percentage widths work.
+  - **`@ghds/react-native`** — `Skeleton` themed via Restyle; opacity pulse via the `Animated` API.
+
+  All three suppress the pulse under `prefers-reduced-motion` (web) / the OS reduce-motion setting (React Native), and are hidden from assistive tech (announce the busy state on the containing region). Ships with unit tests, Storybook stories, and an eight-section documentation page.
+
+- a8a69a2: Add the Table across all three platforms (GHD-36, M11 slice 8 — completing the 표현·상태 group).
+
+  - **`@ghds/tokens`** — new `comp.table` token file (surface fill, outline, header/row-border/selected colours, cell padding), aliasing `sys` only.
+  - **`@ghds/react`** — `Table` with a sketchy outline, sortable headers (`aria-sort`), and optional row selection (a leading GHDS-Checkbox column + select-all with an indeterminate state). Sorting and selection are controlled (`sort`/`onSortChange`, `selectedIds`/`onSelectionChange`).
+  - **`@ghds/web-components`** — `<gh-table>` (properties for `columns`/`rows`/`sort`/`selectedIds`; dispatches `sort-change` and `selection-change`; composes `<gh-checkbox>`).
+  - **`@ghds/react-native`** — `Table` built from flex `Box` rows (`role="table"`/`row`/`columnheader`/`cell`), a sketchy outline, header sort buttons, and a `role="checkbox"` selection control.
+
+  Each ships unit tests, Storybook stories, and an eight-section documentation page. This table is the data foundation for the M12 data-state patterns.
+
+- a8a69a2: Add the interactive navigation components Tabs and Accordion across all three platforms (GHD-34, slice 2 of 2 — completing the M11 탐색 group).
+
+  - **`@ghds/tokens`** — new `comp.tabs` and `comp.accordion` token files, aliasing `sys` only.
+  - **`@ghds/react`** — `Tabs` (WAI-ARIA tablist/tab/tabpanel, roving tabindex, Arrow/Home/End automatic activation, sketch-filled active tab) and `Accordion` (disclosure, `type="single" | "multiple"`, `aria-expanded`/`aria-controls`, Arrow/Home/End header focus, sketch-outlined sections).
+  - **`@ghds/web-components`** — `<gh-tabs>` (composed from `<gh-tab>`) and `<gh-accordion>` (composed from `<gh-accordion-item>`), each dispatching a `value-change` event; Web Components panels/sections take text `content`.
+  - **`@ghds/react-native`** — `Tabs` and `Accordion` themed via Restyle; tap-based selection with `accessibilityState` (arrow-key navigation is a documented web-only gap).
+
+  Each ships unit tests, Storybook stories, and an eight-section documentation page.
+
+- a8a69a2: Add the floating overlay components Tooltip and Menu/Dropdown across all three platforms (GHD-34/GHD-35, M11 slice 5).
+
+  - **`@ghds/tokens`** — new `comp.tooltip` and `comp.menu` token files, aliasing `sys` only (menu panel uses `sys.zIndex.dropdown`).
+  - **`@ghds/react`** — `Tooltip` (hover-after-delay / focus, `aria-describedby`, Escape to close) and `Menu` (button trigger + `role="menu"` with roving focus, Arrow/Home/End/Escape keyboard, click-outside), both positioned with `@floating-ui/react-dom`.
+  - **`@ghds/web-components`** — `<gh-tooltip>` (links the slotted trigger via `aria-describedby`) and `<gh-menu>` (dispatches a `select` event), positioned with `@floating-ui/dom`.
+  - **`@ghds/react-native`** — `Tooltip` (tap-to-toggle, content also exposed as an `accessibilityHint`) and `Menu` (`Modal`-anchored panel, tap selection). Hover/arrow-key behaviours are documented web-only gaps.
+
+  Each ships unit tests, Storybook stories, and an eight-section documentation page. Tooltip/Menu bubbles and panels are hand-drawn sketch surfaces.
+
+### Patch Changes
+
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+- Updated dependencies [a8a69a2]
+  - @ghds/tokens@0.8.0
+
 ## 0.7.0
 
 ### Minor Changes
