@@ -1,0 +1,116 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Alert
+description: A hand-drawn inline alert/banner for status messages in four severities.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import AlertDemoReact from '../../components/demos/AlertDemo.tsx';
+import AlertDemoLit from '../../components/demos/AlertDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+An `Alert` (banner) is an inline message conveying the status of a task or the page — informational,
+success, warning, or danger. It sits in the layout (unlike a <a href={withBase('/components/toast/')}>Toast</a>,
+which floats and auto-dismisses).
+
+## Anatomy
+
+A sketchy box (`@ghds/sketch-core`) with a severity-coloured outline and icon, an optional bold title,
+a message, and an optional dismiss button.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Info / Success / Warning / Danger', present: true, note: 'The four severities, each with its own colour + icon.' },
+    { name: 'Dismissible', present: true, note: 'Opt-in close button (React/RN: onDismiss; WC: dismissible + dismiss event).' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Match the severity to the message: success for confirmations, danger for errors.',
+    'Keep the message short and actionable.',
+    'Place it near the content it refers to.',
+  ]}
+  dont={[
+    "Don't use an Alert for transient feedback — use a Toast.",
+    "Don't rely on colour alone; the icon and text carry the meaning too.",
+  ]}
+/>
+
+## Accessibility
+
+- **All platforms**: `danger` alerts use `role="alert"` (assertive); the others use `role="status"`
+  (polite), so screen readers announce them appropriately. The severity icon pairs with text so
+  colour is never the sole signal.
+- The dismiss button is a labelled button ("Dismiss").
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+An optional short title plus a concise message.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: 'Severity.' },
+        { name: 'title', type: 'ReactNode', description: 'Optional bold title.' },
+        { name: 'children', type: 'ReactNode', description: 'Message body.' },
+        { name: 'onDismiss', type: '() => void', description: 'Renders a dismiss button that calls this.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: 'Severity (reflected).' },
+        { name: 'heading', type: 'string', description: 'Optional bold title.' },
+        { name: 'dismissible', type: 'boolean', default: 'false', description: 'Show a dismiss button.' },
+        { name: 'dismiss event', type: 'CustomEvent', description: 'Dispatched from the dismiss button.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: 'Severity.' },
+        { name: 'title', type: 'string', description: 'Optional bold title.' },
+        { name: 'children', type: 'ReactNode', description: 'Message body.' },
+        { name: 'onDismiss', type: '() => void', description: 'Renders a dismiss button that calls this.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AlertDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AlertDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Alert } from '@ghds/react-native';
+
+<Alert variant="danger" title="Error">Something went wrong.</Alert>;
+```

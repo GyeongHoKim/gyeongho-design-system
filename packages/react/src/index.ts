@@ -4,6 +4,7 @@ export {
   type AccordionItem,
   type AccordionProps,
 } from './components/Accordion.js';
+export { Alert, type AlertProps, type AlertVariant } from './components/Alert.js';
 export { Avatar, type AvatarProps, type AvatarSize, initialsFrom } from './components/Avatar.js';
 export { Badge, type BadgeProps, type BadgeVariant } from './components/Badge.js';
 export {
@@ -61,6 +62,7 @@ export { Spinner, type SpinnerProps, type SpinnerSize } from './components/Spinn
 export { Switch, type SwitchProps } from './components/Switch.js';
 export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
+export { Toast, type ToastProps, type ToastVariant } from './components/Toast.js';
 export { Tooltip, type TooltipProps } from './components/Tooltip.js';
 export {
   type SketchShape,

@@ -149,6 +149,24 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.alert colors (icon reuses the variant stroke colour)
+      alertBg: t.comp.alert.bg,
+      alertStrokeInfo: t.comp.alert.stroke.info,
+      alertStrokeSuccess: t.comp.alert.stroke.success,
+      alertStrokeWarning: t.comp.alert.stroke.warning,
+      alertStrokeDanger: t.comp.alert.stroke.danger,
+      alertTextTitle: t.comp.alert.text.title,
+      alertTextBody: t.comp.alert.text.body,
+
+      // comp.toast colors
+      toastBg: t.comp.toast.bg,
+      toastStrokeInfo: t.comp.toast.stroke.info,
+      toastStrokeSuccess: t.comp.toast.stroke.success,
+      toastStrokeWarning: t.comp.toast.stroke.warning,
+      toastStrokeDanger: t.comp.toast.stroke.danger,
+      toastTextTitle: t.comp.toast.text.title,
+      toastTextBody: t.comp.toast.text.body,
+
       // comp.modal colors
       modalScrimColor: t.comp.modal.scrim.color,
       modalPanelBg: t.comp.modal.panel.bg,
@@ -375,6 +393,14 @@ function buildTheme(t: Tokens) {
     modalSketch: {
       roughness: t.comp.modal.sketch.roughness,
       bowing: t.comp.modal.sketch.bowing,
+    },
+    alertSketch: {
+      roughness: t.comp.alert.sketch.roughness,
+      bowing: t.comp.alert.sketch.bowing,
+    },
+    toastSketch: {
+      roughness: t.comp.toast.sketch.roughness,
+      bowing: t.comp.toast.sketch.bowing,
     },
     modalScrimOpacity: t.comp.modal.scrim.opacity,
     paginationSketch: {
