@@ -149,6 +149,16 @@ function buildTheme(t: Tokens) {
       // comp.spinner colors
       spinnerIndicator: t.comp.spinner.indicator,
 
+      // comp.table colors
+      tableBg: t.comp.table.bg,
+      tableStroke: t.comp.table.stroke,
+      tableHeaderBg: t.comp.table.headerBg,
+      tableRowBorder: t.comp.table.rowBorder,
+      tableSelectedBg: t.comp.table.selectedBg,
+      tableTextHeader: t.comp.table.text.header,
+      tableTextCell: t.comp.table.text.cell,
+      tableIcon: t.comp.table.text.icon,
+
       // comp.alert colors (icon reuses the variant stroke colour)
       alertBg: t.comp.alert.bg,
       alertStrokeInfo: t.comp.alert.stroke.info,
@@ -393,6 +403,10 @@ function buildTheme(t: Tokens) {
     modalSketch: {
       roughness: t.comp.modal.sketch.roughness,
       bowing: t.comp.modal.sketch.bowing,
+    },
+    tableSketch: {
+      roughness: t.comp.table.sketch.roughness,
+      bowing: t.comp.table.sketch.bowing,
     },
     alertSketch: {
       roughness: t.comp.alert.sketch.roughness,

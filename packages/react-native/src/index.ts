@@ -58,6 +58,14 @@ export type { SpinnerProps, SpinnerSize } from './components/Spinner.js';
 export { Spinner } from './components/Spinner.js';
 export type { SwitchProps } from './components/Switch.js';
 export { Switch } from './components/Switch.js';
+export type {
+  SortDirection,
+  TableColumn,
+  TableProps,
+  TableRow,
+  TableSort,
+} from './components/Table.js';
+export { Table } from './components/Table.js';
 export type { TabItem, TabsProps } from './components/Tabs.js';
 export { Tabs } from './components/Tabs.js';
 export type { TextareaProps } from './components/Textarea.js';

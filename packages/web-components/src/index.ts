@@ -38,6 +38,8 @@ export type { GhSpinnerSize } from './components/spinner.js';
 export { GhSpinner } from './components/spinner.js';
 export { GhSwitch } from './components/switch.js';
 export { GhTab } from './components/tab.js';
+export type { GhTableColumn, GhTableRow, GhTableSort } from './components/table.js';
+export { GhTable } from './components/table.js';
 export type { GhTabItem } from './components/tabs.js';
 export { GhTabs } from './components/tabs.js';
 export { GhTextarea } from './components/textarea.js';

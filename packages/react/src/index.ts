@@ -60,6 +60,14 @@ export {
 export { Slider, type SliderProps } from './components/Slider.js';
 export { Spinner, type SpinnerProps, type SpinnerSize } from './components/Spinner.js';
 export { Switch, type SwitchProps } from './components/Switch.js';
+export {
+  type SortDirection,
+  Table,
+  type TableColumn,
+  type TableProps,
+  type TableRow,
+  type TableSort,
+} from './components/Table.js';
 export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
 export { Toast, type ToastProps, type ToastVariant } from './components/Toast.js';

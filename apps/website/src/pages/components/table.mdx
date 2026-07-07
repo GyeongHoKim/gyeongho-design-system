@@ -1,0 +1,137 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Table
+description: A hand-drawn data table with sortable headers and row selection.
+---
+
+import PropsTable from '../../components/PropsTable.astro';
+import StateList from '../../components/StateList.astro';
+import DoDont from '../../components/DoDont.astro';
+import KeyboardTable from '../../components/KeyboardTable.astro';
+import TableDemoReact from '../../components/demos/TableDemo.tsx';
+import TableDemoLit from '../../components/demos/TableDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+A `Table` presents rows of structured data with sortable columns and optional row selection. Sorting
+and selection are **controlled** — the table renders the `rows` you give it (in the order you give
+them) and emits intent via `onSortChange` / `onSelectionChange`.
+
+## Anatomy
+
+A sketchy outline (`@ghds/sketch-core`) frames a semantic `<table>` (flex rows on React Native).
+Sortable headers are buttons carrying `aria-sort`; an optional leading checkbox column (with a
+select-all header) drives selection. This is the data foundation for the M12 data-state patterns.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Sortable column', present: true, note: 'Header button toggles asc/desc; aria-sort reflects it (web).' },
+    { name: 'Row selection', present: true, note: 'Opt-in checkbox column + select-all with an indeterminate state.' },
+    { name: 'Selected row', present: true, note: 'Highlighted background.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Give each row a stable id and provide the rows already sorted (the table is controlled).',
+    'Provide a caption for the accessible name.',
+    'Right-align numeric columns with align="right".',
+  ]}
+  dont={[
+    "Don't expect the table to sort or paginate data for you — wire onSortChange to your data.",
+    "Don't put huge datasets in one table without pagination or virtualization.",
+  ]}
+/>
+
+## Accessibility
+
+- **React / Web Components**: a semantic `<table>` with `<caption>`, `scope="col"` headers, and
+  `aria-sort` on sortable headers (`none`/`ascending`/`descending`). Selection uses the GHDS Checkbox
+  with accessible labels ("Select row …", "Select all rows"). Web Components dispatches `sort-change`
+  and `selection-change`.
+- **React Native**: rows are flex `Box`es with `role="table"`/`row`/`columnheader`/`cell`; sort is a
+  header button and selection a `role="checkbox"` control. `aria-sort` is a documented web-only gap.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', description: 'Move between sortable headers, selection checkboxes, and interactive cells.' },
+    { keys: 'Enter / Space', description: 'Activate a header (sort) or toggle a checkbox.' },
+  ]}
+/>
+
+## Content
+
+Concise column headers and cell values. Represent booleans/status with a <a href={withBase('/components/badge/')}>Badge</a>
+inside a cell.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'columns', type: 'TableColumn[]', description: '{ key, header, sortable?, align? } per column.' },
+        { name: 'rows', type: 'TableRow[]', description: '{ id, [key]: ReactNode } — rendered in the given order.' },
+        { name: 'caption', type: 'string', description: 'Accessible caption.' },
+        { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: 'Controlled sort + intent callback.' },
+        { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: 'Controlled selection (shows checkboxes).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: 'Set as properties.' },
+        { name: 'caption', type: 'string', description: 'Accessible caption.' },
+        { name: 'sort', type: 'GhTableSort', description: 'Current sort (property).' },
+        { name: 'selectedIds', type: 'string[]', description: 'Selected ids (property); enables checkboxes.' },
+        { name: 'sort-change / selection-change', type: 'CustomEvent', description: 'Dispatched intents.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'Same shape as React.' },
+        { name: 'caption', type: 'string', description: 'Accessible name.' },
+        { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: 'Controlled sort + intent callback.' },
+        { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: 'Controlled selection.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <TableDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <TableDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Table } from '@ghds/react-native';
+
+<Table
+  caption="Contributors"
+  columns={[{ key: 'name', header: 'Name', sortable: true }]}
+  rows={[{ id: '1', name: 'Ada' }]}
+  sort={sort}
+  onSortChange={setSort}
+/>;
+```
