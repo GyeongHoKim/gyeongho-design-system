@@ -1,0 +1,52 @@
+---
+// Live demo of feedback patterns — alert, toast buttons, and modal using Web Components.
+---
+
+<div class="demo-stack" style="gap: var(--sys-spacing-md, 16px)">
+  <gh-alert variant="info" heading="Maintenance notice" dismissible>
+    The system will be updated tonight at 2 AM UTC. Your work will not be affected.
+  </gh-alert>
+
+  <div class="demo-row">
+    <gh-button variant="primary" id="toast-success">success</gh-button>
+    <gh-button variant="danger" id="toast-danger">danger</gh-button>
+    <gh-button variant="neutral" id="toast-warning">warning</gh-button>
+    <gh-button variant="primary" id="toast-info">info</gh-button>
+  </div>
+
+  <gh-button variant="danger" id="open-modal">Delete account</gh-button>
+
+  <gh-toast id="feedback-toast" duration="0"></gh-toast>
+
+  <gh-modal id="feedback-modal" heading="Delete account?">
+    <p style="margin-top: 0">This action cannot be undone. All your data will be permanently removed.</p>
+    <div style="display: flex; gap: var(--sys-spacing-sm); justify-content: flex-end">
+      <gh-button variant="neutral" id="cancel-modal">Cancel</gh-button>
+      <gh-button variant="danger" id="confirm-modal">Delete</gh-button>
+    </div>
+  </gh-modal>
+</div>
+
+<script>
+  import '@ghds/web-components';
+
+  const toast = document.getElementById('feedback-toast');
+  const modal = document.getElementById('feedback-modal');
+
+  ['success', 'danger', 'warning', 'info'].forEach((v) => {
+    document.getElementById(`toast-${v}`)?.addEventListener('click', () => {
+      toast.variant = v;
+      toast.heading = v.charAt(0).toUpperCase() + v.slice(1);
+      toast.textContent = `This is a ${v} toast message.`;
+      toast.open = true;
+    });
+  });
+
+  document.getElementById('open-modal')?.addEventListener('click', () => {
+    modal.open = true;
+  });
+
+  modal?.addEventListener('close', () => { modal.open = false; });
+  document.getElementById('cancel-modal')?.addEventListener('click', () => { modal.open = false; });
+  document.getElementById('confirm-modal')?.addEventListener('click', () => { modal.open = false; });
+</script>

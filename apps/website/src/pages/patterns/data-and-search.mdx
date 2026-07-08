@@ -1,0 +1,178 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Data & Search Patterns
+description: Search, filter, sort, and data state patterns — empty, loading, and error — for lists and tables.
+---
+
+import DoDont from '../../components/DoDont.astro';
+import KeyboardTable from '../../components/KeyboardTable.astro';
+import PatternDataDemoReact from '../../components/demos/PatternDataDemo.tsx';
+import PatternDataDemoLit from '../../components/demos/PatternDataDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+Every list, table, or data view goes through the same lifecycle: _loading_ → _populated_ (or
+_empty_) → possibly _error_. This pattern covers how to compose `Input`, `Button`, `Table`,
+`Spinner`, `Skeleton`, `Alert`, `Badge`, and `Pagination` to handle all four states with a
+consistent UX — and how to add search, filter, and sort on top.
+
+## The Four Data States
+
+| State | Trigger | Component | Behaviour |
+|-------|---------|-----------|-----------|
+| **Loading** (first paint) | Page / view mounts, data fetch starts | `Skeleton` | Shows the _shape_ of content before it arrives — reduces layout shift and perceived wait |
+| **Loading** (subsequent) | Filter change, pagination, refresh | `Spinner` | Indicates an in-progress action without hiding existing content |
+| **Empty** | Query returned zero results, or no items exist yet | `<div>` + illustration + message + `Button` | A friendly, hand-drawn-style empty state with a clear next action |
+| **Error** | Network failure, server error, permission denied | `Alert variant="danger"` + retry `Button` | Explains what happened and offers a direct path to recovery |
+
+### Skeleton vs Spinner Decision Tree
+
+```
+Is there existing content on screen?
+├── No (first paint) → Skeleton
+└── Yes (refresh / filter) → Spinner
+```
+
+`Skeleton` uses `variant="text"`, `"heading"`, `"avatar"`, or `"block"` to mirror the page's
+layout. A typical data table skeleton renders 5–8 rows of alternating text + block shapes. See
+the <a href={withBase('/components/skeleton/')}>Skeleton</a> component page for variant examples.
+
+### Empty State
+
+A hand-drawn empty state is an opportunity to express GHDS's personality. Pair a sketchy
+illustration with a warm message and a clear action:
+
+```
+  ┌──────────────────────────────────────┐
+  │        (hand-drawn illustration)      │
+  │                                      │
+  │   No search results for "xyz"       │
+  │   Try a different term or clear      │
+  │   the filter.                        │
+  │                                      │
+  │          [ Clear filters ]           │
+  └──────────────────────────────────────┘
+```
+
+```tsx
+// React — empty state
+<Card>
+  <div style={{ textAlign: 'center', padding: 'var(--sys-spacing-xl)' }}>
+    <Icon name="search" size="lg" />
+    <p>No results for "{query}".</p>
+    <Button variant="neutral" onClick={clearSearch}>Clear search</Button>
+  </div>
+</Card>
+```
+
+## Search, Filter & Sort
+
+### Search Bar
+
+A search input paired with a `Button` (icon or text). Debounce the input (300–400ms) before firing
+queries — don't search on every keystroke.
+
+```tsx
+// React — search with debounce
+<Input
+  placeholder="Search items..."
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+/>
+```
+
+For Web Components, use `gh-input` with a debounced `input` event listener.
+
+### Filter Chips / Badges
+
+Active filters are displayed as `Badge` components with a dismiss action. A "Clear all" link or
+button resets the filter set. The `Badge` component's sketchy style integrates naturally.
+
+```tsx
+// React — filter chips
+{filters.map((f) => (
+  <Badge key={f} variant="neutral" onDismiss={() => removeFilter(f)}>
+    {f}
+  </Badge>
+))}
+```
+
+### Sorting
+
+Column headers in `Table` are clickable to toggle ascending / descending sort. The `Table` component
+accepts a `sort` prop (`{ column, direction }`) and calls `onSort` on header click. A sorted column
+shows an arrow indicator (`↑` / `↓`).
+
+### Search + Filter + Sort Together
+
+```
+┌──────────────────────────────────────────────────────┐
+│  [ 🔍 Search input...           ]  [ Sort by: Name ▾ ] │
+│  [ ✕ Electronics ] [ ✕ In stock ]  [ Clear all ]     │
+├──────────────────────────────────────────────────────┤
+│  Name              │ Price  │ Status                  │
+│  ──────────────────┼────────┼─────────────────────────│
+│  Wireless Mouse    │ $29.99 │ In stock                │
+│  USB-C Hub         │ $49.99 │ Low stock               │
+│  ──────────────────┴────────┴─────────────────────────│
+│           ← 1  2  3  4  5 →                           │
+└──────────────────────────────────────────────────────┘
+```
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PatternDataDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PatternDataDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native — data states
+import { Alert, Button, Skeleton, Spinner, Table } from '@ghds/react-native';
+
+// Loading
+<Skeleton variant="block" />;
+
+// Error
+<Alert variant="danger" title="Failed to load">
+  Check your connection. <Button label="Retry" onPress={refetch} />
+</Alert>;
+
+// Empty
+<Text>No items yet. <Button label="Add one" variant="neutral" /></Text>;
+```
+
+## Accessibility
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', action: 'Move between search input, filter chips, table headers, and pagination.' },
+    { keys: 'Enter / Space', action: 'Toggle a sortable column header; activate a pagination button; dismiss a filter chip.' },
+  ]}
+/>
+
+- **Live region for results**: wrap the result count in a `role="status"` (polite) element.
+  "Showing 12 of 45 items" updates are announced without interrupting.
+- **Error announcement**: `Alert variant="danger"` uses `role="alert"` — assertive, so the error
+  message is read immediately.
+- **Loading announcements**: a `Spinner` alone is not sufficient for screen readers — pair it with
+  visually-hidden text like "Loading results" that updates when loading completes.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Related Components
+
+- <a href={withBase('/components/table/')}>Table</a> — sortable, selectable data display
+- <a href={withBase('/components/input/')}>Input</a> — search field
+- <a href={withBase('/components/badge/')}>Badge</a> — filter chips
+- <a href={withBase('/components/spinner/')}>Spinner</a> / <a href={withBase('/components/skeleton/')}>Skeleton</a> — loading states
+- <a href={withBase('/components/alert/')}>Alert</a> — error state
+- <a href={withBase('/components/pagination/')}>Pagination</a> — page navigation
+- <a href={withBase('/components/card/')}>Card</a> — empty state container
+- <a href={withBase('/components/icon/')}>Icon</a> — empty state illustration

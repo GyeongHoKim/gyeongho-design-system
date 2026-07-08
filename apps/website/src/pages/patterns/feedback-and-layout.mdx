@@ -1,0 +1,222 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Feedback & Layout Patterns
+description: When to use toast, alert, or modal — plus page shell, sidebar, and responsive layout with GHDS.
+---
+
+import DoDont from '../../components/DoDont.astro';
+import KeyboardTable from '../../components/KeyboardTable.astro';
+import PatternFeedbackDemoReact from '../../components/demos/PatternFeedbackDemo.tsx';
+import PatternFeedbackDemoLit from '../../components/demos/PatternFeedbackDemo.astro';
+import { withBase } from '../../lib/withBase';
+
+## Overview
+
+Feedback is how an app tells the user what just happened — a save succeeded, a request failed, or
+something needs attention. This pattern covers how to choose the right feedback channel (Toast,
+Alert, Modal) and how to compose a page shell — header, body, footer, sidebar — that responds to
+the viewport.
+
+## Feedback Channel Decision Tree
+
+Choosing the right feedback component is the most frequent pattern decision in any app. Use this
+tree:
+
+```
+Did the user initiate the action?
+├── Yes (they clicked "Save", "Delete", "Submit")
+│   └── Is the result still visible on screen?
+│       ├── Yes → Alert (inline, persistent)
+│       └── No (navigated away / async completion) → Toast
+│
+└── No (system event, websocket, background sync)
+    └── Does this require a user decision?
+        ├── Yes → Modal (interrupting, requires action)
+        └── No → Toast (informational, auto-dismiss)
+```
+
+### Component Comparison
+
+| | Toast | Alert | Modal |
+|---|---|---|---|
+| **Position** | Fixed, bottom-right | Inline, in layout | Centred overlay with scrim |
+| **Persistence** | Auto-dismiss (default 5s) | Stays until dismissed | Stays until explicit close |
+| **Interrupts** | No (polite, except danger) | No (polite, except danger) | Yes (traps focus, locks scroll) |
+| **Requires action** | No | Optional dismiss button | Yes (at minimum "OK" / "Cancel") |
+| **Use for** | "Saved", "Copied", "Message sent" | Form errors, status banners, warnings | Confirmations, detail views, short forms |
+| **Stacking** | Multiple can stack | One per context | One at a time (never nested) |
+
+### State Colours
+
+All feedback components use the same severity palette from `sys.color.bg.*`:
+
+| Severity | Token prefix | Icon | When |
+|----------|-------------|------|------|
+| **Info** | `*.info` | ℹ️ info | Neutral status, contextual hints |
+| **Success** | `*.success` | ✓ check | Task completed, data saved |
+| **Warning** | `*.warning` | ⚠ warning | Non-blocking issue, attention needed |
+| **Danger** | `*.danger` | ⚠ warning | Error, destructive action, failure |
+
+<DoDont
+  do={[
+    'Use Toast for transient confirmations (save, copy, send) — they auto-dismiss so the user is not blocked.',
+    'Use Alert for inline status that needs to persist (form errors, connection status, maintenance notice).',
+    'Use Modal for interrupting decisions (delete confirmation, sign-out prompt, critical error).',
+    "Match the severity to the outcome: success for saves, danger for failures, warning for cautions.",
+  ]}
+  dont={[
+    "Don't use a Modal for a simple success message — it's too heavy.",
+    "Don't stack multiple Modals — it disorients users and creates focus-management issues.",
+    "Don't use Toast for errors that require user action — they disappear before the user can act.",
+    "Don't rely on colour alone to communicate severity — always include an icon and text.",
+  ]}
+/>
+
+## Page Shell
+
+A page shell is the persistent chrome around content: header, sidebar (optional), body, and footer.
+GHDS does not ship a dedicated shell component — instead, compose it from existing components and
+tokens.
+
+### Header / Body / Footer
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Header (Breadcrumb + heading + actions)            │  ← sys.spacing.lg padding
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  Body (Card / Table / Form — the main content)      │  ← flex: 1; overflow: auto
+│                                                     │
+├─────────────────────────────────────────────────────┤
+│  Footer (Pagination / legal / secondary links)      │  ← sys.spacing.md padding
+└─────────────────────────────────────────────────────┘
+```
+
+```tsx
+// React — page shell
+<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+  <header style={{ padding: 'var(--sys-spacing-lg)' }}>
+    <Breadcrumb items={breadcrumbs} />
+    <h1>Page Title</h1>
+  </header>
+  <main style={{ flex: 1, padding: '0 var(--sys-spacing-lg)' }}>
+    {children}
+  </main>
+  <footer style={{ padding: 'var(--sys-spacing-md) var(--sys-spacing-lg)' }}>
+    <Pagination current={page} total={totalPages} onChange={setPage} />
+  </footer>
+</div>
+```
+
+### Sidebar Layout
+
+A two-column layout with a fixed-width sidebar (`Card` or `Menu`) and a fluid body. Use
+`sys.breakpoint.tablet` to collapse the sidebar into a drawer or `Tabs` on mobile.
+
+```
+┌──────────┬──────────────────────────────────────────┐
+│ Sidebar  │  Body (fluid)                             │
+│ (240px)  │                                           │
+│          │                                           │
+│ Menu     │  Main content area                        │
+│ items    │                                           │
+│          │                                           │
+└──────────┴──────────────────────────────────────────┘
+```
+
+```tsx
+// React — sidebar layout
+<div style={{ display: 'flex', gap: 'var(--sys-spacing-lg)' }}>
+  <aside style={{ width: 240, flexShrink: 0 }}>
+    <Card>
+      <Menu items={navItems} />
+    </Card>
+  </aside>
+  <main style={{ flex: 1, minWidth: 0 }}>{children}</main>
+</div>
+```
+
+## Responsive Breakpoints
+
+Apply the breakpoints defined in `sys.breakpoint.*` (M8 Foundations) to reflow layouts:
+
+| Breakpoint | Value | Typical Adaptation |
+|------------|-------|-------------------|
+| `mobile` | 0px (default) | Single column, stacked |
+| `tablet` | 768px | Two columns, sidebar appears |
+| `desktop` | 1024px | Full layout, sidebar visible |
+| `wide` | 1440px | Max-width content container |
+
+```css
+/* Mobile-first: single column by default */
+.page { display: flex; flex-direction: column; }
+
+/* Tablet+: sidebar visible */
+@media (min-width: 768px) {
+  .page { flex-direction: row; }
+  .sidebar { display: block; width: 240px; }
+}
+```
+
+React Native has no `@media` queries — use `useWindowDimensions()` and compare `width` against the
+same breakpoint values from `@ghds/tokens`.
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PatternFeedbackDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PatternFeedbackDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native — feedback
+import { Alert, Button, Modal, Toast } from '@ghds/react-native';
+
+// Transient success
+<Toast open={saved} onClose={() => setSaved(false)} variant="success" title="Saved" />;
+
+// Inline warning
+<Alert variant="warning" title="Session expiring">Save your work soon.</Alert>;
+
+// Interrupting confirmation
+<Modal open={confirming} onClose={() => setConfirming(false)} title="Delete item?">
+  <Text>This cannot be undone.</Text>
+  <Button label="Delete" variant="danger" onPress={handleDelete} />
+</Modal>;
+```
+
+## Accessibility
+
+<KeyboardTable
+  rows={[
+    { keys: 'Escape', action: 'Dismiss an open Modal, Toast (close button), or Tooltip.' },
+    { keys: 'Tab', action: 'Move between sidebar items, then into the body.' },
+    { keys: 'Enter / Space', action: 'Activate a sidebar navigation item.' },
+  ]}
+/>
+
+- **Toast announcements**: info/success/warning use `role="status"` (polite — does not interrupt);
+  danger uses `role="alert"` (assertive — interrupts immediately).
+- **Modal focus**: focus is trapped inside while open and restored to the trigger on close. See
+  the <a href={withBase('/components/modal/#accessibility')}>Modal accessibility section</a>.
+- **Skip links**: in a page shell with a sidebar, provide a "Skip to content" link as the first
+  focusable element so keyboard users can bypass navigation.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Related Components
+
+- <a href={withBase('/components/toast/')}>Toast</a> — transient notification
+- <a href={withBase('/components/alert/')}>Alert</a> — inline status banner
+- <a href={withBase('/components/modal/')}>Modal</a> — interrupting dialog
+- <a href={withBase('/components/tooltip/')}>Tooltip</a> — supplementary hint
+- <a href={withBase('/components/breadcrumb/')}>Breadcrumb</a> — header navigation
+- <a href={withBase('/components/pagination/')}>Pagination</a> — footer navigation
+- <a href={withBase('/components/menu/')}>Menu</a> — sidebar navigation
+- <a href={withBase('/components/card/')}>Card</a> — sidebar / content container
+- <a href={withBase('/foundations/')}>Foundations</a> — breakpoint, grid, and spacing tokens

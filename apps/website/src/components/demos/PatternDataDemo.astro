@@ -1,0 +1,37 @@
+---
+// Live demo of data patterns — searchable product table using Web Components.
+---
+
+<div class="demo-stack" style="gap: var(--sys-spacing-md, 16px)">
+  <gh-input id="data-search" placeholder="Search products..." type="search"></gh-input>
+  <gh-table id="data-table"></gh-table>
+</div>
+
+<script>
+  import '@ghds/web-components';
+
+  const products = [
+    { id: '1', name: 'Wireless Mouse', price: '$29.99', stock: 'In stock' },
+    { id: '2', name: 'USB-C Hub', price: '$49.99', stock: 'Low stock' },
+    { id: '3', name: 'Mechanical Keyboard', price: '$89.99', stock: 'In stock' },
+    { id: '4', name: 'Webcam HD', price: '$59.99', stock: 'Out of stock' },
+    { id: '5', name: 'Monitor Stand', price: '$39.99', stock: 'In stock' },
+  ];
+
+  const search = document.getElementById('data-search');
+  const table = /** @type {import('@ghds/web-components').GhTable} */ (
+    document.getElementById('data-table')
+  );
+
+  table.columns = [
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'price', header: 'Price', sortable: true },
+    { key: 'stock', header: 'Stock', sortable: true },
+  ];
+  table.rows = products;
+
+  search?.addEventListener('input', (e) => {
+    const q = /** @type {string} */ (e.target?.value || '').toLowerCase();
+    table.rows = q ? products.filter((p) => p.name.toLowerCase().includes(q)) : products;
+  });
+</script>
