@@ -31,9 +31,7 @@ export default function PatternDataDemo(): React.JSX.Element {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const filtered = PRODUCTS.filter((p) =>
-    p.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filtered = PRODUCTS.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
 
   const handleSearch = (value: string) => {
     setQuery(value);
@@ -49,7 +47,9 @@ export default function PatternDataDemo(): React.JSX.Element {
         onChange={(e) => handleSearch((e.target as HTMLInputElement).value)}
       />
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--sys-spacing-lg)' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'center', padding: 'var(--sys-spacing-lg)' }}
+        >
           <Spinner />
         </div>
       ) : filtered.length === 0 ? (

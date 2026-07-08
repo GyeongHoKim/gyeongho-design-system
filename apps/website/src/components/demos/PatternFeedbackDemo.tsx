@@ -47,9 +47,7 @@ export default function PatternFeedbackDemo(): React.JSX.Element {
         <p style={{ marginTop: 0 }}>
           This action cannot be undone. All your data will be permanently removed.
         </p>
-        <div
-          style={{ display: 'flex', gap: 'var(--sys-spacing-sm)', justifyContent: 'flex-end' }}
-        >
+        <div style={{ display: 'flex', gap: 'var(--sys-spacing-sm)', justifyContent: 'flex-end' }}>
           <Button variant="neutral" onClick={() => setShowModal(false)}>
             Cancel
           </Button>
