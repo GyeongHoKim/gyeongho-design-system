@@ -43,6 +43,11 @@ export const NAV: readonly NavItem[] = [
       'Five principles and the voice & tone that guide every token, component, and word in GHDS.',
   },
   {
+    label: 'UX Writing',
+    href: '/ux-writing/',
+    summary: 'Microcopy rules for buttons, errors, empty states, and a shared product glossary.',
+  },
+  {
     label: 'About & Accessibility',
     href: '/about/',
     summary: "The design system's philosophy and its WCAG 2.1 AA accessibility commitment.",

@@ -1,0 +1,176 @@
+---
+layout: ../layouts/MarkdownLayout.astro
+title: UX Writing Guide
+description: Microcopy rules for buttons, errors, empty states, and a shared product glossary — the practical companion to Voice & Tone.
+---
+
+import DoDont from '../components/DoDont.astro';
+import { withBase } from '../lib/withBase';
+
+## Overview
+
+This guide turns the GHDS <a href={withBase('/principles/#voice--tone')}>Voice &amp; Tone</a> into
+concrete, reusable rules for the words in an interface — button labels, error messages, empty
+states, and confirmations. Voice &amp; Tone says *how GHDS sounds*; this guide says *what to type*
+when you hit a specific screen.
+
+It is written for designers, PMs, and engineers alike: if you are naming a button or wording an
+error, the answer should be here rather than invented per-feature.
+
+## Voice, in one line
+
+GHDS writing is **warm, direct, honest, and calm** — friendly without performing enthusiasm, plain
+without being blunt. The full definition, including the tone-by-context table, lives in
+<a href={withBase('/principles/#voice--tone')}>Design Principles → Voice &amp; Tone</a> and is not
+repeated here; that page is the single source of truth. Everything below is how those four words
+cash out in practice.
+
+## Buttons & Links
+
+A button label is a promise about what happens when it is pressed. Make it a **verb phrase in the
+imperative**, in sentence case, with no trailing punctuation. Prefer the specific action verb
+("Delete", "Save changes", "Send invite") over a generic "OK" or "Submit" — the label should read
+correctly even with the surrounding text hidden.
+
+Use a **link** when the destination is navigation, and a **button** when the result is an action.
+Link text names the destination or outcome ("View billing history"), never the mechanic ("Click
+here").
+
+<DoDont
+  do={[
+    'Name the action: "Delete project", "Save changes", "Send invite".',
+    'Use sentence case and no ending period: "Add member".',
+    'Match the button verb to the sentence that introduces it — the copy and the button agree.',
+    'Keep labels to roughly one to three words; if you need a sentence, the explanation belongs above the button, not on it.',
+  ]}
+  dont={[
+    'Don\'t use bare "OK", "Submit", or "Yes" when a specific verb exists.',
+    'Don\'t write "Click here" or "Learn more" as the whole link — name the destination.',
+    'Don\'t title-case labels ("Save Changes") or add punctuation ("Save changes!").',
+    'Don\'t phrase a button as a question or a full sentence.',
+  ]}
+/>
+
+## Error Messages
+
+An error message has one job: help the person move forward. State **what happened** and **what to
+do next**, in plain language, without blaming the user. Skip system jargon ("null", "exception",
+"invalid input") and error codes as the primary message — a code can follow in smaller text for
+support, but it is never the headline.
+
+Keep the tone calm and specific. "Something went wrong" with no next step is not an error message;
+it is a dead end.
+
+<DoDont
+  do={[
+    'Say what happened and what to do: "That email is already registered. Try signing in instead."',
+    'Point at the fix: "Add at least one recipient before sending."',
+    'Keep it human and specific — name the field or the limit that was crossed.',
+    'Attach the error to the field it concerns, and announce it (role="alert") when it appears.',
+  ]}
+  dont={[
+    'Don\'t blame the user: "You entered an invalid value."',
+    'Don\'t expose internals: "Error: NullPointerException at line 42."',
+    'Don\'t dead-end with "Something went wrong." and no next step.',
+    'Don\'t dramatize — no "Fatal error", no exclamation marks.',
+  ]}
+/>
+
+## Empty States
+
+An empty state is a beginning, not a failure. Orient the person in one sentence, then give **one
+clear next action**. Keep the pressure low and the tone encouraging — this is often someone's first
+moment in a feature.
+
+<DoDont
+  do={[
+    'Explain what would appear here and how to start: "No projects yet. Create one to get going."',
+    'Offer a single primary action that matches the button-label rules above.',
+    'Use the empty state to teach the feature briefly, in a friendly voice.',
+  ]}
+  dont={[
+    'Don\'t leave a blank panel with no explanation or action.',
+    'Don\'t stack multiple competing calls to action.',
+    'Don\'t apologize or imply the user did something wrong.',
+  ]}
+/>
+
+## Success & Confirmation
+
+Confirm success **briefly and matter-of-factly** — no confetti of words. A short toast or inline
+message that names what happened is enough: "Changes saved", "Invite sent".
+
+For **confirmation dialogs** before a destructive action, the title should name the specific
+consequence and the confirming button should repeat the verb, so the choice is unambiguous even if
+someone reads only the buttons. Avoid the vague "Are you sure?" — it makes the reader do the work of
+recalling what they were doing.
+
+<DoDont
+  do={[
+    'Confirm plainly: "Changes saved" — then get out of the way.',
+    'Title destructive dialogs by consequence: "Delete this project?"',
+    'Match the confirm button to the action: "Delete project" / "Cancel".',
+    'Tell the reader if the action can\'t be undone, once, in the dialog body.',
+  ]}
+  dont={[
+    'Don\'t over-celebrate: "Woohoo! You did it!"',
+    'Don\'t title a destructive dialog "Are you sure?" with "Yes" / "No" buttons.',
+    'Don\'t make the confirm and cancel buttons look or read alike.',
+  ]}
+/>
+
+## Glossary / Terminology
+
+Pick one term per concept and use it everywhere — UI, docs, and error copy. Inconsistent synonyms
+("remove" here, "delete" there) make an interface feel less trustworthy. This table is the starting
+GHDS vocabulary; extend it per product rather than inventing parallel terms.
+
+| Concept | Use | Avoid |
+| --- | --- | --- |
+| Removing something permanently | **Delete** | Remove, Destroy, Purge |
+| Taking an item out of a list (recoverable) | **Remove** | Delete |
+| Entering an authenticated session | **Sign in** | Log in, Login (verb) |
+| Leaving a session | **Sign out** | Log out, Logout (verb) |
+| Creating an account | **Sign up** | Register, Join |
+| Saving edits to existing data | **Save changes** | Update, Apply |
+| Discarding unsaved edits | **Discard** | Cancel, Reset |
+| Closing without acting | **Cancel** | Dismiss, Nevermind |
+| A required field left empty | **Required** | Mandatory, Must |
+
+Note the sign in / sign up split: "sign in" is for people who already have an account, "sign up" is
+for people who don't — never use "login" as a verb (it is a noun, as in "the login screen").
+
+## Bilingual principle (Korean / English)
+
+GHDS products may ship in Korean and English. The rule is **parity, not translation-as-afterthought**:
+every user-facing string exists in both languages, kept conceptually parallel, and both are held to
+the standards above (a Korean error message must still name the cause and the fix; a Korean button
+must still be a verb phrase).
+
+The **English glossary above is canonical** — new terms are decided in English first, then given a
+fixed Korean counterpart so translators map one-to-one rather than improvising. Keep a single Korean
+term per English term, exactly as the glossary keeps a single English term per concept.
+
+| English | Korean |
+| --- | --- |
+| Delete project | 프로젝트 삭제 |
+| That email is already registered. Try signing in instead. | 이미 가입된 이메일이에요. 대신 로그인해 보세요. |
+| No projects yet. Create one to get going. | 아직 프로젝트가 없어요. 하나 만들어 시작해 보세요. |
+
+> This documentation site is authored in English (see the language convention in
+> <a href={withBase('/about/')}>About</a>). The pairs above are illustrative of KO/EN parity for
+> product teams — they are not a sign that this site is bilingual.
+
+## Capitalization, punctuation & numbers
+
+- **Sentence case for interface text** — buttons, labels, menu items, and headings shown inside the
+  product. Capitalize only the first word and proper nouns; reserve Title Case for actual product or
+  brand names. (This guide's own page headings follow the documentation site's convention, which is
+  a separate context from product UI.)
+- **No trailing punctuation** on buttons, labels, or short standalone messages. Use periods in
+  multi-sentence body copy and full-sentence helper text.
+- **Numerals for numbers** (`3 items`, `Step 2 of 4`), including small ones, for scannability.
+- **Contractions are welcome** ("you're", "we'll", "can't") — they keep the voice warm. Just don't
+  let them tip into cutesiness.
+- **One space after periods**, straight apostrophes and quotes as authored, and an ellipsis
+  character (…) rather than three dots when trailing off.
