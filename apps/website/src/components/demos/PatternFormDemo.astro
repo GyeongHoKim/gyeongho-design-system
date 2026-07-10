@@ -1,0 +1,24 @@
+---
+// Live demo of form patterns — login form using Web Components.
+---
+
+<div class="demo-stack" style="gap: var(--comp-formField-gap, var(--sys-spacing-md, 16px))">
+  <gh-form-field label="Email">
+    <gh-input placeholder="you@example.com" type="email"></gh-input>
+  </gh-form-field>
+  <gh-form-field label="Password" helper-text="At least 8 characters">
+    <gh-input type="password"></gh-input>
+  </gh-form-field>
+  <gh-form-field label="Role">
+    <gh-select value="viewer">
+      <gh-select-option value="admin">Admin</gh-select-option>
+      <gh-select-option value="editor">Editor</gh-select-option>
+      <gh-select-option value="viewer">Viewer</gh-select-option>
+    </gh-select>
+  </gh-form-field>
+  <gh-button variant="primary">Log in</gh-button>
+</div>
+
+<script>
+  import '@ghds/web-components';
+</script>

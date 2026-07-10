@@ -13,20 +13,19 @@ commitment and how the automated color-contrast validation works.
 
 ## Keyboard Interaction
 
-Every component that exists today (`Button`, `Card`, `Input`) relies entirely on native browser
-keyboard handling — none of them has custom `onKeyDown` or `tabIndex` logic.
+Most components (`Button`, `Card`, `Input`, `Alert`, `Badge`, `Avatar`, `Spinner`, `Progress`,
+`Skeleton`, `Table`) rely entirely on native browser keyboard handling — no custom `onKeyDown` or
+`tabIndex` logic. Overlay components add their own bindings for dismissal and navigation.
 
 <KeyboardTable
   rows={[
     { keys: 'Tab', action: 'Move focus to the next focusable element in document order.' },
     { keys: 'Shift + Tab', action: 'Move focus to the previous focusable element.' },
     { keys: 'Enter / Space', action: 'Activate a focused Button.' },
+    { keys: 'Escape', action: 'Close an open Modal (dismisses the dialog and restores focus to the trigger). Also dismisses Tooltip and Menu.' },
+    { keys: '↑ ↓ ← →', action: 'Navigate items within an open Menu (arrow keys), or cycle through Tabs (left/right arrows).' },
   ]}
 />
-
-Components that don't exist yet (Modal, Toast, Tooltip, Menu — M11) will need their own key
-bindings (typically `Escape` to dismiss, arrow keys for menu navigation); this table will grow as
-they ship.
 
 ## Focus Management
 
@@ -37,10 +36,12 @@ they ship.
   removes the element from the tab order entirely. `Button`'s `asChild` path only sets
   `aria-disabled`, which does **not** remove it from the tab order — if you disable an `asChild`
   button, you must also prevent activation yourself.
-- **Focus trap / restore**: no component implements this today, because no overlay component
-  (Modal, Drawer, Menu) exists yet. When one ships, the standard is: trap Tab/Shift+Tab within the
-  overlay while open, and restore focus to the element that opened it on close. This is forward
-  guidance for M11, not a description of current behavior.
+- **Focus trap / restore**: `Modal` implements full focus-trap+restore on React and Web Components.
+  On open, focus moves to the first focusable element inside the dialog (or the dialog itself);
+  Tab/Shift+Tab cycle within; Escape or scrim-click dismiss and restore focus to the element that
+  opened the dialog. React Native delegates focus containment to `accessibilityViewIsModal`. `Menu`
+  traps focus similarly while open. `Toast` and `Tooltip` do not trap focus — they are transient /
+  supplementary.
 
 ## ARIA Pattern Reference
 
@@ -49,14 +50,25 @@ they ship.
 | `Button` | Native `<button>` role (or `aria-disabled` on the `asChild` path — see Keyboard Interaction above). Decorative sketch outline is `aria-hidden="true"`. |
 | `Card` | No role by default on React — the caller supplies one. Web Components/React Native automatically expose `role="group"`/`accessibilityRole="summary"` when a `label` is given. |
 | `Input` | `aria-invalid` + `aria-describedby` (pointing at a `role="alert"` error message) on React when `error` is set. Label association via `<label for>`/Radix `Label`. |
+| `Modal` | `role="dialog"` + `aria-modal="true"`, title wired via `aria-labelledby`. React portals to `document.body`; WC uses native `<dialog>` + `::backdrop`; RN uses `accessibilityViewIsModal`. |
+| `Alert` | `role="status"` by default, `role="alert"` for `danger` variant (assertive). Severity-coloured icon with accessible name from the heading text. |
+| `Toast` | `role="status"` (polite) for info/success/warning; `role="alert"` (assertive) for `danger`. Auto-dismiss timer; close button labelled "Dismiss". |
+| `Tooltip` | `role="tooltip"` with the trigger linked via `aria-describedby`. Web: hover (after delay) or focus; dismiss on Escape/blur/leave. RN: tap-to-toggle with `accessibilityHint` on trigger. |
+| `Menu` | `role="menu"` with `role="menuitem"` on items. `aria-activedescendant` (WC) manages active descendant; React uses roving tabindex. Arrow-key navigation, Escape dismiss. |
 
 ## Screen Reader Testing Checklist
 
-- [ ] Every interactive element (`Button`, `Input`) has an accessible name — either visible text,
-  a `label`, or an explicit `aria-label`/`accessibilityLabel`.
+- [ ] Every interactive element has an accessible name — either visible text, a `label`, or an
+  explicit `aria-label`/`accessibilityLabel`. This includes buttons inside `Modal`, `Toast`, and
+  `Alert` (the close/dismiss buttons).
 - [ ] Disabling a component removes it from both the tab order **and** screen reader interaction
   — verify both, since (per Focus Management above) they don't always happen together.
 - [ ] An `Input`'s error message is announced when it appears, not just visually shown.
+  `FormField` automates this with `aria-describedby` pointing at the error's `role="alert"`.
+- [ ] Opening a `Modal` moves focus into the dialog and traps it; closing restores focus to the
+  trigger. This applies to both keyboard (Tab/Shift+Tab) and screen-reader virtual cursor.
+- [ ] `Toast` and `Alert` with `variant="danger"` are announced assertively (`role="alert"`);
+  other severities use a polite `role="status"` that does not interrupt.
 - [ ] Decorative elements (the sketch outline SVGs) are silent — confirm they don't get announced
   or receive focus.
 - [ ] Toggling dark mode doesn't change any of the above (the `[data-theme]` switch is purely
