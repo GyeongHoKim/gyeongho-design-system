@@ -43,6 +43,7 @@
   ],
   "scripts": {
     "build": "node style-dictionary.config.js",
+    "penpot:tokens": "node scripts/build-penpot-tokens.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check .",
