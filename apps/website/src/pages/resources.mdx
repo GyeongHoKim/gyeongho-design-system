@@ -31,9 +31,23 @@ pnpm --filter storybook-react dev
 pnpm --filter @ghds/storybook-web-components dev
 ```
 
-## Contributing
+## Contributing & Governance
 
-- Changes are versioned with Changesets (`pnpm changeset`).
-- Every change must pass the **Code Quality Gate** in the root `AGENTS.md`.
+The canonical process docs live in the repository root:
 
-> This page is an IA skeleton stub. A deployed Storybook URL will be added here once one exists.
+- [Contributing Guide](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/CONTRIBUTING.md)
+  — how to propose a change, the Code Quality Gate, changesets, and the
+  component definition of done.
+- [Governance](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/GOVERNANCE.md)
+  — roles, how decisions are made, and the component lifecycle
+  (experimental / stable / deprecated).
+- [Versioning & Releases](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/VERSIONING.md)
+  — SemVer policy (incl. the pre-1.0 caveat), what counts as breaking, and the
+  OIDC release pipeline.
+- [Migrations](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/MIGRATIONS.md)
+  — how breaking changes are communicated, with a running log.
+
+In short: changes are versioned with Changesets (`pnpm changeset`) and must pass
+the **Code Quality Gate** in the root `AGENTS.md`.
+
+> A deployed Storybook URL will be added here once one exists.
