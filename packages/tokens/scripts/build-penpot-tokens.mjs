@@ -40,9 +40,15 @@ const jsonFiles = (subdir) =>
     .sort()
     .map((f) => join(SRC, subdir, f));
 
+// Skip keys that would walk the prototype chain — token files are trusted
+// local source, but a stray `__proto__`/`constructor`/`prototype` key must
+// never reach `target[k] = …` (CodeQL: prototype-polluting function).
+const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 /** Deep-merge plain objects (used to fold many tier files into one tree). */
 function deepMerge(target, source) {
   for (const [k, v] of Object.entries(source)) {
+    if (UNSAFE_KEYS.has(k)) continue;
     if (v && typeof v === 'object' && !Array.isArray(v) && !('$value' in v)) {
       target[k] = deepMerge(target[k] && typeof target[k] === 'object' ? target[k] : {}, v);
     } else {
@@ -90,7 +96,7 @@ function normalize(node, inheritedType, stats) {
   const out = {};
   if (node.$description !== undefined) out.$description = node.$description;
   for (const [k, v] of Object.entries(node)) {
-    if (k === '$type' || k === '$description') continue;
+    if (k === '$type' || k === '$description' || UNSAFE_KEYS.has(k)) continue;
     if (v && typeof v === 'object' && !Array.isArray(v)) {
       out[k] = normalize(v, ownType, stats);
     }
