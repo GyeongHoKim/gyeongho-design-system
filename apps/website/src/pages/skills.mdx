@@ -1,0 +1,77 @@
+---
+layout: ../layouts/MarkdownLayout.astro
+title: AI Agent Skills
+description: Install an Agent Skill so your AI coding assistant generates correct, accessible GHDS code.
+---
+
+GHDS ships an [Agent Skill](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds)
+— a set of rules and examples your AI coding assistant (Claude Code, Cursor, and other tools in the
+[vercel-labs/skills](https://github.com/vercel-labs/skills) ecosystem) reads before generating code
+that imports from `@ghds/*`. Instead of guessing prop names or hardcoding colors, it knows GHDS's
+actual conventions.
+
+## Installation
+
+```bash
+npx skills add GyeongHoKim/gyeongho-design-system
+```
+
+```bash
+pnpm dlx skills add GyeongHoKim/gyeongho-design-system
+```
+
+```bash
+bunx skills add GyeongHoKim/gyeongho-design-system
+```
+
+This installs the skill into your project's agent-skills directory (e.g. `.claude/skills/` for
+Claude Code). We've verified installation and usage with **Claude Code**; the skill follows the
+open [agentskills.io](https://agentskills.io) format supported by the wider vercel-labs/skills
+ecosystem, but we haven't verified every listed agent ourselves.
+
+## What's Included
+
+- **Token usage** — when to consume `sys.*`/`comp.*` tokens vs. why `ref.*` and hardcoded values
+  break the contrast guarantee.
+- **Accessibility** — the ARIA pattern and keyboard-interaction reference for every component, plus
+  focus-management gotchas (like the `asChild`+`disabled` tab-order trap).
+- **Composition** — when to reach for `FormField`, and how to choose between `Toast`/`Alert`/`Modal`
+  or `Skeleton`/`Spinner`.
+- **Platform differences** — the concrete prop and event-naming gaps between `@ghds/react`,
+  `@ghds/web-components`, and `@ghds/react-native` (for example, `Modal`'s accessible title is
+  `title` on React/React Native but `heading` on Web Components).
+
+## Before / After
+
+Without the skill, an agent will often hardcode a color:
+
+```css
+/* Before */
+.my-button {
+  background-color: #0066cc;
+}
+```
+
+```css
+/* After */
+.my-button {
+  background-color: var(--sys-color-bg-primary);
+}
+```
+
+...or carry a prop name across platforms that doesn't exist there:
+
+```tsx
+// Before — 'neutral' isn't a valid variant on React Native
+<Button label="Cancel" variant="neutral" />
+```
+
+```tsx
+// After
+<Button label="Cancel" variant="primary" />
+```
+
+## Reference
+
+- [Skill source](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds)
+- [Getting Started](../getting-started/) — installing the packages themselves
