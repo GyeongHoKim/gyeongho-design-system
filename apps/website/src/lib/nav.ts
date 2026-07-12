@@ -57,4 +57,9 @@ export const NAV: readonly NavItem[] = [
     href: '/resources/',
     summary: 'A collection of links for packages, the repository, changelog, and more.',
   },
+  {
+    label: 'AI Agent Skills',
+    href: '/skills/',
+    summary: 'Install a skill so your AI coding assistant generates correct GHDS code.',
+  },
 ];
