@@ -32,6 +32,19 @@ export {
   type ComboboxOption,
   type ComboboxProps,
 } from './components/Combobox.js';
+export {
+  Command,
+  CommandDialog,
+  type CommandDialogProps,
+  type CommandGroup,
+  type CommandItem,
+  type CommandProps,
+} from './components/Command.js';
+export {
+  ContextMenu,
+  type ContextMenuItem,
+  type ContextMenuProps,
+} from './components/ContextMenu.js';
 export { Drawer, type DrawerProps } from './components/Drawer.js';
 export { Empty, type EmptyProps } from './components/Empty.js';
 export {
@@ -45,7 +58,14 @@ export { Input, type InputProps } from './components/Input.js';
 export { Kbd, type KbdProps } from './components/Kbd.js';
 export { Label, type LabelProps } from './components/Label.js';
 export { Menu, type MenuItem, type MenuProps } from './components/Menu.js';
+export { Menubar, type MenubarMenu, type MenubarProps } from './components/Menubar.js';
 export { Modal, type ModalProps } from './components/Modal.js';
+export {
+  NavigationMenu,
+  type NavigationMenuItem,
+  type NavigationMenuLink,
+  type NavigationMenuProps,
+} from './components/NavigationMenu.js';
 export {
   Pagination,
   type PaginationProps,
