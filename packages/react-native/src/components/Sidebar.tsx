@@ -33,11 +33,24 @@ export interface SidebarProps {
   header?: ReactNode;
   /** Optional footer content (e.g. a user chip). */
   footer?: ReactNode;
+  /**
+   * Panel width in px. Defaults to {@link DEFAULT_WIDTH}. The `comp.sidebar.width`
+   * token currently aliases `sys.breakpoint.mobile`, which resolves to `0`, so a
+   * geometry fallback is used here until that alias is retargeted in the tokens
+   * package. Pass `'stretch'` to fill the parent instead (e.g. inside a Drawer).
+   */
+  width?: number | 'stretch';
   /** Accessible label for the navigation. */
   accessibilityLabel?: string;
   /** Test handle for queries. */
   testID?: string;
 }
+
+/**
+ * Default sidebar width (geometry, px). Used because `comp.sidebar.width`
+ * resolves to `0` (see {@link SidebarProps.width}).
+ */
+const DEFAULT_WIDTH = 280;
 
 /**
  * A hand-drawn sidebar navigation. A vertical, scrollable panel of titled
@@ -51,6 +64,7 @@ export function Sidebar({
   onSelect,
   header,
   footer,
+  width = DEFAULT_WIDTH,
   accessibilityLabel,
   testID,
 }: SidebarProps) {
@@ -65,6 +79,7 @@ export function Sidebar({
       testID={testID}
       style={{
         alignSelf: 'stretch',
+        width: width === 'stretch' ? undefined : width,
         borderRightWidth: theme.borderWidths.default,
         borderColor: theme.colors.sidebarStroke,
       }}

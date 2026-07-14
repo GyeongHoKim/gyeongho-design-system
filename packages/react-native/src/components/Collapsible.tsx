@@ -23,8 +23,6 @@ export interface CollapsibleProps {
   testID?: string;
 }
 
-const OPEN_DURATION = 180;
-
 /**
  * A hand-drawn collapsible (disclosure). The content region animates its height
  * open via `Animated`; the animation is skipped when the OS "reduce motion"
@@ -46,6 +44,7 @@ export function Collapsible({
   const progress = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;
 
   const open = controlledOpen ?? internalOpen;
+  const openDuration = theme.animationDuration.normal;
 
   useEffect(() => {
     let cancelled = false;
@@ -60,14 +59,14 @@ export function Collapsible({
       }
       Animated.timing(progress, {
         toValue: target,
-        duration: OPEN_DURATION,
+        duration: openDuration,
         useNativeDriver: false,
       }).start();
     });
     return () => {
       cancelled = true;
     };
-  }, [open, progress]);
+  }, [open, progress, openDuration]);
 
   const toggle = () => {
     if (disabled) {

@@ -652,6 +652,14 @@ function buildTheme(t: Tokens) {
       bowing: t.comp.chart.sketch.bowing,
     },
     chartStrokeWidth: t.comp.chart.stroke.width,
+    // Motion durations (ms) from `sys.animation.duration`. Consumed by the
+    // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
+    // so those durations stay token-driven rather than hardcoded.
+    animationDuration: {
+      fast: t.sys.animation.duration.fast,
+      normal: t.sys.animation.duration.normal,
+      slow: t.sys.animation.duration.slow,
+    },
   });
 }
 

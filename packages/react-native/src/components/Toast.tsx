@@ -233,7 +233,9 @@ export interface ToasterProps {
 
 /** One animated entry in the {@link Toaster} stack. */
 function ToasterItem({ record }: { record: ToastRecord }) {
+  const theme = useTheme<Theme>();
   const opacity = useRef(new Animated.Value(0)).current;
+  const duration = theme.animationDuration.fast;
 
   useEffect(() => {
     let cancelled = false;
@@ -245,12 +247,12 @@ function ToasterItem({ record }: { record: ToastRecord }) {
         opacity.setValue(1);
         return;
       }
-      Animated.timing(opacity, { toValue: 1, duration: 160, useNativeDriver: true }).start();
+      Animated.timing(opacity, { toValue: 1, duration, useNativeDriver: true }).start();
     });
     return () => {
       cancelled = true;
     };
-  }, [opacity]);
+  }, [opacity, duration]);
 
   return (
     <Animated.View style={{ opacity, width: '100%', alignItems: 'center' }}>
