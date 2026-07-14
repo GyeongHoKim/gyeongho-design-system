@@ -1,7 +1,7 @@
 {
   "comp": {
     "sidebar": {
-      "$description": "Tier 3 component tokens for the hand-drawn Sidebar navigation. References sys only. `width` reuses sys.breakpoint.mobile as the closest existing dimension token (no dedicated sidebar-width sys token exists).",
+      "$description": "Tier 3 component tokens for the hand-drawn Sidebar navigation. References sys only.",
       "bg": { "$type": "color", "$value": "{sys.color.bg.canvas}" },
       "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
       "stroke": { "$type": "color", "$value": "{sys.color.border.subtle}" },
@@ -11,7 +11,8 @@
         "active": { "$value": "{sys.color.bg.subtle}" },
         "activeText": { "$value": "{sys.color.text.link}" }
       },
-      "width": { "$type": "dimension", "$value": "{sys.breakpoint.mobile}" },
+      "width": { "$type": "dimension", "$value": "{sys.sidebar.width}" },
+      "rail": { "$type": "dimension", "$value": "{sys.sidebar.rail}" },
       "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" },
       "sketch": {
         "$type": "number",

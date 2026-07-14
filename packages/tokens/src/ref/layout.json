@@ -26,6 +26,12 @@
         "desktop": { "$value": 12 },
         "wide": { "$value": 12 }
       }
+    },
+    "sidebar": {
+      "$type": "dimension",
+      "$description": "Tier 1 sidebar navigation widths: full panel and collapsed rail.",
+      "width": { "$value": "256px" },
+      "rail": { "$value": "56px" }
     }
   }
 }
