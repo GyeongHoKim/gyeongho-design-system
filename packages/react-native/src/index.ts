@@ -38,6 +38,13 @@ export type { CollapsibleProps } from './components/Collapsible.js';
 export { Collapsible } from './components/Collapsible.js';
 export type { ComboboxProps } from './components/Combobox.js';
 export { Combobox } from './components/Combobox.js';
+export type { CommandItem, CommandProps } from './components/Command.js';
+export { Command } from './components/Command.js';
+export type {
+  ContextMenuAction,
+  ContextMenuProps,
+} from './components/ContextMenu.js';
+export { ContextMenu } from './components/ContextMenu.js';
 export type { DrawerProps } from './components/Drawer.js';
 export { Drawer } from './components/Drawer.js';
 export type { EmptyProps } from './components/Empty.js';
@@ -56,8 +63,16 @@ export type { LabelProps } from './components/Label.js';
 export { Label } from './components/Label.js';
 export type { MenuItem, MenuProps } from './components/Menu.js';
 export { Menu } from './components/Menu.js';
+export type { MenubarMenu, MenubarProps } from './components/Menubar.js';
+export { Menubar } from './components/Menubar.js';
 export type { ModalProps } from './components/Modal.js';
 export { Modal } from './components/Modal.js';
+export type {
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuProps,
+} from './components/NavigationMenu.js';
+export { NavigationMenu } from './components/NavigationMenu.js';
 export type { PaginationProps } from './components/Pagination.js';
 export { Pagination, paginationRange } from './components/Pagination.js';
 export type { PopoverProps } from './components/Popover.js';
