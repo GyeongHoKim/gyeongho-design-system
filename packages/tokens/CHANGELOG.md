@@ -1,5 +1,11 @@
 # @ghds/tokens
 
+## 0.9.0
+
+### Minor Changes
+
+- ae0ab87: Add comp tokens for shadcn-parity components (separator, label, kbd, empty, toggle, popover, sheet, drawer, combobox, command, calendar, sidebar, chart, etc.) and sys chart series colors.
+
 ## 0.8.0
 
 ### Minor Changes

@@ -1,5 +1,14 @@
 # storybook-react
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies [3d65d0f]
+- Updated dependencies [ae0ab87]
+  - @ghds/react@0.9.0
+  - @ghds/tokens@0.9.0
+
 ## 0.0.10
 
 ### Patch Changes
