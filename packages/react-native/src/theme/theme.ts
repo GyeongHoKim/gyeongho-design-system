@@ -281,6 +281,145 @@ function buildTheme(t: Tokens) {
       sliderThumbStrokeDisabled: t.comp.slider.thumb.stroke.disabled,
       sliderTextLabel: t.comp.slider.text.label,
       sliderTextDisabled: t.comp.slider.text.disabled,
+
+      // comp.separator colors
+      separatorColor: t.comp.separator.color,
+
+      // comp.label colors
+      labelText: t.comp.label.text.default,
+      labelTextDisabled: t.comp.label.text.disabled,
+
+      // comp.kbd colors
+      kbdBg: t.comp.kbd.bg,
+      kbdText: t.comp.kbd.text,
+      kbdStroke: t.comp.kbd.stroke,
+
+      // comp.empty colors
+      emptyText: t.comp.empty.text.default,
+      emptyTextMuted: t.comp.empty.text.muted,
+      emptyIcon: t.comp.empty.icon,
+
+      // comp.toggle colors
+      toggleBgDefault: t.comp.toggle.bg.default,
+      toggleBgHover: t.comp.toggle.bg.hover,
+      toggleBgPressed: t.comp.toggle.bg.pressed,
+      toggleText: t.comp.toggle.text.default,
+      toggleTextPressed: t.comp.toggle.text.pressed,
+      toggleStroke: t.comp.toggle.stroke,
+      toggleFocusRing: t.comp.toggle.focus.ring,
+
+      // comp.buttonGroup colors
+      buttonGroupDivider: t.comp.buttonGroup.divider,
+
+      // comp.popover colors
+      popoverBg: t.comp.popover.bg,
+      popoverText: t.comp.popover.text,
+      popoverStroke: t.comp.popover.stroke,
+
+      // comp.hoverCard colors
+      hoverCardBg: t.comp.hoverCard.bg,
+      hoverCardText: t.comp.hoverCard.text,
+      hoverCardStroke: t.comp.hoverCard.stroke,
+
+      // comp.collapsible colors
+      collapsibleText: t.comp.collapsible.text,
+      collapsibleStroke: t.comp.collapsible.stroke,
+
+      // comp.toggleGroup colors
+      toggleGroupStroke: t.comp.toggleGroup.stroke,
+
+      // comp.combobox colors
+      comboboxBg: t.comp.combobox.bg,
+      comboboxText: t.comp.combobox.text,
+      comboboxStrokeDefault: t.comp.combobox.stroke.default,
+      comboboxStrokeFocus: t.comp.combobox.stroke.focus,
+      comboboxListboxBg: t.comp.combobox.listbox.bg,
+      comboboxOptionHover: t.comp.combobox.option.hover,
+      comboboxOptionSelected: t.comp.combobox.option.selected,
+
+      // comp.alertDialog colors
+      alertDialogBg: t.comp.alertDialog.bg,
+      alertDialogScrim: t.comp.alertDialog.scrim,
+      alertDialogTextTitle: t.comp.alertDialog.text.title,
+      alertDialogTextBody: t.comp.alertDialog.text.body,
+      alertDialogStroke: t.comp.alertDialog.stroke,
+      alertDialogDangerStroke: t.comp.alertDialog.danger.stroke,
+
+      // comp.sheet colors
+      sheetBg: t.comp.sheet.bg,
+      sheetScrim: t.comp.sheet.scrim,
+      sheetStroke: t.comp.sheet.stroke,
+
+      // comp.drawer colors
+      drawerBg: t.comp.drawer.bg,
+      drawerScrim: t.comp.drawer.scrim,
+      drawerStroke: t.comp.drawer.stroke,
+
+      // comp.contextMenu colors
+      contextMenuBg: t.comp.contextMenu.bg,
+      contextMenuText: t.comp.contextMenu.text,
+      contextMenuStroke: t.comp.contextMenu.stroke,
+      contextMenuItemHover: t.comp.contextMenu.item.hover,
+      contextMenuItemDanger: t.comp.contextMenu.item.danger,
+
+      // comp.menubar colors
+      menubarBg: t.comp.menubar.bg,
+      menubarText: t.comp.menubar.text,
+      menubarStroke: t.comp.menubar.stroke,
+      menubarItemHover: t.comp.menubar.item.hover,
+
+      // comp.navigationMenu colors
+      navigationMenuBg: t.comp.navigationMenu.bg,
+      navigationMenuTextDefault: t.comp.navigationMenu.text.default,
+      navigationMenuTextActive: t.comp.navigationMenu.text.active,
+      navigationMenuStroke: t.comp.navigationMenu.stroke,
+      navigationMenuItemHover: t.comp.navigationMenu.item.hover,
+
+      // comp.command colors
+      commandBg: t.comp.command.bg,
+      commandTextDefault: t.comp.command.text.default,
+      commandTextMuted: t.comp.command.text.muted,
+      commandStroke: t.comp.command.stroke,
+      commandInputStroke: t.comp.command.input.stroke,
+      commandItemHover: t.comp.command.item.hover,
+      commandItemSelected: t.comp.command.item.selected,
+
+      // comp.calendar colors
+      calendarBg: t.comp.calendar.bg,
+      calendarTextDefault: t.comp.calendar.text.default,
+      calendarTextMuted: t.comp.calendar.text.muted,
+      calendarStroke: t.comp.calendar.stroke,
+      calendarCellHover: t.comp.calendar.cell.hover,
+      calendarCellSelected: t.comp.calendar.cell.selected,
+      calendarCellSelectedText: t.comp.calendar.cell.selectedText,
+      calendarCellToday: t.comp.calendar.cell.today,
+
+      // comp.datePicker colors
+      datePickerFieldBg: t.comp.datePicker.field.bg,
+      datePickerFieldStrokeDefault: t.comp.datePicker.field.stroke.default,
+      datePickerFieldStrokeFocus: t.comp.datePicker.field.stroke.focus,
+      datePickerText: t.comp.datePicker.text,
+
+      // comp.sidebar colors
+      sidebarBg: t.comp.sidebar.bg,
+      sidebarText: t.comp.sidebar.text,
+      sidebarStroke: t.comp.sidebar.stroke,
+      sidebarItemHover: t.comp.sidebar.item.hover,
+      sidebarItemActive: t.comp.sidebar.item.active,
+      sidebarItemActiveText: t.comp.sidebar.item.activeText,
+
+      // comp.chart colors
+      chartSeries1: t.comp.chart.series['1'],
+      chartSeries2: t.comp.chart.series['2'],
+      chartSeries3: t.comp.chart.series['3'],
+      chartSeries4: t.comp.chart.series['4'],
+      chartSeries5: t.comp.chart.series['5'],
+      chartGrid: t.comp.chart.grid,
+      chartAxis: t.comp.chart.axis,
+      chartText: t.comp.chart.text,
+
+      // toast system needs a canvas/overlay scrim reference
+      toastScrim: t.sys.color.bg.overlay,
     },
     spacing: {
       none: t.sys.spacing.none,
@@ -442,6 +581,77 @@ function buildTheme(t: Tokens) {
       trackHeight: t.comp.slider.track.height,
       thumbSize: t.comp.slider.thumb.size,
     },
+    // Sketch geometry for the shadcn-parity components. Each resolves to the
+    // component's own `comp.<name>.sketch.*` tokens (which alias `sys.sketch`).
+    kbdSketch: {
+      roughness: t.comp.kbd.sketch.roughness,
+      bowing: t.comp.kbd.sketch.bowing,
+    },
+    toggleSketch: {
+      roughness: t.comp.toggle.sketch.roughness,
+      bowing: t.comp.toggle.sketch.bowing,
+    },
+    popoverSketch: {
+      roughness: t.comp.popover.sketch.roughness,
+      bowing: t.comp.popover.sketch.bowing,
+    },
+    hoverCardSketch: {
+      roughness: t.comp.hoverCard.sketch.roughness,
+      bowing: t.comp.hoverCard.sketch.bowing,
+    },
+    collapsibleSketch: {
+      roughness: t.comp.collapsible.sketch.roughness,
+      bowing: t.comp.collapsible.sketch.bowing,
+    },
+    comboboxSketch: {
+      roughness: t.comp.combobox.sketch.roughness,
+      bowing: t.comp.combobox.sketch.bowing,
+    },
+    alertDialogSketch: {
+      roughness: t.comp.alertDialog.sketch.roughness,
+      bowing: t.comp.alertDialog.sketch.bowing,
+    },
+    sheetSketch: {
+      roughness: t.comp.sheet.sketch.roughness,
+      bowing: t.comp.sheet.sketch.bowing,
+    },
+    drawerSketch: {
+      roughness: t.comp.drawer.sketch.roughness,
+      bowing: t.comp.drawer.sketch.bowing,
+    },
+    contextMenuSketch: {
+      roughness: t.comp.contextMenu.sketch.roughness,
+      bowing: t.comp.contextMenu.sketch.bowing,
+    },
+    menubarSketch: {
+      roughness: t.comp.menubar.sketch.roughness,
+      bowing: t.comp.menubar.sketch.bowing,
+    },
+    navigationMenuSketch: {
+      roughness: t.comp.navigationMenu.sketch.roughness,
+      bowing: t.comp.navigationMenu.sketch.bowing,
+    },
+    commandSketch: {
+      roughness: t.comp.command.sketch.roughness,
+      bowing: t.comp.command.sketch.bowing,
+    },
+    calendarSketch: {
+      roughness: t.comp.calendar.sketch.roughness,
+      bowing: t.comp.calendar.sketch.bowing,
+    },
+    datePickerSketch: {
+      roughness: t.comp.datePicker.sketch.roughness,
+      bowing: t.comp.datePicker.sketch.bowing,
+    },
+    sidebarSketch: {
+      roughness: t.comp.sidebar.sketch.roughness,
+      bowing: t.comp.sidebar.sketch.bowing,
+    },
+    chartSketch: {
+      roughness: t.comp.chart.sketch.roughness,
+      bowing: t.comp.chart.sketch.bowing,
+    },
+    chartStrokeWidth: t.comp.chart.stroke.width,
   });
 }
 
