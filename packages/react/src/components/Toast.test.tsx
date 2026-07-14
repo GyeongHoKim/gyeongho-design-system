@@ -1,65 +1,108 @@
 import { act, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Toast } from './Toast.js';
+import { userEvent } from '@testing-library/user-event';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Toast, Toaster, toast } from './Toast.js';
 
-describe('Toast', () => {
-  beforeEach(() => vi.useFakeTimers());
-  afterEach(() => vi.useRealTimers());
+// Clear any queued toasts between tests (the store is module-level).
+afterEach(() => {
+  for (let i = 0; i < 50; i += 1) {
+    toast.dismiss(`toast-${i}`);
+  }
+});
 
-  it('keeps an empty live region mounted (no content) when closed', () => {
+describe('Toast (presentational)', () => {
+  it('renders a status card with title, message and dismiss', () => {
     render(
-      <Toast open={false} onClose={() => {}} variant="info">
-        Hi
+      <Toast variant="success" title="Saved" onDismiss={() => {}}>
+        Your changes are saved.
       </Toast>,
     );
-    // The polite live region persists so it can announce on open, but is empty.
-    expect(screen.queryByText('Hi')).toBeNull();
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByText('Saved')).toBeInTheDocument();
+    expect(screen.getByText('Your changes are saved.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
   });
 
-  it('renders a status toast when open', () => {
-    render(
-      <Toast open onClose={() => {}} variant="success" title="Saved">
-        Done
-      </Toast>,
-    );
-    const toast = screen.getByRole('status');
-    expect(toast).toHaveTextContent('Saved');
-    expect(toast).toHaveTextContent('Done');
-  });
-
-  it('uses the assertive alert role for danger', () => {
-    render(
-      <Toast open onClose={() => {}} variant="danger">
-        Failed
-      </Toast>,
-    );
+  it('uses role=alert for the danger variant', () => {
+    render(<Toast variant="danger">Something failed</Toast>);
     expect(screen.getByRole('alert')).toBeInTheDocument();
   });
+});
 
-  it('auto-dismisses after the duration', () => {
-    const onClose = vi.fn();
-    render(
-      <Toast open onClose={onClose} duration={4000}>
-        Bye soon
-      </Toast>,
-    );
-    expect(onClose).not.toHaveBeenCalled();
+describe('toast() + Toaster', () => {
+  it('renders a toast enqueued via the imperative API', () => {
+    render(<Toaster />);
     act(() => {
-      vi.advanceTimersByTime(4000);
+      toast.success('Profile updated', { title: 'Done' });
     });
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Profile updated')).toBeInTheDocument();
+    expect(screen.getByText('Done')).toBeInTheDocument();
   });
 
-  it('does not auto-dismiss when duration is 0', () => {
-    const onClose = vi.fn();
-    render(
-      <Toast open onClose={onClose} duration={0}>
-        Sticky
-      </Toast>,
-    );
+  it('maps toast.error to the danger (alert) variant', () => {
+    render(<Toaster />);
     act(() => {
-      vi.advanceTimersByTime(60000);
+      toast.error('Upload failed');
     });
-    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Upload failed');
+  });
+
+  it('dismisses a toast by id', async () => {
+    render(<Toaster />);
+    let id = '';
+    act(() => {
+      id = toast('Temporary', { duration: 0 });
+    });
+    expect(screen.getByText('Temporary')).toBeInTheDocument();
+    act(() => {
+      toast.dismiss(id);
+    });
+    expect(screen.queryByText('Temporary')).toBeNull();
+  });
+
+  it('auto-dismisses a toast after its duration elapses', () => {
+    vi.useFakeTimers();
+    try {
+      render(<Toaster />);
+      act(() => {
+        toast('Temporary', { duration: 1000 });
+      });
+      expect(screen.getByText('Temporary')).toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(999);
+      });
+      expect(screen.getByText('Temporary')).toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(screen.queryByText('Temporary')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not auto-dismiss a toast with duration 0', () => {
+    vi.useFakeTimers();
+    try {
+      render(<Toaster />);
+      act(() => {
+        toast('Sticky', { duration: 0 });
+      });
+      act(() => {
+        vi.advanceTimersByTime(60_000);
+      });
+      expect(screen.getByText('Sticky')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('dismisses a toast from its close button', async () => {
+    render(<Toaster />);
+    act(() => {
+      toast('Closable', { duration: 0 });
+    });
+    await userEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(screen.queryByText('Closable')).toBeNull();
   });
 });
