@@ -21,6 +21,9 @@ export { GhCheckboxGroup } from './components/checkbox-group.js';
 export { GhCollapsible } from './components/collapsible.js';
 export type { GhSelectOption as GhComboboxOption } from './components/combobox.js';
 export { GhCombobox } from './components/combobox.js';
+export type { GhCommandItem } from './components/command.js';
+export { GhCommand } from './components/command.js';
+export { GhContextMenu } from './components/context-menu.js';
 export { GhDrawer } from './components/drawer.js';
 export { GhEmpty } from './components/empty.js';
 export { GhFormField } from './components/form-field.js';
@@ -33,7 +36,14 @@ export { GhKbd } from './components/kbd.js';
 export { GhLabel } from './components/label.js';
 export type { GhMenuItem } from './components/menu.js';
 export { GhMenu } from './components/menu.js';
+export type { GhMenubarMenu, GhMenubarSelectDetail } from './components/menubar.js';
+export { GhMenubar } from './components/menubar.js';
 export { GhModal } from './components/modal.js';
+export type {
+  GhNavigationItem,
+  GhNavigationLink,
+} from './components/navigation-menu.js';
+export { GhNavigationMenu } from './components/navigation-menu.js';
 export { GhPagination, paginationRange } from './components/pagination.js';
 export { GhPaginationItem } from './components/pagination-item.js';
 export { GhPopover } from './components/popover.js';
