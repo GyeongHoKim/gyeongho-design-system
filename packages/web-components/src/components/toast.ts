@@ -21,11 +21,14 @@ const ICON: Record<GhToastVariant, IconName> = {
 const DEFAULT_DURATION = 5000;
 
 /**
- * `<gh-toast>` — a hand-drawn toast notification. A sketchy, elevated box
- * fixed to the bottom-right that auto-dismisses after `duration`. `danger`
- * exposes `role="alert"`; the rest `role="status"`. Reflects `open` and
- * dispatches a `close` event on auto-dismiss / close button. Token-driven
- * (`comp.toast.*`).
+ * `<gh-toast>` — a hand-drawn toast notification (the per-item visual).
+ *
+ * A sketchy, elevated box that renders in normal flow so a `gh-toaster` (or any
+ * container) can stack it; it does not anchor itself to the viewport. When used
+ * standalone it can still auto-dismiss after `duration` (a `gh-toaster` sets
+ * `duration=0` and owns the timing instead). `danger` exposes `role="alert"`;
+ * the rest `role="status"`. Reflects `open` and dispatches a `close` event on
+ * auto-dismiss / close button. Token-driven (`comp.toast.*`).
  */
 @customElement('gh-toast')
 export class GhToast extends SketchyBase {
@@ -56,14 +59,12 @@ export class GhToast extends SketchyBase {
         display: block;
       }
       .toast {
-        position: fixed;
-        right: var(--sys-spacing-lg);
-        bottom: var(--sys-spacing-lg);
-        z-index: var(--comp-toast-zIndex);
+        position: relative;
         display: flex;
         align-items: flex-start;
         gap: var(--comp-toast-gap);
         box-sizing: border-box;
+        width: 100%;
         max-width: 24rem;
         padding: var(--comp-toast-padding);
         font-family: var(--sys-typography-body-fontFamily);
