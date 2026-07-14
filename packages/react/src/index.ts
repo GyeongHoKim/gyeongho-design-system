@@ -19,7 +19,14 @@ export {
   type ButtonGroupOrientation,
   type ButtonGroupProps,
 } from './components/ButtonGroup.js';
+export { Calendar, type CalendarProps } from './components/Calendar.js';
 export { Card, type CardProps } from './components/Card.js';
+export {
+  Chart,
+  type ChartProps,
+  type ChartSeries,
+  type ChartType,
+} from './components/Chart.js';
 export { Checkbox, type CheckboxProps } from './components/Checkbox.js';
 export {
   CheckboxGroup,
@@ -45,6 +52,7 @@ export {
   type ContextMenuItem,
   type ContextMenuProps,
 } from './components/ContextMenu.js';
+export { DatePicker, type DatePickerProps } from './components/DatePicker.js';
 export { Drawer, type DrawerProps } from './components/Drawer.js';
 export { Empty, type EmptyProps } from './components/Empty.js';
 export {
@@ -95,6 +103,12 @@ export {
 } from './components/Separator.js';
 export { Sheet, type SheetProps, type SheetSide } from './components/Sheet.js';
 export {
+  Sidebar,
+  type SidebarItem,
+  type SidebarProps,
+  type SidebarSection,
+} from './components/Sidebar.js';
+export {
   Skeleton,
   type SkeletonProps,
   type SkeletonVariant,
@@ -117,7 +131,17 @@ export {
 } from './components/Table.js';
 export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
-export { Toast, type ToastProps, type ToastVariant } from './components/Toast.js';
+export {
+  Toast,
+  Toaster,
+  type ToasterPosition,
+  type ToasterProps,
+  type ToastOptions,
+  type ToastProps,
+  type ToastRecord,
+  type ToastVariant,
+  toast,
+} from './components/Toast.js';
 export { Toggle, type ToggleProps } from './components/Toggle.js';
 export {
   ToggleGroup,
