@@ -25,12 +25,19 @@ export {
   type CheckboxGroupContextValue,
   type CheckboxGroupProps,
 } from './components/CheckboxGroup.js';
+export { Collapsible, type CollapsibleProps } from './components/Collapsible.js';
+export {
+  Combobox,
+  type ComboboxOption,
+  type ComboboxProps,
+} from './components/Combobox.js';
 export { Empty, type EmptyProps } from './components/Empty.js';
 export {
   FormField,
   type FormFieldContextValue,
   type FormFieldProps,
 } from './components/FormField.js';
+export { HoverCard, type HoverCardProps } from './components/HoverCard.js';
 export { Icon, type IconProps, type IconSize } from './components/Icon.js';
 export { Input, type InputProps } from './components/Input.js';
 export { Kbd, type KbdProps } from './components/Kbd.js';
@@ -42,6 +49,10 @@ export {
   type PaginationProps,
   paginationRange,
 } from './components/Pagination.js';
+export {
+  Popover,
+  type PopoverProps,
+} from './components/Popover.js';
 export { Progress, type ProgressProps } from './components/Progress.js';
 export { Radio, type RadioProps } from './components/Radio.js';
 export {
@@ -85,6 +96,11 @@ export { type TabItem, Tabs, type TabsProps } from './components/Tabs.js';
 export { Textarea, type TextareaProps } from './components/Textarea.js';
 export { Toast, type ToastProps, type ToastVariant } from './components/Toast.js';
 export { Toggle, type ToggleProps } from './components/Toggle.js';
+export {
+  ToggleGroup,
+  type ToggleGroupItem,
+  type ToggleGroupProps,
+} from './components/ToggleGroup.js';
 export { Tooltip, type TooltipProps } from './components/Tooltip.js';
 export {
   type SketchShape,
