@@ -32,10 +32,16 @@ export type {
   CheckboxGroupProps,
 } from './components/CheckboxGroup.js';
 export { CheckboxGroup } from './components/CheckboxGroup.js';
+export type { CollapsibleProps } from './components/Collapsible.js';
+export { Collapsible } from './components/Collapsible.js';
+export type { ComboboxProps } from './components/Combobox.js';
+export { Combobox } from './components/Combobox.js';
 export type { EmptyProps } from './components/Empty.js';
 export { Empty } from './components/Empty.js';
 export type { FormFieldProps } from './components/FormField.js';
 export { FormField } from './components/FormField.js';
+export type { HoverCardProps } from './components/HoverCard.js';
+export { HoverCard } from './components/HoverCard.js';
 export type { IconProps, IconSize } from './components/Icon.js';
 export { Icon } from './components/Icon.js';
 export type { InputProps } from './components/Input.js';
@@ -50,6 +56,8 @@ export type { ModalProps } from './components/Modal.js';
 export { Modal } from './components/Modal.js';
 export type { PaginationProps } from './components/Pagination.js';
 export { Pagination, paginationRange } from './components/Pagination.js';
+export type { PopoverProps } from './components/Popover.js';
+export { Popover } from './components/Popover.js';
 export type { ProgressProps } from './components/Progress.js';
 export { Progress } from './components/Progress.js';
 export type { RadioProps } from './components/Radio.js';
@@ -84,6 +92,12 @@ export type { ToastProps, ToastVariant } from './components/Toast.js';
 export { Toast } from './components/Toast.js';
 export type { ToggleProps } from './components/Toggle.js';
 export { Toggle } from './components/Toggle.js';
+export type {
+  ToggleGroupItemProps,
+  ToggleGroupProps,
+  ToggleGroupType,
+} from './components/ToggleGroup.js';
+export { ToggleGroup, ToggleGroupItem } from './components/ToggleGroup.js';
 export type { TooltipProps } from './components/Tooltip.js';
 export { Tooltip } from './components/Tooltip.js';
 export type { Size, SketchParams, SketchShape } from './sketch/options.js';
