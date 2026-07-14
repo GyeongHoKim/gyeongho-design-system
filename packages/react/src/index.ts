@@ -5,6 +5,7 @@ export {
   type AccordionProps,
 } from './components/Accordion.js';
 export { Alert, type AlertProps, type AlertVariant } from './components/Alert.js';
+export { AlertDialog, type AlertDialogProps } from './components/AlertDialog.js';
 export { Avatar, type AvatarProps, type AvatarSize, initialsFrom } from './components/Avatar.js';
 export { Badge, type BadgeProps, type BadgeVariant } from './components/Badge.js';
 export {
@@ -31,6 +32,7 @@ export {
   type ComboboxOption,
   type ComboboxProps,
 } from './components/Combobox.js';
+export { Drawer, type DrawerProps } from './components/Drawer.js';
 export { Empty, type EmptyProps } from './components/Empty.js';
 export {
   FormField,
@@ -71,6 +73,7 @@ export {
   type SeparatorOrientation,
   type SeparatorProps,
 } from './components/Separator.js';
+export { Sheet, type SheetProps, type SheetSide } from './components/Sheet.js';
 export {
   Skeleton,
   type SkeletonProps,
