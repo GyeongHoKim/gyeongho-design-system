@@ -224,6 +224,14 @@ export class GhCalendar extends SketchyBase {
     const base = new Date(this.viewYear, this.viewMonth + delta, 1);
     this.viewYear = base.getFullYear();
     this.viewMonth = base.getMonth();
+    // Keep the roving-tabindex target inside the newly visible month; otherwise
+    // no day cell has tabindex="0" and the grid drops out of the tab order.
+    // Clamp the previously-focused day-of-month to the new month's length and
+    // do not move DOM focus (this runs from a mouse click on the nav buttons).
+    const focusedDate = fromISO(this.focused);
+    const day = focusedDate ? focusedDate.getDate() : 1;
+    const daysInMonth = new Date(this.viewYear, this.viewMonth + 1, 0).getDate();
+    this.focused = toISO(new Date(this.viewYear, this.viewMonth, Math.min(day, daysInMonth)));
   }
 
   private readonly onGridKeydown = (event: KeyboardEvent): void => {

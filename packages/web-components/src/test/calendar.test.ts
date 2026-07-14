@@ -47,6 +47,10 @@ describe('gh-calendar', () => {
     (el.shadowRoot?.querySelector('[aria-label="Next month"]') as HTMLButtonElement).click();
     await el.updateComplete;
     expect(el.shadowRoot?.querySelector('.title')?.textContent).toContain('April 2024');
+    // The roving tabindex must stay inside the visible month so the grid keeps a
+    // tab stop; the clamped day-of-month (15) lands on April 15.
+    const focusable = el.shadowRoot?.querySelector('.day[tabindex="0"]') as HTMLElement;
+    expect(focusable?.dataset.date).toBe('2024-04-15');
   });
 
   it('moves the focused date with arrow keys', async () => {

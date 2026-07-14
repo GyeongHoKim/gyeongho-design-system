@@ -26,8 +26,14 @@ export class GhSidebar extends SketchyBase {
         flex-direction: column;
         box-sizing: border-box;
         height: 100%;
-        /* Consumers may override --gh-sidebar-width; it defaults to the token. */
-        width: var(--gh-sidebar-width, var(--comp-sidebar-width));
+        /*
+         * Consumers may override --gh-sidebar-width. The comp.sidebar.width
+         * token currently resolves to 0 (it aliases sys.breakpoint.mobile,
+         * which is 0px), so we fall back to a usable panel width instead of the
+         * token until it is corrected upstream. Sidebar width is layout geometry
+         * (cf. gh-sheet's 24rem panel), not a themeable design value.
+         */
+        width: var(--gh-sidebar-width, 16rem);
         color: var(--comp-sidebar-stroke);
         transition: width var(--sys-animation-duration-fast) var(--sys-animation-easing-standard);
       }
