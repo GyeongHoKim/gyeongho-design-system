@@ -136,6 +136,15 @@ export function Calendar({
 
   const disabled = (date: Date): boolean => isDateDisabled?.(date) ?? false;
 
+  // Guarantee the grid always exposes exactly one roving tab stop. Normally it
+  // is the focused day, but if `focusedDate` falls outside the rendered weeks
+  // (e.g. a controlled `month` that diverges from the selection) fall back to
+  // the first of the displayed month so keyboard users can still enter the grid.
+  const focusedInGrid = weeks.some((week) => week.some((d) => isSameDay(d, focusedDate)));
+  const tabStopDate = focusedInGrid
+    ? focusedDate
+    : new Date(displayedMonth.getFullYear(), displayedMonth.getMonth(), 1);
+
   const focusDate = (date: Date) => {
     shouldFocusRef.current = true;
     setFocusedDate(date);
@@ -276,7 +285,7 @@ export function Calendar({
                 const isSelected = selected !== undefined && isSameDay(date, selected);
                 const isToday = isSameDay(date, today);
                 const isDisabled = disabled(date);
-                const isTabStop = isSameDay(date, focusedDate);
+                const isTabStop = isSameDay(date, tabStopDate);
                 const cellStyle: CSSProperties = {
                   width: '2.25rem',
                   height: '2.25rem',

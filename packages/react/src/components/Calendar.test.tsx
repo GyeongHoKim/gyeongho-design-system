@@ -50,6 +50,17 @@ describe('Calendar', () => {
     expect(screen.getByText('May 2026')).toBeInTheDocument();
   });
 
+  it('keeps a keyboard tab stop when the shown month has no focused day', () => {
+    // Controlled month diverges from the (out-of-view) selection: the grid must
+    // still expose exactly one roving tab stop so it stays keyboard-reachable.
+    render(<Calendar month={new Date(2030, 0, 1)} value={new Date(2020, 5, 10)} />);
+    const tabbable = screen
+      .getAllByRole('button')
+      .filter((el) => el.getAttribute('tabindex') === '0');
+    expect(tabbable).toHaveLength(1);
+    expect(tabbable[0]).toHaveTextContent('1');
+  });
+
   it('does not select a disabled day', async () => {
     const onSelect = vi.fn();
     render(

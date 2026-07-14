@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Toast, Toaster, toast } from './Toast.js';
 
 // Clear any queued toasts between tests (the store is module-level).
@@ -58,6 +58,43 @@ describe('toast() + Toaster', () => {
       toast.dismiss(id);
     });
     expect(screen.queryByText('Temporary')).toBeNull();
+  });
+
+  it('auto-dismisses a toast after its duration elapses', () => {
+    vi.useFakeTimers();
+    try {
+      render(<Toaster />);
+      act(() => {
+        toast('Temporary', { duration: 1000 });
+      });
+      expect(screen.getByText('Temporary')).toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(999);
+      });
+      expect(screen.getByText('Temporary')).toBeInTheDocument();
+      act(() => {
+        vi.advanceTimersByTime(1);
+      });
+      expect(screen.queryByText('Temporary')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not auto-dismiss a toast with duration 0', () => {
+    vi.useFakeTimers();
+    try {
+      render(<Toaster />);
+      act(() => {
+        toast('Sticky', { duration: 0 });
+      });
+      act(() => {
+        vi.advanceTimersByTime(60_000);
+      });
+      expect(screen.getByText('Sticky')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('dismisses a toast from its close button', async () => {
