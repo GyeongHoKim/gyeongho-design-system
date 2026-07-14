@@ -1,0 +1,21 @@
+{
+  "comp": {
+    "kbd": {
+      "$description": "Tier 3 component tokens for the hand-drawn Kbd (keyboard key). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.muted}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.secondary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.sm}" },
+      "padding": {
+        "$type": "dimension",
+        "vertical": { "$value": "{sys.spacing.xs}" },
+        "horizontal": { "$value": "{sys.spacing.sm}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

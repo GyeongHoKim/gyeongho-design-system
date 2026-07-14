@@ -1,0 +1,10 @@
+{
+  "comp": {
+    "toggleGroup": {
+      "$description": "Tier 3 component tokens for the ToggleGroup layout wrapper. References sys only.",
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" }
+    }
+  }
+}

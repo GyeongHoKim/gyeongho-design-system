@@ -1,0 +1,15 @@
+{
+  "comp": {
+    "empty": {
+      "$description": "Tier 3 component tokens for the Empty state. References sys only.",
+      "text": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.text.primary}" },
+        "muted": { "$value": "{sys.color.text.secondary}" }
+      },
+      "icon": { "$type": "color", "$value": "{sys.color.icon.muted}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.xl}" }
+    }
+  }
+}

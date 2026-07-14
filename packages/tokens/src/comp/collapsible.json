@@ -1,0 +1,16 @@
+{
+  "comp": {
+    "collapsible": {
+      "$description": "Tier 3 component tokens for the hand-drawn Collapsible. References sys only.",
+      "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

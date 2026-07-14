@@ -1,0 +1,28 @@
+{
+  "comp": {
+    "alertDialog": {
+      "$description": "Tier 3 component tokens for the hand-drawn AlertDialog (confirmation modal). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "scrim": { "$type": "color", "$value": "{sys.color.bg.overlay}" },
+      "text": {
+        "$type": "color",
+        "title": { "$value": "{sys.color.text.primary}" },
+        "body": { "$value": "{sys.color.text.secondary}" }
+      },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "danger": {
+        "$type": "color",
+        "stroke": { "$value": "{sys.color.border.danger}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.lg}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.lg}" },
+      "shadow": { "$type": "shadow", "$value": "{sys.shadow.xl}" },
+      "zIndex": { "$type": "number", "$value": "{sys.zIndex.modal}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

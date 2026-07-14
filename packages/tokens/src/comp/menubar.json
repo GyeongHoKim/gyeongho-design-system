@@ -1,0 +1,21 @@
+{
+  "comp": {
+    "menubar": {
+      "$description": "Tier 3 component tokens for the hand-drawn Menubar. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "item": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

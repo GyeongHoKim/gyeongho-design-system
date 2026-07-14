@@ -1,0 +1,10 @@
+{
+  "comp": {
+    "buttonGroup": {
+      "$description": "Tier 3 component tokens for the ButtonGroup layout wrapper. References sys only.",
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.none}" },
+      "divider": { "$type": "color", "$value": "{sys.color.border.subtle}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" }
+    }
+  }
+}

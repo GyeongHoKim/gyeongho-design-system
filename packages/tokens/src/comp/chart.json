@@ -1,0 +1,26 @@
+{
+  "comp": {
+    "chart": {
+      "$description": "Tier 3 component tokens for the hand-drawn Chart. References sys only.",
+      "series": {
+        "$type": "color",
+        "1": { "$value": "{sys.color.chart.1}" },
+        "2": { "$value": "{sys.color.chart.2}" },
+        "3": { "$value": "{sys.color.chart.3}" },
+        "4": { "$value": "{sys.color.chart.4}" },
+        "5": { "$value": "{sys.color.chart.5}" }
+      },
+      "grid": { "$type": "color", "$value": "{sys.color.border.subtle}" },
+      "axis": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.secondary}" },
+      "stroke": {
+        "width": { "$type": "dimension", "$value": "{sys.border.width.default}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

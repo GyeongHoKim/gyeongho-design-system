@@ -1,0 +1,31 @@
+{
+  "comp": {
+    "command": {
+      "$description": "Tier 3 component tokens for the hand-drawn Command palette (searchable menu). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.text.primary}" },
+        "muted": { "$value": "{sys.color.text.secondary}" }
+      },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "input": {
+        "stroke": { "$type": "color", "$value": "{sys.color.border.default}" }
+      },
+      "item": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" },
+        "selected": { "$value": "{sys.color.bg.subtle}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.lg}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "shadow": { "$type": "shadow", "$value": "{sys.shadow.xl}" },
+      "zIndex": { "$type": "number", "$value": "{sys.zIndex.modal}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

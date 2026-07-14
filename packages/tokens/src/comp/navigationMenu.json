@@ -1,0 +1,26 @@
+{
+  "comp": {
+    "navigationMenu": {
+      "$description": "Tier 3 component tokens for the hand-drawn NavigationMenu. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.text.primary}" },
+        "active": { "$value": "{sys.color.text.link}" }
+      },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "item": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
