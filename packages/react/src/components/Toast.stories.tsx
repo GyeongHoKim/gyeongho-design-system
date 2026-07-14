@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
 import { Button } from './Button.js';
-import { Toast } from './Toast.js';
+import { Toast, Toaster, type ToastVariant, toast } from './Toast.js';
 
 const meta = {
   title: 'Components/Toast',
@@ -12,33 +11,49 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => {
-    const [open, setOpen] = useState(false);
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>Show toast</Button>
-        <Toast
-          open={open}
-          onClose={() => setOpen(false)}
-          variant="success"
-          title="Saved"
-          duration={0}
-        >
-          Your changes have been saved.
+const VARIANTS: ToastVariant[] = ['info', 'success', 'warning', 'danger'];
+
+/** The presentational card, rendered directly (no store / auto-dismiss). */
+export const Presentational: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sys-spacing-md)' }}>
+      {VARIANTS.map((variant) => (
+        <Toast key={variant} variant={variant} title={variant} onDismiss={() => {}}>
+          This is a {variant} message.
         </Toast>
-      </>
-    );
-  },
+      ))}
+    </div>
+  ),
 };
 
-export const Persistent: Story = {
-  args: {
-    open: true,
-    onClose: () => {},
-    variant: 'danger',
-    title: 'Upload failed',
-    children: 'Check your connection and try again.',
-    duration: 0,
-  },
+/** The full system: a `Toaster` viewport driven by the imperative `toast()` API. */
+export const WithToaster: Story = {
+  render: () => (
+    <>
+      <div style={{ display: 'flex', gap: 'var(--sys-spacing-sm)', flexWrap: 'wrap' }}>
+        <Button onClick={() => toast.info('Heads up — something happened.')}>Info</Button>
+        <Button onClick={() => toast.success('Saved', { title: 'Done' })}>Success</Button>
+        <Button variant="neutral" onClick={() => toast.warning('Storage almost full.')}>
+          Warning
+        </Button>
+        <Button variant="danger" onClick={() => toast.error('Upload failed', { title: 'Error' })}>
+          Error
+        </Button>
+      </div>
+      <Toaster position="bottom-right" />
+    </>
+  ),
+};
+
+export const OnDarkSurface: Story = {
+  render: () => (
+    <div
+      data-theme="dark"
+      style={{ background: 'var(--sys-color-bg-surface)', padding: 'var(--sys-spacing-lg)' }}
+    >
+      <Toast variant="success" title="Saved" onDismiss={() => {}}>
+        Your changes have been saved.
+      </Toast>
+    </div>
+  ),
 };

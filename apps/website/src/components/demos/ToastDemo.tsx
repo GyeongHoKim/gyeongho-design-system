@@ -1,21 +1,13 @@
-import { Button, Toast } from '@ghds/react';
-import { useState } from 'react';
+import { Button, Toaster, toast } from '@ghds/react';
 
-/** Live Toast demo (React). */
+/** Live Toast demo (React) — imperative `toast()` API + a `Toaster` viewport. */
 export default function ToastDemo(): React.JSX.Element {
-  const [open, setOpen] = useState(false);
   return (
     <div style={{ padding: 24 }}>
-      <Button onClick={() => setOpen(true)}>Show toast</Button>
-      <Toast
-        open={open}
-        onClose={() => setOpen(false)}
-        variant="success"
-        title="Saved"
-        duration={0}
-      >
-        Your changes have been saved.
-      </Toast>
+      <Button onClick={() => toast.success('Your changes have been saved.', { title: 'Saved' })}>
+        Show toast
+      </Button>
+      <Toaster position="bottom-right" />
     </div>
   );
 }
