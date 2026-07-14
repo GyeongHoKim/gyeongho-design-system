@@ -1,5 +1,16 @@
 # @ghds/website
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [3d65d0f]
+- Updated dependencies [ae0ab87]
+- Updated dependencies [4caa4bd]
+  - @ghds/react@0.9.0
+  - @ghds/tokens@0.9.0
+  - @ghds/web-components@0.9.0
+
 ## 0.0.11
 
 ### Patch Changes
