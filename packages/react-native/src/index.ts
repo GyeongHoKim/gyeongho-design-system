@@ -25,8 +25,12 @@ export type { ButtonProps, ButtonVariant } from './components/Button.js';
 export { Button } from './components/Button.js';
 export type { ButtonGroupProps } from './components/ButtonGroup.js';
 export { ButtonGroup } from './components/ButtonGroup.js';
+export type { CalendarProps } from './components/Calendar.js';
+export { Calendar } from './components/Calendar.js';
 export type { CardProps } from './components/Card.js';
 export { Card } from './components/Card.js';
+export type { ChartDatum, ChartProps, ChartSeries } from './components/Chart.js';
+export { Chart } from './components/Chart.js';
 export type { CheckboxProps } from './components/Checkbox.js';
 export { Checkbox } from './components/Checkbox.js';
 export type {
@@ -45,6 +49,8 @@ export type {
   ContextMenuProps,
 } from './components/ContextMenu.js';
 export { ContextMenu } from './components/ContextMenu.js';
+export type { DatePickerProps } from './components/DatePicker.js';
+export { DatePicker } from './components/DatePicker.js';
 export type { DrawerProps } from './components/Drawer.js';
 export { Drawer } from './components/Drawer.js';
 export type { EmptyProps } from './components/Empty.js';
@@ -89,6 +95,12 @@ export type { SeparatorOrientation, SeparatorProps } from './components/Separato
 export { Separator } from './components/Separator.js';
 export type { SheetProps, SheetSide } from './components/Sheet.js';
 export { Sheet } from './components/Sheet.js';
+export type {
+  SidebarItem,
+  SidebarProps,
+  SidebarSection,
+} from './components/Sidebar.js';
+export { Sidebar } from './components/Sidebar.js';
 export type { SkeletonProps, SkeletonVariant } from './components/Skeleton.js';
 export { Skeleton } from './components/Skeleton.js';
 export type { SliderProps } from './components/Slider.js';
@@ -109,8 +121,22 @@ export type { TabItem, TabsProps } from './components/Tabs.js';
 export { Tabs } from './components/Tabs.js';
 export type { TextareaProps } from './components/Textarea.js';
 export { Textarea } from './components/Textarea.js';
-export type { ToastProps, ToastVariant } from './components/Toast.js';
-export { Toast } from './components/Toast.js';
+export type {
+  ToasterProps,
+  ToastOptions,
+  ToastProps,
+  ToastRecord,
+  ToastVariant,
+} from './components/Toast.js';
+export {
+  dismiss as dismissToast,
+  dismissAll as dismissAllToasts,
+  subscribeToasts,
+  Toast,
+  Toaster,
+  ToastProvider,
+  toast,
+} from './components/Toast.js';
 export type { ToggleProps } from './components/Toggle.js';
 export { Toggle } from './components/Toggle.js';
 export type {
