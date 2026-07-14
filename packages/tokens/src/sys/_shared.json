@@ -133,6 +133,12 @@
         "wide": { "$value": "{ref.container.maxWidth.wide}" }
       }
     },
+    "sidebar": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic sidebar widths. Theme-invariant.",
+      "width": { "$value": "{ref.sidebar.width}" },
+      "rail": { "$value": "{ref.sidebar.rail}" }
+    },
     "grid": {
       "columns": {
         "$type": "number",
