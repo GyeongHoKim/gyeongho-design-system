@@ -1,0 +1,13 @@
+{
+  "comp": {
+    "label": {
+      "$description": "Tier 3 component tokens for the Label. Typography is read from sys.typography.label directly by consumers. References sys only.",
+      "text": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.text.primary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" }
+    }
+  }
+}

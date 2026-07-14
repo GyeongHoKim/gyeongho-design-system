@@ -1,0 +1,9 @@
+{
+  "comp": {
+    "separator": {
+      "$description": "Tier 3 component tokens for the hand-drawn Separator/Divider. References sys only.",
+      "color": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "thickness": { "$type": "dimension", "$value": "{sys.border.width.default}" }
+    }
+  }
+}

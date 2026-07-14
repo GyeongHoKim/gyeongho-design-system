@@ -56,6 +56,14 @@
         "default": { "$value": "{ref.palette.gray.700}" },
         "muted": { "$value": "{ref.palette.gray.500}" },
         "onPrimary": { "$value": "{ref.palette.white}" }
+      },
+      "chart": {
+        "$description": "Categorical chart series colors. Decorative (not text pairings), exempt from contrast validation.",
+        "1": { "$value": "{ref.palette.brand.500}" },
+        "2": { "$value": "{ref.palette.success.500}" },
+        "3": { "$value": "{ref.palette.warning.400}" },
+        "4": { "$value": "{ref.palette.danger.400}" },
+        "5": { "$value": "{ref.palette.info.500}" }
       }
     }
   }

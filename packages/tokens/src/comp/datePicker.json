@@ -1,0 +1,27 @@
+{
+  "comp": {
+    "datePicker": {
+      "$description": "Tier 3 component tokens for the hand-drawn DatePicker (field + popover calendar). References sys only.",
+      "field": {
+        "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+        "stroke": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.border.default}" },
+          "focus": { "$value": "{sys.color.border.focus}" }
+        }
+      },
+      "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": {
+        "$type": "dimension",
+        "vertical": { "$value": "{sys.spacing.sm}" },
+        "horizontal": { "$value": "{sys.spacing.md}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

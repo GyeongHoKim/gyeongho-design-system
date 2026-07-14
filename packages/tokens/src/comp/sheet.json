@@ -1,0 +1,19 @@
+{
+  "comp": {
+    "sheet": {
+      "$description": "Tier 3 component tokens for the hand-drawn Sheet (edge-anchored side panel). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "scrim": { "$type": "color", "$value": "{sys.color.bg.overlay}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.lg}" },
+      "shadow": { "$type": "shadow", "$value": "{sys.shadow.lg}" },
+      "zIndex": { "$type": "number", "$value": "{sys.zIndex.modal}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

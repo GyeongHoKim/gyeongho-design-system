@@ -1,0 +1,24 @@
+{
+  "comp": {
+    "contextMenu": {
+      "$description": "Tier 3 component tokens for the hand-drawn ContextMenu (right-click menu). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.strong}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "item": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" },
+        "danger": { "$value": "{sys.color.text.danger}" }
+      },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
+      "zIndex": { "$type": "number", "$value": "{sys.zIndex.dropdown}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

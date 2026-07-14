@@ -1,0 +1,28 @@
+{
+  "comp": {
+    "calendar": {
+      "$description": "Tier 3 component tokens for the hand-drawn Calendar. References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "text": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.text.primary}" },
+        "muted": { "$value": "{sys.color.text.disabled}" }
+      },
+      "stroke": { "$type": "color", "$value": "{sys.color.border.default}" },
+      "cell": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" },
+        "selected": { "$value": "{sys.color.bg.primary.default}" },
+        "selectedText": { "$value": "{sys.color.text.onPrimary}" },
+        "today": { "$value": "{sys.color.border.focus}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
