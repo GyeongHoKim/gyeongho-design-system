@@ -43,4 +43,14 @@ describe('gh-toast', () => {
     vi.advanceTimersByTime(60000);
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it('renders in normal flow as a per-item visual (not viewport-fixed)', async () => {
+    const el = await mount(new GhToast());
+    el.open = true;
+    await el.updateComplete;
+    const toast = el.shadowRoot?.querySelector('.toast') as HTMLElement;
+    // The item positions relatively so a gh-toaster can stack it; it must not
+    // pin itself to the viewport any more.
+    expect(toast.style.position).not.toBe('fixed');
+  });
 });
