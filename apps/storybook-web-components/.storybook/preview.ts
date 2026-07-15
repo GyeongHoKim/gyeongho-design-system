@@ -1,4 +1,11 @@
 import '@ghds/tokens/css';
+// Self-hosted web fonts (Fontsource) — see the website Fonts guide.
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
 import '@ghds/web-components';
 import type { Preview } from '@storybook/web-components';
 import isChromatic from 'chromatic/isChromatic';

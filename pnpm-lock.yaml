@@ -29,6 +29,18 @@ importers:
 
   apps/storybook-react:
     dependencies:
+      '@fontsource-variable/nunito-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/gaegu':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/gochi-hand':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/pretendard':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@ghds/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -109,6 +121,18 @@ importers:
 
   apps/storybook-web-components:
     dependencies:
+      '@fontsource-variable/nunito-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/gaegu':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/gochi-hand':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource/pretendard':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@ghds/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
