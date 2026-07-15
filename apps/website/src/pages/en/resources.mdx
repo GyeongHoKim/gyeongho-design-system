@@ -1,0 +1,59 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Resources
+description: A collection of links for packages, the repository, changelog, and more.
+---
+
+A collection of resources for using and contributing to GHDS.
+
+## Packages
+
+- `@ghds/tokens` — design tokens (single source of truth)
+- `@ghds/react` — React component library
+- `@ghds/web-components` — Lit-based framework-agnostic web components
+- `@ghds/react-native` — React Native component library
+
+## AI Agent Skills
+
+- [Skill source](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds) —
+  install via `npx skills add GyeongHoKim/gyeongho-design-system`. See the
+  [Skills page](../skills/) for details.
+
+## Repository
+
+- [GitHub Repository](https://github.com/GyeongHoKim/gyeongho-design-system) — source code, issues,
+  changelog
+
+## Storybook (local)
+
+There's no deployed Storybook yet. Clone the repository and use the commands below to run each
+catalog locally.
+
+```bash
+# React component catalog → http://localhost:6006
+pnpm --filter storybook-react dev
+
+# Web components (Lit) catalog → http://localhost:6007
+pnpm --filter @ghds/storybook-web-components dev
+```
+
+## Contributing & Governance
+
+The canonical process docs live in the repository root:
+
+- [Contributing Guide](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/CONTRIBUTING.md)
+  — how to propose a change, the Code Quality Gate, changesets, and the
+  component definition of done.
+- [Governance](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/GOVERNANCE.md)
+  — roles, how decisions are made, and the component lifecycle
+  (experimental / stable / deprecated).
+- [Versioning & Releases](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/VERSIONING.md)
+  — SemVer policy (incl. the pre-1.0 caveat), what counts as breaking, and the
+  OIDC release pipeline.
+- [Migrations](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/MIGRATIONS.md)
+  — how breaking changes are communicated, with a running log.
+
+In short: changes are versioned with Changesets (`pnpm changeset`) and must pass
+the **Code Quality Gate** in the root `AGENTS.md`.
+
+> A deployed Storybook URL will be added here once one exists.

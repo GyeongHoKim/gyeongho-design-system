@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { foundations } from '../../lib/tokens';
+import { withBase } from '../../lib/withBase';
+
+// All data below is DERIVED from @ghds/tokens at build time — nothing is
+// hand-copied. Change a token and this page regenerates.
+const breakpoint = foundations.breakpoint();
+const grid = foundations.grid();
+const container = foundations.container();
+const zIndex = foundations.zIndex();
+const opacity = foundations.opacity();
+const duration = foundations.duration();
+const easing = foundations.easing();
+
+/** Build a `key -> token` lookup from a `FlatToken[]`, stripping a shared path prefix. */
+function byKey<T extends { path: string; value: unknown }>(tokens: T[], prefix: string) {
+  return new Map(tokens.map((t) => [t.path.replace(prefix, ''), t]));
+}
+
+const gridColumnsByKey = byKey(
+  grid.filter((t) => t.path.startsWith('sys.grid.columns.')),
+  'sys.grid.columns.',
+);
+const gridGutterByKey = byKey(
+  grid.filter((t) => t.path.startsWith('sys.grid.gutter.')),
+  'sys.grid.gutter.',
+);
+const containerMaxWidthByKey = byKey(container, 'sys.container.maxWidth.');
+const durationByKey = byKey(duration, 'sys.animation.duration.');
+
+const durationSummary = duration
+  .map((t) => `${t.path.replace('sys.animation.duration.', '')} = ${t.value}`)
+  .join(', ');
+const easingSummary = easing.map((t) => t.path.replace('sys.animation.easing.', '')).join(', ');
+const opacitySummary = opacity
+  .map((t) => `${t.path.replace('sys.opacity.', '')} = ${t.value}`)
+  .join(', ');
+
+const zIndexNotes: Record<string, string> = {
+  base: '기본 스택 컨텍스트. 대부분의 in-flow 콘텐츠는 z-index를 설정할 필요가 전혀 없어요.',
+  dropdown: '트리거에 앵커된 Select 메뉴, 콤보박스 및 기타 인라인 팝오버.',
+  sticky: '일반 문서 흐름 내에 고정된 엘리먼트, 예: 사이트 헤더.',
+  overlay: '모달이나 드로어 뒤에 있는 전체 뷰포트 스크림.',
+  modal: '스크림 위의 Modal 및 대화상자 표면 자체.',
+  toast: 'Toast/스낵바 알림, Modal 위에 표시되어 계속 보여요.',
+  tooltip: 'Tooltip — 항상 최상단, 다른 것에 가려지면 안 되기 때문이에요.',
+};
+---
+
+<BaseLayout
+  title="Foundations"
+  description="레이아웃 및 그리드, 아이콘, 모션, 엘리베이션, z-index 레이어링 — 모든 컴포넌트의 기반이 되는 구조적, 인터랙션 기본 요소예요."
+>
+  <section class="page-intro">
+    <span class="eyebrow">Foundations</span>
+    <h1>Foundations</h1>
+    <p>
+      모든 컴포넌트가 구축되는 구조적, 인터랙션 기본 요소예요: 반응형 레이아웃,
+      아이콘 크기, 모션, 엘리베이션, 스태킹 순서. <a href={withBase('/design-style/')}>디자인
+      스타일</a>과 마찬가지로, 아래의 모든 값은 <code>@ghds/tokens</code> 빌드 출력에서 직접 읽어왔어요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>레이아웃 및 그리드 <code>sys.breakpoint.*</code> <code>sys.grid.*</code> <code>sys.container.*</code></h2>
+    <p>
+      중단점은 모바일 우선이에요: 각 값은 <code>@media</code> 쿼리의 <code>min-width</code>이므로,
+      모바일 스타일이 기본이고 더 큰 중단점이 위에 쌓여요. 그리드 열 수와 컨테이너 최대 너비는 함께
+      조정돼요 — 뷰포트가 커질수록 더 많은 열과 더 넓은 컨테이너가 적용돼요.
+    </p>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">중단점</th>
+          <th scope="col"><code>sys.breakpoint.*</code></th>
+          <th scope="col">열 수</th>
+          <th scope="col">컨테이너 최대 너비</th>
+          <th scope="col">거터</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          breakpoint.map((bp) => {
+            const key = bp.path.replace('sys.breakpoint.', '');
+            const columns = gridColumnsByKey.get(key);
+            const maxWidth = containerMaxWidthByKey.get(key);
+            const gutter = gridGutterByKey.get(key);
+            return (
+              <tr>
+                <td>{key}</td>
+                <td><code set:text={bp.value} /></td>
+                <td>{columns ? columns.value : '—'}</td>
+                <td>{maxWidth ? <code set:text={maxWidth.value} /> : <em>유동 (100%)</em>}</td>
+                <td>{gutter ? <code set:text={gutter.value} /> : '—'}</td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+    <p>
+      <strong>Stack/Grid 레이아웃 기본 요소:</strong> 세 플랫폼 패키지 중 어디에도 전용
+      <code>Stack</code>/<code>Grid</code> 컴포넌트가 아직 없어요. 출시 전까지(향후 컴포넌트 마일스톤에
+      권장) 이 토큰을 직접 사용하세요: 웹에서는
+      <code>@media (min-width: var(--sys-breakpoint-tablet))</code>; 네이티브 미디어 쿼리가 없는
+      React Native에서는 <code>useWindowDimensions()</code>를 <code>@ghds/tokens</code>에서 읽은
+      동일한 토큰 값과 비교하세요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>아이콘 <code>sys.icon.size.*</code></h2>
+    <p>
+      아이콘 크기는 <code>sys.icon.size.sm/md/lg</code> 스케일을 따라요 (세 플랫폼 모두의
+      <code>Icon</code> 컴포넌트 참고). 전체 아이콘 카탈로그 페이지는 아직 없어요 — 이
+      섹션은 페이지가 만들어지면 링크를 연결할 거예요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>모션 <code>sys.animation.duration.*</code> <code>sys.animation.easing.*</code></h2>
+    <p>이름이 지정된 전환 패턴과 각각을 뒷받침하는 지속 시간/이징 쌍:</p>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">패턴</th>
+          <th scope="col">지속 시간</th>
+          <th scope="col">이징</th>
+          <th scope="col">사용 시기</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>진입</td>
+          <td><code set:text={durationByKey.get('normal')?.value} /></td>
+          <td><code>sys.animation.easing.enter</code></td>
+          <td>엘리먼트가 나타날 때 — 모달 열기, 드롭다운 열기, 토스트 등장. 감속하며 제자리에 들어와서 도착이 갑작스럽지 않고 반응적으로 느껴져요.</td>
+        </tr>
+        <tr>
+          <td>퇴장</td>
+          <td><code set:text={durationByKey.get('fast')?.value} /></td>
+          <td><code>sys.animation.easing.exit</code></td>
+          <td>엘리먼트가 사라질 때 — 모달 닫기, 드롭다운 닫기, 토스트 퇴장. 진입보다 빠르고 가속하며 사라져서 다음 동작을 결코 차단하지 않아요.</td>
+        </tr>
+        <tr>
+          <td>강조</td>
+          <td><code set:text={durationByKey.get('slow')?.value} /></td>
+          <td><code>sys.animation.easing.emphasized</code></td>
+          <td>나타나거나 사라지지 않고 주의를 끌 때 — 검증 에러 넛지, 펄스. 정확한 지속 시간은 제품 판단 사항이에요.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>원시 값</strong> — <code>sys.animation.duration.*</code>: <code set:text={durationSummary} />.
+      <code>sys.animation.easing.*</code>: <code set:text={easingSummary} />.
+    </p>
+    <p>
+      <strong>접근성:</strong> <code>prefers-reduced-motion</code>이 일치할 때, 전환을 완전히
+      건너뛰거나 <code>ref.duration.instant</code>(<code>0ms</code>)에서 즉각적인/불투명도 전용 크로스페이드로
+      대체하세요. 이건 각 컴포넌트 패키지의 구현 계층 관심사지, 별도의 토큰이 아니에요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>엘리베이션 <code>sys.shadow.*</code></h2>
+    <p>
+      엘리베이션은 <a href={withBase('/design-style/#shadow')}>디자인 스타일</a> 페이지에서 다뤄요.
+      엘리먼트의 스태킹 레이어가 올라가면 더 높은 그림자 단계를 사용하세요 (드롭다운 → 모달 →
+      토스트); <code>sys.sketch.elevation</code>는 카드와 올라간 표면의 손그림 스타일 드롭 섀도우에
+      같은 아이디어를 적용해요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Z-index / 레이어링 <code>sys.zIndex.*</code></h2>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th scope="col">레이어</th>
+          <th scope="col">값</th>
+          <th scope="col">사용 시기</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          zIndex.map((token) => {
+            const key = token.path.replace('sys.zIndex.', '');
+            return (
+              <tr>
+                <td><code set:text={key} /></td>
+                <td><code set:text={token.value} /></td>
+                <td>{zIndexNotes[key]}</td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+    <p>
+      실제 예: 이 사이트의 <code>.site-header</code>는 <code>position: sticky</code>이므로,
+      하드코딩된 숫자 대신 <code>var(--sys-zIndex-sticky)</code>를 사용해요.
+    </p>
+    <p>
+      <strong>불투명도</strong> <code>sys.opacity.*</code>: <code set:text={opacitySummary} />.
+    </p>
+  </section>
+</BaseLayout>

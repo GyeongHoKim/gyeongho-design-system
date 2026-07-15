@@ -14,8 +14,10 @@ import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
 import '../styles/global.css';
+import type { Locale } from '../i18n/ui';
+import { UI } from '../i18n/ui';
 import { NAV } from '../lib/nav';
-import { withBase } from '../lib/withBase';
+import { setLocale, withBase } from '../lib/withBase';
 
 interface Props {
   /** Document <title>; the site name is appended. */
@@ -25,6 +27,13 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+// Detect the active locale from the URL. Astro's i18n routing puts the locale
+// as the first path segment after the base (/en/… or /ko/…).
+const locale: Locale = (Astro.currentLocale as Locale) ?? 'en';
+setLocale(locale);
+
+const ui = UI[locale];
 
 const normalize = (path: string): string => path.replace(/\/+$/, '') || '/';
 const here = normalize(Astro.url.pathname);
@@ -40,10 +49,22 @@ function isCurrent(href: string): boolean {
   }
   return here === target || here.startsWith(`${target}/`);
 }
+
+// Language switcher: build the equivalent URL in the other locale.
+function switchLocaleHref(target: Locale): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const currentPath = Astro.url.pathname;
+  // Strip base + current locale, then prepend base + target locale.
+  const stripped = currentPath
+    .replace(`${base}/`, '/')
+    .replace(/^\/(en|ko)\//, '/')
+    .replace(/^\/(en|ko)$/, '/');
+  return `${base}/${target}${stripped}`;
+}
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -67,22 +88,31 @@ function isCurrent(href: string): boolean {
   <body>
     <header class="site-header">
       <a class="brand" href={withBase('/')}>
-        GHDS <small>GH Design System</small>
+        {ui.brand} <small>{ui.brandSubtitle}</small>
       </a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a href={withBase('/')} aria-current={isCurrent('/') ? 'page' : undefined}>Home</a>
+      <nav class="site-nav" aria-label={locale === 'ko' ? '주요 내비게이션' : 'Main navigation'}>
+        <a href={withBase('/')} aria-current={isCurrent('/') ? 'page' : undefined}>{ui.home}</a>
         {
           NAV.map((item) => (
             <a href={withBase(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-              {item.label}
+              {item.label[locale]}
             </a>
           ))
         }
       </nav>
-      <button id="theme-toggle" class="theme-toggle" type="button" aria-live="polite">
-        <span data-theme-icon aria-hidden="true">🌗</span>
-        <span data-theme-label>Theme</span>
-      </button>
+      <div class="header-actions">
+        <a
+          class="lang-toggle"
+          href={switchLocaleHref(locale === 'en' ? 'ko' : 'en')}
+          aria-label={locale === 'en' ? '한국어로 보기' : 'View in English'}
+        >
+          {locale === 'en' ? '한국어' : 'EN'}
+        </a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-live="polite">
+          <span data-theme-icon aria-hidden="true">🌗</span>
+          <span data-theme-label>{ui.theme}</span>
+        </button>
+      </div>
     </header>
 
     <main class="site-main">
@@ -90,7 +120,7 @@ function isCurrent(href: string): boolean {
     </main>
 
     <footer class="site-footer">
-      <p>GHDS — GH Design System · Every design value comes from <code>@ghds/tokens</code>.</p>
+      <p>{ui.footer} <code>@ghds/tokens</code>.</p>
     </footer>
 
     <script>
@@ -110,13 +140,18 @@ function isCurrent(href: string): boolean {
 
       function paint(): void {
         const current = effectiveTheme();
+        const isKo = document.documentElement.lang === 'ko';
+        const lightLabel = isKo ? '라이트 모드' : 'Light Mode';
+        const darkLabel = isKo ? '다크 모드' : 'Dark Mode';
+        const toLight = isKo ? '라이트 모드로 전환' : 'Switch to light mode';
+        const toDark = isKo ? '다크 모드로 전환' : 'Switch to dark mode';
         if (label) {
-          label.textContent = current === 'dark' ? 'Light Mode' : 'Dark Mode';
+          label.textContent = current === 'dark' ? lightLabel : darkLabel;
         }
         if (icon) {
           icon.textContent = current === 'dark' ? '☀️' : '🌙';
         }
-        toggle?.setAttribute('aria-label', current === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        toggle?.setAttribute('aria-label', current === 'dark' ? toLight : toDark);
       }
 
       toggle?.addEventListener('click', () => {

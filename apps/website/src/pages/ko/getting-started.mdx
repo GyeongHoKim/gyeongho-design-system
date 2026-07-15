@@ -1,0 +1,80 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: 시작하기
+description: GHDS를 설치하고 첫 컴포넌트를 화면에 렌더링해 보세요.
+---
+
+GHDS는 pnpm 워크스페이스로 게시되는 모노레포입니다. 사용 중인 프레임워크용 패키지와 토큰
+패키지를 함께 설치하세요.
+
+## 설치
+
+```bash
+# React 앱
+pnpm add @ghds/react @ghds/tokens
+
+# 프레임워크 독립적 (Lit 웹 컴포넌트)
+pnpm add @ghds/web-components @ghds/tokens
+```
+
+## 토큰 CSS 변수 가져오기
+
+모든 컴포넌트는 색상, 간격, 반경 등의 값을 `@ghds/tokens`의 CSS 변수에서 읽어와요. 앱의
+진입점에서 한 번만 임포트하세요.
+
+```ts
+import '@ghds/tokens/css';
+```
+
+## 폰트 로드하기
+
+GHDS의 font-family 스택은 영어와 한국어를 위해 셀프 호스팅 웹폰트(Gochi Hand, Gaegu,
+Nunito Sans Variable, Pretendard)를 참조해요. Fontsource 패키지를 설치하고 임포트하면
+스택의 이름이 실제 폰트 파일로 연결돼요. 그렇지 않으면 시스템 폰트로 조용히 대체됩니다.
+
+```bash
+pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+```
+
+```ts
+import '@ghds/tokens/css';
+// 스케치 / 디스플레이
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+// 본문 / UI
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
+```
+
+자세한 배경, 서체 선택 기준, 웨이트/페이로드 가이드, React Native 참고 사항은 [폰트
+가이드](../fonts/)를 참고하세요.
+
+## React에서 사용하기
+
+```tsx
+import { Button } from '@ghds/react';
+
+export function Example() {
+  return <Button variant="primary">Hello</Button>;
+}
+```
+
+## Lit 웹 컴포넌트로 사용하기
+
+```ts
+import '@ghds/web-components';
+```
+
+```html
+<gh-button variant="primary">Hello</gh-button>
+```
+
+## 다음 단계
+
+- [디자인 스타일](../design-style/) — 토큰에서 자동으로 생성된 색상, 타이포그래피, 간격
+  갤러리
+- [컴포넌트](../components/) — React와 Lit를 나란히 비교하는 라이브 데모
+- [AI 에이전트 스킬](../skills/) — AI 코딩 어시스턴트가 올바른 GHDS 코드를 생성하도록
+  스킬 설치하기

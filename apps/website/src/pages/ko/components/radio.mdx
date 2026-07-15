@@ -1,0 +1,136 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Radio
+description: 단일 선택을 위해 RadioGroup 내부에서 사용하는 손그림 스타일의 라디오 버튼입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import RadioDemoReact from '../../../components/demos/RadioDemo.tsx';
+import RadioDemoLit from '../../../components/demos/RadioDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Radio`는 단일 선택 집합에서 하나의 옵션을 나타내요. `RadioGroup` 안에서 사용하며, RadioGroup이
+각 라디오의 체크 상태를 자체 `value`에서 파생하고 상호 배타성을 보장해요.
+
+## 구조
+
+실제 `<input type="radio">`(React/Web Components) 또는 `accessibilityRole="radio"`를 가진
+`Pressable`(React Native) 뒤에 스케치 스타일의 링이 그려져요. 체크되면 링 안에 두 번째로 작은 채워진 점이
+렌더링되는데, `@ghds/sketch-core`에서 직접 계산되며 링의 측정된 크기와 시드를 공유해요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '체크 해제', present: true },
+    { name: '체크됨', present: true, note: '링 안에 채워진 점이 렌더링돼요.' },
+    { name: '비활성화', present: true },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '상호 배타적인 옵션 집합에는 항상 RadioGroup 안에서 Radio를 사용하세요.',
+    '그룹 내의 모든 Radio에 같은 name을 지정하세요 (React/Web Components) — RadioGroup이 자동으로 처리해요.',
+  ]}
+  dont={[
+    '단일 예/아니오 선택을 위해 그룹 밖에서 Radio를 단독으로 사용하지 마세요 — Checkbox나 Switch를 대신 사용하세요.',
+    "Web Components에서 같은 name의 라디오가 네이티브 라디오 입력처럼 자동으로 상호 배타성을 가질 거라고 기대하지 마세요 — 그게 바로 gh-radio-group이 제공하는 기능이에요. 플랫폼이 커스텀 엘리먼트에 대해 자동으로 처리해주지 않거든요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: 실제 `<input type="radio">`가 네이티브 키보드 동작을 제공해요 — 같은 `name`을 공유하는
+  라디오 간에 화살표 키로 이동하고, Space/클릭으로 선택해요. `RadioGroup`이 컨텍스트를 통해 공유 `name`을
+  제공해서 각 `Radio`에 반복할 필요가 없어요.
+- **Web Components**: `gh-radio`는 섀도 DOM에 실제 `<input type="radio">`를 렌더링하지만,
+  **같은 `name`의 상호 배타성은 커스텀 엘리먼트에 자동으로 적용되지 않아요** — `<gh-radio-group>`이
+  버블링되는 `change` 이벤트를 수신하고 형제 라디오를 수동으로 체크 해제해요. `name`을 슬롯된 자식에
+  전파하지 않아요 (Light DOM에는 컨텍스트 같은 메커니즘이 없어요) — 각 `<gh-radio>`에 `name`을 명시적으로
+  반복하세요.
+- **React Native**: `accessibilityRole="radio"` + `accessibilityState.checked`, 그리고 웹 타겟을 위한
+  직접 `aria-checked` prop (React Native Web은 `aria-disabled`처럼 `accessibilityState`에서
+  `aria-checked`를 파생하지 않아요).
+- 일반적인 규칙은 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+라벨은 옵션 자체의 이름이에요 ("Small", "Medium", "Large"), 동작이 아니에요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: '보이는 라벨, Radix Label을 통해 연결돼요.' },
+        { name: 'value', type: 'string', description: '이 라디오의 고유 값 — 필수 항목이에요.' },
+        { name: 'checked', type: 'boolean', description: '제어되는 체크 상태 (단독 사용 시).' },
+        { name: 'defaultChecked', type: 'boolean', description: '비제어 및 단독 사용 시 초기 체크 상태.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: '나머지 모든 네이티브 input 속성이 그대로 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'checked', type: 'boolean', default: 'false', description: '반영된 속성.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션과 폼 참여를 비활성화해요.' },
+        { name: 'name', type: 'string', description: '제출되는 컨트롤 이름 — 그룹 전체에 반복하세요.' },
+        { name: 'value', type: 'string', description: '이 라디오의 고유 값.' },
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨, 접근성 이름이기도 해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: '보이는 접근성 라벨 — 필수 항목이에요.' },
+        { name: 'value', type: 'string', description: '이 라디오의 고유 값 — 필수 항목이에요.' },
+        { name: 'checked', type: 'boolean', description: '제어되는 체크 상태 (단독 사용 시).' },
+        { name: 'defaultChecked', type: 'boolean', description: '비제어 및 단독 사용 시 초기 체크 상태.' },
+        { name: 'onCheckedChange', type: '(checked: boolean) => void', description: '이 라디오가 체크될 때 발생해요 (단독 사용 시).' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React와 Web Components가 아래에 라이브로 렌더링돼요. 각각 자체 `RadioGroup`/`<gh-radio-group>`으로
+감싸져 있어요. React Native는 추가적인 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어서,
+사용법을 코드 샘플로 보여드릴게요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <RadioDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <RadioDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Radio, RadioGroup } from '@ghds/react-native';
+
+<RadioGroup label="Size" value={size} onValueChange={setSize}>
+  <Radio label="Small" value="sm" />
+  <Radio label="Medium" value="md" />
+</RadioGroup>;
+```

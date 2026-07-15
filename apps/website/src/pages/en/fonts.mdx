@@ -1,0 +1,138 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Fonts
+description: How fonts work in GHDS — token-driven stacks for English and Korean, and how to load the self-hosted web fonts via Fontsource.
+---
+
+import { withBase } from '../../lib/withBase';
+
+GHDS is built for products that ship in **English and Korean**. Font choices are a design value, so
+every font-family stack lives in `@ghds/tokens` — never hardcoded in a component. This page explains
+the stack composition, the chosen typefaces, and exactly how to load them in your app.
+
+## How font stacks work
+
+A `font-family` CSS value is an **ordered fallback list**. The browser matches each **glyph**
+independently against the list, top to bottom, and uses the first family that has a glyph for that
+character. This means a single stack can render Latin text in one face and Korean text in another,
+in the same element, with no JavaScript locale switching.
+
+GHDS stacks follow this order:
+
+```
+Latin display → Korean display → Latin body → Korean body → system → generic
+```
+
+So `"Hello, 안녕하세요"` set in `ref.fontFamily.sans` renders `Hello,` in **Nunito Sans Variable**
+and `안녕하세요` in **Pretendard** automatically.
+
+## The typefaces
+
+| Role | Latin face | Korean face | Style |
+| --- | --- | --- | --- |
+| Sketch / display (headings) | Gochi Hand | Gaegu | Hand-drawn — the GHDS identity |
+| Body / UI (sans) | Nunito Sans Variable | Pretendard | Warm, legible, trustworthy |
+| Code (mono) | system mono | Noto Sans KR (fallback) | Precise, monospaced |
+
+### Why these faces
+
+- **Gochi Hand** — the hand-drawn display face that gives GHDS its identity (see
+  [Principle 1: Human but trustworthy](../principles/#1-human-but-trustworthy)).
+- **Gaegu** — a Korean hand-drawn face that parallels Gochi Hand's warmth for headings.
+- **Nunito Sans Variable** — rounded terminals read as warm and approachable without losing
+  legibility; the variable font ships all weights (200–1000) in a single small file.
+- **Pretendard** — the de-facto Korean sans in Korean product design, designed as a drop-in
+  replacement for system fonts with excellent Korean legibility and a neutral, trustworthy tone.
+
+> **Alternatives.** If your product needs a smaller payload, `@fontsource-variable/noto-sans-kr`
+> (a single variable file) can replace Pretendard. If a more neutral Latin face is preferred, Inter
+> (`@fontsource-variable/inter`) can replace Nunito Sans Variable. Change the `ref.fontFamily` value
+> in `@ghds/tokens` and update your imports — the consumer contract stays the same.
+
+## The token stacks
+
+These are defined in `@ghds/tokens` at the `ref` tier and consumed via `sys.typography.*.fontFamily`.
+
+```css
+/* ref.fontFamily.sketch — headings/titles */
+'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive
+
+/* ref.fontFamily.sans — body/label/caption */
+'Nunito Sans Variable', 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto,
+'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif
+
+/* ref.fontFamily.mono — code */
+ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace
+```
+
+A trailing `'Noto Sans KR'` is kept as the last Korean fallback so text still renders when the
+self-hosted Korean font is unavailable.
+
+## Loading the fonts in your app
+
+`@ghds/tokens` declares the **stack** (the preferred order). Loading the actual web-font files is
+done by the consuming app via [Fontsource](https://fontsource.org/) — self-hosted, no external CDN,
+privacy-friendly, and version-locked. The tokens package stays dependency-free.
+
+### 1. Install the Fontsource packages
+
+```bash
+pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+```
+
+| Face | Package | Weights |
+| --- | --- | --- |
+| Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
+| Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
+| Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
+| Pretendard (body, Korean) | `@fontsource/pretendard` | 400 / 500 / 700 |
+
+### 2. Import the CSS at your app's entry point
+
+Import the `@font-face` CSS alongside `@ghds/tokens/css`. Import only the weights you use to keep
+the payload small.
+
+```ts
+import '@ghds/tokens/css';
+
+// Sketch / display
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+
+// Body / UI
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
+```
+
+The weights **400 / 500 / 700** for Pretendard match `ref.fontWeight.regular / .medium / .bold`
+in `@ghds/tokens`. Nunito Sans Variable is a single variable file covering all weights.
+
+### 3. That's it — components pick up the fonts automatically
+
+Every GHDS component reads `font-family` from the `--sys-typography-*` CSS variables emitted by
+`@ghds/tokens/css`. Once the `@font-face` rules are imported, the named faces in the stack resolve
+to your self-hosted files. No per-component font configuration is needed.
+
+## Weight & payload guidance
+
+- **Pretendard** is a static font (no variable version on Fontsource). Import only the weights you
+  use — 400 / 500 / 700 covers body, label, and heading weights. Each weight is ~70–90 KB (woff2,
+  subset for Korean is larger; consider loading 400 first and 500/700 async if payload is critical).
+- **Nunito Sans Variable** ships all weights in one ~50 KB woff2 file — prefer the `/wght.css`
+  import over individual static weights.
+- **Gochi Hand** and **Gaegu** each have a single weight (400) and are small (~20–40 KB).
+
+## React Native
+
+React Native does not support CSS font stacks or `@font-face`. RN uses the platform's native font
+system — iOS (Apple SD Gothic Neo) and Android (Noto Sans) provide Korean glyphs automatically.
+See `packages/react-native/AGENTS.md` for RN-specific font guidance.
+
+## Summary
+
+1. Font stacks are **tokens** — they live in `@ghds/tokens` (`ref.fontFamily`), not in components.
+2. Stacks are ordered for **per-glyph fallback** — Latin faces first, Korean faces next.
+3. Loading the web-font files is the **consumer's job**, done via **Fontsource**.
+4. Import the CSS once at your entry point; components pick up the fonts automatically.

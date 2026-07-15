@@ -1,0 +1,116 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 카드
+description: 관련 콘텐츠를 묶기 위한 범용 손그림 스타일의 표면 컨테이너입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CardDemoReact from '../../../components/demos/CardDemo.tsx';
+import CardDemoLit from '../../../components/demos/CardDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Card`는 관련 콘텐츠를 묶기 위한 범용 표면이에요 — 자체적으로 인터랙티브하지 않고 "이것들이 함께 속한다"는 의미 외에는 내장된 의미가 없어요.
+
+## 구조
+
+일반 자식 요소 뒤에 그려진 손그림 사각형 외곽선이에요. Web Components에서는 `<h1>`/`<h2>`/`<h3>`/`[slot="title"]`로 슬롯된 콘텐츠가 특별한 제목 스타일(`::slotted` CSS)을 받아요; React와 React Native에는 동등한 제목 슬롯이 없어요 — 콘텐츠는 그냥 일반 자식 요소예요.
+
+## 변형 및 상태
+
+Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — 이 섹션은 존재하지 않는 상태를 억지로 끼워맞추지 않고 의도적으로 간결해요.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: '카드는 인터랙티브하지 않아요.' },
+    { name: 'Focus', present: false, note: '카드는 포커스 가능하지 않아요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false },
+  ]}
+/>
+
+유일한 실제 변형은 **플랫폼마다 다른 prop**이지 공통 상태가 아니에요: React의 `fill`(`'solid' | 'hachure'`)이 채우기 패턴을 제어하고; Web Components와 React Native는 대신 `elevated`(불리언 드롭 섀도우 효과)를 노출해요 — React의 상위 집합이 아니라 진짜로 다른 API예요.
+
+## 사용법
+
+<DoDont
+  do={[
+    "카드가 랜드마크나 영역으로 작동할 때 직접 role/aria-label(React) 또는 label(WC/RN)을 제공하세요.",
+    '시맨틱 HTML의 대체가 아니라 시각적 묶음(설정 패널, 목록 항목)에 카드를 사용하세요.',
+  ]}
+  dont={[
+    "React에서 role이나 접근성 이름이 자동으로 부여되길 기대하지 마세요 — 거기서는 호출자가 완전히 책임져요.",
+    "fill과 elevated가 플랫폼 전체에서 같은 의미라고 가정하지 마세요 — 다른 prop이며 시각 효과도 달라요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: 일반 `<div>`를 렌더해요. role이나 라벨이 자동으로 설정되지 않아요 — "어떤 ARIA role/랜드마크든 호출자가 설정해요"(컴포넌트의 문서 주석에 따름).
+- **Web Components**: `label`이 제공되면 `gh-card`가 자동으로 `internals.role = 'group'`과 `internals.ariaLabel`을 설정해요 — React가 *복제하지 않는* 실제 동작이에요.
+- **React Native**: `accessibilityLabel`이 전달될 때만 `accessibilityRole="summary"`를 설정해요.
+- 일반적인 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+해당 없음 — 카드는 고정된 콘텐츠 모델이 없어요. 콘텐츠는 호출자가 자식(React/RN)이나 슬롯(Web Components)으로 전달하는 것이에요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'fill', type: "'solid' | 'hachure'", default: "'solid'", description: '카드 본문의 채우기 스타일.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(예: role, aria-label)이 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'elevated', type: 'boolean', default: 'false', description: '스케치 드롭 섀도우 외곽선을 렌더해요. fill prop은 없어요.' },
+        { name: 'label', type: 'string', description: '설정 시 카드를 이 라벨의 ARIA group으로 노출해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'elevated', type: 'boolean', default: 'false', description: 'Web Components와 동일한 효과. fill prop은 없어요.' },
+        { name: 'accessibilityLabel', type: 'string', description: '설정 시 accessibilityRole이 "summary"로 변해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React는 `fill`을 사용하고; Web Components는 `elevated` + `label`을 사용해요 — 아래 데모는 통합된 예시가 아니라 각 플랫폼의 *실제* prop을 의도적으로 보여줘요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CardDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <CardDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Card } from '@ghds/react-native';
+
+<Card elevated accessibilityLabel="Summary">
+  <Text>Elevated card content</Text>
+</Card>;
+```

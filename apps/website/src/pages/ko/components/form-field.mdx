@@ -1,0 +1,125 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: FormField
+description: 단일 폼 컨트롤을 위한 Label + HelperText + ErrorText 구성 래퍼입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import FormFieldDemoReact from '../../../components/demos/FormFieldDemo.tsx';
+import FormFieldDemoLit from '../../../components/demos/FormFieldDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`FormField`는 단일 폼 컨트롤 주위에 Label + HelperText + ErrorText를 구성하고, 플랫폼이 허용하는 곳에서 `aria-describedby`/`aria-invalid`를 자동으로 연결해요. 다가오는 M12 폼 패턴 마일스톤의 기반이에요 — 컨트롤에 라벨, 도움말 메시지, 또는 오류가 필요할 때마다 화면마다 id/ARIA 연결을 직접 만드는 대신 이걸 사용하세요.
+
+**React에서는** 래핑된 `Input`/`Textarea`에 `label`/`error`를 직접 전달하지 마세요 — `FormField`가 그것들의 렌더링을 담당해요; 래핑된 컨트롤은 context에서 id와 ARIA 속성을 읽어요.
+
+## 구조
+
+손그림 박스는 없어요 — `FormField`는 순수 레이아웃과 타이포그래피예요. 다음 순서로 렌더해요: 선택적 라벨, 래핑된 컨트롤(React/React Native에서는 `children`, Web Components에서는 `<slot>`), 선택적 도움말 텍스트 줄, 선택적 오류 줄. `helperText`와 `error`가 모두 제공되면 **둘 다 동시에 렌더**돼요 — 오류 시 숨김 전환이 없어요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '라벨만', present: true },
+    { name: '도움말 텍스트', present: true },
+    { name: '오류', present: true, note: 'role="alert"로 렌더돼요.' },
+    { name: '도움말 텍스트 + 오류 함께', present: true, note: '둘 다 동시에 렌더 — 오류 시 숨김 전환 없음.' },
+    { name: '라벨/도움말/오류 없음', present: true, note: '래핑된 컨트롤만 렌더 — no-op 장식.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '라벨, 도움말 텍스트, 또는 오류가 필요한 단일 Input/Textarea를 감쌀 때 FormField를 사용하세요.',
+    "React Native에서 Input에 라벨을 부여하려면 FormField의 label을 사용하세요(Input 자체에는 없어요) — 자체 라벨을 렌더하는 컨트롤(Textarea, Checkbox, Radio, Switch, Select, Slider)을 감쌀 때는 생략하세요.",
+    'React에서는 래핑된 컨트롤이 아닌 FormField 자체에 label/error를 전달하는 걸 선호하세요 — FormField가 주지 않으면 래핑된 컨트롤이 자체 것을 렌더하므로 컨트롤 수준의 라벨/오류가 조용히 사라지지 않아요.',
+  ]}
+  dont={[
+    "어떤 플랫폼에서든 단일 FormField에 두 개 이상의 컨트롤을 감싸지 마세요 — 정확히 하나만 감싸요.",
+  ]}
+/>
+
+## 접근성
+
+이것이 가장 중요한 섹션이에요 — 연결 메커니즘이 플랫폼마다 진짜로 달라요:
+
+- **React**: `FormField`는 context로 `{ id, describedByIds, invalid }`를 제공해요. `Input`과 `Textarea`는 존재할 때 이를 읽고 자체 `id`/`aria-invalid`/`aria-describedby`를 계산해요 — 하지만 `FormField`가 제공하지 않은 경우 래핑된 컨트롤 자체의 `label`/`error`가 여전히 렌더돼요, 따라서 둘 다 전달해도 필드의 라벨이나 오류가 조용히 사라지지 않아요. Checkbox/Radio/Switch/Select/Slider는 아직 이 context를 소비하지 않아요 — 자체 오류 개념이 없어서 감싸면 라벨/도움말/오류 텍스트는 렌더하지만 아무것도 연결하지 않아요(그 컴포넌트들이 자체 오류 개념을 얻는 향후 더 큰 작업에서 다뤄져요).
+- **Web Components**: `<gh-form-field>`는 `id`/`aria-describedby`/`aria-invalid`를 슬롯된 컨트롤에 직접 자동 연결해요 — 문자열 형태의 `aria-describedby`는 light-DOM 형제에서 `gh-form-field` 자신의 섀도 루트 안의 요소를 참조할 수 없어요(ID 참조는 섀도 경계를 넘지 않아요), 따라서 자신의 light-DOM 자식에 직접 접근해서 명령형으로 속성을 설정해요(호스트 자체 스크립트에서의 일반적인 무제한 DOM 접근 — 스타일 캡슐화와 슬롯 *프로젝션*만 섀도 범위예요). 마운트 후 래핑된 컨트롤이 교체되면 `slotchange`에서도 재동기화돼요.
+- **React Native**: 이 플랫폼에는 id/`aria-describedby`에 해당하는 것이 아예 없어요. `FormField`는 시각적 구성만 해요 — 도움말/오류 텍스트와 래핑된 컨트롤 간의 자동 접근성 연결이 없어요. 컨트롤에 포커스하는 스크린 리더 사용자는 도움말/오류 텍스트를 자동으로 듣지 못해요. 이는 `accessibilityHint` 복제로 흉내 낸 것이 아니라 실제 영구적인 플랫폼 간극이에요.
+- 일반적인 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+라벨은 수집하는 값을 나타내요("Email"), 지시가 아니에요. 도움말 텍스트는 사용자가 실수하기 전에 형식이나 제약을 설명해요("Letters, numbers, and underscores only"); 오류 텍스트는 검증 후 무엇이 잘못되었고 어떻게 고치는지 설명해요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: '래핑된 컨트롤의 보이는 라벨.' },
+        { name: 'helperText', type: 'string', description: '오류가 아닌 설명 텍스트, 오류 상태와 무관하게 항상 표시돼요.' },
+        { name: 'error', type: 'string', description: '오류 메시지. 설정 시 래핑된 컨트롤이 무효로 표시돼요.' },
+        { name: 'id', type: 'string', description: '래핑된 컨트롤에 적용되는 id(도움말/오류 id 파생에도 사용).' },
+        { name: 'children', type: 'ReactNode', description: '단일 폼 컨트롤 — context에서 id/aria-invalid/aria-describedby를 읽어요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'for', type: 'string', description: '래핑된 컨트롤의 id — 네이티브 <label for>와 동일. 없으면 슬롯된 컨트롤에 자동 할당돼요.' },
+        { name: 'label', type: 'string', description: '래핑된 컨트롤의 보이는 라벨.' },
+        { name: 'helper-text', type: 'string', description: '오류가 아닌 설명 텍스트(프로퍼티: helperText).' },
+        { name: 'error', type: 'string', description: '오류 메시지. 설정 시 role="alert"로 렌더; 슬롯된 컨트롤에 aria-invalid도 설정.' },
+        { name: 'helperId', type: 'string (readonly getter)', description: '`${baseId}-helper`로 계산되며, `baseId`는 `for`가 설정되면 그것, 그렇지 않으면 내부 생성 id.' },
+        { name: 'errorId', type: 'string (readonly getter)', description: '`${baseId}-error`로 계산되며, `baseId`는 `for`가 설정되면 그것, 그렇지 않으면 내부 생성 id.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: "보이는 라벨. 주로 자체 라벨 prop이 없는 Input을 감쌀 때 유용." },
+        { name: 'helperText', type: 'string', description: '오류가 아닌 설명 텍스트, 오류 상태와 무관하게 항상 표시돼요.' },
+        { name: 'error', type: 'string', description: '오류 메시지, 둘 다 설정 시 helperText와 함께 표시.' },
+        { name: 'children', type: 'ReactNode', description: '단일 폼 컨트롤.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React와 Web Components가 아래에 라이브로 렌더돼요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <FormFieldDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <FormFieldDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { FormField, Input } from '@ghds/react-native';
+
+<FormField label="Email" error={emailError}>
+  <Input value={email} onChangeText={setEmail} />
+</FormField>;
+```

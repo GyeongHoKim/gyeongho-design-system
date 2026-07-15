@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { NAV } from '../../lib/nav';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="Home"
+  description="GHDS is a cross-platform design system with a hand-drawn (sketchy) look and feel. With tokens as the single source of truth, it delivers the same styling across React, Lit, and React Native."
+>
+  <section class="section page-intro">
+    <span class="eyebrow">GH Design System</span>
+    <h1>One set of tokens. The same hand-drawn look, in every framework.</h1>
+    <p>
+      GHDS is a cross-platform design system that uses <code>@ghds/tokens</code> as its single
+      source of truth to deliver the same hand-drawn style across React, Lit web components, and
+      React Native. Explore the tokens, components, and patterns in the docs below.
+    </p>
+    <p class="demo-row">
+      <a class="theme-toggle" href={withBase('/getting-started/')}>Get Started →</a>
+      <a class="theme-toggle" href={withBase('/components/')}>View Components</a>
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>Explore</h2>
+    <div class="card-grid">
+      {
+        NAV.map((item) => (
+          <a class="io-card" href={withBase(item.href)}>
+            <h3>{item.label}</h3>
+            <p>{item.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

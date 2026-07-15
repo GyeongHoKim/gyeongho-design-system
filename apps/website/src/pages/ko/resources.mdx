@@ -1,0 +1,57 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: 리소스
+description: 패키지, 저장소, 변경 로그 등을 위한 링크 모음.
+---
+
+GHDS를 사용하고 기여하기 위한 리소스 모음이에요.
+
+## 패키지
+
+- `@ghds/tokens` — 디자인 토큰 (단일 진실 공급원)
+- `@ghds/react` — React 컴포넌트 라이브러리
+- `@ghds/web-components` — Lit 기반 프레임워크 독립적 웹 컴포넌트
+- `@ghds/react-native` — React Native 컴포넌트 라이브러리
+
+## AI 에이전트 스킬
+
+- [스킬 소스](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds) —
+  `npx skills add GyeongHoKim/gyeongho-design-system`으로 설치하세요. 자세한 내용은
+  [스킬 페이지](../skills/)를 참고하세요.
+
+## 저장소
+
+- [GitHub 저장소](https://github.com/GyeongHoKim/gyeongho-design-system) — 소스 코드,
+  이슈, 변경 로그
+
+## Storybook (로컬)
+
+아직 배포된 Storybook이 없어요. 저장소를 클론하고 아래 명령어로 각 카탈로그를 로컬에서
+실행하세요.
+
+```bash
+# React 컴포넌트 카탈로그 → http://localhost:6006
+pnpm --filter storybook-react dev
+
+# 웹 컴포넌트 (Lit) 카탈로그 → http://localhost:6007
+pnpm --filter @ghds/storybook-web-components dev
+```
+
+## 기여 & 거버넌스
+
+정규 프로세스 문서는 저장소 루트에 있어요:
+
+- [기여 가이드](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/CONTRIBUTING.md)
+  — 변경 제안 방법, 코드 품질 게이트, 체인지셋, 컴포넌트 완료 정의.
+- [거버넌스](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/GOVERNANCE.md)
+  — 역할, 의사결정 방식, 컴포넌트 라이프사이클
+  (실험적 / 안정 / 지원 중단).
+- [버전 관리 & 릴리스](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/VERSIONING.md)
+  — SemVer 정책(1.0 이전 주의사항 포함), 호환성 변경의 기준, OIDC 릴리스 파이프라인.
+- [마이그레이션](https://github.com/GyeongHoKim/gyeongho-design-system/blob/main/MIGRATIONS.md)
+  — 호환성 변경이 어떻게 전달되는지, 진행 중인 로그 포함.
+
+요약하자면: 변경 사항은 Changesets(`pnpm changeset`)로 버전 관리되며, 루트 `AGENTS.md`의
+**코드 품질 게이트**를 통과해야 해요.
+
+> 배포된 Storybook URL은 하나가 생기면 여기에 추가될 예정이에요.

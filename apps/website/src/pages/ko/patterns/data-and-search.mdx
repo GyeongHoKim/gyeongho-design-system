@@ -1,0 +1,178 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 데이터 및 검색 패턴
+description: 목록과 테이블을 위한 검색, 필터, 정렬 및 데이터 상태 패턴 — 빈 상태, 로딩, 에러 — 을 다뤄요.
+---
+
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import PatternDataDemoReact from '../../../components/demos/PatternDataDemo.tsx';
+import PatternDataDemoLit from '../../../components/demos/PatternDataDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+모든 목록, 테이블, 데이터 뷰는 같은 라이프사이클을 거쳐요: _로딩_ → _채워짐_ (또는
+_빈 상태_) → 가능한 _에러_. 이 패턴은 `Input`, `Button`, `Table`, `Spinner`, `Skeleton`,
+`Alert`, `Badge`, `Pagination`을 조합해서 네 가지 상태를 일관된 UX로 처리하는 방법과,
+그 위에 검색, 필터, 정렬을 추가하는 방법을 다뤄요.
+
+## 네 가지 데이터 상태
+
+| 상태 | 트리거 | 컴포넌트 | 동작 |
+|-------|---------|-----------|-----------|
+| **로딩** (첫 페인트) | 페이지 / 뷰 마운트, 데이터 페치 시작 | `Skeleton` | 콘텐츠가 도착하기 전에 _형태_ 를 보여줘요 — 레이아웃 이동과 체감 대기 시간을 줄여요 |
+| **로딩** (후속) | 필터 변경, 페이지 매김, 새로고침 | `Spinner` | 기존 콘텐츠를 숨기지 않고 진행 중인 동작을 나타내요 |
+| **빈 상태** | 쿼리 결과가 0건이거나, 아직 항목이 없음 | `<div>` + 일러스트 + 메시지 + `Button` | 명확한 다음 동작이 있는 친근한 손그림 스타일의 빈 상태 |
+| **에러** | 네트워크 실패, 서버 에러, 권한 거부 | `Alert variant="danger"` + 재시도 `Button` | 무슨 일이 있었는지 설명하고 복구로 가는 직접적인 경로를 제공해요 |
+
+### Skeleton vs Spinner 결정 트리
+
+```
+화면에 기존 콘텐츠가 있나요?
+├── 아니요 (첫 페인트) → Skeleton
+└── 네 (새로고침 / 필터) → Spinner
+```
+
+`Skeleton`은 `variant="text"`, `"heading"`, `"avatar"`, 또는 `"block"`을 사용해서 페이지의
+레이아웃을 미러링해요. 일반적인 데이터 테이블 스켈레톤은 5–8행의 교차하는 텍스트 + 블록 도형을 렌더링해요.
+변형 예제는 <a href={withBase('/components/skeleton/')}>Skeleton</a> 컴포넌트 페이지를 참고하세요.
+
+### 빈 상태
+
+손그림 스타일의 빈 상태는 GHDS의 개성을 표현할 기회예요. 스케치 일러스트와 따뜻한 메시지, 명확한 동작을
+함께 사용하세요:
+
+```
+  ┌──────────────────────────────────────┐
+  │        (손그림 스타일 일러스트)        │
+  │                                      │
+  │   "xyz"에 대한 검색 결과가 없어요     │
+  │   다른 검색어를 시도하거나 필터를     │
+  │   지워보세요.                        │
+  │                                      │
+  │          [ 필터 지우기 ]              │
+  └──────────────────────────────────────┘
+```
+
+```tsx
+// React — 빈 상태
+<Card>
+  <div style={{ textAlign: 'center', padding: 'var(--sys-spacing-xl)' }}>
+    <Icon name="search" size="lg" />
+    <p>No results for "{query}".</p>
+    <Button variant="neutral" onClick={clearSearch}>Clear search</Button>
+  </div>
+</Card>
+```
+
+## 검색, 필터 및 정렬
+
+### 검색 바
+
+검색 입력과 `Button`(아이콘 또는 텍스트)의 쌍이에요. 입력을 디바운스(300–400ms)한 후 쿼리를
+실행하세요 — 매 키 입력마다 검색하지 마세요.
+
+```tsx
+// React — 디바운스가 있는 검색
+<Input
+  placeholder="Search items..."
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+/>
+```
+
+Web Components에서는 디바운스된 `input` 이벤트 리스너와 함께 `gh-input`을 사용하세요.
+
+### 필터 칩 / Badge
+
+활성 필터는 해제 동작이 있는 `Badge` 컴포넌트로 표시돼요. "모두 지우기" 링크 또는
+버튼이 필터 세트를 초기화해요. `Badge` 컴포넌트의 스케치 스타일이 자연스럽게 통합돼요.
+
+```tsx
+// React — 필터 칩
+{filters.map((f) => (
+  <Badge key={f} variant="neutral" onDismiss={() => removeFilter(f)}>
+    {f}
+  </Badge>
+))}
+```
+
+### 정렬
+
+`Table`의 열 헤더를 클릭하면 오름차순 / 내림차순 정렬을 토글할 수 있어요. `Table` 컴포넌트는
+`sort` prop(`{ column, direction }`)을 받고 헤더 클릭 시 `onSort`를 호출해요. 정렬된 열은
+화살표 표시기(`↑` / `↓`)를 보여줘요.
+
+### 검색 + 필터 + 정렬 함께
+
+```
+┌──────────────────────────────────────────────────────┐
+│  [ 🔍 검색 입력...              ]  [ 정렬: 이름 ▾ ]   │
+│  [ ✕ 전자제품 ] [ ✕ 재고 있음 ]  [ 모두 지우기 ]     │
+├──────────────────────────────────────────────────────┤
+│  이름              │ 가격   │ 상태                    │
+│  ──────────────────┼────────┼─────────────────────────│
+│  무선 마우스       │ $29.99 │ 재고 있음               │
+│  USB-C 허브        │ $49.99 │ 재고 적음               │
+│  ──────────────────┴────────┴─────────────────────────│
+│           ← 1  2  3  4  5 →                           │
+└──────────────────────────────────────────────────────┘
+```
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PatternDataDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PatternDataDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native — 데이터 상태
+import { Alert, Button, Skeleton, Spinner, Table } from '@ghds/react-native';
+
+// 로딩
+<Skeleton variant="block" />;
+
+// 에러
+<Alert variant="danger" title="Failed to load">
+  Check your connection. <Button label="Retry" onPress={refetch} />
+</Alert>;
+
+// 빈 상태
+<Text>No items yet. <Button label="Add one" variant="neutral" /></Text>;
+```
+
+## 접근성
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', action: '검색 입력, 필터 칩, 테이블 헤더, 페이지 매김 사이를 이동해요.' },
+    { keys: 'Enter / Space', action: '정렬 가능한 열 헤더 토글; 페이지 매김 버튼 활성화; 필터 칩 해제.' },
+  ]}
+/>
+
+- **결과 라이브 영역**: 결과 수를 `role="status"`(정중) 엘리먼트로 감싸세요.
+  "45개 중 12개 표시" 업데이트가 방해 없이 알려져요.
+- **에러 알림**: `Alert variant="danger"`는 `role="alert"`을 사용해요 — 단정적이어서 에러
+  메시지가 즉시 읽혀요.
+- **로딩 알림**: `Spinner`만으로는 스크린 리더에 충분하지 않아요 — 로딩이 완료되면 업데이트되는
+  "결과 로딩 중" 같은 시각적으로 숨겨진 텍스트와 함께 사용하세요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 관련 컴포넌트
+
+- <a href={withBase('/components/table/')}>Table</a> — 정렬 가능하고, 선택 가능한 데이터 표시
+- <a href={withBase('/components/input/')}>Input</a> — 검색 필드
+- <a href={withBase('/components/badge/')}>Badge</a> — 필터 칩
+- <a href={withBase('/components/spinner/')}>Spinner</a> / <a href={withBase('/components/skeleton/')}>Skeleton</a> — 로딩 상태
+- <a href={withBase('/components/alert/')}>Alert</a> — 에러 상태
+- <a href={withBase('/components/pagination/')}>Pagination</a> — 페이지 탐색
+- <a href={withBase('/components/card/')}>Card</a> — 빈 상태 컨테이너
+- <a href={withBase('/components/icon/')}>Icon</a> — 빈 상태 일러스트

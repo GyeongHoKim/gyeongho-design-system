@@ -1,0 +1,219 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 피드백 및 레이아웃 패턴
+description: 토스트, 얼럿, 모달을 언제 사용할지 — 그리고 GHDS의 페이지 셸, 사이드바, 반응형 레이아웃을 다뤄요.
+---
+
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import PatternFeedbackDemoReact from '../../../components/demos/PatternFeedbackDemo.tsx';
+import PatternFeedbackDemoLit from '../../../components/demos/PatternFeedbackDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+피드백은 앱이 사용자에게 방금 무슨 일이 일어났는지 알려주는 방법이에요 — 저장이 성공했는지, 요청이
+실패했는지, 또는 주의가 필요한지. 이 패턴은 올바른 피드백 채널(Toast, Alert, Modal)을 선택하는 방법과,
+뷰포트에 반응하는 페이지 셸 — 헤더, 본문, 푸터, 사이드바 — 를 조합하는 방법을 다뤄요.
+
+## 피드백 채널 결정 트리
+
+올바른 피드백 컴포넌트를 선택하는 것은 모든 앱에서 가장 빈번한 패턴 결정이에요. 이 트리를 사용하세요:
+
+```
+사용자가 동작을 시작했나요?
+├── 네 ("저장", "삭제", "제출"을 클릭)
+│   └── 결과가 여전히 화면에 보이나요?
+│       ├── 네 → Alert (인라인, 지속적)
+│       └── 아니요 (이동 / 비동기 완료) → Toast
+│
+└── 아니요 (시스템 이벤트, 웹소켓, 백그라운드 동기화)
+    └── 사용자 결정이 필요한가요?
+        ├── 네 → Modal (중단, 동작 필요)
+        └── 아니요 → Toast (정보성, 자동 닫기)
+```
+
+### 컴포넌트 비교
+
+| | Toast | Alert | Modal |
+|---|---|---|---|
+| **위치** | 고정, 우하단 | 인라인, 레이아웃 내 | 스크림이 있는 중앙 오버레이 |
+| **지속성** | 자동 닫기 (기본 5초) | 닫을 때까지 유지 | 명시적 닫을 때까지 유지 |
+| **중단** | 아니요 (정중, danger 제외) | 아니요 (정중, danger 제외) | 네 (포커스 트랩, 스크롤 잠금) |
+| **동작 필요** | 아니요 | 선택적 닫기 버튼 | 네 (최소한 "확인" / "취소") |
+| **용도** | "저장됨", "복사됨", "메시지 전송됨" | 폼 에러, 상태 배너, 경고 | 확인, 상세 보기, 짧은 폼 |
+| **중첩** | 여러 개 쌓기 가능 | 컨텍스트당 하나 | 한 번에 하나 (중첩 안 됨) |
+
+### 상태 색상
+
+모든 피드백 컴포넌트는 `sys.color.bg.*`의 동일한 심각도 팔레트를 사용해요:
+
+| 심각도 | 토큰 접두사 | 아이콘 | 사용 시기 |
+|----------|-------------|------|------|
+| **정보** | `*.info` | ℹ️ info | 중립적 상태, 문맥적 힌트 |
+| **성공** | `*.success` | ✓ check | 작업 완료, 데이터 저장 |
+| **경고** | `*.warning` | ⚠ warning | 차단하지 않는 문제, 주의 필요 |
+| **위험** | `*.danger` | ⚠ warning | 에러, 파괴적 동작, 실패 |
+
+<DoDont
+  do={[
+    '일시적 확인(저장, 복사, 전송)에 Toast를 사용하세요 — 자동으로 사라져서 사용자가 차단되지 않아요.',
+    '지속되어야 하는 인라인 상태(폼 에러, 연결 상태, 유지보수 공지)에 Alert을 사용하세요.',
+    '중단하는 결정(삭제 확인, 로그아웃 프롬프트, 치명적 에러)에 Modal을 사용하세요.',
+    '결과에 심각도를 맞추세요: 저장은 성공, 실패는 위험, 주의는 경고.',
+  ]}
+  dont={[
+    '단순한 성공 메시지에 Modal을 사용하지 마세요 — 너무 무거워요.',
+    '여러 Modal을 겹치지 마세요 — 사용자가 혼란스럽고 포커스 관리 문제가 생겨요.',
+    '사용자 조치가 필요한 에러에 Toast를 사용하지 마세요 — 사용자가 조치하기 전에 사라져요.',
+    '심각도를 색상만으로 전달하지 마세요 — 항상 아이콘과 텍스트를 포함하세요.',
+  ]}
+/>
+
+## 페이지 셸
+
+페이지 셸은 콘텐츠 주변의 지속적인 크롬이에요: 헤더, 사이드바(선택적), 본문, 푸터.
+GHDS는 전용 셸 컴포넌트를 제공하지 않아요 — 대신 기존 컴포넌트와 토큰으로 조합하세요.
+
+### 헤더 / 본문 / 푸터
+
+```
+┌─────────────────────────────────────────────────────┐
+│  헤더 (Breadcrumb + 제목 + 동작)                     │  ← sys.spacing.lg 패딩
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  본문 (Card / Table / Form — 메인 콘텐츠)            │  ← flex: 1; overflow: auto
+│                                                     │
+├─────────────────────────────────────────────────────┤
+│  푸터 (Pagination / 법적 고지 / 보조 링크)           │  ← sys.spacing.md 패딩
+└─────────────────────────────────────────────────────┘
+```
+
+```tsx
+// React — 페이지 셸
+<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+  <header style={{ padding: 'var(--sys-spacing-lg)' }}>
+    <Breadcrumb items={breadcrumbs} />
+    <h1>Page Title</h1>
+  </header>
+  <main style={{ flex: 1, padding: '0 var(--sys-spacing-lg)' }}>
+    {children}
+  </main>
+  <footer style={{ padding: 'var(--sys-spacing-md) var(--sys-spacing-lg)' }}>
+    <Pagination current={page} total={totalPages} onChange={setPage} />
+  </footer>
+</div>
+```
+
+### 사이드바 레이아웃
+
+고정 너비 사이드바(`Card` 또는 `Menu`)와 유동 본문의 2열 레이아웃이에요.
+모바일에서 사이드바를 드로어나 `Tabs`로 접으려면 `sys.breakpoint.tablet`을 사용하세요.
+
+```
+┌──────────┬──────────────────────────────────────────┐
+│ 사이드바 │  본문 (유동)                              │
+│ (240px)  │                                           │
+│          │                                           │
+│ 메뉴     │  메인 콘텐츠 영역                        │
+│ 항목     │                                           │
+│          │                                           │
+└──────────┴──────────────────────────────────────────┘
+```
+
+```tsx
+// React — 사이드바 레이아웃
+<div style={{ display: 'flex', gap: 'var(--sys-spacing-lg)' }}>
+  <aside style={{ width: 240, flexShrink: 0 }}>
+    <Card>
+      <Menu items={navItems} />
+    </Card>
+  </aside>
+  <main style={{ flex: 1, minWidth: 0 }}>{children}</main>
+</div>
+```
+
+## 반응형 중단점
+
+`sys.breakpoint.*`(M8 Foundations)에 정의된 중단점을 적용해서 레이아웃을 재배치하세요:
+
+| 중단점 | 값 | 일반적인 적응 |
+|------------|-------|-------------------|
+| `mobile` | 0px (기본) | 단일 열, 쌓임 |
+| `tablet` | 768px | 두 열, 사이드바 등장 |
+| `desktop` | 1024px | 전체 레이아웃, 사이드바 표시 |
+| `wide` | 1440px | 최대 너비 콘텐츠 컨테이너 |
+
+```css
+/* 모바일 우선: 기본적으로 단일 열 */
+.page { display: flex; flex-direction: column; }
+
+/* 태블릿+: 사이드바 표시 */
+@media (min-width: 768px) {
+  .page { flex-direction: row; }
+  .sidebar { display: block; width: 240px; }
+}
+```
+
+React Native에는 `@media` 쿼리가 없어요 — `useWindowDimensions()`를 사용하고 `width`를
+`@ghds/tokens`의 동일한 중단점 값과 비교하세요.
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PatternFeedbackDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PatternFeedbackDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native — 피드백
+import { Alert, Button, Modal, Toast } from '@ghds/react-native';
+
+// 일시적 성공
+<Toast open={saved} onClose={() => setSaved(false)} variant="success" title="Saved" />;
+
+// 인라인 경고
+<Alert variant="warning" title="Session expiring">Save your work soon.</Alert>;
+
+// 중단하는 확인
+<Modal open={confirming} onClose={() => setConfirming(false)} title="Delete item?">
+  <Text>This cannot be undone.</Text>
+  <Button label="Delete" variant="danger" onPress={handleDelete} />
+</Modal>;
+```
+
+## 접근성
+
+<KeyboardTable
+  rows={[
+    { keys: 'Escape', action: '열린 Modal, Toast(닫기 버튼), 또는 Tooltip을 닫아요.' },
+    { keys: 'Tab', action: '사이드바 항목 사이를 이동한 후 본문으로 들어가요.' },
+    { keys: 'Enter / Space', action: '사이드바 탐색 항목을 활성화해요.' },
+  ]}
+/>
+
+- **Toast 알림**: info/success/warning은 `role="status"`(정중 — 중단하지 않음)를 사용해요;
+  danger는 `role="alert"`(단정적 — 즉시 중단)를 사용해요.
+- **Modal 포커스**: 열려 있는 동안 포커스가 내부에 갇히고 닫을 때 트리거로 복원돼요.
+  <a href={withBase('/components/modal/#accessibility')}>Modal 접근성 섹션</a>을 참고하세요.
+- **건너뛰기 링크**: 사이드바가 있는 페이지 셸에서, 키보드 사용자가 탐색을 건너뛸 수 있도록
+  첫 번째 포커스 가능 엘리먼트로 "콘텐츠로 건너뛰기" 링크를 제공하세요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 관련 컴포넌트
+
+- <a href={withBase('/components/toast/')}>Toast</a> — 일시적 알림
+- <a href={withBase('/components/alert/')}>Alert</a> — 인라인 상태 배너
+- <a href={withBase('/components/modal/')}>Modal</a> — 중단하는 대화상자
+- <a href={withBase('/components/tooltip/')}>Tooltip</a> — 보충적 힌트
+- <a href={withBase('/components/breadcrumb/')}>Breadcrumb</a> — 헤더 탐색
+- <a href={withBase('/components/pagination/')}>Pagination</a> — 푸터 탐색
+- <a href={withBase('/components/menu/')}>Menu</a> — 사이드바 탐색
+- <a href={withBase('/components/card/')}>Card</a> — 사이드바 / 콘텐츠 컨테이너
+- <a href={withBase('/foundations/')}>Foundations</a> — 중단점, 그리드, 간격 토큰

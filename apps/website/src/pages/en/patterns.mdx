@@ -1,0 +1,46 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: Patterns
+description: Reusable composition patterns for forms, data states, feedback, and page layout.
+---
+
+import { withBase } from '../../lib/withBase';
+
+Patterns show how to combine multiple GHDS components to solve recurring user flows. Each pattern
+page covers _when_ to use it, _which_ components to compose, _how_ to handle accessibility, and a
+live demo of the result.
+
+## Form & Auth
+
+<a href={withBase('/patterns/form-and-auth/')}>Form & Auth Patterns →</a>
+
+Composing `FormField`, `Input`, `Select`, `Checkbox`, `Radio`, `Switch`, and `Button` into
+validated, accessible forms. Covers validation timing, inline vs summary errors, login, signup
+(step-by-step), and password reset flows.
+
+## Data & Search
+
+<a href={withBase('/patterns/data-and-search/')}>Data & Search Patterns →</a>
+
+Handling the four data states — loading (`Skeleton` / `Spinner`), populated, empty, and error
+(`Alert`) — plus search, filter chips (`Badge`), sorting, and `Table` integration.
+
+## Feedback & Layout
+
+<a href={withBase('/patterns/feedback-and-layout/')}>Feedback & Layout Patterns →</a>
+
+Choosing the right feedback channel — `Toast` vs `Alert` vs `Modal` — with a decision tree and
+severity guide. Plus page shell (header/body/footer), sidebar layout, and responsive breakpoint
+application using `sys.breakpoint.*` tokens.
+
+---
+
+### How Patterns Differ from Components
+
+- **Components** are individual building blocks — a `Button`, a `Modal`, a `Table`. Each has its
+  own page covering anatomy, variants, props, and accessibility.
+- **Patterns** are recipes — they show how to combine several components to solve a real user need.
+  A login form isn't a single component; it's `FormField` + `Input` + `Button` composed with
+  validation logic.
+
+See the <a href={withBase('/components/')}>Components</a> section for the full component catalogue.

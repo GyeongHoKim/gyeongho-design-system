@@ -1,0 +1,137 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Radio
+description: A hand-drawn radio button, used inside a RadioGroup for single-selection.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import RadioDemoReact from '../../../components/demos/RadioDemo.tsx';
+import RadioDemoLit from '../../../components/demos/RadioDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Radio` represents one option in a single-select set. Used inside a `RadioGroup`, which derives
+each radio's checked state from its own `value` and enforces mutual exclusivity.
+
+## Anatomy
+
+A sketchy ring drawn behind a real `<input type="radio">` (React/Web Components) or a `Pressable`
+with `accessibilityRole="radio"` (React Native). When checked, a second, smaller filled dot renders
+inside the ring, computed directly from `@ghds/sketch-core` and sharing the ring's measured size and
+seed.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Unchecked', present: true },
+    { name: 'Checked', present: true, note: 'A filled dot renders inside the ring.' },
+    { name: 'Disabled', present: true },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Always use Radio inside a RadioGroup for real sets of mutually exclusive options.',
+    'Give every Radio in a group the same name (React/Web Components) — RadioGroup does this for you automatically.',
+  ]}
+  dont={[
+    "Don't use a lone Radio outside a group to represent a single yes/no choice — use a Checkbox or Switch instead.",
+    "Don't expect Web Components' same-name radios to get automatic mutual exclusivity the way native radio inputs do — that's exactly what gh-radio-group exists to provide, since the platform doesn't do it for custom elements.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: a real `<input type="radio">` carries native keyboard behavior — arrow keys roving
+  between radios sharing the same `name`, Space/click to select. `RadioGroup` supplies that shared
+  `name` via context so you don't have to repeat it on every `Radio`.
+- **Web Components**: `gh-radio` renders a real `<input type="radio">` in its shadow DOM, but
+  **same-`name` mutual exclusivity is not automatic for custom elements** — `<gh-radio-group>`
+  listens for a bubbling `change` event and manually unchecks sibling radios. It does not propagate
+  `name` onto slotted children (Light DOM has no context-like mechanism) — repeat `name` on each
+  `<gh-radio>` explicitly.
+- **React Native**: `accessibilityRole="radio"` + `accessibilityState.checked`, plus a direct
+  `aria-checked` prop for the web target (React Native Web does not derive `aria-checked` from
+  `accessibilityState` the way it does `aria-disabled`).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
+
+## Content
+
+The label names the option itself ("Small", "Medium", "Large"), not an action.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible label, associated via Radix Label.' },
+        { name: 'value', type: 'string', description: "This radio's own value — required." },
+        { name: 'checked', type: 'boolean', description: 'Controlled checked state (standalone use).' },
+        { name: 'defaultChecked', type: 'boolean', description: 'Initial checked state when uncontrolled and standalone.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: 'All other native input attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'checked', type: 'boolean', default: 'false', description: 'Reflected attribute.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction and form participation.' },
+        { name: 'name', type: 'string', description: 'Submitted control name — repeat across a group.' },
+        { name: 'value', type: 'string', description: "This radio's own value." },
+        { name: 'label', type: 'string', description: 'Optional visible label, also the accessible name.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible, accessible label — required.' },
+        { name: 'value', type: 'string', description: "This radio's own value — required." },
+        { name: 'checked', type: 'boolean', description: 'Controlled checked state (standalone use).' },
+        { name: 'defaultChecked', type: 'boolean', description: 'Initial checked state when uncontrolled and standalone.' },
+        { name: 'onCheckedChange', type: '(checked: boolean) => void', description: 'Fires when this radio becomes checked (standalone use).' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React and Web Components render live below, each wrapped in their own `RadioGroup`/`<gh-radio-group>`.
+React Native can't run in a browser without additional `react-native-web` wiring, so its usage is
+shown as a code sample instead.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <RadioDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <RadioDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Radio, RadioGroup } from '@ghds/react-native';
+
+<RadioGroup label="Size" value={size} onValueChange={setSize}>
+  <Radio label="Small" value="sm" />
+  <Radio label="Medium" value="md" />
+</RadioGroup>;
+```

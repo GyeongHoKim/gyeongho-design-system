@@ -1,0 +1,127 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 아코디언
+description: 접을 수 있는 섹션들로 구성된 손그림 스타일의 아코디언(공개 패턴)입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import AccordionDemoReact from '../../../components/demos/AccordionDemo.tsx';
+import AccordionDemoLit from '../../../components/demos/AccordionDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Accordion`은 접을 수 있는 섹션들을 세로로 쌓아, 사람들이 필요한 콘텐츠만 펼쳐 볼 수 있게 해줘요. FAQ처럼 최대 한 개 섹션만 열려 있게 하려면 `type="single"`을, 여러 섹션이 동시에 열려 있게 하려면 `type="multiple"`을 사용하세요.
+
+## 구조
+
+손그림 스타일의 박스(`@ghds/sketch-core`)들을 세로로 쌓고, 각 박스는 헤더 버튼(`aria-expanded`, `aria-controls`)과 접을 수 있는 `role="region"`을 가져요. 헤더의 셰브론은 펼친 상태에서 회전해요. API는 **데이터 기반**이에요 — `{ value, label, content }` 형태의 `items` 배열을 전달하세요. 열린 상태는 값들의 집합(`string[]`)이며, 제어/비제어 방식 모두 지원해요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '접힘', present: true, note: '기본값; 콘텐츠 숨김, aria-expanded=false.' },
+    { name: '펼침', present: true, note: '콘텐츠 표시, 셰브론 회전, aria-expanded=true.' },
+    { name: '단일 vs 다중', present: true, note: 'type이 한 번에 하나 또는 여러 개를 열 수 있는지 결정해요.' },
+    { name: '비활성화', present: true, note: '항목별; 헤더를 토글할 수 없고 화살표 키로 건너뛰어요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '상호 배타적인 콘텐츠(FAQ)에는 단일 모드를, 섹션이 독립적일 때는 다중 모드를 사용하세요.',
+    '간결하고 빠르게 훑어볼 수 있는 헤더 라벨을 작성하세요.',
+    '열린 상태가 다른 UI와 동기화되어야 한다면 제어 방식(value + onValueChange)을 사용하세요.',
+  ]}
+  dont={[
+    "사용자가 반드시 봐야 하는 중요한 콘텐츠를 아코디언 뒤에 숨기지 마세요.",
+    "아코디언을 깊게 중첩하지 마세요 — 콘텐츠가 묻혀요.",
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: 각 헤더는 `aria-expanded`와 `aria-controls`를 가진 `<button>`이며, `role="region"`을 가리키고(`aria-labelledby`로 다시 라벨링돼요). Arrow Up/Down과 Home/End로 헤더 간 포커스 이동, Enter/Space로 토글해요. Web Components는 `value-change` 이벤트를 발생시켜요.
+- **React Native**: 헤더는 `accessibilityRole="button"`에 `accessibilityState.expanded`를 가져요; 탭으로 토글해요. 화살표 키 헤더 탐색은 웹 전용이에요(RN `Pressable`에는 `onKeyDown`이 없어요).
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Enter / Space', description: '포커스된 섹션을 토글해요.' },
+    { keys: 'Arrow Up / Down', description: '이전 / 다음 헤더로 포커스 이동(순환).' },
+    { keys: 'Home / End', description: '첫 번째 / 마지막 헤더로 포커스 이동.' },
+  ]}
+/>
+
+## 콘텐츠
+
+각 섹션의 짧은 헤더 라벨과 펼쳐지는 콘텐츠예요. 콘텐츠는 React/React Native에서 `ReactNode`이고, Web Components에서는 섹션 **텍스트**(`content` 문자열)예요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'items', type: 'AccordionItem[]', description: '섹션별 { value, label, content, disabled? }.' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: '열 수 있는 섹션 수.' },
+        { name: 'value', type: 'string[]', description: '제어 방식의 열린 값 집합.' },
+        { name: 'defaultValue', type: 'string[]', description: '비제어 방식의 초기 열린 값.' },
+        { name: 'onValueChange', type: '(values: string[]) => void', description: '열린 집합이 변경될 때 호출돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'items', type: 'GhAccordionItemData[]', description: '{ value, label, content?: string, disabled? } (프로퍼티).' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: '열 수 있는 섹션 수.' },
+        { name: 'value', type: 'string[]', description: '제어 방식의 열린 값 집합(프로퍼티).' },
+        { name: 'value-change event', type: 'CustomEvent<string[]>', description: '열린 집합과 함께 발생해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'items', type: 'AccordionItem[]', description: '섹션별 { value, label, content, disabled? }.' },
+        { name: 'type', type: "'single' | 'multiple'", default: "'single'", description: '열 수 있는 섹션 수.' },
+        { name: 'value', type: 'string[]', description: '제어 방식의 열린 값 집합.' },
+        { name: 'defaultValue', type: 'string[]', description: '비제어 방식의 초기 열린 값.' },
+        { name: 'onValueChange', type: '(values: string[]) => void', description: '열린 집합이 변경될 때 호출돼요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AccordionDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AccordionDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Accordion, Text } from '@ghds/react-native';
+
+<Accordion
+  type="single"
+  items={[{ value: 'a', label: 'Shipping', content: <Text>Ships in 2–3 days.</Text> }]}
+/>;
+```

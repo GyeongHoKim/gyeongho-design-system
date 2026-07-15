@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { NAV } from '../../lib/nav';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="홈"
+  description="GHDS는 손그림(sketchy) 스타일을 가진 크로스 플랫폼 디자인 시스템입니다. 토큰을 단일 진실 공급원으로 삼아 React, Lit, React Native에서 동일한 스타일을 제공합니다."
+>
+  <section class="section page-intro">
+    <span class="eyebrow">GH Design System</span>
+    <h1>하나의 토큰 세트. 모든 프레임워크에서 동일한 손그림 스타일.</h1>
+    <p>
+      GHDS는 <code>@ghds/tokens</code>를 단일 진실 공급원으로 사용하는 크로스 플랫폼 디자인
+      시스템으로, React, Lit 웹 컴포넌트, React Native에서 동일한 손그림 스타일을 제공해요.
+      아래 문서에서 토큰, 컴포넌트, 패턴을 살펴보세요.
+    </p>
+    <p class="demo-row">
+      <a class="theme-toggle" href={withBase('/getting-started/')}>시작하기 →</a>
+      <a class="theme-toggle" href={withBase('/components/')}>컴포넌트 보기</a>
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>둘러보기</h2>
+    <div class="card-grid">
+      {
+        NAV.map((item) => (
+          <a class="io-card" href={withBase(item.href)}>
+            <h3>{item.label}</h3>
+            <p>{item.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,140 @@
+---
+import LitDemo from '../../components/LitDemo.astro';
+import ReactDemo from '../../components/ReactDemo';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="컴포넌트"
+  description="React(@ghds/react)와 Lit(@ghds/web-components)의 Button, Card, Input을 한 화면에 나란히 라이브 렌더링해요."
+>
+  <section class="page-intro">
+    <span class="eyebrow">컴포넌트</span>
+    <h1>컴포넌트</h1>
+    <p>
+      같은 <code>@ghds/tokens</code>를 사용하는 두 구현체 — React 컴포넌트와 Lit 웹 컴포넌트 — 를
+      한 화면에 나란히 비교해요. 색상, 간격, 반경, 타이포그래피는 토큰에서 가져오고, 손그림 윤곽선은
+      <code>@ghds/sketch-core</code>에서 만들어져요. 우측 상단에서 다크 모드를 토글하면 두 컴포넌트 모두
+      동일하게 반응해요.
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="demo-columns">
+      <div class="demo-column">
+        <h3>React <span class="demo-tag">@ghds/react</span></h3>
+        {/* client:only — the sketch surface paints in the browser. */}
+        <ReactDemo client:only="react" />
+      </div>
+
+      <div class="demo-column">
+        <h3>Lit <span class="demo-tag">@ghds/web-components</span></h3>
+        <LitDemo />
+      </div>
+    </div>
+  </section>
+
+  <section class="section panel">
+    <h2>크로스 프레임워크, 단일 토큰 소스</h2>
+    <p>
+      두 열은 다른 런타임(React의 가상 DOM vs. 네이티브 커스텀 엘리먼트)을 사용하지만,
+      시각적 결과는 동일해요. 이것이 토큰을 단일 소스로 유지하는 이유예요 — 한 곳에서 값을 변경하면
+      모든 프레임워크가 함께 변경돼요.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>컴포넌트 문서</h2>
+    <p>각 컴포넌트의 구조, 변형 및 상태, 접근성, props 및 라이브 데모:</p>
+    <ul>
+      <li>
+        <a href={withBase('/components/accordion/')}>Accordion</a> — 접을 수 있는 섹션
+        (단일 또는 다중 열림)
+      </li>
+      <li>
+        <a href={withBase('/components/alert/')}>Alert</a> — 4가지 심각도의 인라인 상태 배너
+      </li>
+      <li>
+        <a href={withBase('/components/avatar/')}>Avatar</a> — 이니셜 폴백이 있는 원형 이미지
+      </li>
+      <li>
+        <a href={withBase('/components/badge/')}>Badge</a> — 6가지 시맨틱 변형의 작은 상태/라벨 핀
+      </li>
+      <li>
+        <a href={withBase('/components/breadcrumb/')}>Breadcrumb</a> — 현재 페이지로의 탐색 경로
+      </li>
+      <li>
+        <a href={withBase('/components/button/')}>Button</a> — 변형, 상태, 접근성,
+        및 props
+      </li>
+      <li>
+        <a href={withBase('/components/card/')}>Card</a> — 범용 손그림 스타일 표면 컨테이너
+      </li>
+      <li>
+        <a href={withBase('/components/input/')}>Input</a> — 에러 상태가 있는 라벨이 지정된 텍스트 필드
+      </li>
+      <li>
+        <a href={withBase('/components/menu/')}>Menu</a> — 버튼으로 트리거되는 동작 드롭다운
+      </li>
+      <li>
+        <a href={withBase('/components/modal/')}>Modal</a> — 스크림이 있는 포커스 트랩 대화상자
+      </li>
+      <li>
+        <a href={withBase('/components/pagination/')}>Pagination</a> — 긴 목록을 번호가 매겨진
+        페이지로 분할하는 페이저
+      </li>
+      <li>
+        <a href={withBase('/components/progress/')}>Progress</a> — 결정형/비결정형
+        진행률 표시줄
+      </li>
+      <li>
+        <a href={withBase('/components/textarea/')}>Textarea</a> — 옵션인 자동 크기 조정이 있는
+        여러 줄 텍스트 필드
+      </li>
+      <li>
+        <a href={withBase('/components/toast/')}>Toast</a> — 일시적이고 자동으로 사라지는
+        알림
+      </li>
+      <li>
+        <a href={withBase('/components/tooltip/')}>Tooltip</a> — 호버 또는 포커스 시 나타나는 짧은 힌트
+      </li>
+      <li>
+        <a href={withBase('/components/checkbox/')}>Checkbox</a> — 중간 상태가 있는 불린 입력,
+        및 CheckboxGroup
+      </li>
+      <li>
+        <a href={withBase('/components/radio/')}>Radio</a> — 단일 선택 입력, RadioGroup 내부에서 사용
+      </li>
+      <li>
+        <a href={withBase('/components/switch/')}>Switch</a> — 즉시 켜기/끄기 토글
+      </li>
+      <li>
+        <a href={withBase('/components/table/')}>Table</a> — 정렬 가능한 헤더와 행 선택이 있는 데이터 테이블
+      </li>
+      <li>
+        <a href={withBase('/components/tabs/')}>Tabs</a> — 키보드 탐색 가능한 탭으로 관련 패널 전환
+      </li>
+      <li>
+        <a href={withBase('/components/select/')}>Select</a> — 직접 구현된 리스트박스가 있는 단일 선택 드롭다운
+      </li>
+      <li>
+        <a href={withBase('/components/skeleton/')}>Skeleton</a> — 콘텐츠가 로드되는 동안 펄스하는 로딩 플레이스홀더
+      </li>
+      <li>
+        <a href={withBase('/components/slider/')}>Slider</a> — 손그림 스타일 레일과 썸이 있는 범위 입력
+      </li>
+      <li>
+        <a href={withBase('/components/spinner/')}>Spinner</a> — 동작 감소를 존중하는 비결정형 로딩 표시자
+      </li>
+      <li>
+        <a href={withBase('/components/form-field/')}>FormField</a> — Label + HelperText +
+        ErrorText 조합 래퍼
+      </li>
+      <li>
+        <a href={withBase('/accessibility/')}>접근성 가이드</a> — 키보드 인터랙션,
+        포커스 관리 및 모든 컴포넌트에 공유되는 ARIA 패턴
+      </li>
+    </ul>
+  </section>
+</BaseLayout>

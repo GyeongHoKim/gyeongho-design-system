@@ -1,0 +1,136 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Table
+description: 정렬 가능한 헤더와 행 선택 기능이 있는 손그림 스타일의 데이터 테이블입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import TableDemoReact from '../../../components/demos/TableDemo.tsx';
+import TableDemoLit from '../../../components/demos/TableDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Table`은 정렬 가능한 열과 선택적 행 선택 기능이 있는 구조화된 데이터 행을 표시해요. 정렬과 선택은
+**제어되는** 방식이에요 — 테이블은 전달된 `rows`를 전달된 순서대로 렌더링하고, `onSortChange` /
+`onSelectionChange`를 통해 의도를 전달해요.
+
+## 구조
+
+스케치 스타일의 윤곽선(`@ghds/sketch-core`)이 시맨틱 `<table>`(React Native에서는 플렉스 행)을
+감싸요. 정렬 가능한 헤더는 `aria-sort`를 가진 버튼이고, 선택적 앞 체크박스 열(모두 선택 헤더 포함)이
+선택을 담당해요. 이건 M12 데이터 상태 패턴의 데이터 기반이에요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '정렬 가능한 열', present: true, note: '헤더 버튼이 오름차순/내림차순을 토글해요; aria-sort가 반영돼요 (웹).' },
+    { name: '행 선택', present: true, note: '옵션인 체크박스 열 + 중간 상태의 모두 선택.' },
+    { name: '선택된 행', present: true, note: '배경이 하이라이트돼요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '각 행에 안정적인 id를 부여하고, 이미 정렬된 상태로 rows를 제공하세요 (테이블은 제어 방식이에요).',
+    '접근성 이름을 위해 caption을 제공하세요.',
+    '숫자 열은 align="right"으로 오른쪽 정렬하세요.',
+  ]}
+  dont={[
+    '테이블이 데이터를 정렬하거나 페이지 매김을 할 거라고 기대하지 마세요 — onSortChange를 데이터에 연결하세요.',
+    '페이지 매김이나 가상화 없이 큰 데이터셋을 하나의 테이블에 넣지 마세요.',
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: 시맨틱 `<table>`에 `<caption>`, `scope="col"` 헤더, 정렬 가능한 헤더에
+  `aria-sort`(`none`/`ascending`/`descending`)가 있어요. 선택은 접근성 라벨이 있는 GHDS Checkbox를
+  사용해요 ("행 선택 …", "모든 행 선택"). Web Components는 `sort-change`와 `selection-change`를
+  디스패치해요.
+- **React Native**: 행은 `role="table"`/`row`/`columnheader`/`cell`을 가진 플렉스 `Box`예요; 정렬은
+  헤더 버튼, 선택은 `role="checkbox"` 컨트롤이에요. `aria-sort`는 문서화된 웹 전용 차이예요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', description: '정렬 가능한 헤더, 선택 체크박스, 인터랙티브 셀 사이를 이동해요.' },
+    { keys: 'Enter / Space', description: '헤더(정렬)를 활성화하거나 체크박스를 토글해요.' },
+  ]}
+/>
+
+## 콘텐츠
+
+간결한 열 헤더와 셀 값. 불린/상태는 셀 안에 <a href={withBase('/components/badge/')}>Badge</a>로 표현해요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'columns', type: 'TableColumn[]', description: '열당 { key, header, sortable?, align? }.' },
+        { name: 'rows', type: 'TableRow[]', description: '{ id, [key]: ReactNode } — 주어진 순서대로 렌더링돼요.' },
+        { name: 'caption', type: 'string', description: '접근성 캡션.' },
+        { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: '제어되는 정렬 + 의도 콜백.' },
+        { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: '제어되는 선택 (체크박스 표시).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: '속성으로 설정돼요.' },
+        { name: 'caption', type: 'string', description: '접근성 캡션.' },
+        { name: 'sort', type: 'GhTableSort', description: '현재 정렬 (속성).' },
+        { name: 'selectedIds', type: 'string[]', description: '선택된 id (속성); 체크박스를 활성화해요.' },
+        { name: 'sort-change / selection-change', type: 'CustomEvent', description: '디스패치된 의도.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'React와 동일한 형태.' },
+        { name: 'caption', type: 'string', description: '접근성 이름.' },
+        { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: '제어되는 정렬 + 의도 콜백.' },
+        { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: '제어되는 선택.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <TableDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <TableDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Table } from '@ghds/react-native';
+
+<Table
+  caption="Contributors"
+  columns={[{ key: 'name', header: 'Name', sortable: true }]}
+  rows={[{ id: '1', name: 'Ada' }]}
+  sort={sort}
+  onSortChange={setSort}
+/>;
+```

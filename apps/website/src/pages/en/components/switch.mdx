@@ -1,0 +1,129 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Switch
+description: A hand-drawn toggle switch for immediate, on/off settings.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import SwitchDemoReact from '../../../components/demos/SwitchDemo.tsx';
+import SwitchDemoLit from '../../../components/demos/SwitchDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Switch` toggles a setting on or off immediately — unlike a `Checkbox`, which typically belongs
+to a form submitted later, a Switch's effect is expected to apply right away.
+
+## Anatomy
+
+A sketchy track drawn behind a real `<input type="checkbox" role="switch">` (React/Web Components)
+or a `Pressable` with `accessibilityRole="switch"` (React Native). A second, smaller filled thumb
+(an ellipse computed directly from `@ghds/sketch-core`) renders inside the track, positioned left
+when off and right when checked.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Off', present: true },
+    { name: 'On', present: true, note: 'Track fills solid; the thumb moves to the right.' },
+    { name: 'Disabled', present: true },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use Switch for settings that take effect immediately (e.g. "Enable notifications").',
+    'Pair a Switch with a clear, static label describing the setting, not the current state ("Notifications", not "On").',
+  ]}
+  dont={[
+    "Don't use Switch inside a form that requires an explicit Save/Submit action — use Checkbox there instead.",
+    "Don't animate the thumb position — v1 ships an immediate, non-animated position swap on toggle; no component in this system has a transition system yet.",
+  ]}
+/>
+
+## Accessibility
+
+- All three platforms use the real, native toggle semantics of their platform's checkbox-like
+  control (`<input type="checkbox" role="switch">` on React/Web Components,
+  `accessibilityRole="switch"` on React Native) — Space/click toggles for free, no custom keydown
+  handler.
+- Browsers compute `aria-checked` from the native `checked` property regardless of the `role="switch"`
+  override, on both React and Web Components.
+- **React Native**: `accessibilityState.checked` for native platforms, plus a direct `aria-checked`
+  prop for the web target (React Native Web does not derive `aria-checked` from `accessibilityState`
+  the way it does `aria-disabled`).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
+
+## Content
+
+The label names the setting itself ("Enable notifications"), not the current state or an action.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible label, associated via Radix Label.' },
+        { name: 'checked', type: 'boolean', description: 'Controlled checked state.' },
+        { name: 'defaultChecked', type: 'boolean', default: 'false', description: 'Initial checked state when uncontrolled.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: 'All other native input attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'checked', type: 'boolean', default: 'false', description: 'Reflected attribute.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction and form participation.' },
+        { name: 'name', type: 'string', description: 'Submitted control name.' },
+        { name: 'value', type: 'string', default: "'on'", description: 'Submitted value when checked.' },
+        { name: 'label', type: 'string', description: 'Optional visible label, also the accessible name.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible, accessible label — required.' },
+        { name: 'checked', type: 'boolean', description: 'Controlled checked state.' },
+        { name: 'defaultChecked', type: 'boolean', description: 'Initial checked state when uncontrolled.' },
+        { name: 'onCheckedChange', type: '(checked: boolean) => void', description: 'Fires with the next checked state on toggle.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React and Web Components render live below. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SwitchDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SwitchDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Switch } from '@ghds/react-native';
+
+<Switch label="Enable notifications" checked={notifications} onCheckedChange={setNotifications} />;
+```

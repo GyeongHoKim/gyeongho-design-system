@@ -1,0 +1,125 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 페이지네이션
+description: 긴 목록을 번호가 매겨진 페이지로 나누는 손그림 스타일의 페이저입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import PaginationDemoReact from '../../../components/demos/PaginationDemo.tsx';
+import PaginationDemoLit from '../../../components/demos/PaginationDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Pagination`은 긴 결과 목록을 번호가 매겨진 페이지로 나누고, Previous/Next 컨트롤과 큰 범위를 접는 말줄임표를 제공해요. 제어 방식이에요 — 현재 `page`를 소유하고 `onPageChange`에서 업데이트해요.
+
+## 구조
+
+Previous, 번호가 매겨진 페이지 버튼들, Next를 감싸는 `<nav>` 랜드마크예요. 각 버튼은 손그림 박스(`@ghds/sketch-core`)이며, 현재 페이지는 채워지고 `aria-current="page"`로 표시돼요. 큰 간격은 단일 말줄임표로 접혀서 첫 번째, 마지막, 현재 페이지 주변 페이지(`siblingCount`)를 유지해요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '현재 페이지', present: true, note: '채워짐 + aria-current="page".' },
+    { name: '비활성화', present: true, note: '첫 페이지에서 Previous, 마지막 페이지에서 Next.' },
+    { name: '말줄임표', present: true, note: '숨겨진 페이지들의 묶음을 접어요; 단일 숨겨진 페이지는 대신 표시돼요.' },
+    { name: 'Hover / Focus', present: true, note: '표준 버튼 포커스 링; 키보드 조작 가능.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '제어 방식으로 유지: page를 저장하고 onPageChange에서 업데이트하세요.',
+    '현재 페이지 주변에 몇 개의 이웃을 표시할지 siblingCount로 조정하세요.',
+    '맥락을 위해 결과 요약("Showing 21–40 of 200")과 함께 사용하세요.',
+  ]}
+  dont={[
+    "연속 피드에 페이지네이션을 사용하지 마세요 — 무한 스크롤이나 Load more 버튼이 더 적합해요.",
+    "Previous/Next를 숨기지 마세요; 끝에서는 비활성화하세요.",
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: `<nav aria-label="Pagination">` 랜드마크; 각 컨트롤은 설명적인 `aria-label`("Page 3", "Previous page")을 가진 실제 `<button>`; 현재 페이지는 `aria-current="page"`를 가져요. Web Components는 `page-change` 이벤트를 발생시켜요.
+- **React Native**: 행은 `role="navigation"`을 노출; 각 컨트롤은 `accessibilityRole="button"`에 라벨과 `accessibilityState`(현재 페이지는 `selected`, 끝은 `disabled`)를 가져요.
+- 웹 플랫폼에서 모든 컨트롤은 키보드로 조작 가능해요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', description: '페이지네이션 컨트롤 간 이동.' },
+    { keys: 'Enter / Space', description: '포커스된 컨트롤 활성화.' },
+  ]}
+/>
+
+## 콘텐츠
+
+숫자 페이지 라벨과 "Previous"/"Next" 접근성 라벨. 숫자와 셰브론 아이콘 외에 보이는 텍스트는 없어요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'count', type: 'number', description: '전체 페이지 수.' },
+        { name: 'page', type: 'number', description: '현재 페이지(1 기반).' },
+        { name: 'onPageChange', type: '(page: number) => void', description: '다음 페이지로 호출돼요.' },
+        { name: 'siblingCount', type: 'number', default: '1', description: '현재 페이지 양쪽에 표시되는 페이지 수.' },
+        { name: 'label', type: 'string', default: "'Pagination'", description: 'nav 랜드마크의 접근성 이름.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'count', type: 'number', description: '전체 페이지 수.' },
+        { name: 'page', type: 'number', description: '현재 페이지(1 기반).' },
+        { name: 'siblingCount', type: 'number', default: '1', description: '양쪽에 표시되는 페이지 수.' },
+        { name: 'label', type: 'string', default: "'Pagination'", description: '접근성 이름.' },
+        { name: 'page-change event', type: 'CustomEvent<number>', description: '다음 페이지로 발생해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'count', type: 'number', description: '전체 페이지 수.' },
+        { name: 'page', type: 'number', description: '현재 페이지(1 기반).' },
+        { name: 'onPageChange', type: '(page: number) => void', description: '다음 페이지로 호출돼요.' },
+        { name: 'siblingCount', type: 'number', default: '1', description: '양쪽에 표시되는 페이지 수.' },
+        { name: 'label', type: 'string', default: "'Pagination'", description: '접근성 이름.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PaginationDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PaginationDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Pagination } from '@ghds/react-native';
+
+const [page, setPage] = useState(1);
+<Pagination count={12} page={page} onPageChange={setPage} />;
+```

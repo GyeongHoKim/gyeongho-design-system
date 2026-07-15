@@ -1,0 +1,77 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: AI 에이전트 스킬
+description: AI 코딩 어시스턴트가 올바르고 접근 가능한 GHDS 코드를 생성하도록 에이전트 스킬을 설치하세요.
+---
+
+GHDS는 [에이전트 스킬](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds)을
+제공해요 — `@ghds/*`에서 임포트하는 코드를 생성하기 전에 AI 코딩 어시스턴트(Claude Code,
+Cursor, 그리고 [vercel-labs/skills](https://github.com/vercel-labs/skills) 생태계의 다른
+도구들)가 읽는 규칙과 예제 세트예요. prop 이름을 추측하거나 색상을 하드코딩하는 대신,
+GHDS의 실제 규칙을 알고 있어요.
+
+## 설치
+
+```bash
+npx skills add GyeongHoKim/gyeongho-design-system
+```
+
+```bash
+pnpm dlx skills add GyeongHoKim/gyeongho-design-system
+```
+
+```bash
+bunx skills add GyeongHoKim/gyeongho-design-system
+```
+
+이렇게 하면 프로젝트의 agent-skills 디렉토리(예: Claude Code의 경우
+`.claude/skills/`)에 스킬이 설치돼요. **Claude Code**로 설치와 사용을 검증했어요; 스킬은
+더 넓은 vercel-labs/skills 생태계에서 지원하는 오픈 [agentskills.io](https://agentskills.io)
+형식을 따르지만, 모든 나열된 에이전트를 직접 검증하지는 않았어요.
+
+## 포함된 내용
+
+- **토큰 사용** — `sys.*`/`comp.*` 토큰을 소비해야 하는 경우와 `ref.*` 및 하드코딩된 값이
+  대비 보장을 깨뜨리는 이유.
+- **접근성** — 모든 컴포넌트의 ARIA 패턴과 키보드 상호작용 참조, 그리고 포커스 관리 주의점
+  (`asChild`+`disabled` 탭 순서 트랩 등).
+- **컴포지션** — `FormField`를 언제 사용할지, 그리고 `Toast`/`Alert`/`Modal` 또는
+  `Skeleton`/`Spinner` 중 선택하는 방법.
+- **플랫폼 차이** — `@ghds/react`, `@ghds/web-components`, `@ghds/react-native` 간의 구체적인
+  prop 및 이벤트 이름 차이 (예: `Modal`의 접근 가능한 제목은 React/React Native에서는
+  `title`이지만 Web Components에서는 `heading`이에요).
+
+## 이전 / 이후
+
+스킬 없이는 에이전트가 종종 색상을 하드코딩해요:
+
+```css
+/* Before */
+.my-button {
+  background-color: #0066cc;
+}
+```
+
+```css
+/* After */
+.my-button {
+  background-color: var(--sys-color-bg-primary);
+}
+```
+
+...또는 해당 플랫폼에 존재하지 않는 prop 이름을 플랫폼 간에 그대로 가져와요:
+
+```tsx
+// Before — 'neutral'은 React Native에서 유효한 variant가 아니에요
+<Button label="Cancel" variant="neutral" />
+```
+
+```tsx
+// After
+<Button label="Cancel" variant="primary" />
+```
+
+## 참조
+
+- [스킬 소스](https://github.com/GyeongHoKim/gyeongho-design-system/tree/main/skills/ghds)
+- [시작하기](../getting-started/) — 패키지 자체 설치

@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Tooltip
+description: A hand-drawn tooltip that reveals a short hint on hover or focus.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import TooltipDemoReact from '../../../components/demos/TooltipDemo.tsx';
+import TooltipDemoLit from '../../../components/demos/TooltipDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Tooltip` reveals a short, supplementary hint about the element it wraps. It is not for essential
+information — content must remain usable without ever seeing the tooltip.
+
+## Anatomy
+
+A sketchy bubble (`@ghds/sketch-core`) positioned near a single trigger element and linked to it via
+`aria-describedby`. On the web it appears on hover (after a short `delay`) or focus and hides on
+leave, blur, or Escape; positioned with floating-ui.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Hidden', present: true, note: 'Default.' },
+    { name: 'Shown', present: true, note: 'On hover (after delay) or focus (web); on tap (React Native).' },
+    { name: 'Disabled', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Keep tooltip text short — a few words.',
+    'Attach it to a focusable trigger so keyboard and screen-reader users can reveal it.',
+    'Use it for supplementary hints only.',
+  ]}
+  dont={[
+    "Don't put essential information or interactive controls in a tooltip.",
+    "Don't wrap a non-focusable element — the tooltip would be unreachable by keyboard.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: clones the trigger to add `aria-describedby` pointing at the `role="tooltip"` bubble;
+  shows on focus/hover, hides on blur/leave/Escape.
+- **Web Components**: sets `aria-describedby` on the slotted trigger toward the shadow bubble; same
+  hover/focus/Escape behaviour.
+- **React Native**: there is no hover on touch, so the tooltip toggles on **tap**; the content is also
+  exposed as an `accessibilityHint` on the trigger so it is announced without revealing the bubble.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+A short phrase. Long text is capped to a readable max width; keep it concise.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'content', type: 'ReactNode', description: 'Tooltip content.' },
+        { name: 'children', type: 'ReactElement', description: 'The single trigger element.' },
+        { name: 'delay', type: 'number', default: '300', description: 'Hover show delay (ms).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'content', type: 'string', description: 'Tooltip text.' },
+        { name: 'delay', type: 'number', default: '300', description: 'Hover show delay (ms).' },
+        { name: '(slot)', type: 'element', description: 'The trigger element goes in the default slot.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'content', type: 'string', description: 'Tooltip text (also the trigger accessibility hint).' },
+        { name: 'children', type: 'ReactNode', description: 'The trigger element.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <TooltipDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <TooltipDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native (tap to toggle)
+import { Tooltip, Button } from '@ghds/react-native';
+
+<Tooltip content="Saves your changes">
+  <Button label="Save" onPress={save} />
+</Tooltip>;
+```
