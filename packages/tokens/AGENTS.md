@@ -127,6 +127,60 @@ comp.input.border.focus
 
 ---
 
+## Typography & Font Stacks
+
+Font-family stacks live in `ref.fontFamily` (`src/ref/typography.json`) and are referenced by
+`sys.typography.*.fontFamily` (`src/sys/_shared.json`). They are the **only** place a font-family
+name may appear — components consume `sys`/`comp` tokens and never hardcode a font.
+
+### Stack composition order
+
+GHDS products ship in English and Korean, so every stack is ordered for per-glyph fallback:
+
+```
+Latin display → Korean display → Latin body → Korean body → system → generic
+```
+
+The browser matches each glyph independently down the stack, so Latin text renders in the Latin
+face and Korean text falls through to the Korean face in the same element — no locale switching is
+needed.
+
+- **`ref.fontFamily.sketch`** (headings/titles): `'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive`
+- **`ref.fontFamily.sans`** (body/label/caption): `'Nunito Sans Variable', 'Pretendard', system-ui, …, 'Noto Sans KR', sans-serif`
+- **`ref.fontFamily.mono`** (code): `ui-monospace, …, 'Noto Sans KR', monospace`
+
+A trailing `'Noto Sans KR'` is kept as the last Korean fallback so text still renders when the
+self-hosted Korean font is unavailable.
+
+### Loading fonts is the consumer's responsibility
+
+The token declares the **stack** (the preferred order). Loading the actual web-font files is done
+by the consuming app via [Fontsource](https://fontsource.org/), not by the tokens package. This
+keeps the token package dependency-free and lets each app control its font payload. See the **Fonts**
+guide on the website for the exact `@fontsource/*` packages, weights, and import snippets.
+
+| Face | fontsource package | Weights |
+| --- | --- | --- |
+| Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
+| Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
+| Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
+| Pretendard (body, Korean) | `@fontsource/pretendard` | 400 / 500 / 700 (matches `ref.fontWeight`) |
+
+### Adding or changing a font
+
+Font choices are design decisions made at the `ref` tier only. To change a font:
+
+1. Edit the `$value` in `src/ref/typography.json` (the value must be a literal string — `ref` tokens
+   may not alias another token).
+2. Update the consumer's fontsource imports if the package/weights changed.
+3. Update the website Fonts guide and this table.
+4. Run `pnpm build --filter @ghds/tokens` and `pnpm test --filter @ghds/tokens`.
+
+> React Native does not support CSS font stacks. RN font handling is a separate concern documented
+> in `packages/react-native/AGENTS.md`; web font stacks here do not apply verbatim to RN.
+
+---
+
 ## Validation Requirements
 
 Run the validation suite before committing: `pnpm test --filter @ghds/tokens`.
