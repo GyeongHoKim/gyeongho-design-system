@@ -66,9 +66,9 @@ export class GhMenubar extends LitElement {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
       return;
     }
-    const triggers = [...(this.barEl?.querySelectorAll('gh-menu') ?? [])];
+    const triggers = [...(this.barEl?.querySelectorAll<GhMenu>('gh-menu') ?? [])];
     const active = this.shadowRoot?.activeElement;
-    const current = triggers.findIndex((el) => el === active);
+    const current = triggers.indexOf(active as GhMenu);
     if (current === -1 || triggers.length === 0) {
       return;
     }
