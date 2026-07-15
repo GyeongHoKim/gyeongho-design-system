@@ -85,13 +85,46 @@ function rnShadow(value) {
   };
 }
 
+/**
+ * React Native does not support CSS comma-separated font stacks — `fontFamily`
+ * accepts a single family name. This map picks the RN-appropriate face from
+ * each GHDS web stack. The chosen face must include both Latin and Korean
+ * glyphs (RN cannot do per-glyph fallback across families), so the Korean
+ * face is preferred for body/UI and display.
+ *
+ *   sketch → Gaegu  (hand-drawn Korean, also covers Latin)
+ *   sans   → Pretendard (Korean sans, also covers Latin)
+ *   mono   → Menlo  (iOS/Android system mono; Korean falls back to OS)
+ *
+ * If a stack is not in this map, the first quoted family name is extracted.
+ */
+const RN_FONT_FAMILY_MAP = {
+  "'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive": 'Gaegu',
+  "'Nunito Sans Variable', 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif":
+    'Pretendard',
+  "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace": 'Menlo',
+};
+
+/** Extract a single RN-compatible font family name from a CSS font stack. */
+function rnFontFamily(value) {
+  const mapped = RN_FONT_FAMILY_MAP[value];
+  if (mapped) return mapped;
+  // Fallback: first quoted name, or first token before a comma.
+  const quoted = /'([^']+)'/.exec(value);
+  if (quoted) return quoted[1];
+  return value.split(',')[0].trim();
+}
+
 StyleDictionary.registerTransform({
   name: 'ghds/value/rn',
   type: 'value',
   transitive: true,
   filter: (token) => typeof token.$value === 'string',
-  transform: (token) =>
-    token.$type === 'shadow' ? rnShadow(token.$value) : rnNumber(token.$value),
+  transform: (token) => {
+    if (token.$type === 'shadow') return rnShadow(token.$value);
+    if (token.$type === 'fontFamily') return rnFontFamily(token.$value);
+    return rnNumber(token.$value);
+  },
 });
 
 StyleDictionary.registerFormat({

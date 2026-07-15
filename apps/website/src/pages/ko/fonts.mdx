@@ -130,9 +130,74 @@ Pretendard의 웨이트 **400 / 500 / 700**은 `@ghds/tokens`의
 
 ## React Native
 
-React Native는 CSS 폰트 스택이나 `@font-face`를 지원하지 않아요. RN은 플랫폼의 네이티브
-폰트 시스템을 사용해요 — iOS(Apple SD Gothic Neo)와 Android(Noto Sans)가 한국어 글리프를
-자동으로 제공해요. RN 전용 폰트 가이드는 `packages/react-native/AGENTS.md`를 참고하세요.
+React Native는 CSS 콤마 폰트 스택을 지원하지 않아요. `@ghds/tokens/rn` 빌드가 각 웹 스택을
+RN이 사용할 수 있는 **단일 패밀리 이름**으로 자동 변환해요:
+
+| 토큰 | 웹 스택 (CSS) | RN 값 |
+| --- | --- | --- |
+| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', …` | `Pretendard` |
+| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
+
+선택된 RN 서체는 라틴과 한국어 글리프를 모두 포함하고 있어서, RN이 할 수 없는 글리프별
+폴백 없이도 두 언어 모두 올바르게 렌더링돼요.
+
+### Expo 앱에 폰트 로드하기
+
+RN 토큰 값은 그냥 **이름**이에요 — 실제 `.ttf` 파일은 별도로 로드해야 해요.
+[`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/)를 사용해서 폰트를 임베드하세요.
+
+**옵션 A — config 플러그인 (권장, 빌드 시 임베드):**
+
+[Pretendard 릴리스](https://github.com/orioncactus/pretendard/releases)와
+[Google Fonts의 Gaegu](https://fonts.google.com/specimen/Gaegu)에서 `.ttf` 파일을 다운로드해서
+`assets/fonts/`에 넣은 뒤, `app.json`에 추가하세요:
+
+```json
+{
+  "plugins": [
+    [
+      "expo-font",
+      {
+        "fonts": [
+          "assets/fonts/Pretendard-Regular.ttf",
+          "assets/fonts/Pretendard-Medium.ttf",
+          "assets/fonts/Pretendard-Bold.ttf",
+          "assets/fonts/Gaegu-Regular.ttf"
+        ]
+      }
+    ]
+  ]
+}
+```
+
+**옵션 B — 런타임 로드:**
+
+```tsx
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
+
+export function App() {
+  const [loaded, error] = useFonts({
+    Pretendard: require('./assets/fonts/Pretendard-Regular.ttf'),
+    'Pretendard-Medium': require('./assets/fonts/Pretendard-Medium.ttf'),
+    'Pretendard-Bold': require('./assets/fonts/Pretendard-Bold.ttf'),
+    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) SplashScreen.hideAsync();
+  }, [loaded, error]);
+
+  if (!loaded && !error) return null;
+  return /* 앱 */;
+}
+```
+
+웨이트 매핑에 대한 자세한 내용은 `packages/react-native/AGENTS.md`를 참고하세요.
 
 ## 요약
 

@@ -126,9 +126,76 @@ to your self-hosted files. No per-component font configuration is needed.
 
 ## React Native
 
-React Native does not support CSS font stacks or `@font-face`. RN uses the platform's native font
-system — iOS (Apple SD Gothic Neo) and Android (Noto Sans) provide Korean glyphs automatically.
-See `packages/react-native/AGENTS.md` for RN-specific font guidance.
+React Native does not support CSS comma-separated font stacks. The `@ghds/tokens/rn`
+build automatically converts each web stack to a **single family name** that RN can
+consume:
+
+| Token | Web stack (CSS) | RN value |
+| --- | --- | --- |
+| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', …` | `Pretendard` |
+| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
+
+The chosen RN face includes both Latin and Korean glyphs, so text renders correctly in
+both languages without per-glyph fallback (which RN cannot do).
+
+### Loading fonts in your Expo app
+
+The RN token value is just a **name** — you must still load the actual `.ttf` files.
+Use [`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/) to embed fonts.
+
+**Option A — Config plugin (recommended, build-time):**
+
+Download the `.ttf` files from
+[Pretendard releases](https://github.com/orioncactus/pretendard/releases) and
+[Gaegu on Google Fonts](https://fonts.google.com/specimen/Gaegu), place them in
+`assets/fonts/`, then add to `app.json`:
+
+```json
+{
+  "plugins": [
+    [
+      "expo-font",
+      {
+        "fonts": [
+          "assets/fonts/Pretendard-Regular.ttf",
+          "assets/fonts/Pretendard-Medium.ttf",
+          "assets/fonts/Pretendard-Bold.ttf",
+          "assets/fonts/Gaegu-Regular.ttf"
+        ]
+      }
+    ]
+  ]
+}
+```
+
+**Option B — Runtime loading:**
+
+```tsx
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
+
+export function App() {
+  const [loaded, error] = useFonts({
+    Pretendard: require('./assets/fonts/Pretendard-Regular.ttf'),
+    'Pretendard-Medium': require('./assets/fonts/Pretendard-Medium.ttf'),
+    'Pretendard-Bold': require('./assets/fonts/Pretendard-Bold.ttf'),
+    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) SplashScreen.hideAsync();
+  }, [loaded, error]);
+
+  if (!loaded && !error) return null;
+  return /* your app */;
+}
+```
+
+See `packages/react-native/AGENTS.md` for weight mapping details.
 
 ## Summary
 

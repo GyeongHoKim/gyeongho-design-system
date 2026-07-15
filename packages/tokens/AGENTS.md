@@ -176,8 +176,11 @@ Font choices are design decisions made at the `ref` tier only. To change a font:
 3. Update the website Fonts guide and this table.
 4. Run `pnpm build --filter @ghds/tokens` and `pnpm test --filter @ghds/tokens`.
 
-> React Native does not support CSS font stacks. RN font handling is a separate concern documented
-> in `packages/react-native/AGENTS.md`; web font stacks here do not apply verbatim to RN.
+> React Native does not support CSS comma-separated font stacks. The RN build
+> automatically converts each web stack to a single family name (e.g. `Pretendard`
+> for `sans`, `Gaegu` for `sketch`) so RN's `fontFamily` accepts it. The chosen
+> face includes both Latin and Korean glyphs. Loading the `.ttf` files in the RN
+> app is the consumer's responsibility — see `packages/react-native/AGENTS.md`.
 
 ---
 
