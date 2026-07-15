@@ -29,6 +29,9 @@ importers:
 
   apps/storybook-react:
     dependencies:
+      '@fontsource-variable/noto-sans-kr':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@fontsource-variable/nunito-sans':
         specifier: ^5.2.7
         version: 5.2.7
@@ -121,6 +124,9 @@ importers:
 
   apps/storybook-web-components:
     dependencies:
+      '@fontsource-variable/noto-sans-kr':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@fontsource-variable/nunito-sans':
         specifier: ^5.2.7
         version: 5.2.7
@@ -188,6 +194,9 @@ importers:
       '@astrojs/react':
         specifier: ^4.4.0
         version: 4.4.2(@types/node@24.13.2)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(jiti@2.6.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(terser@5.48.0)(yaml@2.9.0)
+      '@fontsource-variable/noto-sans-kr':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@fontsource-variable/nunito-sans':
         specifier: ^5.2.7
         version: 5.2.7
@@ -1543,6 +1552,9 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@fontsource-variable/noto-sans-kr@5.2.10':
+    resolution: {integrity: sha512-UZOO7HF44Rt5+7SCeFMHYVgbKu36Jet6IxrAd7jjEkQMVDmeefwd0H8V5pSZydvBOOxClk3V5cQsujJqGHhQMw==}
 
   '@fontsource-variable/nunito-sans@5.2.7':
     resolution: {integrity: sha512-rflH5HeAoNjIkwftStzQvxqCJhIS+usMr/lfslWg/RCa499B5qxyjo+74R/QMM0geQt4AY1URlG7wAR1iq6KPQ==}
@@ -7853,6 +7865,8 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@fontsource-variable/noto-sans-kr@5.2.10': {}
 
   '@fontsource-variable/nunito-sans@5.2.7': {}
 

@@ -24,14 +24,14 @@ Latin display → Korean display → Latin body → Korean body → system → g
 ```
 
 So `"Hello, 안녕하세요"` set in `ref.fontFamily.sans` renders `Hello,` in **Nunito Sans Variable**
-and `안녕하세요` in **Pretendard** automatically.
+and `안녕하세요` in **Noto Sans KR Variable** automatically.
 
 ## The typefaces
 
 | Role | Latin face | Korean face | Style |
 | --- | --- | --- | --- |
 | Sketch / display (headings) | Gochi Hand | Gaegu | Hand-drawn — the GHDS identity |
-| Body / UI (sans) | Nunito Sans Variable | Pretendard | Warm, legible, trustworthy |
+| Body / UI (sans) | Nunito Sans Variable | Noto Sans KR Variable | Warm, legible, trustworthy |
 | Code (mono) | system mono | Noto Sans KR (fallback) | Precise, monospaced |
 
 ### Why these faces
@@ -41,11 +41,18 @@ and `안녕하세요` in **Pretendard** automatically.
 - **Gaegu** — a Korean hand-drawn face that parallels Gochi Hand's warmth for headings.
 - **Nunito Sans Variable** — rounded terminals read as warm and approachable without losing
   legibility; the variable font ships all weights (200–1000) in a single small file.
-- **Pretendard** — the de-facto Korean sans in Korean product design, designed as a drop-in
-  replacement for system fonts with excellent Korean legibility and a neutral, trustworthy tone.
+- **Noto Sans KR Variable** — Google's open-source Korean sans with excellent legibility and wide
+  coverage. The variable font ships all weights (100–900) in subsetted Korean woff2 files.
 
-> **Alternatives.** If your product needs a smaller payload, `@fontsource-variable/noto-sans-kr`
-> (a single variable file) can replace Pretendard. If a more neutral Latin face is preferred, Inter
+> **About Pretendard.** Pretendard is the de-facto Korean sans in Korean product design, but the
+> Fontsource package (`@fontsource/pretendard`) only ships the **Latin subset** — there is no
+> Korean subset available. GHDS keeps Pretendard in the stack for its Latin glyphs (it pairs well
+> with Nunito Sans Variable) and uses **Noto Sans KR Variable** for Korean glyphs. If you self-host
+> the full Pretendard `.woff2` (with Korean glyphs) from the
+> [Pretendard releases](https://github.com/orioncactus/pretendard/releases), Korean body text will
+> render in Pretendard instead.
+
+> **Alternatives.** If a more neutral Latin face is preferred, Inter
 > (`@fontsource-variable/inter`) can replace Nunito Sans Variable. Change the `ref.fontFamily` value
 > in `@ghds/tokens` and update your imports — the consumer contract stays the same.
 
@@ -58,15 +65,15 @@ These are defined in `@ghds/tokens` at the `ref` tier and consumed via `sys.typo
 'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive
 
 /* ref.fontFamily.sans — body/label/caption */
-'Nunito Sans Variable', 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto,
-'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif
+'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system,
+'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif
 
 /* ref.fontFamily.mono — code */
 ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace
 ```
 
-A trailing `'Noto Sans KR'` is kept as the last Korean fallback so text still renders when the
-self-hosted Korean font is unavailable.
+For Korean glyphs in `sans`, the resolution is: Nunito Sans Variable (no Korean) → Pretendard
+(Latin only via fontsource) → **Noto Sans KR Variable** (loaded, has Korean) ✓.
 
 ## Loading the fonts in your app
 
@@ -77,7 +84,7 @@ privacy-friendly, and version-locked. The tokens package stays dependency-free.
 ### 1. Install the Fontsource packages
 
 ```bash
-pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+pnpm add @fontsource-variable/nunito-sans @fontsource-variable/noto-sans-kr @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
 ```
 
 | Face | Package | Weights |
@@ -85,7 +92,8 @@ pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/goc
 | Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
 | Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
 | Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
-| Pretendard (body, Korean) | `@fontsource/pretendard` | 400 / 500 / 700 |
+| Noto Sans KR Variable (body, Korean) | `@fontsource-variable/noto-sans-kr` | variable (100–900) |
+| Pretendard (body, Latin-only) | `@fontsource/pretendard` | 400 / 500 / 700 |
 
 ### 2. Import the CSS at your app's entry point
 
@@ -101,13 +109,15 @@ import '@fontsource/gaegu/400.css';
 
 // Body / UI
 import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource-variable/noto-sans-kr/wght.css';
 import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
 ```
 
 The weights **400 / 500 / 700** for Pretendard match `ref.fontWeight.regular / .medium / .bold`
-in `@ghds/tokens`. Nunito Sans Variable is a single variable file covering all weights.
+in `@ghds/tokens`. Nunito Sans Variable and Noto Sans KR Variable are single variable files covering
+all weights.
 
 ### 3. That's it — components pick up the fonts automatically
 
@@ -117,11 +127,12 @@ to your self-hosted files. No per-component font configuration is needed.
 
 ## Weight & payload guidance
 
-- **Pretendard** is a static font (no variable version on Fontsource). Import only the weights you
-  use — 400 / 500 / 700 covers body, label, and heading weights. Each weight is ~70–90 KB (woff2,
-  subset for Korean is larger; consider loading 400 first and 500/700 async if payload is critical).
+- **Noto Sans KR Variable** ships all weights (100–900) as subsetted Korean woff2 files (~124 files
+  total, split by Unicode range). The browser only downloads the subsets needed for the text on
+  the page, so the effective payload is small.
 - **Nunito Sans Variable** ships all weights in one ~50 KB woff2 file — prefer the `/wght.css`
   import over individual static weights.
+- **Pretendard** (fontsource) is Latin-only, static. Import only 400 / 500 / 700.
 - **Gochi Hand** and **Gaegu** each have a single weight (400) and are small (~20–40 KB).
 
 ## React Native
@@ -133,7 +144,7 @@ consume:
 | Token | Web stack (CSS) | RN value |
 | --- | --- | --- |
 | `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
-| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', …` | `Pretendard` |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR` |
 | `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
 
 The chosen RN face includes both Latin and Korean glyphs, so text renders correctly in
@@ -147,7 +158,7 @@ Use [`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/) to embed 
 **Option A — Config plugin (recommended, build-time):**
 
 Download the `.ttf` files from
-[Pretendard releases](https://github.com/orioncactus/pretendard/releases) and
+[Noto Sans KR on Google Fonts](https://fonts.google.com/specimen/Noto+Sans+KR) and
 [Gaegu on Google Fonts](https://fonts.google.com/specimen/Gaegu), place them in
 `assets/fonts/`, then add to `app.json`:
 
@@ -158,9 +169,9 @@ Download the `.ttf` files from
       "expo-font",
       {
         "fonts": [
-          "assets/fonts/Pretendard-Regular.ttf",
-          "assets/fonts/Pretendard-Medium.ttf",
-          "assets/fonts/Pretendard-Bold.ttf",
+          "assets/fonts/NotoSansKR-Regular.ttf",
+          "assets/fonts/NotoSansKR-Medium.ttf",
+          "assets/fonts/NotoSansKR-Bold.ttf",
           "assets/fonts/Gaegu-Regular.ttf"
         ]
       }
@@ -180,9 +191,9 @@ SplashScreen.preventAutoHideAsync();
 
 export function App() {
   const [loaded, error] = useFonts({
-    Pretendard: require('./assets/fonts/Pretendard-Regular.ttf'),
-    'Pretendard-Medium': require('./assets/fonts/Pretendard-Medium.ttf'),
-    'Pretendard-Bold': require('./assets/fonts/Pretendard-Bold.ttf'),
+    NotoSansKR: require('./assets/fonts/NotoSansKR-Regular.ttf'),
+    'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
+    'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
     Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
   });
 

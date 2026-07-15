@@ -10,6 +10,9 @@ import '@ghds/tokens/css';
 import '@fontsource/gochi-hand/400.css';
 import '@fontsource/gaegu/400.css';
 import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource-variable/noto-sans-kr/wght.css';
+// Pretendard (Latin only via fontsource — no Korean subset available).
+// Korean body text falls through to Noto Sans KR Variable (above).
 import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
@@ -108,10 +111,10 @@ function switchLocaleHref(target: Locale): string {
         >
           {locale === 'en' ? '한국어' : 'EN'}
         </a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-live="polite">
+        <gh-button id="theme-toggle" variant="neutral" aria-live="polite">
           <span data-theme-icon aria-hidden="true">🌗</span>
           <span data-theme-label>{ui.theme}</span>
-        </button>
+        </gh-button>
       </div>
     </header>
 
@@ -122,6 +125,10 @@ function switchLocaleHref(target: Locale): string {
     <footer class="site-footer">
       <p>{ui.footer} <code>@ghds/tokens</code>.</p>
     </footer>
+
+    <script>
+      import '@ghds/web-components';
+    </script>
 
     <script>
       const toggle = document.getElementById('theme-toggle');

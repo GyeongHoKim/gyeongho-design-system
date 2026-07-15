@@ -66,7 +66,7 @@ Korean faces render Korean glyphs, with no locale switching. Loading the actual 
 the consumer's responsibility, done via [Fontsource](https://fontsource.org/) (self-hosted, no CDN).
 
 ```bash
-pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+pnpm add @fontsource-variable/nunito-sans @fontsource-variable/noto-sans-kr @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
 ```
 
 ```ts
@@ -74,6 +74,7 @@ import '@ghds/tokens/css';
 import '@fontsource/gochi-hand/400.css';
 import '@fontsource/gaegu/400.css';
 import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource-variable/noto-sans-kr/wght.css';
 import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
@@ -84,7 +85,8 @@ import '@fontsource/pretendard/700.css';
 | Gochi Hand | Display (Latin) | `@fontsource/gochi-hand` |
 | Gaegu | Display (Korean) | `@fontsource/gaegu` |
 | Nunito Sans Variable | Body/UI (Latin) | `@fontsource-variable/nunito-sans` |
-| Pretendard | Body/UI (Korean) | `@fontsource/pretendard` |
+| Noto Sans KR Variable | Body/UI (Korean) | `@fontsource-variable/noto-sans-kr` |
+| Pretendard | Body (Latin-only) | `@fontsource/pretendard` |
 
 See the [Fonts guide](https://gyeonghokim.github.io/gyeongho-design-system/fonts/) on the website
 for the full rationale and weight/payload guidance.

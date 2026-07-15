@@ -93,15 +93,16 @@ function rnShadow(value) {
  * face is preferred for body/UI and display.
  *
  *   sketch → Gaegu  (hand-drawn Korean, also covers Latin)
- *   sans   → Pretendard (Korean sans, also covers Latin)
+ *   sans   → Noto Sans KR (Korean sans, also covers Latin; Pretendard fontsource
+ *            ships Latin only so cannot serve as the RN Korean face)
  *   mono   → Menlo  (iOS/Android system mono; Korean falls back to OS)
  *
  * If a stack is not in this map, the first quoted family name is extracted.
  */
 const RN_FONT_FAMILY_MAP = {
   "'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive": 'Gaegu',
-  "'Nunito Sans Variable', 'Pretendard', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif":
-    'Pretendard',
+  "'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif":
+    'NotoSansKR',
   "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace": 'Menlo',
 };
 

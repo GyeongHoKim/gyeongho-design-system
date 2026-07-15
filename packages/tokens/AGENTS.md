@@ -146,11 +146,20 @@ face and Korean text falls through to the Korean face in the same element — no
 needed.
 
 - **`ref.fontFamily.sketch`** (headings/titles): `'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive`
-- **`ref.fontFamily.sans`** (body/label/caption): `'Nunito Sans Variable', 'Pretendard', system-ui, …, 'Noto Sans KR', sans-serif`
+- **`ref.fontFamily.sans`** (body/label/caption): `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, …, sans-serif`
 - **`ref.fontFamily.mono`** (code): `ui-monospace, …, 'Noto Sans KR', monospace`
 
-A trailing `'Noto Sans KR'` is kept as the last Korean fallback so text still renders when the
-self-hosted Korean font is unavailable.
+> **Note:** `@fontsource/pretendard` ships Latin glyphs only (no Korean subset on Fontsource).
+> Noto Sans KR Variable (`@fontsource-variable/noto-sans-kr`) is the Korean body face. Pretendard
+> is kept in the stack for its Latin glyphs.
+
+| Face | fontsource package | Weights |
+| --- | --- | --- |
+| Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
+| Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
+| Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
+| Noto Sans KR Variable (body, Korean) | `@fontsource-variable/noto-sans-kr` | variable (100–900) |
+| Pretendard (body, Latin-only) | `@fontsource/pretendard` | 400 / 500 / 700 |
 
 ### Loading fonts is the consumer's responsibility
 
@@ -158,13 +167,6 @@ The token declares the **stack** (the preferred order). Loading the actual web-f
 by the consuming app via [Fontsource](https://fontsource.org/), not by the tokens package. This
 keeps the token package dependency-free and lets each app control its font payload. See the **Fonts**
 guide on the website for the exact `@fontsource/*` packages, weights, and import snippets.
-
-| Face | fontsource package | Weights |
-| --- | --- | --- |
-| Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
-| Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
-| Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
-| Pretendard (body, Korean) | `@fontsource/pretendard` | 400 / 500 / 700 (matches `ref.fontWeight`) |
 
 ### Adding or changing a font
 

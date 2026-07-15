@@ -1,4 +1,5 @@
 ---
+import CtaButton from '../../components/CtaButton.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { NAV } from '../../lib/nav';
 import { withBase } from '../../lib/withBase';
@@ -16,10 +17,14 @@ import { withBase } from '../../lib/withBase';
       source of truth to deliver the same hand-drawn style across React, Lit web components, and
       React Native. Explore the tokens, components, and patterns in the docs below.
     </p>
-    <p class="demo-row">
-      <a class="theme-toggle" href={withBase('/getting-started/')}>Get Started →</a>
-      <a class="theme-toggle" href={withBase('/components/')}>View Components</a>
-    </p>
+    <div class="demo-row cta-row">
+      <CtaButton href={withBase('/getting-started/')} variant="primary" client:only="react">
+        Get Started →
+      </CtaButton>
+      <CtaButton href={withBase('/components/')} variant="neutral" client:only="react">
+        View Components
+      </CtaButton>
+    </div>
   </section>
 
   <section class="section">
@@ -27,12 +32,18 @@ import { withBase } from '../../lib/withBase';
     <div class="card-grid">
       {
         NAV.map((item) => (
-          <a class="io-card" href={withBase(item.href)}>
-            <h3>{item.label}</h3>
-            <p>{item.summary}</p>
+          <a class="card-link" href={withBase(item.href)}>
+            <gh-card elevated>
+              <h3>{item.label.en}</h3>
+              <p>{item.summary.en}</p>
+            </gh-card>
           </a>
         ))
       }
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import '@ghds/web-components';
+</script>

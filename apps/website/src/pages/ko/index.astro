@@ -1,4 +1,5 @@
 ---
+import CtaButton from '../../components/CtaButton.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { NAV } from '../../lib/nav';
 import { withBase } from '../../lib/withBase';
@@ -16,10 +17,14 @@ import { withBase } from '../../lib/withBase';
       시스템으로, React, Lit 웹 컴포넌트, React Native에서 동일한 손그림 스타일을 제공해요.
       아래 문서에서 토큰, 컴포넌트, 패턴을 살펴보세요.
     </p>
-    <p class="demo-row">
-      <a class="theme-toggle" href={withBase('/getting-started/')}>시작하기 →</a>
-      <a class="theme-toggle" href={withBase('/components/')}>컴포넌트 보기</a>
-    </p>
+    <div class="demo-row cta-row">
+      <CtaButton href={withBase('/getting-started/')} variant="primary" client:only="react">
+        시작하기 →
+      </CtaButton>
+      <CtaButton href={withBase('/components/')} variant="neutral" client:only="react">
+        컴포넌트 보기
+      </CtaButton>
+    </div>
   </section>
 
   <section class="section">
@@ -27,12 +32,18 @@ import { withBase } from '../../lib/withBase';
     <div class="card-grid">
       {
         NAV.map((item) => (
-          <a class="io-card" href={withBase(item.href)}>
-            <h3>{item.label}</h3>
-            <p>{item.summary}</p>
+          <a class="card-link" href={withBase(item.href)}>
+            <gh-card elevated>
+              <h3>{item.label.ko}</h3>
+              <p>{item.summary.ko}</p>
+            </gh-card>
           </a>
         ))
       }
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import '@ghds/web-components';
+</script>
