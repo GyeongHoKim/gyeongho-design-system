@@ -15,6 +15,12 @@ export const NAV: readonly NavItem[] = [
     summary: 'Install GHDS and render your first component on screen.',
   },
   {
+    label: 'Fonts',
+    href: '/fonts/',
+    summary:
+      'Font-family stacks for English and Korean, the chosen typefaces, and how to load self-hosted web fonts via Fontsource.',
+  },
+  {
     label: 'Design Style',
     href: '/design-style/',
     summary:

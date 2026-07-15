@@ -1,5 +1,18 @@
 ---
 import '@ghds/tokens/css';
+// Self-hosted web fonts (Fontsource). The font-family stacks in @ghds/tokens
+// reference these faces by name; importing the CSS injects the @font-face rules
+// and bundles the woff2 files. Latin faces (Gochi Hand, Nunito Sans Variable)
+// render Latin glyphs; Korean faces (Gaegu, Pretendard) render Korean glyphs
+// via per-glyph fallback — no locale switching needed.
+//   sketch/display: Gochi Hand (Latin) + Gaegu (Korean)
+//   body/UI:        Nunito Sans Variable (Latin) + Pretendard (Korean)
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
 import '../styles/global.css';
 import { NAV } from '../lib/nav';
 import { withBase } from '../lib/withBase';

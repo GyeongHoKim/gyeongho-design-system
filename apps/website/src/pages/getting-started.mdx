@@ -26,6 +26,32 @@ variables. Import it once at your app's entry point.
 import '@ghds/tokens/css';
 ```
 
+## Load Fonts
+
+GHDS font-family stacks reference self-hosted web fonts (Gochi Hand, Gaegu, Nunito Sans Variable,
+Pretendard) for English **and** Korean. Install and import the Fontsource packages so the named
+faces in the stacks resolve to actual font files — otherwise they silently fall back to system
+fonts.
+
+```bash
+pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+```
+
+```ts
+import '@ghds/tokens/css';
+// Sketch / display
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+// Body / UI
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
+```
+
+See the [Fonts guide](../fonts/) for the full rationale, typeface choices, weight/payload guidance,
+and React Native notes.
+
 ## Using it in React
 
 ```tsx
