@@ -19,6 +19,7 @@
     "@fontsource/gaegu": "catalog:",
     "@fontsource/gochi-hand": "catalog:",
     "@fontsource/pretendard": "catalog:",
+    "@ghds/icons": "workspace:*",
     "@ghds/react": "workspace:*",
     "@ghds/tokens": "workspace:*"
   },
