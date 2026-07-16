@@ -38,7 +38,11 @@
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "biome check .",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "check-types": "tsc --noEmit -p tsconfig.build.json",
     "clean": "rm -rf dist .turbo"
   },
   "peerDependencies": {
@@ -56,7 +60,7 @@
     "@ghds/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.3.0",
-    "@types/node": "^24.0.0",
+    "@types/node": "catalog:",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "jsdom": "^26.0.0",
@@ -65,7 +69,7 @@
     "react-native": "^0.79.0",
     "react-native-svg": "^15.0.0",
     "react-native-web": "^0.20.0",
-    "typescript": "^6.0.0",
-    "vitest": "^3.0.0"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

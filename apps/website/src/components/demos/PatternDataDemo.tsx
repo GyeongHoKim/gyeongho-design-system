@@ -3,26 +3,21 @@ import { useState } from 'react';
 
 interface Product extends TableRow {
   name: string;
-  price: number;
+  price: string;
   stock: string;
 }
 
 const PRODUCTS: Product[] = [
-  { id: '1', name: 'Wireless Mouse', price: 29.99, stock: 'In stock' },
-  { id: '2', name: 'USB-C Hub', price: 49.99, stock: 'Low stock' },
-  { id: '3', name: 'Mechanical Keyboard', price: 89.99, stock: 'In stock' },
-  { id: '4', name: 'Webcam HD', price: 59.99, stock: 'Out of stock' },
-  { id: '5', name: 'Monitor Stand', price: 39.99, stock: 'In stock' },
+  { id: '1', name: 'Wireless Mouse', price: '$29.99', stock: 'In stock' },
+  { id: '2', name: 'USB-C Hub', price: '$49.99', stock: 'Low stock' },
+  { id: '3', name: 'Mechanical Keyboard', price: '$89.99', stock: 'In stock' },
+  { id: '4', name: 'Webcam HD', price: '$59.99', stock: 'Out of stock' },
+  { id: '5', name: 'Monitor Stand', price: '$39.99', stock: 'In stock' },
 ];
 
-const COLUMNS: TableColumn<Product>[] = [
+const COLUMNS: TableColumn[] = [
   { key: 'name', header: 'Name', sortable: true },
-  {
-    key: 'price',
-    header: 'Price',
-    sortable: true,
-    render: (row) => `$${row.price.toFixed(2)}`,
-  },
+  { key: 'price', header: 'Price', sortable: true },
   { key: 'stock', header: 'Stock', sortable: true },
 ];
 

@@ -1,2 +1,2 @@
-// The token stylesheet is a side-effect CSS import resolved by Vite at runtime.
+declare module '*.css';
 declare module '@ghds/tokens/css';

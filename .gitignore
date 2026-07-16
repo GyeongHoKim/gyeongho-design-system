@@ -35,3 +35,6 @@ storybook-static
 
 # Astro build / generated types
 .astro/
+
+# Codewhale local state
+.codewhale/state

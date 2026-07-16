@@ -38,13 +38,17 @@
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "biome check .",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "check-types": "tsc --noEmit -p tsconfig.build.json",
     "clean": "rm -rf dist .turbo"
   },
   "devDependencies": {
     "@ghds/tsconfig": "workspace:*",
-    "@types/node": "^24.0.0",
-    "typescript": "^6.0.0",
-    "vitest": "^3.0.0"
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

@@ -9,11 +9,11 @@
     "clean": "rm -rf storybook-static .turbo node_modules/.cache"
   },
   "dependencies": {
-    "@fontsource-variable/noto-sans-kr": "^5.2.10",
-    "@fontsource-variable/nunito-sans": "^5.2.7",
-    "@fontsource/gaegu": "^5.2.8",
-    "@fontsource/gochi-hand": "^5.2.8",
-    "@fontsource/pretendard": "^5.2.5",
+    "@fontsource-variable/noto-sans-kr": "catalog:",
+    "@fontsource-variable/nunito-sans": "catalog:",
+    "@fontsource/gaegu": "catalog:",
+    "@fontsource/gochi-hand": "catalog:",
+    "@fontsource/pretendard": "catalog:",
     "@ghds/react": "workspace:*",
     "@ghds/tokens": "workspace:*"
   },
@@ -22,11 +22,11 @@
     "@storybook/addon-docs": "^9.1.0",
     "@storybook/react-vite": "^9.1.0",
     "@vitejs/plugin-react": "^4.3.0",
-    "chromatic": "^17.8.0",
+    "chromatic": "catalog:",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "storybook": "^9.1.0",
-    "typescript": "^6.0.0",
+    "typescript": "catalog:",
     "vite": "^6.0.0"
   }
 }

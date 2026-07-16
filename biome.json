@@ -32,10 +32,14 @@
   },
   "linter": {
     "enabled": true,
+    "domains": {
+      "react": "recommended"
+    },
     "rules": {
       "preset": "recommended",
       "suspicious": {
-        "noConsole": "warn"
+        "noConsole": "warn",
+        "noExplicitAny": "error"
       }
     }
   },

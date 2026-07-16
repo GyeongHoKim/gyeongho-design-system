@@ -34,11 +34,9 @@ export default function PatternFeedbackDemo(): React.JSX.Element {
       </Button>
 
       <Toast
-        open={toast.open}
-        onClose={() => setToast((t) => ({ ...t, open: false }))}
         variant={toast.variant}
         title={toast.variant.charAt(0).toUpperCase() + toast.variant.slice(1)}
-        duration={0}
+        onDismiss={() => setToast((t) => ({ ...t, open: false }))}
       >
         This is a {toast.variant} toast message.
       </Toast>
