@@ -24,7 +24,7 @@ pnpm turbo run test --filter @ghds/react-native
 pnpm lint --filter @ghds/react-native
 
 # Storybook (lives under apps/)
-cd apps/storybook-native && pnpm dev
+cd apps/storybook-react-native && pnpm dev
 ```
 
 ---
