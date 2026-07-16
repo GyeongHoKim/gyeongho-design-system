@@ -1,5 +1,5 @@
 import type { GhSlider } from '@ghds/web-components';
-import { expect } from '@storybook/test';
+import { expect } from 'storybook/test';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

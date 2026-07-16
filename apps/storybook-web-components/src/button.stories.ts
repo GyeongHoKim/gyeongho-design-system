@@ -1,5 +1,5 @@
 import type { GhButtonVariant } from '@ghds/web-components';
-import { expect, fn, userEvent } from '@storybook/test';
+import { expect, fn, userEvent } from 'storybook/test';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

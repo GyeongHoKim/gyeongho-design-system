@@ -33,8 +33,10 @@ export const Interactive: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: 'Page 3' }));
-    await expect(canvas.getByRole('button', { name: 'Page 3' })).toHaveAttribute(
+    // With count=12/page=1 and the default siblingCount, only pages 1, 2, an
+    // ellipsis, and 12 render — page 3 isn't in the visible window.
+    await userEvent.click(canvas.getByRole('button', { name: 'Page 2' }));
+    await expect(canvas.getByRole('button', { name: 'Page 2' })).toHaveAttribute(
       'aria-current',
       'page',
     );
