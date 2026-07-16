@@ -22,20 +22,22 @@
     "provenance": true
   },
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsdown && tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "dev": "tsdown --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome lint .",
@@ -69,6 +71,7 @@
     "react-native": "^0.79.0",
     "react-native-svg": "^15.0.0",
     "react-native-web": "^0.20.0",
+    "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

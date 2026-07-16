@@ -424,6 +424,9 @@ importers:
       storybook:
         specifier: ^9.1.0
         version: 9.1.20(@testing-library/dom@10.4.1)(prettier@3.9.1)(vite@7.3.6(@types/node@24.13.2)(jiti@2.6.1)(terser@5.48.0)(yaml@2.9.0))
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.19.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.1)(typescript@7.0.2)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -482,6 +485,9 @@ importers:
       react-native-web:
         specifier: ^0.20.0
         version: 0.20.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.19.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.1)(typescript@7.0.2)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -497,6 +503,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.2
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.19.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.1)(typescript@7.0.2)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
@@ -551,6 +560,9 @@ importers:
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.19.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.1)(typescript@7.0.2)
       typescript:
         specifier: 'catalog:'
         version: 7.0.2
