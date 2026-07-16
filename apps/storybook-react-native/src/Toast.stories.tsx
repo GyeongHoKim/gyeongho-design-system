@@ -16,15 +16,14 @@ export const Default: Story = {
     return (
       <>
         <Button label="Show toast" onPress={() => setOpen(true)} />
-        <Toast
-          open={open}
-          onClose={() => setOpen(false)}
-          variant="success"
-          title="Saved"
-          duration={0}
-        >
-          Your changes have been saved.
-        </Toast>
+        {open && (
+          <Toast
+            variant="success"
+            title="Saved"
+            description="Your changes have been saved."
+            onDismiss={() => setOpen(false)}
+          />
+        )}
       </>
     );
   },

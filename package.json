@@ -4,6 +4,7 @@
   "description": "GH Design System — cross-platform component library and design tokens",
   "scripts": {
     "build": "turbo run build",
+    "build-storybook": "turbo run build-storybook",
     "test": "turbo run test",
     "test:storybook": "turbo run test-storybook",
     "dev": "turbo run dev",
