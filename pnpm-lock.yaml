@@ -27,9 +27,6 @@ catalogs:
     '@vitest/browser':
       specifier: ^3.0.0
       version: 3.2.7
-    chromatic:
-      specifier: ^17.8.0
-      version: 17.8.0
     http-server:
       specifier: ^14.1.1
       version: 14.1.1
@@ -144,9 +141,6 @@ importers:
       '@vitest/browser':
         specifier: 'catalog:'
         version: 3.2.7(playwright@1.61.1)(vite@6.4.3(@types/node@24.13.2)(jiti@2.6.1)(terser@5.48.0)(yaml@2.9.0))(vitest@3.2.6)
-      chromatic:
-        specifier: 'catalog:'
-        version: 17.8.0
       http-server:
         specifier: 'catalog:'
         version: 14.1.1
@@ -226,9 +220,6 @@ importers:
       '@vitest/browser':
         specifier: 'catalog:'
         version: 3.2.7(playwright@1.61.1)(vite@7.3.6(@types/node@24.13.2)(jiti@2.6.1)(terser@5.48.0)(yaml@2.9.0))(vitest@3.2.6)
-      chromatic:
-        specifier: 'catalog:'
-        version: 17.8.0
       http-server:
         specifier: 'catalog:'
         version: 14.1.1
@@ -329,9 +320,6 @@ importers:
       '@vitest/browser':
         specifier: 'catalog:'
         version: 3.2.7(playwright@1.61.1)(vite@6.4.3(@types/node@24.13.2)(jiti@2.6.1)(terser@5.48.0)(yaml@2.9.0))(vitest@3.2.6)
-      chromatic:
-        specifier: 'catalog:'
-        version: 17.8.0
       http-server:
         specifier: 'catalog:'
         version: 14.1.1
@@ -3603,22 +3591,6 @@ packages:
 
   chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
-
-  chromatic@17.8.0:
-    resolution: {integrity: sha512-xcn2TGdbrKHQbGAo3wZc5qoKaPe+CEvhAEcky9OCpofGd3DJucLFEYpk8wYgHKgR5XAI9X8Op1C6fWlvdjxE/g==}
-    engines: {node: '>=22.0.0'}
-    hasBin: true
-    peerDependencies:
-      '@chromatic-com/cypress': ^0.*.* || ^1.0.0
-      '@chromatic-com/playwright': ^0.*.* || ^1.0.0
-      '@chromatic-com/vitest': ^0.*.* || ^1.0.0
-    peerDependenciesMeta:
-      '@chromatic-com/cypress':
-        optional: true
-      '@chromatic-com/playwright':
-        optional: true
-      '@chromatic-com/vitest':
-        optional: true
 
   chrome-launcher@0.15.2:
     resolution: {integrity: sha512-zdLEwNo3aUVzIhKhTtXfxhdvZhUghrnmkvcAq2NoDd+LeOHKf03H5jwZ8T/STsAlzyALkBVK552iaG1fGf1xVQ==}
@@ -10862,10 +10834,6 @@ snapshots:
       readdirp: 5.0.0
 
   chownr@1.1.4: {}
-
-  chromatic@17.8.0:
-    dependencies:
-      semver: 7.8.5
 
   chrome-launcher@0.15.2:
     dependencies:

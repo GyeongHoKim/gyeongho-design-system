@@ -9,7 +9,6 @@ catalog:
   '@vitest/browser': ^3.0.0
   playwright: ^1.61.0
   '@types/node': ^24.0.0
-  chromatic: ^17.8.0
   reg-suit: ^0.14.5
   reg-publish-s3-plugin: ^0.14.4
   reg-keygen-git-hash-plugin: ^0.14.5

@@ -37,7 +37,6 @@
     "@storybook/web-components": "^9.1.0",
     "@storybook/web-components-vite": "^9.1.0",
     "@vitest/browser": "catalog:",
-    "chromatic": "catalog:",
     "http-server": "catalog:",
     "playwright": "catalog:",
     "reg-keygen-git-hash-plugin": "catalog:",

@@ -33,7 +33,6 @@
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitest/browser": "catalog:",
-    "chromatic": "catalog:",
     "http-server": "catalog:",
     "playwright": "catalog:",
     "react": "^19.1.0",
