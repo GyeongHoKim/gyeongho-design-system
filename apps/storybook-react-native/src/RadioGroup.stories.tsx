@@ -1,4 +1,5 @@
-import { Radio, RadioGroup } from '@ghds/react-native';
+import { Radio } from '@ghds/react-native/radio';
+import { RadioGroup } from '@ghds/react-native/radio-group';
 import type { Meta, StoryObj } from '@storybook/react';
 import { type ComponentProps, useState } from 'react';
 

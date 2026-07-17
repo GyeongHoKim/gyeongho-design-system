@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
+import { Tooltip } from '@ghds/react-native/tooltip';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Tooltip> = {

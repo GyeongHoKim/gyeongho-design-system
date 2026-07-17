@@ -1,4 +1,4 @@
-import { Pagination } from '@ghds/react-native';
+import { Pagination } from '@ghds/react-native/pagination';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 

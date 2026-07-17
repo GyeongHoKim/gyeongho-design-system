@@ -1,4 +1,5 @@
-import { Button, Toast } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
+import { Toast } from '@ghds/react-native/toast';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 

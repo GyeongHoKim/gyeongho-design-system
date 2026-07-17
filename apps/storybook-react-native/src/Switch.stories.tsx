@@ -1,4 +1,4 @@
-import { Switch } from '@ghds/react-native';
+import { Switch } from '@ghds/react-native/switch';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

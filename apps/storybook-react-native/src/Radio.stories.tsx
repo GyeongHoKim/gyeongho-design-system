@@ -1,4 +1,4 @@
-import { Radio } from '@ghds/react-native';
+import { Radio } from '@ghds/react-native/radio';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

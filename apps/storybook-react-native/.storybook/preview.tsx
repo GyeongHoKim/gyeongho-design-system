@@ -1,4 +1,4 @@
-import { darkTheme, lightTheme, ThemeProvider } from '@ghds/react-native';
+import { darkTheme, lightTheme, ThemeProvider } from '@ghds/react-native/theme';
 import type { Decorator, Preview } from '@storybook/react';
 import isChromatic from 'chromatic/isChromatic';
 import { View } from 'react-native';

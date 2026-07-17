@@ -1,4 +1,5 @@
-import { Box, Skeleton } from '@ghds/react-native';
+import { Skeleton } from '@ghds/react-native/skeleton';
+import { Box } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Skeleton> = {

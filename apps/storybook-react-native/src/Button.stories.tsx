@@ -1,4 +1,4 @@
-import { Button } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

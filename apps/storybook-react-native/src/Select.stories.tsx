@@ -1,4 +1,4 @@
-import { Select } from '@ghds/react-native';
+import { Select } from '@ghds/react-native/select';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

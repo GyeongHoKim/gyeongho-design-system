@@ -1,4 +1,4 @@
-import { Table, type TableColumn, type TableRow, type TableSort } from '@ghds/react-native';
+import { Table, type TableColumn, type TableRow, type TableSort } from '@ghds/react-native/table';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useMemo, useState } from 'react';
 

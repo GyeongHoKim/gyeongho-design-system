@@ -153,6 +153,9 @@ importers:
 
   apps/storybook-react-native:
     dependencies:
+      '@ghds/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@ghds/react-native':
         specifier: workspace:*
         version: link:../../packages/react-native

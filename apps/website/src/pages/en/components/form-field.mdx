@@ -145,7 +145,8 @@ React and Web Components render live below. React Native can't run in a browser 
 
 ```tsx
 // React Native
-import { FormField, Input } from '@ghds/react-native';
+import { FormField } from '@ghds/react-native/form-field';
+import { Input } from '@ghds/react-native/input';
 
 <FormField label="Email" error={emailError}>
   <Input value={email} onChangeText={setEmail} />

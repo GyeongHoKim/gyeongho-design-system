@@ -7,6 +7,7 @@ React Native component library for GHDS. All components consume design values fr
 
 - Components live in `src/components/`.
 - Use the `node-linker=hoisted` pnpm setting (configured in `.npmrc`) for React Native Metro bundler compatibility.
+- **No barrel export.** There is no `src/index.ts` and no `"."` entry in `package.json`'s `exports` — every component is its own subpath, kebab-case, matching the component's file name (`Button.tsx` → `@ghds/react-native/button`). `Box`/`Text`/`Theme`/`darkTheme`/`lightTheme`/`ThemeProvider` are grouped under a single `@ghds/react-native/theme` subpath since they're always consumed together. Adding a new component means adding a new `tsdown.config.ts` entry + a new `exports` map entry, not touching a shared barrel file.
 - Use TypeScript strict mode. All props must have explicit types.
 
 ---

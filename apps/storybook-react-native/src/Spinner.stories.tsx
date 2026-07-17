@@ -1,4 +1,5 @@
-import { Box, Spinner, type SpinnerSize } from '@ghds/react-native';
+import { Spinner, type SpinnerSize } from '@ghds/react-native/spinner';
+import { Box } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 

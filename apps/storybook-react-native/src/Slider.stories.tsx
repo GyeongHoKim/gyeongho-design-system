@@ -1,4 +1,4 @@
-import { Slider } from '@ghds/react-native';
+import { Slider } from '@ghds/react-native/slider';
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 

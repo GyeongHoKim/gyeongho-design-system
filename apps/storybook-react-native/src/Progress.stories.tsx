@@ -1,4 +1,5 @@
-import { Box, Progress } from '@ghds/react-native';
+import { Progress } from '@ghds/react-native/progress';
+import { Box } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 

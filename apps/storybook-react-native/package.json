@@ -17,6 +17,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@ghds/icons": "workspace:*",
     "@ghds/react-native": "workspace:*",
     "@shopify/restyle": "^2.4.5"
   },
