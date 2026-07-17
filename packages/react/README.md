@@ -17,7 +17,9 @@ pnpm add @ghds/react @ghds/tokens
 ## Usage
 
 ```tsx
-import { Button, Card, Input } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Card } from '@ghds/react/card';
+import { Input } from '@ghds/react/input';
 // Load the token CSS variables once at your app root (enables theming):
 import '@ghds/tokens/css';
 

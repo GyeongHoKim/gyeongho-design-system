@@ -20,8 +20,10 @@ properties**, which inherit through the Shadow DOM boundary. Load the token
 stylesheet once at the document level:
 
 ```ts
-import '@ghds/tokens/css';        // defines --sys-* / --comp-* custom properties
-import '@ghds/web-components';     // registers <gh-button>, <gh-card>, <gh-input>
+import '@ghds/tokens/css';              // defines --sys-* / --comp-* custom properties
+import '@ghds/web-components/button';   // registers <gh-button>
+import '@ghds/web-components/card';     // registers <gh-card>
+import '@ghds/web-components/input';    // registers <gh-input>
 ```
 
 ```html
