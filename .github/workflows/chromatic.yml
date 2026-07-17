@@ -36,7 +36,7 @@ jobs:
           - name: react-native
             workingDir: apps/storybook-react-native
             package: "@ghds/storybook-react-native"
-            buildScript: build
+            buildScript: build-storybook
             tokenSecret: CHROMATIC_PROJECT_TOKEN_REACT_NATIVE
     steps:
       - name: Checkout

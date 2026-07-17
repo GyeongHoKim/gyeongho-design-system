@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/checkbox-group';
+import '@ghds/web-components/checkbox';
 import { html } from 'lit';
 
 interface CheckboxGroupArgs {

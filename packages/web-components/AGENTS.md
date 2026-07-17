@@ -8,6 +8,7 @@ Framework-agnostic web components for GHDS, authored with [Lit](https://lit.dev/
 - Components live in `src/components/`.
 - Use Lit for component authoring.
 - Each component exports a custom element registered with a `gh-` prefix (e.g., `<gh-button>`).
+- **No barrel export.** There is no `src/index.ts` and no `"."` entry in `package.json`'s `exports` — every component is its own subpath, matching its kebab-case filename/tag name (`button.ts` / `<gh-button>` → `@ghds/web-components/button`). Consumers import exactly the elements they render, e.g. `import '@ghds/web-components/button';` — never a blanket `import '@ghds/web-components';`. Adding a new component means adding a new `tsdown.config.ts` entry + a new `exports` map entry, not touching a shared barrel file.
 - Use TypeScript strict mode. All public properties must have explicit types.
 
 ---

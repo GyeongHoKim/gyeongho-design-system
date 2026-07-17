@@ -32,3 +32,15 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      # Storybook interaction/a11y tests (@storybook/addon-vitest) run in a real
+      # browser via Playwright — install only the Chromium binary the 3 storybook
+      # apps' vitest.config.ts request, not the full Playwright browser matrix.
+      # `playwright` isn't a root devDependency (only the 3 storybook apps have
+      # it), so `pnpm exec` must be scoped to one of them to resolve the bin;
+      # the downloaded browser binary is cached globally and covers all three.
+      - name: Install Playwright Chromium
+        run: pnpm --filter @ghds/storybook-web-components exec playwright install --with-deps chromium
+
+      - name: Test Storybook
+        run: pnpm test:storybook

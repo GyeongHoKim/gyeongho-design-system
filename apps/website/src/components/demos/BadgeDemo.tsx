@@ -1,4 +1,4 @@
-import { Badge, type BadgeVariant } from '@ghds/react';
+import { Badge, type BadgeVariant } from '@ghds/react/badge';
 
 const VARIANTS: BadgeVariant[] = ['neutral', 'primary', 'success', 'warning', 'danger', 'info'];
 

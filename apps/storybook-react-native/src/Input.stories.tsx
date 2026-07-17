@@ -1,4 +1,4 @@
-import { Input } from '@ghds/react-native';
+import { Input } from '@ghds/react-native/input';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

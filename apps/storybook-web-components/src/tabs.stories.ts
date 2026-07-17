@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '@ghds/web-components';
-import type { GhTabItem } from '@ghds/web-components';
+import '@ghds/web-components/tabs';
+import type { GhTabItem } from '@ghds/web-components/tabs';
 
 const ITEMS: GhTabItem[] = [
   { value: 'overview', label: 'Overview', content: 'The overview panel.' },

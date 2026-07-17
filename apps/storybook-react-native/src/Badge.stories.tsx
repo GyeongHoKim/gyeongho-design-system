@@ -1,4 +1,5 @@
-import { Badge, type BadgeVariant, Box } from '@ghds/react-native';
+import { Badge, type BadgeVariant } from '@ghds/react-native/badge';
+import { Box } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 

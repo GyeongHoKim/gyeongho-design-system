@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/skeleton';
+import type { GhSkeletonVariant } from '@ghds/web-components/skeleton';
 import { html } from 'lit';
-import '@ghds/web-components';
-import type { GhSkeletonVariant } from '@ghds/web-components';
 
 interface SkeletonArgs {
   variant: GhSkeletonVariant;

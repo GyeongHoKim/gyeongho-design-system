@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '@ghds/web-components';
-import type { GhTableColumn, GhTableRow, GhTableSort } from '@ghds/web-components';
+import '@ghds/web-components/table';
+import type { GhTableColumn, GhTableRow, GhTableSort } from '@ghds/web-components/table';
 
 const COLUMNS: GhTableColumn[] = [
   { key: 'name', header: 'Name', sortable: true },

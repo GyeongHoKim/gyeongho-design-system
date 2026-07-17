@@ -116,7 +116,8 @@ import { withBase } from '../../../lib/withBase';
 
 ```tsx
 // React Native
-import { Modal, Text } from '@ghds/react-native';
+import { Modal } from '@ghds/react-native/modal';
+import { Text } from '@ghds/react-native/theme';
 
 const [open, setOpen] = useState(false);
 <Modal open={open} onClose={() => setOpen(false)} title="Delete item?">

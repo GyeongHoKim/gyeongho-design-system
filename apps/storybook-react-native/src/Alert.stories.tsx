@@ -1,4 +1,4 @@
-import { Alert, type AlertVariant } from '@ghds/react-native';
+import { Alert, type AlertVariant } from '@ghds/react-native/alert';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const VARIANTS: AlertVariant[] = ['info', 'success', 'warning', 'danger'];

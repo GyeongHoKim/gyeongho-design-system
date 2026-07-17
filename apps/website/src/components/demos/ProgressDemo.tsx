@@ -1,4 +1,4 @@
-import { Progress } from '@ghds/react';
+import { Progress } from '@ghds/react/progress';
 
 /** Live demo of determinate and indeterminate Progress (React). */
 export default function ProgressDemo(): React.JSX.Element {

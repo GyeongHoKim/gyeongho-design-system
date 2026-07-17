@@ -1,4 +1,5 @@
-import { Button, Toast } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
+import { Toast } from '@ghds/react-native/toast';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
@@ -16,15 +17,14 @@ export const Default: Story = {
     return (
       <>
         <Button label="Show toast" onPress={() => setOpen(true)} />
-        <Toast
-          open={open}
-          onClose={() => setOpen(false)}
-          variant="success"
-          title="Saved"
-          duration={0}
-        >
-          Your changes have been saved.
-        </Toast>
+        {open && (
+          <Toast
+            variant="success"
+            title="Saved"
+            description="Your changes have been saved."
+            onDismiss={() => setOpen(false)}
+          />
+        )}
       </>
     );
   },

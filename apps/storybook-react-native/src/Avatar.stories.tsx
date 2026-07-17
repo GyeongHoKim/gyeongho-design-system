@@ -1,4 +1,5 @@
-import { Avatar, type AvatarSize, Box } from '@ghds/react-native';
+import { Avatar, type AvatarSize } from '@ghds/react-native/avatar';
+import { Box } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 

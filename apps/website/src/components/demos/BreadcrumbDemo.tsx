@@ -1,4 +1,4 @@
-import { Breadcrumb } from '@ghds/react';
+import { Breadcrumb } from '@ghds/react/breadcrumb';
 
 /** Live demo of a three-level breadcrumb trail (React). */
 export default function BreadcrumbDemo(): React.JSX.Element {

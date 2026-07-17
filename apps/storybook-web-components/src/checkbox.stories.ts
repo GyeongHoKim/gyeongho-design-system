@@ -1,5 +1,6 @@
-import type { GhCheckbox } from '@ghds/web-components';
-import { expect, userEvent } from '@storybook/test';
+import { expect, userEvent } from 'storybook/test';
+import '@ghds/web-components/checkbox';
+import type { GhCheckbox } from '@ghds/web-components/checkbox';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

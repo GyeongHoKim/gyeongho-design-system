@@ -1,4 +1,4 @@
-import { Accordion } from '@ghds/react';
+import { Accordion } from '@ghds/react/accordion';
 
 /** Live Accordion demo, single-open (React). */
 export default function AccordionDemo(): React.JSX.Element {

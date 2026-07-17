@@ -1,4 +1,5 @@
-import { Card, Text } from '@ghds/react-native';
+import { Card } from '@ghds/react-native/card';
+import { Text } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from 'storybook/test';
 

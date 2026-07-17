@@ -1,4 +1,4 @@
-import { Pagination } from '@ghds/react';
+import { Pagination } from '@ghds/react/pagination';
 import { useState } from 'react';
 
 /** Live, interactive pagination demo (React). */

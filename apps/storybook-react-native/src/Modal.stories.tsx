@@ -1,4 +1,6 @@
-import { Button, Modal, Text } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
+import { Modal } from '@ghds/react-native/modal';
+import { Text } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 

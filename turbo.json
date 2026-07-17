@@ -14,13 +14,26 @@
       "dependsOn": ["build"],
       "cache": false
     },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^lint"]
+    },
+    "check": {
+    },
+    "check:fix": {
+    },
+    "format": {
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
     },
     "clean": {
       "cache": false

@@ -1,4 +1,5 @@
-import { Radio, RadioGroup } from '@ghds/react';
+import { Radio } from '@ghds/react/radio';
+import { RadioGroup } from '@ghds/react/radio-group';
 import { useState } from 'react';
 
 /** Live demo of Radio inside a RadioGroup, showing mutual exclusivity. */

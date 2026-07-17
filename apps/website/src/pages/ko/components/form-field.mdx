@@ -117,7 +117,8 @@ React와 Web Components가 아래에 라이브로 렌더돼요. React Native는 
 
 ```tsx
 // React Native
-import { FormField, Input } from '@ghds/react-native';
+import { FormField } from '@ghds/react-native/form-field';
+import { Input } from '@ghds/react-native/input';
 
 <FormField label="Email" error={emailError}>
   <Input value={email} onChangeText={setEmail} />

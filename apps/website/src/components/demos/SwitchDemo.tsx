@@ -1,4 +1,4 @@
-import { Switch } from '@ghds/react';
+import { Switch } from '@ghds/react/switch';
 import { useState } from 'react';
 
 /** Live demo of Switch's real state matrix: default, on, disabled. */

@@ -5,7 +5,7 @@
 <gh-pagination id="demo-pagination" count="12" page="3"></gh-pagination>
 
 <script>
-  import '@ghds/web-components';
+  import '@ghds/web-components/pagination';
   const el = document.getElementById('demo-pagination');
   el?.addEventListener('page-change', (e) => {
     (el as HTMLElement & { page: number }).page = (e as CustomEvent<number>).detail;

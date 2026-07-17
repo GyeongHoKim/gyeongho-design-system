@@ -1,4 +1,5 @@
-import { Checkbox, CheckboxGroup } from '@ghds/react-native';
+import { Checkbox } from '@ghds/react-native/checkbox';
+import { CheckboxGroup } from '@ghds/react-native/checkbox-group';
 import type { Meta, StoryObj } from '@storybook/react';
 import { type ComponentProps, useState } from 'react';
 

@@ -1,4 +1,4 @@
-import { Card } from '@ghds/react';
+import { Card } from '@ghds/react/card';
 
 /**
  * Live demo of Card's `fill` prop — React's variant. Note this is intentionally

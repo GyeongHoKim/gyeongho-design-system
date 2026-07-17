@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/radio-group';
+import '@ghds/web-components/radio';
 import { html } from 'lit';
 
 interface RadioGroupArgs {

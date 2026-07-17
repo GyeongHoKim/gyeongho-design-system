@@ -10,7 +10,8 @@
 </div>
 
 <script>
-  import '@ghds/web-components';
+  import '@ghds/web-components/button';
+  import '@ghds/web-components/toast';
   const btn = document.getElementById('demo-toast-btn');
   const toast = document.getElementById('demo-toast') as (HTMLElement & { open: boolean; duration: number }) | null;
   if (toast) toast.duration = 0;

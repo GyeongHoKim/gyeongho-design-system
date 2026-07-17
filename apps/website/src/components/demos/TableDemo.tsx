@@ -1,4 +1,4 @@
-import { Table, type TableRow, type TableSort } from '@ghds/react';
+import { Table, type TableRow, type TableSort } from '@ghds/react/table';
 import { useMemo, useState } from 'react';
 
 const DATA: TableRow[] = [

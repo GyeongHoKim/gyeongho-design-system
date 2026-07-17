@@ -27,7 +27,9 @@ Wrap your app in `ThemeProvider` and pass the light or dark theme object from
 ```tsx
 import { ThemeProvider } from '@shopify/restyle';
 import { lightTheme, darkTheme } from '@ghds/tokens/rn';
-import { Button, Card, Input } from '@ghds/react-native';
+import { Button } from '@ghds/react-native/button';
+import { Card } from '@ghds/react-native/card';
+import { Input } from '@ghds/react-native/input';
 
 export function App() {
   const colorScheme = useColorScheme(); // 'light' | 'dark'

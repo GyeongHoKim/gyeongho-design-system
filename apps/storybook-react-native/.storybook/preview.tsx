@@ -1,4 +1,4 @@
-import { darkTheme, lightTheme, ThemeProvider } from '@ghds/react-native';
+import { darkTheme, lightTheme, ThemeProvider } from '@ghds/react-native/theme';
 import type { Decorator, Preview } from '@storybook/react';
 import isChromatic from 'chromatic/isChromatic';
 import { View } from 'react-native';
@@ -32,6 +32,7 @@ const withTheme: Decorator = (Story, context) => {
 const preview: Preview = {
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
+    a11y: { test: 'error' },
   },
   globalTypes: {
     theme: {

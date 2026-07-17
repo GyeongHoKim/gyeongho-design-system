@@ -29,7 +29,7 @@ React and Web Components components read their values from CSS custom properties
 ```tsx
 // Incorrect — no token stylesheet imported anywhere; every token-driven value
 // (color, spacing, radius) falls back to unset
-import { Button } from '@ghds/react';
+import { Button } from '@ghds/react/button';
 
 function Page() {
   return <Button variant="primary">Save</Button>;
@@ -39,7 +39,7 @@ function Page() {
 ```tsx
 // Correct — import once, at the app's root/entry file
 import '@ghds/tokens/css';
-import { Button } from '@ghds/react';
+import { Button } from '@ghds/react/button';
 
 function Page() {
   return <Button variant="primary">Save</Button>;

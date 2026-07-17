@@ -1,4 +1,5 @@
-import { Accordion, type AccordionItem, Text } from '@ghds/react-native';
+import { Accordion, type AccordionItem } from '@ghds/react-native/accordion';
+import { Text } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const ITEMS: AccordionItem[] = [

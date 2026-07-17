@@ -1,4 +1,4 @@
-import { Menu } from '@ghds/react';
+import { Menu } from '@ghds/react/menu';
 
 /** Live Menu demo (React). */
 export default function MenuDemo(): React.JSX.Element {

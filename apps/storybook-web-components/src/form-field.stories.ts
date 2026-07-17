@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/form-field';
 import { html } from 'lit';
 
 interface FormFieldArgs {

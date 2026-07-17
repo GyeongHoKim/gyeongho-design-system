@@ -1,4 +1,6 @@
-import { FormField, Input, Textarea } from '@ghds/react-native';
+import { FormField } from '@ghds/react-native/form-field';
+import { Input } from '@ghds/react-native/input';
+import { Textarea } from '@ghds/react-native/textarea';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof FormField> = {

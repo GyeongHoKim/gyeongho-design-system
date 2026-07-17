@@ -10,7 +10,8 @@
 </div>
 
 <script>
-  import '@ghds/web-components';
+  import '@ghds/web-components/button';
+  import '@ghds/web-components/modal';
   const openBtn = document.getElementById('demo-modal-open');
   const modal = document.getElementById('demo-modal') as (HTMLElement & { open: boolean }) | null;
   openBtn?.addEventListener('click', () => {

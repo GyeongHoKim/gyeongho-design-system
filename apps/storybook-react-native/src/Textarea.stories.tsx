@@ -1,4 +1,4 @@
-import { Textarea } from '@ghds/react-native';
+import { Textarea } from '@ghds/react-native/textarea';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

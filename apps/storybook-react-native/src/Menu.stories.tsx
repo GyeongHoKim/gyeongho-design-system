@@ -1,4 +1,4 @@
-import { Menu, type MenuItem } from '@ghds/react-native';
+import { Menu, type MenuItem } from '@ghds/react-native/menu';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const ITEMS: MenuItem[] = [

@@ -8,7 +8,8 @@
 </div>
 
 <script>
-  import '@ghds/web-components';
+  import '@ghds/web-components/input';
+  import '@ghds/web-components/table';
 
   const products = [
     { id: '1', name: 'Wireless Mouse', price: '$29.99', stock: 'In stock' },
@@ -19,7 +20,7 @@
   ];
 
   const search = document.getElementById('data-search');
-  const table = /** @type {import('@ghds/web-components').GhTable} */ (
+  const table = /** @type {import('@ghds/web-components/table').GhTable} */ (
     document.getElementById('data-table')
   );
 

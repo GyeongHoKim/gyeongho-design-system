@@ -1,4 +1,4 @@
-import { Breadcrumb, type BreadcrumbItem } from '@ghds/react-native';
+import { Breadcrumb, type BreadcrumbItem } from '@ghds/react-native/breadcrumb';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const ITEMS: BreadcrumbItem[] = [

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/button';
+import '@ghds/web-components/toast';
 import { html } from 'lit';
-import '@ghds/web-components';
 
 const meta: Meta = {
   title: 'Components/Toast',

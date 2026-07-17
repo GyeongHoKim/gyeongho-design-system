@@ -176,7 +176,10 @@ same breakpoint values from `@ghds/tokens`.
 
 ```tsx
 // React Native — feedback
-import { Alert, Button, Modal, Toast } from '@ghds/react-native';
+import { Alert } from '@ghds/react-native/alert';
+import { Button } from '@ghds/react-native/button';
+import { Modal } from '@ghds/react-native/modal';
+import { Toast } from '@ghds/react-native/toast';
 
 // Transient success
 <Toast open={saved} onClose={() => setSaved(false)} variant="success" title="Saved" />;

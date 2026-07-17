@@ -1,4 +1,7 @@
-import { Button, FormField, Input, Select, SelectOption } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { FormField } from '@ghds/react/form-field';
+import { Input } from '@ghds/react/input';
+import { Select, SelectOption } from '@ghds/react/select';
 import { useState } from 'react';
 
 /** Live demo of form patterns — login form with validation. */

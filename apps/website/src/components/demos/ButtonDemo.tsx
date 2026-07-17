@@ -1,4 +1,4 @@
-import { Button } from '@ghds/react';
+import { Button } from '@ghds/react/button';
 
 /** Live demo of Button's real variant/state matrix, rendered as an Astro island. */
 export default function ButtonDemo(): React.JSX.Element {

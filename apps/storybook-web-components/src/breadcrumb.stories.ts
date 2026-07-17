@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '@ghds/web-components';
-import type { GhBreadcrumbItem } from '@ghds/web-components';
+import '@ghds/web-components/breadcrumb';
+import type { GhBreadcrumbItem } from '@ghds/web-components/breadcrumb';
 
 const ITEMS: GhBreadcrumbItem[] = [
   { label: 'Home', href: '/' },

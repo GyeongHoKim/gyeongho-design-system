@@ -1,4 +1,4 @@
-import { Slider } from '@ghds/react';
+import { Slider } from '@ghds/react/slider';
 import { useState } from 'react';
 
 /** Live demo of Slider's real state matrix: default, controlled, custom range, disabled. */

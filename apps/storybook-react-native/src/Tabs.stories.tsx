@@ -1,4 +1,5 @@
-import { type TabItem, Tabs, Text } from '@ghds/react-native';
+import { type TabItem, Tabs } from '@ghds/react-native/tabs';
+import { Text } from '@ghds/react-native/theme';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const ITEMS: TabItem[] = [
