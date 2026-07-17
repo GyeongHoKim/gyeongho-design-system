@@ -1,5 +1,35 @@
 # @ghds/tokens
 
+## 0.10.0
+
+### Minor Changes
+
+- 237ebd8: Add Korean font support to font-family stacks. Stacks now list Latin faces first, then Korean
+  counterparts, then system and generic fallbacks, so per-glyph fallback renders Latin text in the
+  Latin face and Korean text in the Korean face without locale switching.
+
+  - `ref.fontFamily.sketch`: `'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive` (Gaegu = hand-drawn Korean)
+  - `ref.fontFamily.sans`: `'Nunito Sans Variable', 'Pretendard', …, 'Noto Sans KR', sans-serif`
+  - `ref.fontFamily.mono`: appends `'Noto Sans KR'` fallback
+
+  The self-hosted web fonts (Gochi Hand, Gaegu, Nunito Sans Variable, Pretendard) are loaded by
+  consuming apps via Fontsource, not by the tokens package. See the Fonts guide on the website.
+
+### Patch Changes
+
+- 3d608b5: Add React Native font-family support. The RN build now automatically converts
+  CSS comma-separated font stacks to single family names that RN can consume:
+
+  - `ref.fontFamily.sketch` → `Gaegu` (Latin + Korean glyphs)
+  - `ref.fontFamily.sans` → `Pretendard` (Latin + Korean glyphs)
+  - `ref.fontFamily.mono` → `Menlo`
+
+  The chosen faces include both Latin and Korean glyphs so text renders correctly
+  in both languages without per-glyph fallback (which RN cannot do).
+
+  Document the expo-font loading workflow (config plugin + runtime useFonts) in
+  the react-native AGENTS.md and the website Fonts guide (EN + KO).
+
 ## 0.9.0
 
 ### Minor Changes
