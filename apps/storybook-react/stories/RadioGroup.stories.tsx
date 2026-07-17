@@ -1,4 +1,5 @@
-import { Radio, RadioGroup, type RadioGroupProps } from '@ghds/react';
+import { Radio } from '@ghds/react/radio';
+import { RadioGroup, type RadioGroupProps } from '@ghds/react/radio-group';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

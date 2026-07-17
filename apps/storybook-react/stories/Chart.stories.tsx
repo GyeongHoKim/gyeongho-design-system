@@ -1,4 +1,4 @@
-import { Chart, type ChartSeries } from '@ghds/react';
+import { Chart, type ChartSeries } from '@ghds/react/chart';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const SERIES: ChartSeries[] = [

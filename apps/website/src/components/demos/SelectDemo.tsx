@@ -1,4 +1,4 @@
-import { Select, SelectOption } from '@ghds/react';
+import { Select, SelectOption } from '@ghds/react/select';
 import { useState } from 'react';
 
 /** Live demo of Select's React variant, using children composition for options. */

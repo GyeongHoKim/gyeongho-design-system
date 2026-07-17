@@ -1,4 +1,5 @@
-import { Button, Toast, Toaster, type ToastVariant, toast } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Toast, Toaster, type ToastVariant, toast } from '@ghds/react/toast';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

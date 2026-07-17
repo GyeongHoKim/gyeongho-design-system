@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Tooltip } from '@ghds/react/tooltip';
 
 /** Live Tooltip demo (React) — hover or focus the button. */
 export default function TooltipDemo(): React.JSX.Element {

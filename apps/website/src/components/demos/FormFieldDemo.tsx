@@ -1,4 +1,5 @@
-import { FormField, Input } from '@ghds/react';
+import { FormField } from '@ghds/react/form-field';
+import { Input } from '@ghds/react/input';
 
 /** Live demo of FormField's real state matrix: default, helper text, error, both together. */
 export default function FormFieldDemo(): React.JSX.Element {

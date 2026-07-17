@@ -1,4 +1,4 @@
-import { Tabs } from '@ghds/react';
+import { Tabs } from '@ghds/react/tabs';
 
 /** Live Tabs demo with keyboard-navigable tabs (React). */
 export default function TabsDemo(): React.JSX.Element {

@@ -1,4 +1,5 @@
-import { Button, ButtonGroup } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { ButtonGroup } from '@ghds/react/button-group';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

@@ -1,4 +1,4 @@
-import { Spinner, type SpinnerSize } from '@ghds/react';
+import { Spinner, type SpinnerSize } from '@ghds/react/spinner';
 
 const SIZES: SpinnerSize[] = ['sm', 'md', 'lg'];
 

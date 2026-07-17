@@ -1,4 +1,4 @@
-import { ToggleGroup, type ToggleGroupItem } from '@ghds/react';
+import { ToggleGroup, type ToggleGroupItem } from '@ghds/react/toggle-group';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const ITEMS: ToggleGroupItem[] = [

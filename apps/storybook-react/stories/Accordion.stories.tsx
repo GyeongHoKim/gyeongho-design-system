@@ -1,4 +1,4 @@
-import { Accordion, type AccordionItem } from '@ghds/react';
+import { Accordion, type AccordionItem } from '@ghds/react/accordion';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

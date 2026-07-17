@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Tooltip } from '@ghds/react/tooltip';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

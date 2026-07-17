@@ -1,4 +1,4 @@
-import { DatePicker } from '@ghds/react';
+import { DatePicker } from '@ghds/react/date-picker';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

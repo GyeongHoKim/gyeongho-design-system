@@ -1,4 +1,4 @@
-import { Avatar, type AvatarSize } from '@ghds/react';
+import { Avatar, type AvatarSize } from '@ghds/react/avatar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 

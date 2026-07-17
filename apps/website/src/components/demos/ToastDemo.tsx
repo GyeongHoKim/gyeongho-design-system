@@ -1,4 +1,5 @@
-import { Button, Toaster, toast } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Toaster, toast } from '@ghds/react/toast';
 
 /** Live Toast demo (React) — imperative `toast()` API + a `Toaster` viewport. */
 export default function ToastDemo(): React.JSX.Element {

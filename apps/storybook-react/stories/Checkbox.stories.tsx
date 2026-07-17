@@ -1,4 +1,4 @@
-import { Checkbox } from '@ghds/react';
+import { Checkbox } from '@ghds/react/checkbox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

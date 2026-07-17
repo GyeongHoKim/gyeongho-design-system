@@ -1,4 +1,4 @@
-import { Button } from '@ghds/react';
+import { Button } from '@ghds/react/button';
 import type { ReactNode } from 'react';
 
 interface CtaButtonProps {

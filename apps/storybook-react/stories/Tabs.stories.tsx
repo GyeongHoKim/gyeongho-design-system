@@ -1,4 +1,4 @@
-import { type TabItem, Tabs } from '@ghds/react';
+import { type TabItem, Tabs } from '@ghds/react/tabs';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

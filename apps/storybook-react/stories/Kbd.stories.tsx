@@ -1,4 +1,4 @@
-import { Kbd } from '@ghds/react';
+import { Kbd } from '@ghds/react/kbd';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

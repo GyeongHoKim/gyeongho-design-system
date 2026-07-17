@@ -1,4 +1,4 @@
-import { Slider } from '@ghds/react';
+import { Slider } from '@ghds/react/slider';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

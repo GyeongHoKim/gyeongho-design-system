@@ -1,4 +1,4 @@
-import { Input } from '@ghds/react';
+import { Input } from '@ghds/react/input';
 import { type ChangeEvent, useState } from 'react';
 
 /**

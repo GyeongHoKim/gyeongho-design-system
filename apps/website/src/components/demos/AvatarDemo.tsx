@@ -1,4 +1,4 @@
-import { Avatar, type AvatarSize } from '@ghds/react';
+import { Avatar, type AvatarSize } from '@ghds/react/avatar';
 
 const SIZES: AvatarSize[] = ['sm', 'md', 'lg'];
 

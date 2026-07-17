@@ -1,4 +1,4 @@
-import { NavigationMenu, type NavigationMenuItem } from '@ghds/react';
+import { NavigationMenu, type NavigationMenuItem } from '@ghds/react/navigation-menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const ITEMS: NavigationMenuItem[] = [

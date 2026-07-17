@@ -1,4 +1,5 @@
-import { Button, Modal } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Modal } from '@ghds/react/modal';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';

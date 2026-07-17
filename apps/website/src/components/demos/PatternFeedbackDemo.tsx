@@ -1,4 +1,7 @@
-import { Alert, Button, Modal, Toast, type ToastVariant } from '@ghds/react';
+import { Alert } from '@ghds/react/alert';
+import { Button } from '@ghds/react/button';
+import { Modal } from '@ghds/react/modal';
+import { Toast, type ToastVariant } from '@ghds/react/toast';
 import { useState } from 'react';
 
 const VARIANTS: ToastVariant[] = ['success', 'danger', 'warning', 'info'];

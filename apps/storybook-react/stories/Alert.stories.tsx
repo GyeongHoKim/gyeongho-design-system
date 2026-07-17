@@ -1,4 +1,4 @@
-import { Alert, type AlertVariant } from '@ghds/react';
+import { Alert, type AlertVariant } from '@ghds/react/alert';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const VARIANTS: AlertVariant[] = ['info', 'success', 'warning', 'danger'];

@@ -1,4 +1,5 @@
-import { Button, HoverCard } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { HoverCard } from '@ghds/react/hover-card';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

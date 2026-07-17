@@ -1,4 +1,5 @@
-import { Icon, Toggle } from '@ghds/react';
+import { Icon } from '@ghds/react/icon';
+import { Toggle } from '@ghds/react/toggle';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

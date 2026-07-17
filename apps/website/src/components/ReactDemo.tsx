@@ -1,4 +1,6 @@
-import { Button, Card, Input } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Card } from '@ghds/react/card';
+import { Input } from '@ghds/react/input';
 import { type ChangeEvent, useState } from 'react';
 
 /**

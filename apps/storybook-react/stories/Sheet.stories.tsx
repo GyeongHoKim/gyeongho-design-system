@@ -1,4 +1,5 @@
-import { Button, Sheet, type SheetSide } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Sheet, type SheetSide } from '@ghds/react/sheet';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

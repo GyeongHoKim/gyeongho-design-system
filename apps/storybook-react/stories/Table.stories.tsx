@@ -1,4 +1,4 @@
-import { Table, type TableColumn, type TableRow, type TableSort } from '@ghds/react';
+import { Table, type TableColumn, type TableRow, type TableSort } from '@ghds/react/table';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useMemo, useState } from 'react';
 

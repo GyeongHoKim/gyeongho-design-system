@@ -1,4 +1,4 @@
-import { Label } from '@ghds/react';
+import { Label } from '@ghds/react/label';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

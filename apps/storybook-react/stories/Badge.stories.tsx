@@ -1,4 +1,4 @@
-import { Badge, type BadgeVariant } from '@ghds/react';
+import { Badge, type BadgeVariant } from '@ghds/react/badge';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 

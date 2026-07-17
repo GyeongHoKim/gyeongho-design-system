@@ -1,4 +1,5 @@
-import { FormField, Textarea } from '@ghds/react';
+import { FormField } from '@ghds/react/form-field';
+import { Textarea } from '@ghds/react/textarea';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

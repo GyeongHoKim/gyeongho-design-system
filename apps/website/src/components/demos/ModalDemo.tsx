@@ -1,4 +1,5 @@
-import { Button, Modal } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Modal } from '@ghds/react/modal';
 import { useState } from 'react';
 
 /** Live Modal demo (React). */

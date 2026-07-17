@@ -1,4 +1,4 @@
-import { Progress } from '@ghds/react';
+import { Progress } from '@ghds/react/progress';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 

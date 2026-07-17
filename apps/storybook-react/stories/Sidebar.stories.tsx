@@ -1,4 +1,4 @@
-import { Sidebar, type SidebarSection } from '@ghds/react';
+import { Sidebar, type SidebarSection } from '@ghds/react/sidebar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

@@ -1,4 +1,6 @@
-import { Input, Spinner, Table, type TableColumn, type TableRow } from '@ghds/react';
+import { Input } from '@ghds/react/input';
+import { Spinner } from '@ghds/react/spinner';
+import { Table, type TableColumn, type TableRow } from '@ghds/react/table';
 import { useState } from 'react';
 
 interface Product extends TableRow {

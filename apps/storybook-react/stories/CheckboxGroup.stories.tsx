@@ -1,4 +1,5 @@
-import { Checkbox, CheckboxGroup, type CheckboxGroupProps } from '@ghds/react';
+import { Checkbox } from '@ghds/react/checkbox';
+import { CheckboxGroup, type CheckboxGroupProps } from '@ghds/react/checkbox-group';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

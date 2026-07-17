@@ -1,4 +1,4 @@
-import { Separator } from '@ghds/react';
+import { Separator } from '@ghds/react/separator';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

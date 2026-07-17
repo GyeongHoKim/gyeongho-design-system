@@ -1,4 +1,4 @@
-import { ContextMenu, type ContextMenuItem } from '@ghds/react';
+import { ContextMenu, type ContextMenuItem } from '@ghds/react/context-menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const ITEMS: ContextMenuItem[] = [

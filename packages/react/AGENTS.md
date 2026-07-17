@@ -8,6 +8,7 @@ React component library for GHDS. All components consume design values from `@gh
 - Components live in `src/components/`.
 - Each component has a co-located test file (`ComponentName.test.tsx`).
 - Storybook stories live in `apps/storybook-react/stories/` (not colocated with `src/`) — same convention as `@ghds/react-native` and `@ghds/web-components`. Import the component from `@ghds/react`, not a relative path.
+- **No barrel export.** There is no `src/index.ts` and no `"."` entry in `package.json`'s `exports` — every component is its own subpath, kebab-case, matching the component's file name (`Button.tsx` → `@ghds/react/button`, `AlertDialog.tsx` → `@ghds/react/alert-dialog`). Adding a new component means adding a new `tsdown.config.ts` entry + a new `exports` map entry, not touching a shared barrel file.
 - Use TypeScript strict mode. All props must have explicit types.
 
 ---

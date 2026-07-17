@@ -1,5 +1,5 @@
 import { iconNames } from '@ghds/icons';
-import { Icon } from '@ghds/react';
+import { Icon } from '@ghds/react/icon';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

@@ -1,4 +1,4 @@
-import { Checkbox } from '@ghds/react';
+import { Checkbox } from '@ghds/react/checkbox';
 import { useState } from 'react';
 
 /** Live demo of Checkbox's real state matrix: default, indeterminate, disabled. */

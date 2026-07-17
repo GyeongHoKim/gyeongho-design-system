@@ -1,4 +1,4 @@
-import { Skeleton } from '@ghds/react';
+import { Skeleton } from '@ghds/react/skeleton';
 
 /** Live demo: a card-shaped placeholder cluster (React). */
 export default function SkeletonDemo(): React.JSX.Element {

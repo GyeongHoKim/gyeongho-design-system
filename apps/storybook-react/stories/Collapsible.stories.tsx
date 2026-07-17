@@ -1,4 +1,4 @@
-import { Collapsible } from '@ghds/react';
+import { Collapsible } from '@ghds/react/collapsible';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

@@ -1,4 +1,5 @@
-import { Button, Popover } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Popover } from '@ghds/react/popover';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

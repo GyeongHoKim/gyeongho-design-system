@@ -1,4 +1,4 @@
-import { Combobox, type ComboboxOption } from '@ghds/react';
+import { Combobox, type ComboboxOption } from '@ghds/react/combobox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const OPTIONS: ComboboxOption[] = [

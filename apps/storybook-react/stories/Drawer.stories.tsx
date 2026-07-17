@@ -1,4 +1,5 @@
-import { Button, Drawer } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Drawer } from '@ghds/react/drawer';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

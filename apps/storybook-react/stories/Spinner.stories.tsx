@@ -1,4 +1,4 @@
-import { Spinner, type SpinnerSize } from '@ghds/react';
+import { Spinner, type SpinnerSize } from '@ghds/react/spinner';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 

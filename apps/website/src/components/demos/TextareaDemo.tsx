@@ -1,4 +1,4 @@
-import { Textarea } from '@ghds/react';
+import { Textarea } from '@ghds/react/textarea';
 import { type ChangeEvent, useState } from 'react';
 
 /**

@@ -1,4 +1,5 @@
-import { FormField, Input } from '@ghds/react';
+import { FormField } from '@ghds/react/form-field';
+import { Input } from '@ghds/react/input';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

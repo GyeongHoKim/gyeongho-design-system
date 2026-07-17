@@ -1,4 +1,4 @@
-import { Button } from '@ghds/react';
+import { Button } from '@ghds/react/button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 

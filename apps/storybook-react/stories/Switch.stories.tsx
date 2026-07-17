@@ -1,4 +1,4 @@
-import { Switch } from '@ghds/react';
+import { Switch } from '@ghds/react/switch';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

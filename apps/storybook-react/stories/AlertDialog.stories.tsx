@@ -1,4 +1,5 @@
-import { AlertDialog, Button } from '@ghds/react';
+import { AlertDialog } from '@ghds/react/alert-dialog';
+import { Button } from '@ghds/react/button';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

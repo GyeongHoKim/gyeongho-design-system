@@ -1,4 +1,4 @@
-import { Breadcrumb } from '@ghds/react';
+import { Breadcrumb } from '@ghds/react/breadcrumb';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 

@@ -1,4 +1,4 @@
-import { Select, SelectOption } from '@ghds/react';
+import { Select, SelectOption } from '@ghds/react/select';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

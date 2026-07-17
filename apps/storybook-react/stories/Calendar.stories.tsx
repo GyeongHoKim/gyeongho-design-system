@@ -1,4 +1,4 @@
-import { Calendar } from '@ghds/react';
+import { Calendar } from '@ghds/react/calendar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

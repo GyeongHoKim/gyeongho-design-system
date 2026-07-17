@@ -1,4 +1,4 @@
-import { Skeleton } from '@ghds/react';
+import { Skeleton } from '@ghds/react/skeleton';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

@@ -1,4 +1,5 @@
-import { Button, Command, CommandDialog, type CommandGroup } from '@ghds/react';
+import { Button } from '@ghds/react/button';
+import { Command, CommandDialog, type CommandGroup } from '@ghds/react/command';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 

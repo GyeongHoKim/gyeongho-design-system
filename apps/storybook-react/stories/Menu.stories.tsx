@@ -1,4 +1,4 @@
-import { Menu, type MenuItem } from '@ghds/react';
+import { Menu, type MenuItem } from '@ghds/react/menu';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

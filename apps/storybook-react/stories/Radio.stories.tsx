@@ -1,4 +1,4 @@
-import { Radio } from '@ghds/react';
+import { Radio } from '@ghds/react/radio';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 

@@ -1,4 +1,4 @@
-import { Menubar, type MenubarMenu } from '@ghds/react';
+import { Menubar, type MenubarMenu } from '@ghds/react/menubar';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const MENUS: MenubarMenu[] = [
