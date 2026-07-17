@@ -33,6 +33,9 @@ dist/
 # Storybook build output
 storybook-static
 
+# reg-suit working dir (captured screenshots, diff reports)
+.reg
+
 # Astro build / generated types
 .astro/
 
