@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/alert';
+import type { GhAlertVariant } from '@ghds/web-components/alert';
 import { html } from 'lit';
-import '@ghds/web-components';
-import type { GhAlertVariant } from '@ghds/web-components';
 
 const VARIANTS: GhAlertVariant[] = ['info', 'success', 'warning', 'danger'];
 

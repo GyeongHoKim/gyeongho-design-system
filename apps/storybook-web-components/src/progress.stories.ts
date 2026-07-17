@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/progress';
 import { html } from 'lit';
-import '@ghds/web-components';
 
 interface ProgressArgs {
   value?: number;

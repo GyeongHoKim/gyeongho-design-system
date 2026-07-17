@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/badge';
+import type { GhBadgeVariant } from '@ghds/web-components/badge';
 import { html } from 'lit';
-import '@ghds/web-components';
-import type { GhBadgeVariant } from '@ghds/web-components';
 
 const VARIANTS: GhBadgeVariant[] = ['neutral', 'primary', 'success', 'warning', 'danger', 'info'];
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/avatar';
+import type { GhAvatarSize } from '@ghds/web-components/avatar';
 import { html } from 'lit';
-import '@ghds/web-components';
-import type { GhAvatarSize } from '@ghds/web-components';
 
 const SIZES: GhAvatarSize[] = ['sm', 'md', 'lg'];
 

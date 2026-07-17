@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '@ghds/web-components';
-import type { GhMenuItem } from '@ghds/web-components';
+import '@ghds/web-components/menu';
+import type { GhMenuItem } from '@ghds/web-components/menu';
 
 const ITEMS: GhMenuItem[] = [
   { value: 'edit', label: 'Edit' },

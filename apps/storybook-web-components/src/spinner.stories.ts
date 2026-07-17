@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import '@ghds/web-components/spinner';
+import type { GhSpinnerSize } from '@ghds/web-components/spinner';
 import { html } from 'lit';
-import '@ghds/web-components';
-import type { GhSpinnerSize } from '@ghds/web-components';
 
 const SIZES: GhSpinnerSize[] = ['sm', 'md', 'lg'];
 

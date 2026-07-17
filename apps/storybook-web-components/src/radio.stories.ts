@@ -1,5 +1,6 @@
-import type { GhRadio } from '@ghds/web-components';
 import { expect, userEvent } from 'storybook/test';
+import '@ghds/web-components/radio';
+import type { GhRadio } from '@ghds/web-components/radio';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

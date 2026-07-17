@@ -1,5 +1,6 @@
-import type { GhTextarea } from '@ghds/web-components';
 import { expect, userEvent } from 'storybook/test';
+import '@ghds/web-components/textarea';
+import type { GhTextarea } from '@ghds/web-components/textarea';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

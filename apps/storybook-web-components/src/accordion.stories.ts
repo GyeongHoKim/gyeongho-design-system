@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import '@ghds/web-components';
-import type { GhAccordionItemData } from '@ghds/web-components';
+import '@ghds/web-components/accordion';
+import type { GhAccordionItemData } from '@ghds/web-components/accordion';
 
 const ITEMS: GhAccordionItemData[] = [
   { value: 'shipping', label: 'Shipping', content: 'Ships in 2–3 business days.' },

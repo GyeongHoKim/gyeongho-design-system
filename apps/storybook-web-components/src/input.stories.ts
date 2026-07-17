@@ -1,5 +1,6 @@
-import type { GhInput, GhInputType } from '@ghds/web-components';
 import { expect, userEvent } from 'storybook/test';
+import '@ghds/web-components/input';
+import type { GhInput, GhInputType } from '@ghds/web-components/input';
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { html } from 'lit';
 

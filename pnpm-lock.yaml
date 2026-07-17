@@ -241,6 +241,9 @@ importers:
       '@fontsource/pretendard':
         specifier: 'catalog:'
         version: 5.2.5
+      '@ghds/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@ghds/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens

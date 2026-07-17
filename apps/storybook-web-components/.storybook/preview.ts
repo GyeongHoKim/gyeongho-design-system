@@ -7,7 +7,6 @@ import '@fontsource-variable/noto-sans-kr/wght.css';
 import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
-import '@ghds/web-components';
 import type { Preview } from '@storybook/web-components';
 import isChromatic from 'chromatic/isChromatic';
 
