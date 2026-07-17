@@ -1,0 +1,89 @@
+name: Visual Regression (reg-suit)
+
+# Self-hosted visual regression for the three Storybooks, replacing Chromatic's
+# free-tier snapshot quota with our own S3 bucket (GHD-20 follow-up).
+#
+# Unlike Chromatic, reg-suit's CLI always exits 0 regardless of diff results —
+# there is no hosted "Accept changes" UI to gate merges. So this workflow never
+# fails the job on its own; reg-notify-github-with-api-plugin posts a PR comment
+# summarizing the diff (via `reg-suit run`, no third-party GitHub App involved —
+# just GITHUB_TOKEN) and the actual gate is required PR review approval (branch
+# protection). A reviewer who sees a nonzero changed count in the comment should
+# look at the component diff themselves before approving.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: reg-suit-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  visual-regression:
+    name: reg-suit (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: react
+            workingDir: apps/storybook-react
+            package: storybook-react
+          - name: web-components
+            workingDir: apps/storybook-web-components
+            package: "@ghds/storybook-web-components"
+          - name: react-native
+            workingDir: apps/storybook-react-native
+            package: "@ghds/storybook-react-native"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # reg-keygen-git-hash-plugin walks git history to find the baseline commit.
+          fetch-depth: 0
+
+      # actions/checkout leaves a detached HEAD. reg-keygen-git-hash-plugin reads the
+      # current branch name straight off git (no override option, unlike the notify
+      # plugin's `ref` config) to compute its own snapshot key — on detached HEAD that
+      # throws and reg-suit exits 1. Materialize a real local branch pointing at the
+      # checked-out commit so `git branch --show-current` resolves.
+      - name: Ensure a real branch (reg-keygen-git-hash-plugin needs non-detached HEAD)
+        run: git checkout -B "${{ github.head_ref || github.ref_name }}"
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup
+
+      # Build the workspace libraries first so the Storybooks can resolve the
+      # internal @ghds/* packages (their gitignored dist is not committed, and
+      # the setup action only installs). `pnpm build` runs the full turbo graph.
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build Storybook
+        run: pnpm --filter '${{ matrix.package }}' run build-storybook
+
+      - name: Assume AWS role (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::783519752414:role/ghds-reg-suit-s3-policy
+          aws-region: ap-northeast-2
+
+      - name: Capture screenshots
+        working-directory: ${{ matrix.workingDir }}
+        run: pnpm run vrt:capture
+
+      - name: Run reg-suit (sync-expected, compare, publish, notify)
+        working-directory: ${{ matrix.workingDir }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          # actions/checkout leaves a detached HEAD on pull_request events, so
+          # reg-notify-github-with-api-plugin can't read the branch off git HEAD
+          # itself — it needs an explicit refs/heads/<branch> ref.
+          GHDS_REG_SUIT_REF: refs/heads/${{ github.head_ref || github.ref_name }}
+        run: pnpm run vrt

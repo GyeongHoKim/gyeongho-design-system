@@ -64,7 +64,7 @@ Every change must satisfy the five non-negotiable rules in
 2. **Respect the tier boundaries** — components reference only `sys`/`comp`,
    never `ref`. `comp → sys → ref`, one direction, no cycles.
 3. **TypeScript strict, no `any`** — all public props/APIs explicitly typed.
-4. **Tests and lint pass** — `pnpm test` and `pnpm lint` are green.
+4. **Tests, lint, and formatting pass** — `pnpm test` and `pnpm check` are green.
 5. **Accessibility** — color/background pairings meet WCAG 2.1 AA (validated in
    the tokens package).
 

@@ -1,0 +1,29 @@
+{
+  "core": {
+    "workingDir": ".reg",
+    "actualDir": ".reg/images",
+    "thresholdRate": 0.05,
+    "matchingThreshold": 0.1,
+    "enableAntialias": true,
+    "ximgdiff": {
+      "invocationType": "client"
+    }
+  },
+  "plugins": {
+    "reg-keygen-git-hash-plugin": {},
+    "reg-publish-s3-plugin": {
+      "bucketName": "ghds-visual-regression",
+      "enableACL": false,
+      "pathPrefix": "react",
+      "customDomain": "d2ov52kp64xr0h.cloudfront.net"
+    },
+    "reg-notify-github-with-api-plugin": {
+      "owner": "GyeongHoKim",
+      "repository": "gyeongho-design-system",
+      "privateToken": "${GITHUB_TOKEN}",
+      "ref": "${GHDS_REG_SUIT_REF}",
+      "shortDescription": true,
+      "markerComment": "reg-comment-react"
+    }
+  }
+}

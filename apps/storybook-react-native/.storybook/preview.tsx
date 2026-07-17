@@ -1,15 +1,19 @@
 import { darkTheme, lightTheme, ThemeProvider } from '@ghds/react-native/theme';
 import type { Decorator, Preview } from '@storybook/react';
-import isChromatic from 'chromatic/isChromatic';
 import { View } from 'react-native';
 
-// GHD-45: pin the sketch PRNG seed under Chromatic so the hand-drawn geometry is
+// storycap exposes `window.emitCapture` on pages it drives — this is the same
+// check `storycap`'s own `isScreenshot()` does. Inlined rather than imported:
+// the `storycap` package barrel also exports `withScreenshot`, which pulls in
+// a `@storybook/preview-api` version that conflicts with Storybook 9's build.
+const isStorycap = (): boolean =>
+  typeof window !== 'undefined' && !!(window as unknown as Record<string, unknown>).emitCapture;
+
+// GHD-45: pin the sketch PRNG seed under storycap so the hand-drawn geometry is
 // byte-deterministic across snapshot runs — otherwise every run re-rolls the
-// random seed and reports a false visual diff. `isChromatic()` checks both the
-// user agent and the `chromatic=true` URL param — the URL param is the reliable
-// signal for React Native (web) Storybook, where the UA may not carry
-// "Chromatic". Key mirrors `DETERMINISTIC_SEED_GLOBAL` in @ghds/sketch-core.
-if (isChromatic()) {
+// random seed and reports a false visual diff. Key mirrors
+// `DETERMINISTIC_SEED_GLOBAL` in @ghds/sketch-core; dev stays random.
+if (isStorycap()) {
   (globalThis as Record<string, unknown>).__GHDS_SKETCH_SEED__ = 0x5eed;
 }
 
