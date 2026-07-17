@@ -1,0 +1,87 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: 접근성 가이드
+description: GHDS로 빌드하기 위한 키보드 상호작용, 포커스 관리, ARIA 패턴, 테스트 체크리스트.
+---
+
+import KeyboardTable from '../../components/KeyboardTable.astro';
+import { withBase } from '../../lib/withBase';
+
+이 문서는 GHDS로 접근 가능한 화면을 구축하기 위한 참조 문서예요 — 프로젝트의 전반적인
+접근성 약속과 자동 색상 대비 검증 작동 방식은
+<a href={withBase('/about/')}>소개 &amp; 접근성</a>을 참고하세요.
+
+## 키보드 상호작용
+
+대부분의 컴포넌트(`Button`, `Card`, `Input`, `Alert`, `Badge`, `Avatar`, `Spinner`,
+`Progress`, `Skeleton`, `Table`)는 네이티브 브라우저 키보드 처리에 전적으로 의존해요 —
+커스텀 `onKeyDown`이나 `tabIndex` 로직이 없어요. 오버레이 컴포넌트는 닫기와 탐색을 위해
+자체 바인딩을 추가해요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', action: '문서 순서상 다음 포커스 가능 요소로 포커스를 이동해요.' },
+    { keys: 'Shift + Tab', action: '이전 포커스 가능 요소로 포커스를 이동해요.' },
+    { keys: 'Enter / Space', action: '포커스된 Button을 활성화해요.' },
+    { keys: 'Escape', action: '열려 있는 Modal을 닫아요 (대화상자를 닫고 포커스를 트리거로 복원). Tooltip과 Menu도 닫아요.' },
+    { keys: '↑ ↓ ← →', action: '열려 있는 Menu 내에서 항목을 탐색(방향키), 또는 Tabs를 순환(좌/우 방향키).' },
+  ]}
+/>
+
+## 포커스 관리
+
+- **보이는 포커스**: `Button`과 `Input`은 각자 자체 `focused` 상태를 추적하고
+  `comp.*.focus.ring` 또는 `border-focus` 토큰을 사용하여 보이는 링을 렌더링해요 — 아웃라인을
+  제거하되 대체하지 않는 일은 절대 하지 마세요.
+- **탭 순서**: 네이티브 HTML `disabled` 속성(`Button`의 기본 렌더 경로에서 사용)은 요소를
+  탭 순서에서 완전히 제거해요. `Button`의 `asChild` 경로는 `aria-disabled`만 설정하며, 이는
+  탭 순서에서 제거하지 **않아요** — `asChild` 버튼을 비활성화하면 활성화도 직접 막아야 해요.
+- **포커스 트랩 / 복원**: `Modal`은 React와 Web Components에서 완전한 포커스 트랩+복원을
+  구현해요. 열릴 때 포커스가 대화상자 내부의 첫 번째 포커스 가능 요소(또는 대화상자 자체)로
+  이동하고; Tab/Shift+Tab은 내부에서 순환하고; Escape 또는 스크림 클릭으로 닫히고 포커스가
+  대화상자를 연 요소로 복원돼요. React Native는 포커스 제어를
+  `accessibilityViewIsModal`에 위임해요. `Menu`도 열려 있는 동안 유사하게 포커스를
+  트랩해요. `Toast`와 `Tooltip`은 포커스를 트랩하지 않아요 — 일시적/보조적이에요.
+
+## ARIA 패턴 참조
+
+| 컴포넌트 | 패턴 |
+| --- | --- |
+| `Button` | 네이티브 `<button>` 역할 (또는 `asChild` 경로에서 `aria-disabled` — 위 키보드 상호작용 참고). 장식용 스케치 아웃라인은 `aria-hidden="true"`예요. |
+| `Card` | React에서는 기본 역할이 없어요 — 호출자가 제공해요. Web Components/React Native은 `label`이 주어지면 자동으로 `role="group"`/`accessibilityRole="summary"`를 노출해요. |
+| `Input` | `error`가 설정된 React에서 `aria-invalid` + `aria-describedby`(`role="alert"` 오류 메시지를 가리킴). 라벨 연결은 `<label for>`/Radix `Label`을 통해. |
+| `Modal` | `role="dialog"` + `aria-modal="true"`, 제목은 `aria-labelledby`로 연결. React는 `document.body`로 포털; WC는 네이티브 `<dialog>` + `::backdrop` 사용; RN은 `accessibilityViewIsModal` 사용. |
+| `Alert` | 기본 `role="status"`, `danger` 변형은 `role="alert"`(assertive). 심각도별 색상 아이콘은 제목 텍스트에서 접근 가능한 이름을 가져와요. |
+| `Toast` | info/success/warning은 `role="status"`(polite); `danger`는 `role="alert"`(assertive). 자동 닫기 타이머; 닫기 버튼은 "Dismiss"로 라벨링. |
+| `Tooltip` | `role="tooltip"`, 트리거는 `aria-describedby`로 연결. Web: 호버(지연 후) 또는 포커스; Escape/블러/이탈 시 닫기. RN: 트리거에 `accessibilityHint`로 탭 토글. |
+| `Menu` | `role="menu"`, 항목은 `role="menuitem"`. WC는 `aria-activedescendant`로 활성 자손 관리; React는 roving tabindex 사용. 방향키 탐색, Escape로 닫기. |
+
+## 스크린 리더 테스트 체크리스트
+
+- [ ] 모든 인터랙티브 요소에 접근 가능한 이름이 있어요 — 보이는 텍스트, `label`, 또는 명시적
+  `aria-label`/`accessibilityLabel`. 여기에는 `Modal`, `Toast`, `Alert` 내부의 버튼
+  (닫기/해제 버튼)도 포함돼요.
+- [ ] 컴포넌트를 비활성화하면 탭 순서와 스크린 리더 상호작용 모두에서 제거돼요 — 둘 다
+  검증하세요, (위 포커스 관리에서 언급한 대로) 항상 함께 일어나지는 않으니까요.
+- [ ] `Input`의 오류 메시지는 시각적으로만 보이는 것이 아니라 나타날 때 알림을 받아야 해요.
+  `FormField`가 `aria-describedby`로 오류의 `role="alert"`을 가리키며 이를 자동화해요.
+- [ ] `Modal`을 열면 포커스가 대화상자로 이동하고 트랩돼요; 닫으면 트리거로 복원돼요. 이는
+  키보드(Tab/Shift+Tab)와 스크린 리더 가상 커서 모두에 적용돼요.
+- [ ] `Toast`와 `variant="danger"`인 `Alert`는 assertive하게 알림을 받아요
+  (`role="alert"`); 다른 심각도는 방해하지 않는 polite `role="status"`를 사용해요.
+- [ ] 장식 요소(스케치 아웃라인 SVG)는 조용해요 — 알림을 받거나 포커스를 받지 않는지
+  확인해요.
+- [ ] 다크 모드를 토글해도 위의 어떤 것도 변하지 않아요 (`[data-theme]` 전환은 순수하게
+  시각적이에요).
+
+## 색상 대비 검증 작동 방식
+
+모든 `sys.color.*` 텍스트/배경 페어링은 `@ghds/tokens`에서 빌드 시점에 자동으로 검사돼요 —
+검사는 모든 `text`/`icon`/`border` 역할에 대해 모든 `bg` 표면에 대한 실제 WCAG 상대 휘도
+대비 비율을 계산하고, 명시적인 채워진 배경 위 텍스트 쌍도 함께 검사하며, 일반 텍스트는
+4.5:1, 큰 텍스트/아이콘/보더는 3:1을 보장해요. 소수의 문서화된 쌍(비활성 텍스트/배경,
+장식 보더)은 예외예요.
+
+**이것이 의미하는 바**: `sys.color.*`(또는 이를 별칭하는 `comp.*` 토큰)을 소비하는 한
+WCAG 2.1 AA 보장을 무료로 받아요 — 보장은 토큰 세트 외부에서 도입하는 모든 커스텀 색상이나,
+위의 예외 쌍에는 확장되지 않아요.

@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 아바타
+description: 이미지, 이니셜, 또는 빈 폴백을 보여주는 손그림 스타일의 원형 아바타입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AvatarDemoReact from '../../../components/demos/AvatarDemo.tsx';
+import AvatarDemoLit from '../../../components/demos/AvatarDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Avatar`는 사람이나 엔티티를 작은 원형 이미지로 나타내요. 이미지가 없을 때는 이름에서 추출한 이니셜로 폴백하고, 둘 다 없을 때는 빈 스케치 원을 렌더해요.
+
+## 구조
+
+원형으로 클리핑된 콘텐츠 영역을 감싸는 손그림 스타일의 타원 외곽선(`@ghds/sketch-core`)이에요. 콘텐츠는 이미지(`src`), `name`의 첫 번째와 마지막 단어를 대문자로 한 이니셜, 또는 아무것도 없는 상태예요. 세 가지 크기 — `sm`, `md`(기본), `lg` — 가 `comp.avatar.size.*`에 매핑돼요.
+
+## 변형 및 상태
+
+아바타는 **표현용**이며 비인터랙티브해요. 유일한 변형은 `size`와 어떤 폴백 단계가 렌더되는지예요.
+
+<StateList
+  states={[
+    { name: '이미지', present: true, note: '`src`가 성공적으로 로드되면 렌더돼요.' },
+    { name: '이니셜', present: true, note: '이미지가 없거나 로드 실패 시 `name`에서 추출한 폴백.' },
+    { name: '빈 상태', present: true, note: '`src`와 `name` 모두 제공되지 않은 스케치 원.' },
+    { name: 'Hover / Focus / 비활성화', present: false, note: '아바타는 인터랙티브하지 않아요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '아바타에 접근성 라벨이 있도록 항상 `name`(또는 `alt`)을 전달하세요.',
+    '이미지 실패 시 이니셜 폴백이 작동하도록 `src`를 전달할 때도 `name`을 함께 제공하세요.',
+    '문맥에 맞게 크기를 사용하세요 — 밀집된 목록에서는 `sm`, 프로필 헤더에는 `lg`.',
+  ]}
+  dont={[
+    "아바타를 버튼으로 사용하지 마세요; 클릭 가능해야 한다면 실제 인터랙티브 요소로 감싸세요.",
+    "긴 텍스트를 name으로 전달하며 맞출 거라고 기대하지 마세요 — 첫 번째와 마지막 이니셜만 표시돼요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: 이름이 있는 아바타는 `role="img"`에 `aria-label`로 노출되고, 익명인 경우 `aria-hidden`(장식용)이에요. 내부 `<img>`는 빈 `alt`를 사용해서 라벨이 두 번 알려지지 않게 해요.
+- **Web Components**: `gh-avatar`는 `name`/`alt`가 있을 때 `internals.role = 'img'`와 `internals.ariaLabel`을 설정하고, 없으면 장식용으로 유지해요.
+- **React Native**: name/alt가 주어지면 `accessibilityRole="image"`와 `accessibilityLabel`을 설정해요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+단일 이미지나 짧은 이름이에요. 이니셜은 공백으로 구분된 첫 번째와 마지막 단어의 첫 글자를 대문자로 계산해요(예: "Ada Lovelace" → "AL").
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'src', type: 'string', description: '이미지 URL. 오류 시 이니셜, 그 다음 빈 원으로 폴백해요.' },
+        { name: 'name', type: 'string', description: '접근성 라벨 및 이니셜 소스.' },
+        { name: 'alt', type: 'string', description: '접근성 라벨을 덮어써요(기본은 name).' },
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더되는 지름.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: '네이티브 <span> 속성이 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'src', type: 'string', description: '이미지 URL. 오류 시 이니셜로 폴백해요.' },
+        { name: 'name', type: 'string', description: '접근성 라벨 및 이니셜 소스.' },
+        { name: 'alt', type: 'string', description: '접근성 라벨을 덮어써요.' },
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더되는 지름(reflected 속성).' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'src', type: 'string', description: '이미지 URI. 오류 시 이니셜로 폴백해요.' },
+        { name: 'name', type: 'string', description: '접근성 라벨 및 이니셜 소스.' },
+        { name: 'alt', type: 'string', description: '접근성 라벨을 덮어써요.' },
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더되는 지름.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AvatarDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AvatarDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Avatar } from '@ghds/react-native';
+
+<Avatar src="https://example.com/ada.png" name="Ada Lovelace" size="lg" />;
+```

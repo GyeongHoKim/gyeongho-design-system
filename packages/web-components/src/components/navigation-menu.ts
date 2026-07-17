@@ -192,7 +192,7 @@ export class GhNavigationMenu extends SketchyBase {
 
   private readonly onKeydown = (event: KeyboardEvent): void => {
     this.triggers = [...(this.shadowRoot?.querySelectorAll<HTMLElement>('.top') ?? [])];
-    const current = this.triggers.findIndex((el) => el === this.shadowRoot?.activeElement);
+    const current = this.triggers.indexOf(this.shadowRoot?.activeElement as HTMLElement);
     if (event.key === 'Escape') {
       this.close();
       return;

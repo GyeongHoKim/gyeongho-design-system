@@ -1,0 +1,127 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Toast
+description: 플로팅되고 자동으로 사라지는 손그림 스타일의 일시적 알림입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ToastDemoReact from '../../../components/demos/ToastDemo.tsx';
+import ToastDemoLit from '../../../components/demos/ToastDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Toast`는 페이지 위(우하단)에 플로팅되고 자동으로 사라지는 짧은 일시적 알림이에요. 확인과 낮은 우선순위
+피드백에 사용하세요; 레이아웃 내에 지속되는 상태에는 <a href={withBase('/components/alert/')}>Alert</a>를
+사용하세요.
+
+## 구조
+
+우하단에 고정된 스케치 스타일의 떠 있는 박스(`@ghds/sketch-core`)로, 심각도 아이콘, 선택적 제목, 메시지,
+닫기 버튼이 있어요. `duration`(ms; `0`이면 지속) 후 자동으로 사라져요. `open`/`onClose`로 제어하고,
+여러 개를 렌더링해서 쌓을 수 있어요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '정보 / 성공 / 경고 / 위험', present: true, note: '심각도 색상 + 아이콘.' },
+    { name: '자동 사라짐', present: true, note: 'duration 후 닫혀요 (기본값 5000ms); 0이면 지속돼요.' },
+    { name: '수동 닫기', present: true, note: '항상 닫기 버튼이 있어요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '메시지를 짧게 유지하세요 — 토스트는 한눈에 볼 수 있어야 해요.',
+    '위험 토스트는 아껴서 사용하세요; 조치가 필요한 에러는 인라인 Alert을 고려하세요.',
+    'open 상태를 직접 관리하고 onClose에서 초기화하세요.',
+  ]}
+  dont={[
+    '필수적인 동작을 토스트에만 넣지 마세요 — 사라져요.',
+    '한 번에 많은 토스트를 표시하지 마세요; 큐에 넣으세요.',
+  ]}
+/>
+
+## 접근성
+
+- **모든 플랫폼**: `danger` 토스트는 `role="alert"`(단정적)을 사용해요; 나머지는 `role="status"`
+  (정중) / `aria-live` 영역을 사용해서, 포커스를 빼앗지 않고 알려져요. 라벨이 있는 "닫기" 버튼이 항상 있어요.
+- **React Native**: 투명한 `Modal`에 `pointerEvents="box-none"`으로 렌더링돼서, 토스트 외부의 탭이
+  통과해요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+짧은 메시지와 선택적 제목. 자동 사라짐 기본값은 5000ms예요 (동작 토큰이 아닌 행동 타이밍이에요);
+닫을 때까지 유지하려면 `duration={0}`을 전달하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'open', type: 'boolean', description: '토스트 표시 여부.' },
+        { name: 'onClose', type: '() => void', description: '자동 닫기 또는 닫기 버튼에서 호출돼요.' },
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도.' },
+        { name: 'title', type: 'ReactNode', description: '선택적 굵은 제목.' },
+        { name: 'children', type: 'ReactNode', description: '메시지 본문.' },
+        { name: 'duration', type: 'number', default: '5000', description: '자동 닫기 ms; 0이면 지속.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'open', type: 'boolean', description: '토스트 표시 여부 (반영됨).' },
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도 (반영됨).' },
+        { name: 'heading', type: 'string', description: '선택적 굵은 제목.' },
+        { name: 'duration', type: 'number', default: '5000', description: '자동 닫기 ms; 0이면 지속.' },
+        { name: 'close event', type: 'CustomEvent', description: '자동 닫기 / 닫기 시 디스패치돼요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'open', type: 'boolean', description: '토스트 표시 여부.' },
+        { name: 'onClose', type: '() => void', description: '자동 닫기 또는 닫기 버튼에서 호출돼요.' },
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도.' },
+        { name: 'title', type: 'string', description: '선택적 굵은 제목.' },
+        { name: 'children', type: 'ReactNode', description: '메시지 본문.' },
+        { name: 'duration', type: 'number', default: '5000', description: '자동 닫기 ms; 0이면 지속.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ToastDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ToastDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Toast } from '@ghds/react-native';
+
+const [open, setOpen] = useState(false);
+<Toast open={open} onClose={() => setOpen(false)} variant="success" title="Saved">
+  Your changes have been saved.
+</Toast>;
+```

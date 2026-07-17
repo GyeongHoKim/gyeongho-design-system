@@ -1,0 +1,115 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 배지
+description: 상태, 카운트, 짧은 라벨을 위한 작은 손그림 스타일의 필입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import BadgeDemoReact from '../../../components/demos/BadgeDemo.tsx';
+import BadgeDemoLit from '../../../components/demos/BadgeDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Badge`는 짧은 상태, 카운트, 카테고리 라벨을 위한 작은 비인터랙티브 필이에요 — "3 unread", "Beta", "Success". 자체적인 동작은 없고 옆에 있는 것을 라벨링하기만 해요.
+
+## 구조
+
+짧은 텍스트 라벨 뒤에 그려진 손그림 스타일의 사각형 외곽선이며, 토큰 기반의 단색 배경으로 채워져 있어요. 여섯 가지 의미 변형 — `neutral`(기본), `primary`, `success`, `warning`, `danger`, `info` — 이 각각 배경에 맞춘 on-colour 텍스트와 약간 더 어두운 손그림 외곽선을 짝지어요.
+
+## 변형 및 상태
+
+배지는 **정적이고 표현용**인 요소예요 — 인터랙티브한 상태가 없어요.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: '배지는 인터랙티브하지 않아요.' },
+    { name: 'Focus', present: false, note: '배지는 포커스 가능하지 않아요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false, note: '오류 상태를 나타낼 때는 danger 변형을 사용하세요.' },
+  ]}
+/>
+
+유일한 변형은 의미론적 `variant` 색상이에요.
+
+## 사용법
+
+<DoDont
+  do={[
+    '라벨을 짧게 유지하세요 — 단어 하나~둘, 또는 작은 카운트.',
+    '의미에 맞게 변형을 선택하세요: 완료는 success, 오류는 danger, 주의는 warning.',
+    '읽지 않은 카운트처럼 실시간으로 변하는 상태를 나타낼 때는 role="status"(React) 또는 라벨(WC/RN)을 추가하세요.',
+  ]}
+  dont={[
+    "배지 안에 인터랙티브 컨트롤을 넣지 마세요 — 포커스나 클릭이 불가능해요.",
+    "의미 전달을 색상에만 의존하지 마세요; 색상 없이도 상태를 읽을 수 있도록 텍스트를 포함하세요.",
+    "긴 본문 텍스트에 배지를 사용하지 마세요 — 라벨이지 컨테이너가 아니에요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: 일반 `<span>`을 렌더해요. 기본적으로 표현용이에요 — 배지가 실시간 값(예: 알림 카운트)을 반영할 때는 보조 기술이 변경사항을 알려주도록 `role="status"`와 `aria-label`을 전달하세요.
+- **Web Components**: `label`이 제공되면 `gh-badge`는 `internals.role = 'status'`와 `internals.ariaLabel`을 설정하고, 그렇지 않으면 표현용으로 유지해요.
+- **React Native**: 아이콘 전용 또는 숫자 배지에 음성 이름이 필요하면 `accessibilityLabel`을 전달하세요.
+- 색상이 유일한 신호가 되지 않아요 — 변형 배경은 항상 WCAG-AA on-colour 텍스트 토큰과 짝을 이뤄요. <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+짧은 라벨: 단어 하나, 카테고리, 또는 작은 숫자예요. 임계값을 넘는 카운트는 직접 텍스트를 제한하세요(예: `99+`) — 배지는 자르지 않아요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: '의미론적 색상 역할.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: '네이티브 <span> 속성(예: role, aria-label)이 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: '의미론적 색상 역할(reflected 속성).' },
+        { name: 'label', type: 'string', description: '설정 시 배지를 이 라벨의 ARIA status 영역으로 노출해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: '의미론적 색상 역할.' },
+        { name: 'children', type: 'ReactNode', description: '배지 라벨(테마가 적용된 Text 안에 렌더돼요).' },
+        { name: 'accessibilityLabel', type: 'string', description: '아이콘 전용 또는 숫자 배지의 음성 이름.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <BadgeDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <BadgeDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Badge } from '@ghds/react-native';
+
+<Badge variant="success">Done</Badge>;
+```

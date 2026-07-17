@@ -1,0 +1,133 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 인풋
+description: 선택적 라벨과 오류 메시지를 가진 단일 행 손그림 스타일의 텍스트 필드입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import InputDemoReact from '../../../components/demos/InputDemo.tsx';
+import InputDemoLit from '../../../components/demos/InputDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+데이터를 수집하기 위한 단일 행 텍스트 필드로, 선택적 보이는 라벨과(React에서) 오류 메시지를 가져요.
+
+## 구조
+
+손그림 외곽선의 텍스트 박스 위에 선택적 라벨; React에서는 `error`가 설정되면 박스 아래에 `role="alert"` 요소로 오류 메시지가 렌더돼요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '기본', present: true },
+    { name: '포커스', present: true, note: '외곽선 색상이 포커스 토큰으로 바뀌어요.' },
+    { name: '비활성화', present: true },
+    {
+      name: '오류 / 무효',
+      present: true,
+      note: 'React 전용 — aria-invalid + aria-describedby + role="alert". Web Components나 React Native에는 구현되지 않았어요.',
+    },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+Web Components는 대신 `required`(`ElementInternals`를 통한 네이티브 제약 검증)를 가져요 — React와 React Native는 그걸 prop으로 노출하지 않아요. 이는 문서 누락이 아니라 두 개의 별개 실제 간극이에요: Web Components나 React Native에 대한 오류 데모를 보여주지 마세요.
+
+## 사용법
+
+<DoDont
+  do={[
+    '오류는 항상 구체적이고 행동 가능한 메시지와 짝지으세요("Please enter at least 8 characters."), "Invalid input." 같은 일반적인 메시지가 아니에요.',
+    '플레이스홀더 텍스트에만 의존하지 말고 라벨을 보이게 유지하세요.',
+  ]}
+  dont={[
+    "플레이스홀더 텍스트를 유일한 접근성 이름으로 사용하지 마세요 — 사용자가 입력하면 사라져요.",
+    "필드당 두 개 이상의 오류 메시지를 표시하지 마세요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: `aria-invalid` + `aria-describedby`(오류 `<span role="alert">`를 가리킴) + Radix `Label`/`htmlFor` 연결.
+- **Web Components**: `label`/`for` 연결; 라벨이 없으면 `aria-label`이 플레이스홀더로 폴백해요. 현재 무효 상태 ARIA는 없어요.
+- **React Native**: `accessibilityLabel`이 `placeholder`로 폴백; `accessibilityState={{disabled}}`는 오류/무효 개념이 없어요.
+- 일반적인 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+라벨은 수집하는 데이터를 나타내요("Email", "Password"), 동작이 아니에요 — 라벨이 동작을 나타내는 Button과 대조돼요. 오류 메시지는 무엇이 잘못되었고 어떻게 고치는지 말해줘요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Radix Label로 연결된 보이는 라벨.' },
+        { name: 'error', type: 'string', description: '오류 메시지. 설정 시 필드를 무효로 표시하고 알려줘요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '편집을 비활성화해요.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: '다른 모든 네이티브 <input> 속성(value, onChange 등)이 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'string', default: "''", description: '현재 필드 값, 폼 값으로 미러링돼요.' },
+        { name: 'name', type: 'string', description: '제출되는 컨트롤 이름.' },
+        { name: 'type', type: "'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number'", default: "'text'", description: '입력 모드.' },
+        { name: 'placeholder', type: 'string', description: '플레이스홀더 텍스트.' },
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨이자 접근성 이름.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '편집과 폼 참여를 비활성화해요.' },
+        { name: 'required', type: 'boolean', default: 'false', description: '네이티브 제약 검증. error prop은 없어요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'value', type: 'string', description: '제어 방식의 텍스트 값.' },
+        { name: 'onChangeText', type: '(text: string) => void', description: '변경 핸들러.' },
+        { name: 'placeholder', type: 'string', description: '플레이스홀더; 기본 a11y 라벨이기도 해요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '편집을 비활성화해요.' },
+        { name: 'accessibilityLabel', type: 'string', description: '플레이스홀더로 폴백해요.' },
+        { name: 'keyboardType', type: "TextInputProps['keyboardType']", description: '키보드 변형.' },
+        { name: 'secureTextEntry', type: 'boolean', description: '비밀번호 입력을 가려요. error prop은 없어요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React 데모에는 오류 상태가 포함돼요; Web Components 데모는 의도적으로 포함하지 않아요(error prop이 없음) 대신 `required`를 보여줘요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <InputDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <InputDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Input } from '@ghds/react-native';
+
+<Input
+  value={email}
+  onChangeText={setEmail}
+  placeholder="you@example.com"
+  keyboardType="email-address"
+/>;
+```

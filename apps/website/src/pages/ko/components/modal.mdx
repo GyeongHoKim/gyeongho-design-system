@@ -1,0 +1,125 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 모달
+description: 스크림, 포커스 트랩, Escape 닫기를 가진 손그림 스타일의 모달 대화상자입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import ModalDemoReact from '../../../components/demos/ModalDemo.tsx';
+import ModalDemoLit from '../../../components/demos/ModalDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Modal`(대화상자)은 흐름을 중단하고 단일 작업 — 확인, 짧은 폼, 상세 보기 — 에 집중해요. 닫힐 때까지 포커스를 가두고 스크림으로 페이지의 나머지를 어둡게 해요.
+
+## 구조
+
+전체 뷰포트 스크림(`comp.modal.scrim.*`) 뒤에 중앙에 배치된 손그림 패널(`@ghds/sketch-core`)로 선택적 제목과 본문이 있어요. `role="dialog"` + `aria-modal="true"`이며 `aria-labelledby`로 제목과 연결돼요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '열림', present: true, note: '페이지 위에 포털; 포커스가 안으로 이동하고 가둬져요.' },
+    { name: '닫힘', present: true, note: '아무것도 렌더하지 않음(React) / 표시 안 함(WC/RN).' },
+    { name: '스크림 닫기', present: true, note: '스크림 클릭 시 닫기 요청(closeOnScrimClick={false}로 옵트아웃).' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '제어 방식으로 유지: 열린 상태를 소유하고 onClose에서 닫아요.',
+    '접근성 이름을 가지도록 제목을 부여하세요.',
+    '모달은 집중되고 흐름을 중단하는 작업에만 사용; 콘텐츠를 짧게 유지하세요.',
+  ]}
+  dont={[
+    "여러 모달을 겹치지 마세요.",
+    "길고 스크롤 가능한 페이지 콘텐츠를 모달에 넣지 마세요 — 페이지를 사용하세요.",
+  ]}
+/>
+
+## 접근성
+
+- **React**: `document.body`로 포털; `role="dialog"` + `aria-modal`; 열릴 때 첫 번째 포커스 가능 요소로 포커스 이동, Tab이 대화상자 안에 갇히고, 닫힐 때 이전에 포커스된 요소로 포커스 복원, Escape로 닫고, 본문 스크롤 잠금.
+- **Web Components**: 네이티브 `<dialog>`(`showModal()`) 기반으로 포커스 트랩, 최상위 레이어, Escape를 무료로 제공; `::backdrop`이 스크림. `close` 이벤트를 발생시켜요.
+- **React Native**: RN의 `Modal` 기반(포커스 포함 + 하드웨어 백); `role="dialog"` + `accessibilityViewIsModal`.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab / Shift+Tab', description: '대화상자 안에서 포커스 순환(갇힘).' },
+    { keys: 'Escape', description: '닫기 요청.' },
+  ]}
+/>
+
+## 콘텐츠
+
+간결한 제목과 집중된 본문. 본문 끝에 primary/secondary 동작을 배치하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'open', type: 'boolean', description: '대화상자 표시 여부.' },
+        { name: 'onClose', type: '() => void', description: '닫기 요청(스크림 클릭 / Escape).' },
+        { name: 'title', type: 'string', description: '접근성 제목(heading + aria-labelledby).' },
+        { name: 'closeOnScrimClick', type: 'boolean', default: 'true', description: '스크림 클릭 시 닫아요.' },
+        { name: 'children', type: 'ReactNode', description: '대화상자 본문.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'open', type: 'boolean', description: '대화상자 표시 여부(reflected).' },
+        { name: 'heading', type: 'string', description: '접근성 제목.' },
+        { name: 'closeOnScrimClick', type: 'boolean', default: 'true', description: '백드롭 클릭 시 닫아요.' },
+        { name: 'close event', type: 'CustomEvent', description: 'Escape / 백드롭 클릭 시 발생.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'open', type: 'boolean', description: '대화상자 표시 여부.' },
+        { name: 'onClose', type: '() => void', description: '닫기 요청(스크림 탭 / 백).' },
+        { name: 'title', type: 'string', description: '접근성 제목.' },
+        { name: 'closeOnScrimClick', type: 'boolean', default: 'true', description: '스크림 탭 시 닫아요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ModalDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ModalDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Modal, Text } from '@ghds/react-native';
+
+const [open, setOpen] = useState(false);
+<Modal open={open} onClose={() => setOpen(false)} title="Delete item?">
+  <Text>This action cannot be undone.</Text>
+</Modal>;
+```

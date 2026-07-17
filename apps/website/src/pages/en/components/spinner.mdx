@@ -1,0 +1,118 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Spinner
+description: A hand-drawn indeterminate loading indicator that respects reduced motion.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import SpinnerDemoReact from '../../../components/demos/SpinnerDemo.tsx';
+import SpinnerDemoLit from '../../../components/demos/SpinnerDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Spinner` is an indeterminate busy indicator — a small hand-drawn ring that rotates while work of
+unknown duration is in progress. Use it when you can't show meaningful progress; use
+<a href={withBase('/components/progress/')}>Progress</a> when you can.
+
+## Anatomy
+
+A sketchy ellipse ring (`@ghds/sketch-core`) rendered in the primary colour and rotated. Because the
+outline is hand-drawn and irregular, the rotation reads clearly without needing a gap or gradient.
+Three sizes — `sm`, `md` (default), `lg` — map to `comp.spinner.size.*`; the spin duration is
+`comp.spinner.duration`.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Spinning', present: true, note: 'The only visual state — the ring rotates continuously.' },
+    { name: 'Reduced motion', present: true, note: 'Rotation is suppressed under prefers-reduced-motion; the ring is shown static.' },
+    { name: 'Hover / Focus / Disabled', present: false, note: 'Spinner is not interactive.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Give a meaningful label describing what is loading (e.g. "Loading results").',
+    'Use for short, indeterminate waits; switch to Progress when you can report a percentage.',
+    'Place the spinner where the incoming content will appear so focus/attention stays put.',
+  ]}
+  dont={[
+    "Don't use a spinner for waits long enough to warrant progress or a skeleton screen.",
+    "Don't rely on motion alone — the accessible label conveys the busy state to assistive tech.",
+    "Don't stack many spinners; one indicator per loading region is enough.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: `role="status"` with an `aria-label` (default "Loading"), so the busy state is announced.
+  The rotating SVG is `aria-hidden`.
+- **Web Components**: `gh-spinner` sets `internals.role = 'status'` and `internals.ariaLabel`.
+- **React Native**: sets `accessibilityLabel` and `accessibilityState={{ busy: true }}` (React Native
+  has no `status` role).
+- **Reduced motion**: all three platforms suppress the rotation when the user requests reduced motion
+  (`prefers-reduced-motion` on web; the OS "reduce motion" setting on React Native).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+No visible text — the label is for assistive tech only. Keep it short and specific.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Rendered diameter.' },
+        { name: 'label', type: 'string', default: "'Loading'", description: 'Accessible label for the busy state.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: 'Native <span> attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Rendered diameter (reflected attribute).' },
+        { name: 'label', type: 'string', default: "'Loading'", description: 'Accessible label for the busy state.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Rendered diameter.' },
+        { name: 'label', type: 'string', default: "'Loading'", description: 'Accessible label for the busy state.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SpinnerDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SpinnerDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Spinner } from '@ghds/react-native';
+
+<Spinner size="lg" label="Loading results" />;
+```

@@ -1,0 +1,115 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Progress
+description: 결정형과 비결정형 모드를 지원하는 손그림 스타일의 진행률 표시줄입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ProgressDemoReact from '../../../components/demos/ProgressDemo.tsx';
+import ProgressDemoLit from '../../../components/demos/ProgressDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Progress` 표시줄은 작업이 어느 정도 진행되었는지 알려줘요. 완료도를 측정할 수 있을 때는 `value`를 전달해서 **결정형(determinate)** 막대를 사용하고, 측정할 수 없을 때는 생략해서 **비결정형(indeterminate)** 스윕을 사용하세요. 매우 짧고 수량화할 수 없는 대기 시간에는 <a href={withBase('/components/spinner/')}>Spinner</a>를 사용하는 게 더 좋아요.
+
+## 구조
+
+`@ghds/sketch-core`로 윤곽선이 그려진 스케치 스타일의 둥근 레일(`comp.progress.bg.rail`) 위에 채워진 막대(`comp.progress.bg.fill`)가 올라가요. 결정형 막대의 너비는 `value / max`이고, 비결정형 막대는 레일을 가로지르며 스윕하는 고정 길이 세그먼트예요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '결정형', present: true, note: '채워진 막대 너비가 value / max를 반영해요.' },
+    { name: '비결정형', present: true, note: '세그먼트가 레일을 가로지르며 스윕해요. 동작 감소 설정에서는 숨겨져요.' },
+    { name: '호버 / 포커스 / 비활성화', present: false, note: 'Progress는 인터랙티브하지 않아요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '실제 진행률을 보고할 수 있을 때는 결정형 막대를 사용하세요 (업로드된 바이트 수, 완료된 단계 등).',
+    '작업을 설명하는 의미 있는 라벨을 지정하세요.',
+    '적절한 max 값을 설정하세요 — 기본값은 100(퍼센트)이에요.',
+  ]}
+  dont={[
+    '실제 값을 모르는데 결정형 막대로 진행률을 가장하지 마세요 — 비결정형을 사용하세요.',
+    '끝이 없는 백그라운드 작업에 Progress를 사용하지 마세요 — Spinner가 더 적합해요.',
+  ]}
+/>
+
+## 접근성
+
+- **React**: `role="progressbar"`와 `aria-valuemin`, `aria-valuemax`, `aria-valuenow`를 사용해요
+  (비결정형일 때는 value 속성을 생략해요). 접근성 이름으로 `label`을 전달하세요.
+- **Web Components**: `gh-progress`는 호스트에 동일한 `role`/`aria-value*` 속성을 설정해요.
+- **React Native**: `accessibilityRole="progressbar"`, `accessibilityLabel`, `accessibilityValue`를 설정해요
+  (참고: `accessibilityValue`는 react-native-web에서 DOM으로 전달되지 않아서, 웹 빌드에서는
+  `aria-valuenow`가 없을 수 있어요 — role과 label은 여전히 있어요).
+- **동작 감소**: 비결정형 스윕은 `prefers-reduced-motion`(웹) 또는 OS "동작 줄이기" 설정(React Native)에서 숨겨져요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+보이는 텍스트는 없어요 — 라벨은 보조 기술용이에요. 값을 채워진 막대로 시각적으로 표현해요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'value', type: 'number', description: '현재 값. 비결정형 막대를 원하면 생략하세요.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'label', type: 'string', description: '접근성 라벨.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 그대로 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'number', description: '현재 값. 비결정형 막대를 원하면 생략하세요.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'label', type: 'string', description: '접근성 라벨.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'value', type: 'number', description: '현재 값. 비결정형 막대를 원하면 생략하세요.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'label', type: 'string', description: '접근성 라벨.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ProgressDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ProgressDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Progress } from '@ghds/react-native';
+
+<Progress value={60} label="Uploading" />;
+```

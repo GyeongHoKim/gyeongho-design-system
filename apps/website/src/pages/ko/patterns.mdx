@@ -1,0 +1,46 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: 패턴
+description: 폼, 데이터 상태, 피드백, 페이지 레이아웃을 위한 재사용 가능한 컴포지션 패턴.
+---
+
+import { withBase } from '../../lib/withBase';
+
+패턴은 여러 GHDS 컴포넌트를 조합하여 반복되는 사용자 흐름을 해결하는 방법을 보여줘요.
+각 패턴 페이지는 _언제_ 사용할지, _어떤_ 컴포넌트를 조합할지, 접근성을 _어떻게_ 처리할지,
+그리고 결과의 라이브 데모를 다뤄요.
+
+## 폼 & 인증
+
+<a href={withBase('/patterns/form-and-auth/')}>폼 & 인증 패턴 →</a>
+
+`FormField`, `Input`, `Select`, `Checkbox`, `Radio`, `Switch`, `Button`을 검증되고 접근
+가능한 폼으로 조합해요. 검증 타이밍, 인라인 vs 요약 오류, 로그인, 회원가입(단계별), 비밀번호
+재설정 흐름을 다뤄요.
+
+## 데이터 & 검색
+
+<a href={withBase('/patterns/data-and-search/')}>데이터 & 검색 패턴 →</a>
+
+네 가지 데이터 상태 — 로딩(`Skeleton` / `Spinner`), 데이터 있음, 빈 상태, 오류
+(`Alert`) — 와 검색, 필터 칩(`Badge`), 정렬, `Table` 통합을 다뤄요.
+
+## 피드백 & 레이아웃
+
+<a href={withBase('/patterns/feedback-and-layout/')}>피드백 & 레이아웃 패턴 →</a>
+
+올바른 피드백 채널 선택 — `Toast` vs `Alert` vs `Modal` — 의사결정 트리와 심각도
+가이드와 함께. 페이지 셸(헤더/본문/푸터), 사이드바 레이아웃, `sys.breakpoint.*` 토큰을
+사용한 반응형 브레이크포인트 적용도 포함해요.
+
+---
+
+### 패턴과 컴포넌트의 차이
+
+- **컴포넌트**는 개별 빌딩 블록이에요 — `Button`, `Modal`, `Table`. 각각 구조, 변형,
+  prop, 접근성을 다루는 자체 페이지가 있어요.
+- **패턴**은 레시피예요 — 여러 컴포넌트를 조합하여 실제 사용자 요구를 해결하는 방법을
+  보여줘요. 로그인 폼은 단일 컴포넌트가 아니에요; `FormField` + `Input` + `Button`에 검증
+  로직을 조합한 것이에요.
+
+전체 컴포넌트 카탈로그는 <a href={withBase('/components/')}>컴포넌트</a> 섹션을 참고하세요.

@@ -1,0 +1,111 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 얼럿
+description: 네 가지 심각도의 상태 메시지를 위한 손그림 스타일의 인라인 얼럿/배너입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AlertDemoReact from '../../../components/demos/AlertDemo.tsx';
+import AlertDemoLit from '../../../components/demos/AlertDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Alert`(배너)는 작업이나 페이지의 상태를 전달하는 인라인 메시지예요 — 정보, 성공, 경고, 위험 중 하나예요. 떠서 자동으로 사라지는 <a href={withBase('/components/toast/')}>Toast</a>와 달리 레이아웃 안에 자리 잡아요.
+
+## 구조
+
+심각도에 따른 색상 외곽선과 아이콘, 선택적 굵은 제목, 메시지, 선택적 닫기 버튼을 가진 손그림 스타일의 박스(`@ghds/sketch-core`)예요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: 'Info / Success / Warning / Danger', present: true, note: '네 가지 심각도이며 각각 고유한 색상과 아이콘을 가져요.' },
+    { name: '닫기 가능', present: true, note: '선택적 닫기 버튼(React/RN: onDismiss; WC: dismissible + dismiss 이벤트).' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '심각도를 메시지에 맞게 사용하세요: 확인은 success, 오류는 danger.',
+    '메시지를 짧고 행동 유도형으로 유지하세요.',
+    '관련 콘텐츠 근처에 배치하세요.',
+  ]}
+  dont={[
+    "일시적인 피드백에 Alert를 사용하지 마세요 — Toast를 사용하세요.",
+    "색상에만 의존하지 마세요; 아이콘과 텍스트도 의미를 전달해요.",
+  ]}
+/>
+
+## 접근성
+
+- **모든 플랫폼**: `danger` 얼럿은 `role="alert"`(assertive)을, 나머지는 `role="status"`(polite)를 사용해서 스크린 리더가 적절히 알려주게 해요. 심각도 아이콘은 텍스트와 짝을 이뤄 색상이 유일한 신호가 되지 않아요.
+- 닫기 버튼은 라벨이 있는 버튼("Dismiss")이에요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+선택적 짧은 제목과 간결한 메시지예요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도.' },
+        { name: 'title', type: 'ReactNode', description: '선택적 굵은 제목.' },
+        { name: 'children', type: 'ReactNode', description: '메시지 본문.' },
+        { name: 'onDismiss', type: '() => void', description: '닫기 버튼을 렌더하고 이 함수를 호출해요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도(reflected).' },
+        { name: 'heading', type: 'string', description: '선택적 굵은 제목.' },
+        { name: 'dismissible', type: 'boolean', default: 'false', description: '닫기 버튼 표시.' },
+        { name: 'dismiss event', type: 'CustomEvent', description: '닫기 버튼에서 발생해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'info' | 'success' | 'warning' | 'danger'", default: "'info'", description: '심각도.' },
+        { name: 'title', type: 'string', description: '선택적 굵은 제목.' },
+        { name: 'children', type: 'ReactNode', description: '메시지 본문.' },
+        { name: 'onDismiss', type: '() => void', description: '닫기 버튼을 렌더하고 이 함수를 호출해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AlertDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AlertDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Alert } from '@ghds/react-native';
+
+<Alert variant="danger" title="Error">Something went wrong.</Alert>;
+```

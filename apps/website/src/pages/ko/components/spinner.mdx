@@ -1,0 +1,118 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Spinner
+description: 동작 감소를 존중하는 손그림 스타일의 비결정형 로딩 표시자입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import SpinnerDemoReact from '../../../components/demos/SpinnerDemo.tsx';
+import SpinnerDemoLit from '../../../components/demos/SpinnerDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Spinner`는 비결정형 로딩 표시자예요 — 지속 시간을 알 수 없는 작업이 진행 중일 때 회전하는 작은
+손그림 스타일의 링이에요. 의미 있는 진행률을 보여줄 수 없을 때 사용하고, 보여줄 수 있을 때는
+<a href={withBase('/components/progress/')}>Progress</a>를 사용하세요.
+
+## 구조
+
+기본 색상으로 렌더링되고 회전하는 스케치 스타일의 타원 링(`@ghds/sketch-core`)이에요. 윤곽선이 손그림
+스타일이고 불규칙하기 때문에, 간격이나 그라데이션 없이도 회전이 명확하게 보여요. 세 가지 크기 —
+`sm`, `md`(기본), `lg` — 가 `comp.spinner.size.*`에 매핑되고, 회전 지속 시간은
+`comp.spinner.duration`이에요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '회전', present: true, note: '유일한 시각 상태 — 링이 계속 회전해요.' },
+    { name: '동작 감소', present: true, note: 'prefers-reduced-motion에서 회전이 숨겨져요; 링이 정적으로 표시돼요.' },
+    { name: '호버 / 포커스 / 비활성화', present: false, note: 'Spinner는 인터랙티브하지 않아요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '로딩 중인 내용을 설명하는 의미 있는 라벨을 지정하세요 (예: "결과 로딩 중").',
+    '짧고 비결정형 대기에 사용하세요; 퍼센트를 보고할 수 있으면 Progress로 전환하세요.',
+    '스피너를 올 콘텐츠가 나타날 위치에 배치해서 포커스/주의가 그 자리에 유지되게 하세요.',
+  ]}
+  dont={[
+    '진행률이나 스켈레톤 화면이 필요할 만큼 긴 대기에 스피너를 사용하지 마세요.',
+    '동작만으로 의존하지 마세요 — 접근성 라벨이 보조 기술에 로딩 상태를 전달해요.',
+    '여러 스피너를 겹치지 마세요; 로딩 영역당 하나의 표시자면 충분해요.',
+  ]}
+/>
+
+## 접근성
+
+- **React**: `role="status"`와 `aria-label`(기본값 "Loading")을 사용해서 로딩 상태를 알려요.
+  회전하는 SVG는 `aria-hidden`이에요.
+- **Web Components**: `gh-spinner`는 `internals.role = 'status'`와 `internals.ariaLabel`을 설정해요.
+- **React Native**: `accessibilityLabel`과 `accessibilityState={{ busy: true }}`를 설정해요 (React Native에는
+  `status` 역할이 없어요).
+- **동작 감소**: 세 플랫폼 모두 사용자가 동작 감소를 요청하면 회전을 숨겨요
+  (웹에서 `prefers-reduced-motion`; React Native에서 OS "동작 줄이기" 설정).
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+보이는 텍스트는 없어요 — 라벨은 보조 기술 전용이에요. 짧고 구체적으로 유지하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더링되는 지름.' },
+        { name: 'label', type: 'string', default: "'Loading'", description: '로딩 상태의 접근성 라벨.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: '네이티브 <span> 속성이 그대로 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더링되는 지름 (반영된 속성).' },
+        { name: 'label', type: 'string', default: "'Loading'", description: '로딩 상태의 접근성 라벨.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: '렌더링되는 지름.' },
+        { name: 'label', type: 'string', default: "'Loading'", description: '로딩 상태의 접근성 라벨.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SpinnerDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SpinnerDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Spinner } from '@ghds/react-native';
+
+<Spinner size="lg" label="Loading results" />;
+```

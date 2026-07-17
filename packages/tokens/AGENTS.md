@@ -127,6 +127,65 @@ comp.input.border.focus
 
 ---
 
+## Typography & Font Stacks
+
+Font-family stacks live in `ref.fontFamily` (`src/ref/typography.json`) and are referenced by
+`sys.typography.*.fontFamily` (`src/sys/_shared.json`). They are the **only** place a font-family
+name may appear — components consume `sys`/`comp` tokens and never hardcode a font.
+
+### Stack composition order
+
+GHDS products ship in English and Korean, so every stack is ordered for per-glyph fallback:
+
+```
+Latin display → Korean display → Latin body → Korean body → system → generic
+```
+
+The browser matches each glyph independently down the stack, so Latin text renders in the Latin
+face and Korean text falls through to the Korean face in the same element — no locale switching is
+needed.
+
+- **`ref.fontFamily.sketch`** (headings/titles): `'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive`
+- **`ref.fontFamily.sans`** (body/label/caption): `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, …, sans-serif`
+- **`ref.fontFamily.mono`** (code): `ui-monospace, …, 'Noto Sans KR', monospace`
+
+> **Note:** `@fontsource/pretendard` ships Latin glyphs only (no Korean subset on Fontsource).
+> Noto Sans KR Variable (`@fontsource-variable/noto-sans-kr`) is the Korean body face. Pretendard
+> is kept in the stack for its Latin glyphs.
+
+| Face | fontsource package | Weights |
+| --- | --- | --- |
+| Gochi Hand (display, Latin) | `@fontsource/gochi-hand` | 400 |
+| Gaegu (display, Korean) | `@fontsource/gaegu` | 400 |
+| Nunito Sans Variable (body, Latin) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
+| Noto Sans KR Variable (body, Korean) | `@fontsource-variable/noto-sans-kr` | variable (100–900) |
+| Pretendard (body, Latin-only) | `@fontsource/pretendard` | 400 / 500 / 700 |
+
+### Loading fonts is the consumer's responsibility
+
+The token declares the **stack** (the preferred order). Loading the actual web-font files is done
+by the consuming app via [Fontsource](https://fontsource.org/), not by the tokens package. This
+keeps the token package dependency-free and lets each app control its font payload. See the **Fonts**
+guide on the website for the exact `@fontsource/*` packages, weights, and import snippets.
+
+### Adding or changing a font
+
+Font choices are design decisions made at the `ref` tier only. To change a font:
+
+1. Edit the `$value` in `src/ref/typography.json` (the value must be a literal string — `ref` tokens
+   may not alias another token).
+2. Update the consumer's fontsource imports if the package/weights changed.
+3. Update the website Fonts guide and this table.
+4. Run `pnpm build --filter @ghds/tokens` and `pnpm test --filter @ghds/tokens`.
+
+> React Native does not support CSS comma-separated font stacks. The RN build
+> automatically converts each web stack to a single family name (e.g. `Pretendard`
+> for `sans`, `Gaegu` for `sketch`) so RN's `fontFamily` accepts it. The chosen
+> face includes both Latin and Korean glyphs. Loading the `.ttf` files in the RN
+> app is the consumer's responsibility — see `packages/react-native/AGENTS.md`.
+
+---
+
 ## Validation Requirements
 
 Run the validation suite before committing: `pnpm test --filter @ghds/tokens`.

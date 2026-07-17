@@ -2,12 +2,14 @@
   "ref": {
     "fontFamily": {
       "$type": "fontFamily",
-      "$description": "Tier 1 font stacks. A hand-drawn display face for headings, a legible sans for UI.",
-      "sketch": { "$value": "'Gochi Hand', 'Comic Sans MS', cursive" },
-      "sans": {
-        "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+      "$description": "Tier 1 font stacks, optimized for English and Korean. Stacks list Latin faces first, then Korean counterparts, then system and generic fallbacks. Browsers resolve each glyph against the stack in order, so Latin glyphs render in the Latin face and Korean glyphs fall through to the Korean face. Note: @fontsource/pretendard ships Latin glyphs only (no Korean subset); Noto Sans KR is the Korean body face loaded via @fontsource-variable/noto-sans-kr. Loading the self-hosted web fonts is the consumer's responsibility — see the Fonts guide on the website.",
+      "sketch": {
+        "$value": "'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive"
       },
-      "mono": { "$value": "ui-monospace, 'SFMono-Regular', 'Menlo', monospace" }
+      "sans": {
+        "$value": "'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+      },
+      "mono": { "$value": "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace" }
     },
     "fontSize": {
       "$type": "dimension",

@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Tooltip
+description: 호버나 포커스 시 짧은 힌트를 보여주는 손그림 스타일의 툴팁입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import TooltipDemoReact from '../../../components/demos/TooltipDemo.tsx';
+import TooltipDemoLit from '../../../components/demos/TooltipDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Tooltip`은 감싸는 엘리먼트에 대한 짧고 보충적인 힌트를 보여줘요. 필수 정보용이 아니에요 —
+툴팁을 보지 않고도 콘텐츠를 사용할 수 있어야 해요.
+
+## 구조
+
+단일 트리거 엘리먼트 근처에 위치하고 `aria-describedby`로 연결된 스케치 스타일의 버블
+(`@ghds/sketch-core`)이에요. 웹에서는 호버(짧은 `delay` 후) 또는 포커스 시 나타나고, 떠남, 블러,
+또는 Escape 시 숨겨져요; floating-ui로 위치가 지정돼요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '숨겨짐', present: true, note: '기본.' },
+    { name: '표시됨', present: true, note: '호버(지연 후) 또는 포커스 시 (웹); 탭 시 (React Native).' },
+    { name: '비활성화', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '툴팁 텍스트를 짧게 유지하세요 — 몇 단어면 충분해요.',
+    '포커스 가능한 트리거에 연결해서 키보드와 스크린 리더 사용자도 볼 수 있게 하세요.',
+    '보충적인 힌트에만 사용하세요.',
+  ]}
+  dont={[
+    '필수 정보나 인터랙티브 컨트롤을 툴팁에 넣지 마세요.',
+    '포커스 불가능한 엘리먼트를 감싸지 마세요 — 툴팁이 키보드로 닿을 수 없게 돼요.',
+  ]}
+/>
+
+## 접근성
+
+- **React**: 트리거를 복제해서 `role="tooltip"` 버블을 가리키는 `aria-describedby`를 추가해요;
+  포커스/호버 시 표시, 블러/떠남/Escape 시 숨김.
+- **Web Components**: 슬롯된 트리거에 섀도 버블을 향해 `aria-describedby`를 설정해요; 동일한
+  호버/포커스/Escape 동작.
+- **React Native**: 터치에는 호버가 없어서, 툴팁은 **탭**으로 토글돼요; 콘텐츠는 트리거의
+  `accessibilityHint`로도 노출되어 버블을 표시하지 않고도 알려져요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+짧은 구문. 긴 텍스트는 읽을 수 있는 최대 너비로 제한돼요; 간결하게 유지하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'content', type: 'ReactNode', description: '툴팁 콘텐츠.' },
+        { name: 'children', type: 'ReactElement', description: '단일 트리거 엘리먼트.' },
+        { name: 'delay', type: 'number', default: '300', description: '호버 표시 지연 (ms).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'content', type: 'string', description: '툴팁 텍스트.' },
+        { name: 'delay', type: 'number', default: '300', description: '호버 표시 지연 (ms).' },
+        { name: '(slot)', type: 'element', description: '트리거 엘리먼트는 기본 슬롯에 들어가요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'content', type: 'string', description: '툴팁 텍스트 (트리거 접근성 힌트이기도 해요).' },
+        { name: 'children', type: 'ReactNode', description: '트리거 엘리먼트.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <TooltipDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <TooltipDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native (탭으로 토글)
+import { Tooltip, Button } from '@ghds/react-native';
+
+<Tooltip content="Saves your changes">
+  <Button label="Save" onPress={save} />
+</Tooltip>;
+```

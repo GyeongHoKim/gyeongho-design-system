@@ -1,0 +1,118 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Skeleton
+description: 콘텐츠가 로드되는 동안 펄스 효과를 보여주는 손그림 스타일의 로딩 플레이스홀더입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import SkeletonDemoReact from '../../../components/demos/SkeletonDemo.tsx';
+import SkeletonDemoLit from '../../../components/demos/SkeletonDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Skeleton`은 콘텐츠가 로드되는 동안 그 자리를 대신하는 플레이스홀더로, 레이아웃을 유지하고
+올 콘텐츠의 형태를 암시해요. 최종 레이아웃을 근사할 수 있을 때 (목록 행, 카드, 단락 등) 단순한
+<a href={withBase('/components/spinner/')}>Spinner</a>보다 Skeleton을 선호하세요.
+
+## 구조
+
+`@ghds/sketch-core`로 그려진 둔탁한 표면 색상의 스케치 스타일 채워진 도형이 불투명도를 부드럽게
+펄스해요. 세 가지 변형 — `rect`(기본), `text`(둥근 선), `circle`(예: 아바타 플레이스홀더) — 이
+기본 형태, 반경, 크기를 설정하고, `width`/`height`로 재정의할 수 있어요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '펄스', present: true, note: '로딩 중 불투명도가 완전에서 어둡게 사이로 애니메이션돼요.' },
+    { name: '동작 감소', present: true, note: 'prefers-reduced-motion에서 펄스가 숨겨져요; 플레이스홀더가 정적으로 표시돼요.' },
+    { name: '호버 / 포커스 / 비활성화', present: false, note: 'Skeleton은 인터랙티브하지 않아요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '스켈레톤을 실제 콘텐츠와 일치시키세요 — 같은 대략적인 크기와 형태로요.',
+    '여러 개를 조합해서 (원 + 텍스트 라인) 카드나 목록 행을 미러링하세요.',
+    '스켈레톤이 포함된 영역에 aria-busy를 설정해서 보조 기술이 로딩 중임을 알 수 있게 하세요.',
+  ]}
+  dont={[
+    '스켈레톤을 무한정 띄워두지 마세요 — 요청이 완료되면 실제 콘텐츠(또는 에러 상태)로 교체하세요.',
+    '스켈레톤 자체로 로딩 알림에 의존하지 마세요 — 설계상 aria-hidden이에요.',
+  ]}
+/>
+
+## 접근성
+
+- 세 플랫폼 모두 Skeleton을 보조 기술로부터 **장식적이고 숨겨진 것**으로 렌더링해요
+  (웹에서 `aria-hidden`; React Native에서 `accessibilityElementsHidden` / `importantForAccessibility`).
+- 대신 **포함하는 영역**에 로딩 상태를 알리세요 — 예: 스켈레톤이 차지하는 카드나 목록에
+  `aria-busy="true"`.
+- **동작 감소**: 펄스는 `prefers-reduced-motion`(웹) 또는 OS "동작 줄이기" 설정(React Native)에서 숨겨져요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+콘텐츠는 없어요 — Skeleton은 형태만 있어요. `width`/`height`와 여러 인스턴스를 사용해
+올 레이아웃을 근사하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: '플레이스홀더 형태.' },
+        { name: 'width', type: 'number | string', description: '너비 (숫자 ⇒ px). 기본값 100% (circle의 경우 지름).' },
+        { name: 'height', type: 'number | string', description: '높이 (숫자 ⇒ px). 변형별 기본값.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLSpanElement>', description: '네이티브 <span> 속성이 그대로 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: '플레이스홀더 형태 (반영된 속성).' },
+        { name: 'width', type: 'string', description: 'CSS width. 기본값 100% (circle의 경우 지름).' },
+        { name: 'height', type: 'string', description: 'CSS height. 변형별 기본값.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'rect' | 'text' | 'circle'", default: "'rect'", description: '플레이스홀더 형태.' },
+        { name: 'width', type: 'DimensionValue', description: '너비. 기본값 100% (circle의 경우 지름).' },
+        { name: 'height', type: 'DimensionValue', description: '높이. 변형별 기본값.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SkeletonDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SkeletonDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Skeleton } from '@ghds/react-native';
+
+<Skeleton variant="text" width="70%" />;
+```

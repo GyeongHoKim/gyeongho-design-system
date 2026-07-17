@@ -1,0 +1,120 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Progress
+description: A hand-drawn progress bar with determinate and indeterminate modes.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ProgressDemoReact from '../../../components/demos/ProgressDemo.tsx';
+import ProgressDemoLit from '../../../components/demos/ProgressDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Progress` bar communicates how far along a task is. Pass a `value` for a **determinate** bar when
+you can measure completion; omit it for an **indeterminate** sweep when you can't. For very short,
+unquantifiable waits prefer a <a href={withBase('/components/spinner/')}>Spinner</a>.
+
+## Anatomy
+
+A sketchy rounded rail (`comp.progress.bg.rail`) with a filled bar (`comp.progress.bg.fill`) on top,
+both outlined with `@ghds/sketch-core`. The determinate fill width is `value / max`; the
+indeterminate fill is a fixed segment that sweeps across the rail.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Determinate', present: true, note: 'Fill width reflects value / max.' },
+    { name: 'Indeterminate', present: true, note: 'A segment sweeps across; suppressed under reduced motion.' },
+    { name: 'Hover / Focus / Disabled', present: false, note: 'Progress is not interactive.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use a determinate bar whenever you can report real progress (bytes uploaded, steps done).',
+    'Give a meaningful label describing the task.',
+    'Set an appropriate max — it defaults to 100 (percent).',
+  ]}
+  dont={[
+    "Don't fake progress with a determinate bar when you don't know the real value — use indeterminate.",
+    "Don't use Progress for indefinite background activity with no end — a Spinner fits better.",
+  ]}
+/>
+
+## Accessibility
+
+- **React**: `role="progressbar"` with `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`
+  (the value attributes are omitted while indeterminate). Pass a `label` for the accessible name.
+- **Web Components**: `gh-progress` sets the same `role`/`aria-value*` attributes on the host.
+- **React Native**: sets `accessibilityRole="progressbar"`, `accessibilityLabel`, and
+  `accessibilityValue` (note: `accessibilityValue` is not forwarded to the DOM by react-native-web,
+  so `aria-valuenow` may be absent on the web build — the role and label still are).
+- **Reduced motion**: the indeterminate sweep is suppressed under `prefers-reduced-motion` (web) or
+  the OS "reduce motion" setting (React Native).
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+No visible text — the label is for assistive tech. Represent the value visually via the fill.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'value', type: 'number', description: 'Current value. Omit for an indeterminate bar.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'label', type: 'string', description: 'Accessible label.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'number', description: 'Current value. Omit for an indeterminate bar.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'label', type: 'string', description: 'Accessible label.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'value', type: 'number', description: 'Current value. Omit for an indeterminate bar.' },
+        { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+        { name: 'label', type: 'string', description: 'Accessible label.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ProgressDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ProgressDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Progress } from '@ghds/react-native';
+
+<Progress value={60} label="Uploading" />;
+```

@@ -1,0 +1,148 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Slider
+description: 숫자 값을 선택하기 위한 손그림 스타일의 범위 슬라이더입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import SliderDemoReact from '../../../components/demos/SliderDemo.tsx';
+import SliderDemoLit from '../../../components/demos/SliderDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Slider`는 트랙을 따라 썸을 드래그해서 연속적이거나 계단식 범위에서 숫자 값을 선택해요. 빠른 시각적
+조정보다 정확한 타이핑 값이 더 중요할 때는 `Input type="number"`를 대신 사용하세요.
+
+## 구조
+
+스케치 스타일의 레일(얇은 사각형)과 채워진 부분(시작부터 썸까지), 그리고 둥근 썸 — 세 가지 도형 모두
+`@ghds/sketch-core`에서 직접 계산되며, 하나의 측정된 박스와 시드를 공유해요. React와 Web Components에서는
+보이지 않는 실제 `<input type="range">`가 전체 트랙을 차지하며 모든 인터랙션(드래그, 트랙 클릭, 네이티브
+화살표/Home/End/PageUp/PageDown 키보드 동작)을 커스텀 포인터/keydown 코드 없이 처리해요. React Native에는
+이런 네이티브 기본 요소가 없어서, 드래그를 `PanResponder`로 직접 구현했어요 (React Native 코어에 내장되어 있어요 —
+새로운 제스처 라이브러리 의존성이 없어요).
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '기본', present: true },
+    { name: '호버', present: true, note: '채워진 부분과 썸이 살짝 어두워져요 (CSS/네이티브 의사 상태 — JS로 추적하는 호버 플래그 불필요).' },
+    { name: '포커스', present: true, note: '썸 주변에 포커스 링이 나타나요.' },
+    { name: '비활성화', present: true },
+    { name: '두 썸 범위', present: false, note: 'v1에는 없어요 — 티켓 이름의 "range"는 가능한 미래의 듀얼 썸 모드를 의미해요, v1 요구사항이 아니에요.' },
+    { name: '수직 방향', present: false },
+    { name: '드래그 중 값 툴팁', present: false, note: '실시간 값을 원하는 사용자는 제어되는 값에서 파생해요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '명확하고 보이는 최소/최대 범위가 있는 값(예: 볼륨, 평점, 밝기)에 Slider를 사용하세요.',
+    '현재 읽을 값이 아니라 설정 중인 값의 라벨을 지정하세요 ("Volume").',
+  ]}
+  dont={[
+    '정확한 값을 타이핑해야 할 때 Slider를 사용하지 마세요 — Input type="number"를 대신 사용하세요.',
+    'v1에서 두 썸 범위 모드를 기대하지 마세요 — 단일 썸만 지원해요.',
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: 보이지 않는 실제 `<input type="range">`가 암시적 `role="slider"`와
+  브라우저가 계산하는 `aria-valuenow`/`aria-valuemin`/`aria-valuemax`를 무료로 제공해요 —
+  커스텀 ARIA 연결이 필요 없어요. `aria-valuetext`는 커스텀 음성 값을 위해 일반 속성으로 전달돼요.
+- **React Native**: `accessibilityRole="adjustable"`와 `accessibilityValue={{min, max, now}}`,
+  그리고 `accessibilityActions`/`onAccessibilityAction`(`increment`/`decrement`)이 VoiceOver/TalkBack의
+  표준 RN 패턴이에요. `accessibilityValue`와 `accessibilityState.disabled` 둘 다 React Native Web에
+  해당하는 매핑이 없어요 — `createDOMProps`에서 직접 확인했어요. 그래서 웹 타겟을 위해
+  `aria-valuemin`/`aria-valuemax`/`aria-valuenow`/`aria-disabled`를 직접 설정해요. Select의
+  `aria-expanded`와 Switch의 `aria-checked`에 이미 문서화된 것과 같은 차이예요. `onAccessibilityAction`
+  자체는 React Native Web 연결이 전혀 없어요 (직접 확인함) — 네이티브 전용(iOS/Android) 기능이에요.
+  자동화된 테스트가 아니라 `packages/react-native/AGENTS.md`의 디바이스/시뮬레이터 요구사항에 따라
+  수동으로 검증했어요. `focusable`/`tabIndex`가 웹 타겟에서 컨트롤을 실제 키보드 탭 정지점으로 만들어요
+  (`role="slider"`는 React Native Web의 자동 포커스 가능 역할 중 하나가 아니에요). 하지만 포커스 중
+  화살표 키 단계 조정은 v1에서 아직 연결되지 않았어요 — `onKeyDown`은 실제 React Native의 `View` prop이
+  아니라서 가벼운 추가가 아니에요. 마우스/터치로 드래그는 모든 플랫폼에서 작동해요.
+- 일반적인 규칙은 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+라벨은 조정 중인 값의 이름이에요 ("Volume", "Rating"), 현재 읽을 값이나 지시문이 아니에요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: '보이는 라벨, Radix Label을 통해 연결돼요.' },
+        { name: 'value', type: 'number', description: '제어되는 값.' },
+        { name: 'defaultValue', type: 'number', description: '비제어 시 초기 값.' },
+        { name: 'min', type: 'number', default: '0', description: '최소 값.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'step', type: 'number', default: '1', description: '증가 단계.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: '나머지 모든 네이티브 input 속성이 그대로 전달돼요 (예: onChange, aria-valuetext, name).' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'value', type: 'number', default: '0', description: '반영된 속성. 폼 값으로 미러링돼요.' },
+        { name: 'min', type: 'number', default: '0', description: '최소 값.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'step', type: 'number', default: '1', description: '증가 단계.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션과 폼 참여를 비활성화해요.' },
+        { name: 'name', type: 'string', description: '제출되는 컨트롤 이름.' },
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨, 접근성 이름이기도 해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: '보이는 접근성 라벨 — 필수 항목이에요.' },
+        { name: 'value', type: 'number', description: '제어되는 값.' },
+        { name: 'defaultValue', type: 'number', description: '비제어 시 초기 값.' },
+        { name: 'min', type: 'number', default: '0', description: '최소 값.' },
+        { name: 'max', type: 'number', default: '100', description: '최대 값.' },
+        { name: 'step', type: 'number', default: '1', description: '증가 단계.' },
+        { name: 'onValueChange', type: '(value: number) => void', description: '드래그 중 다음 값과 함께 발생해요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React와 Web Components가 아래에 라이브로 렌더링돼요. React Native는 추가적인 `react-native-web` 연결 없이는
+브라우저에서 실행할 수 없어요 (이 사이트에는 설정되어 있지 않아요). 그래서 사용법을 코드 샘플로 보여드릴게요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <SliderDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <SliderDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Slider } from '@ghds/react-native';
+
+<Slider label="Volume" value={volume} onValueChange={setVolume} />;
+```

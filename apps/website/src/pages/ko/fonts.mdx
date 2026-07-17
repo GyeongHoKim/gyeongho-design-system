@@ -1,0 +1,216 @@
+---
+layout: ../../layouts/MarkdownLayout.astro
+title: 폰트
+description: GHDS에서 폰트가 작동하는 방식 — 영어와 한국어를 위한 토큰 기반 스택, 그리고 Fontsource로 셀프 호스팅 웹폰트를 로드하는 방법.
+---
+
+import { withBase } from '../../lib/withBase';
+
+GHDS는 영어와 한국어로 출시되는 제품을 위해 만들어졌어요. 폰트 선택도 디자인 값이므로,
+모든 font-family 스택은 `@ghds/tokens`에 정의되며 컴포넌트에 하드코딩되지 않아요. 이
+페이지에서는 스택 구성, 선택된 서체, 그리고 앱에서 폰트를 로드하는 정확한 방법을
+설명해요.
+
+## 폰트 스택의 작동 방식
+
+`font-family` CSS 값은 순서가 있는 대체 목록이에요. 브라우저는 각 글리프를 독립적으로
+목록의 위에서 아래로 매칭하며, 해당 문자에 대한 글리프가 있는 첫 번째 폰트를 사용해요.
+즉, 하나의 스택으로 자바스크립트 로케일 전환 없이 같은 요소에서 라틴 텍스트는 한 서체로,
+한국어 텍스트는 다른 서체로 렌더링할 수 있어요.
+
+GHDS 스택은 다음 순서를 따라요:
+
+```
+라틴 디스플레이 → 한국어 디스플레이 → 라틴 본문 → 한국어 본문 → 시스템 → 일반
+```
+
+따라서 `ref.fontFamily.sans`로 설정된 `"Hello, 안녕하세요"`는 `Hello,`를 **Nunito Sans
+Variable**로, `안녕하세요`를 **Noto Sans KR Variable**로 자동 렌더링해요.
+
+## 서체
+
+| 역할 | 라틴 서체 | 한국어 서체 | 스타일 |
+| --- | --- | --- | --- |
+| 스케치 / 디스플레이 (제목) | Gochi Hand | Gaegu | 손그림 — GHDS의 정체성 |
+| 본문 / UI (sans) | Nunito Sans Variable | Noto Sans KR Variable | 따뜻하고, 가독성 좋고, 신뢰감 있는 |
+| 코드 (mono) | 시스템 mono | Noto Sans KR (대체) | 정확하고, 고정폭 |
+
+### 이 서체들을 선택한 이유
+
+- **Gochi Hand** — GHDS의 정체성을 부여하는 손그림 디스플레이 서체예요 ([원칙 1: 인간적이되
+  신뢰할 수 있게](../principles/#1-human-but-trustworthy) 참고).
+- **Gaegu** — 한국어 손그림 서체로, 제목에서 Gochi Hand의 따뜻함과 병행해요.
+- **Nunito Sans Variable** — 둥근 터미널이 가독성을 잃지 않으면서 따뜻하고 친근하게
+  읽혀요. 가변 폰트라 모든 웨이트(200–1000)를 하나의 작은 파일로 제공해요.
+- **Noto Sans KR Variable** — 뛰어난 가독성과 넓은 커버리지를 갖춘 Google의 오픈소스
+  한국어 sans예요. 가변 폰트라 모든 웨이트(100–900)를 서브셋된 한국어 woff2 파일로
+  제공해요.
+
+> **Pretendard에 대해.** Pretendard는 한국 제품 디자인에서 사실상의 한국어 sans지만,
+> Fontsource 패키지(`@fontsource/pretendard`)는 **라틴 서브셋**만 제공해요 — 한국어
+> 서브셋은 없어요. GHDS는 Pretendard를 라틴 글리프를 위해 스택에 유지해요 (Nunito Sans
+> Variable과 잘 어울려요) 그리고 한국어 글리프에는 **Noto Sans KR Variable**을
+> 사용해요. [Pretendard 릴리스](https://github.com/orioncactus/pretendard/releases)에서
+> (한국어 글리프가 포함된) 전체 Pretendard `.woff2`를 직접 호스팅하면 한국어 본문이
+> Pretendard로 렌더링돼요.
+
+> **대안.** 더 중립적인 라틴 서체가 필요하다면 Inter(`@fontsource-variable/inter`)로
+> Nunito Sans Variable을 대체할 수 있어요. `@ghds/tokens`의 `ref.fontFamily` 값을
+> 바꾸고 임포트를 업데이트하면 돼요 — 컨슈머 계약은 동일하게 유지돼요.
+
+## 토큰 스택
+
+이 스택들은 `@ghds/tokens`의 `ref` 티어에서 정의되고 `sys.typography.*.fontFamily`를 통해
+소비돼요.
+
+```css
+/* ref.fontFamily.sketch — 제목/타이틀 */
+'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive
+
+/* ref.fontFamily.sans — 본문/라벨/캡션 */
+'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system,
+'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif
+
+/* ref.fontFamily.mono — 코드 */
+ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace
+```
+
+`sans`에서 한국어 글리프의 해석 순서는: Nunito Sans Variable (한국어 없음) → Pretendard
+(Fontsource로는 라틴만) → **Noto Sans KR Variable** (로드됨, 한국어 있음) ✓.
+
+## 앱에서 폰트 로드하기
+
+`@ghds/tokens`는 스택(선호 순서)을 선언해요. 실제 웹폰트 파일 로딩은 [Fontsource](https://fontsource.org/)를 통해 컨슈머 앱이 수행해요 — 셀프 호스팅, 외부
+CDN 없음, 프라이버시 친화적, 버전 고정. 토큰 패키지는 의존성이 없는 상태로 유지돼요.
+
+### 1. Fontsource 패키지 설치
+
+```bash
+pnpm add @fontsource-variable/nunito-sans @fontsource-variable/noto-sans-kr @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+```
+
+| 서체 | 패키지 | 웨이트 |
+| --- | --- | --- |
+| Gochi Hand (디스플레이, 라틴) | `@fontsource/gochi-hand` | 400 |
+| Gaegu (디스플레이, 한국어) | `@fontsource/gaegu` | 400 |
+| Nunito Sans Variable (본문, 라틴) | `@fontsource-variable/nunito-sans` | variable (200–1000) |
+| Noto Sans KR Variable (본문, 한국어) | `@fontsource-variable/noto-sans-kr` | variable (100–900) |
+| Pretendard (본문, 라틴 전용) | `@fontsource/pretendard` | 400 / 500 / 700 |
+
+### 2. 앱 진입점에서 CSS 임포트
+
+`@ghds/tokens/css`와 함께 `@font-face` CSS를 임포트해요. 사용하는 웨이트만 임포트하여
+페이로드를 작게 유지하세요.
+
+```ts
+import '@ghds/tokens/css';
+
+// 스케치 / 디스플레이
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/gaegu/400.css';
+
+// 본문 / UI
+import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource-variable/noto-sans-kr/wght.css';
+import '@fontsource/pretendard/400.css';
+import '@fontsource/pretendard/500.css';
+import '@fontsource/pretendard/700.css';
+```
+
+Pretendard의 웨이트 **400 / 500 / 700**은 `@ghds/tokens`의
+`ref.fontWeight.regular / .medium / .bold`와 일치해요. Nunito Sans Variable과 Noto Sans KR
+Variable은 모든 웨이트를 포함하는 단일 가변 파일이에요.
+
+### 3. 끝이에요 — 컴포넌트가 폰트를 자동으로 사용해요
+
+모든 GHDS 컴포넌트는 `@ghds/tokens/css`가 내보내는 `--sys-typography-*` CSS 변수에서
+`font-family`를 읽어요. `@font-face` 규칙이 임포트되면 스택의 이름이 지정된 서체가
+셀프 호스팅 파일로 연결돼요. 컴포넌트별 폰트 설정은 필요 없어요.
+
+## 웨이트 및 페이로드 가이드
+
+- **Noto Sans KR Variable**은 모든 웨이트(100–900)를 서브셋된 한국어 woff2 파일로
+  제공해요 (Unicode 범위별로 분할된 약 124개 파일). 브라우저는 페이지의 텍스트에 필요한
+  서브셋만 다운로드하므로 실제 페이로드는 작아요.
+- **Nunito Sans Variable**은 모든 웨이트를 약 50 KB woff2 파일 하나로 제공해요 — 개별
+  정적 웨이트보다 `/wght.css` 임포트를 선호하세요.
+- **Pretendard**(Fontsource)는 라틴 전용 정적 폰트예요. 400 / 500 / 700만 임포트하세요.
+- **Gochi Hand**와 **Gaegu**는 각각 단일 웨이트(400)를 가지며 크기가 작아요 (약 20–40 KB).
+
+## React Native
+
+React Native는 CSS 콤마 폰트 스택을 지원하지 않아요. `@ghds/tokens/rn` 빌드가 각 웹 스택을
+RN이 사용할 수 있는 **단일 패밀리 이름**으로 자동 변환해요:
+
+| 토큰 | 웹 스택 (CSS) | RN 값 |
+| --- | --- | --- |
+| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR` |
+| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
+
+선택된 RN 서체는 라틴과 한국어 글리프를 모두 포함하고 있어서, RN이 할 수 없는 글리프별
+폴백 없이도 두 언어 모두 올바르게 렌더링돼요.
+
+### Expo 앱에 폰트 로드하기
+
+RN 토큰 값은 그냥 **이름**이에요 — 실제 `.ttf` 파일은 별도로 로드해야 해요.
+[`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/)를 사용해서 폰트를 임베드하세요.
+
+**옵션 A — config 플러그인 (권장, 빌드 시 임베드):**
+
+[Google Fonts의 Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR)과
+[Google Fonts의 Gaegu](https://fonts.google.com/specimen/Gaegu)에서 `.ttf` 파일을 다운로드해서
+`assets/fonts/`에 넣은 뒤, `app.json`에 추가하세요:
+
+```json
+{
+  "plugins": [
+    [
+      "expo-font",
+      {
+        "fonts": [
+          "assets/fonts/NotoSansKR-Regular.ttf",
+          "assets/fonts/NotoSansKR-Medium.ttf",
+          "assets/fonts/NotoSansKR-Bold.ttf",
+          "assets/fonts/Gaegu-Regular.ttf"
+        ]
+      }
+    ]
+  ]
+}
+```
+
+**옵션 B — 런타임 로드:**
+
+```tsx
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
+
+export function App() {
+  const [loaded, error] = useFonts({
+    NotoSansKR: require('./assets/fonts/NotoSansKR-Regular.ttf'),
+    'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
+    'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
+    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) SplashScreen.hideAsync();
+  }, [loaded, error]);
+
+  if (!loaded && !error) return null;
+  return /* 앱 */;
+}
+```
+
+웨이트 매핑에 대한 자세한 내용은 `packages/react-native/AGENTS.md`를 참고하세요.
+
+## 요약
+
+1. 폰트 스택은 토큰이에요 — 컴포넌트가 아닌 `@ghds/tokens`(`ref.fontFamily`)에 있어요.
+2. 스택은 글리프별 대체를 위해 순서가 지정돼요 — 라틴 서체가 먼저, 한국어 서체가 그 다음이에요.
+3. 웹폰트 파일 로딩은 컨슈머의 역할이에요, Fontsource를 통해 수행해요.
+4. 진입점에서 CSS를 한 번 임포트하면 컴포넌트가 폰트를 자동으로 사용해요.

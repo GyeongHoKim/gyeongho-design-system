@@ -1,0 +1,126 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 체크박스
+description: 중간 상태와 CheckboxGroup 래퍼를 가진 손그림 스타일의 체크박스입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CheckboxDemoReact from '../../../components/demos/CheckboxDemo.tsx';
+import CheckboxDemoLit from '../../../components/demos/CheckboxDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Checkbox`는 켜기/끄기 불리언 입력이에요 — `indeterminate`("일부만 선택됨") 상태도 보여줄 수 있어요. `CheckboxGroup`은 관련 체크박스들을 묶고 결합된 값을 배열로 관리해요.
+
+## 구조
+
+실제 `<input type="checkbox">`(React/Web Components) 또는 `accessibilityRole="checkbox"`를 가진 `Pressable`(React Native) 뒤에 그려진 손그림 박스예요. 체크되거나 중간 상태일 때 손그림 체크 또는 마이너스 표시가 위에 렌더돼요 — 새로운 글리프 형상을 만드는 대신 기존 `Icon`/`gh-icon` 컴포넌트를 재사용해요.
+
+## 변형 및 상태
+
+체크박스에는 시각적 변형이 없어요 — 상태만 있어요.
+
+<StateList
+  states={[
+    { name: '체크 안 됨', present: true },
+    { name: '체크됨', present: true, note: '박스가 단색으로 채워지고; 체크 표시가 렌더돼요.' },
+    { name: '중간 상태', present: true, note: '체크 대신 대시 표시가 렌더돼요. DOM 전용 프로퍼티이며 폼 값은 아니에요.' },
+    { name: '비활성화', present: true },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '여러 체크박스가 하나의 다중 선택 필드를 나타낼 때 CheckboxGroup을 사용하세요.',
+    '"모두 선택" 체크박스에 일부(전체는 아닌) 자식이 체크되었을 때 indeterminate를 사용하세요.',
+  ]}
+  dont={[
+    "즉각적인 설정 토글처럼 Switch가 더 적합한 이진 선택에 단일 Checkbox를 사용하지 마세요 — Checkbox는 폼 필드를, Switch는 즉각적인 상태 변화를 의미해요.",
+    "indeterminate가 체크 토글 후에도 유지되길 기대하지 마세요 — checked를 설정하면 해제돼요(네이티브 체크박스 동작과 동일).",
+  ]}
+/>
+
+## 접근성
+
+- **React**: 실제 `<input type="checkbox">`가 네이티브 키보드(Space 토글)와 포커스 동작을 가져요. `indeterminate`는 DOM 전용 프로퍼티(HTML 속성이나 폼 값이 아님)예요 — 네이티브 브라우저/다른 체크박스 구현처럼 기본 input에 명령형으로 설정해요.
+- **Web Components**: `gh-checkbox`는 섀도 DOM 안에 실제 `<input type="checkbox">`를 렌더해서 네이티브 동작을 제공하고, `ElementInternals`를 통해 실제 `<form>` 참여로 체크 상태를 연결해요(폼 값은 체크됐을 때만 존재). 또한 reflected된 `checked`/`indeterminate` 속성과 함께 `ElementInternals.states`를 통해 `:state(checked)`/`:state(indeterminate)` CSS 의사 클래스도 노출해요.
+- **React Native**: 네이티브 플랫폼을 위해 `accessibilityRole="checkbox"` + `accessibilityState.checked`(중간 상태일 때 `'mixed'`), 그리고 웹 타겟을 위한 직접 `aria-checked` prop(React Native Web은 `accessibilityState`에서 `aria-checked`를 `aria-disabled`처럼 파생하지 않아요).
+- 일반적인 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+라벨은 동작이 아니라 무엇에 동의하는지를 나타내요("Subscribe to updates") — Button과 대조돼요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Radix Label로 연결된 보이는 라벨.' },
+        { name: 'indeterminate', type: 'boolean', description: '3상태 시각 표시. DOM 프로퍼티로 명령형 설정.' },
+        { name: 'value', type: 'string', description: 'CheckboxGroup 내에서 이 체크박스를 식별해요. 단독 사용 시 무시돼요.' },
+        { name: 'checked', type: 'boolean', description: '제어 방식의 체크 상태.' },
+        { name: 'defaultChecked', type: 'boolean', default: 'false', description: '비제어 방식의 초기 체크 상태.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: '...rest', type: 'InputHTMLAttributes', description: '다른 모든 네이티브 input 속성(onChange, name 등)이 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'checked', type: 'boolean', default: 'false', description: 'reflected 속성.' },
+        { name: 'indeterminate', type: 'boolean', default: 'false', description: 'reflected 속성. 내부 input의 DOM 프로퍼티로도 설정돼요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션과 폼 참여를 비활성화해요.' },
+        { name: 'name', type: 'string', description: '제출되는 컨트롤 이름.' },
+        { name: 'value', type: 'string', default: "'on'", description: '체크 시 제출되는 값.' },
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨이자 접근성 이름.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: '보이는 접근성 라벨 — 필수(RN에는 별도 라벨 요소가 없어요).' },
+        { name: 'checked', type: 'boolean', description: '제어 방식의 체크 상태.' },
+        { name: 'defaultChecked', type: 'boolean', description: '비제어 방식의 초기 체크 상태.' },
+        { name: 'onCheckedChange', type: '(checked: boolean) => void', description: '토글 시 다음 체크 상태로 호출돼요.' },
+        { name: 'indeterminate', type: 'boolean', description: '3상태 시각 표시.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: 'value', type: 'string', description: 'CheckboxGroup 내에서 이 체크박스를 식별해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+React와 Web Components가 아래에 라이브로 렌더돼요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CheckboxDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <CheckboxDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Checkbox } from '@ghds/react-native';
+
+<Checkbox label="Subscribe to updates" checked={subscribed} onCheckedChange={setSubscribed} />;
+```

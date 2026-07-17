@@ -1,0 +1,49 @@
+---
+import CtaButton from '../../components/CtaButton.tsx';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { NAV } from '../../lib/nav';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="Home"
+  description="GHDS is a cross-platform design system with a hand-drawn (sketchy) look and feel. With tokens as the single source of truth, it delivers the same styling across React, Lit, and React Native."
+>
+  <section class="section page-intro">
+    <span class="eyebrow">GH Design System</span>
+    <h1>One set of tokens. The same hand-drawn look, in every framework.</h1>
+    <p>
+      GHDS is a cross-platform design system that uses <code>@ghds/tokens</code> as its single
+      source of truth to deliver the same hand-drawn style across React, Lit web components, and
+      React Native. Explore the tokens, components, and patterns in the docs below.
+    </p>
+    <div class="demo-row cta-row">
+      <CtaButton href={withBase('/getting-started/')} variant="primary" client:only="react">
+        Get Started →
+      </CtaButton>
+      <CtaButton href={withBase('/components/')} variant="neutral" client:only="react">
+        View Components
+      </CtaButton>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Explore</h2>
+    <div class="card-grid">
+      {
+        NAV.map((item) => (
+          <a class="card-link" href={withBase(item.href)}>
+            <gh-card elevated>
+              <h3>{item.label.en}</h3>
+              <p>{item.summary.en}</p>
+            </gh-card>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '@ghds/web-components';
+</script>

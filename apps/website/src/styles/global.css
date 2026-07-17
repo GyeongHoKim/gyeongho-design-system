@@ -145,22 +145,40 @@ code {
   background-color: var(--sys-color-bg-primary-default);
 }
 
-.theme-toggle {
+/* Theme toggle is now a <gh-button variant="neutral"> — styled by the
+ * component. The slotted icon/label spans just need inline-flex layout. */
+#theme-toggle {
   display: inline-flex;
   align-items: center;
   gap: var(--sys-spacing-xs);
   cursor: pointer;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sys-spacing-xs);
+}
+
+.lang-toggle {
+  cursor: pointer;
   font-family: var(--sys-typography-label-fontFamily);
   font-size: var(--sys-typography-label-fontSize);
+  font-weight: var(--sys-typography-label-fontWeight);
   color: var(--sys-color-text-primary);
   background-color: var(--sys-color-bg-surface);
   border: var(--sys-border-width-default) solid var(--sys-color-border-strong);
   border-radius: var(--sys-radius-pill);
-  padding: var(--sys-spacing-xs) var(--sys-spacing-md);
+  padding: var(--sys-spacing-xs) var(--sys-spacing-sm);
+  text-decoration: none;
 }
 
-.theme-toggle:hover {
+.lang-toggle:hover {
   background-color: var(--sys-color-bg-muted);
+}
+
+.cta-row {
+  gap: var(--sys-spacing-sm);
 }
 
 .site-main {
@@ -218,37 +236,28 @@ code {
   gap: var(--sys-spacing-md);
 }
 
-.io-card {
+/* Home page cards use <gh-card elevated> (Lit). The <a> wrapper just needs
+ * to remove link styling and let the card fill the grid cell. */
+.card-link {
   display: block;
-  background-color: var(--sys-color-bg-surface);
-  border: var(--sys-border-width-default) solid var(--sys-color-border-default);
-  border-radius: var(--sys-radius-lg);
-  padding: var(--sys-spacing-lg);
-  box-shadow: var(--sys-shadow-sm);
-  color: var(--sys-color-text-primary);
-}
-
-.io-card:hover {
   text-decoration: none;
-  box-shadow: var(--sys-shadow-md);
-  border-color: var(--sys-color-border-strong);
+  color: inherit;
 }
 
-.io-card h3 {
+.card-link gh-card {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.card-link gh-card h3 {
   margin-bottom: var(--sys-spacing-xs);
 }
 
-.io-card p {
+.card-link gh-card p {
   margin: 0;
   color: var(--sys-color-text-secondary);
   font-size: var(--sys-typography-label-fontSize);
-}
-
-.io-card .io-en {
-  display: block;
-  color: var(--sys-color-text-secondary);
-  font-family: var(--sys-typography-body-fontFamily);
-  font-size: var(--sys-typography-caption-fontSize);
 }
 
 /* ---- Token tables / swatches (Design Style) ------------------------- */

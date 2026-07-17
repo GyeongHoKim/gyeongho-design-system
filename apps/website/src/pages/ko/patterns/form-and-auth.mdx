@@ -1,0 +1,182 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 폼 및 인증 패턴
+description: GHDS 컴포넌트로 폼 필드, 검증, 인증 흐름을 조합하는 방법을 다뤄요.
+---
+
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import PatternFormDemoReact from '../../../components/demos/PatternFormDemo.tsx';
+import PatternFormDemoLit from '../../../components/demos/PatternFormDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+폼은 사용자가 애플리케이션에 데이터를 전달하는 주요 방법이에요. 이 패턴은 `FormField`, `Input`,
+`Textarea`, `Select`, `Checkbox`, `Radio`, `Switch`, `Button`을 검증되고 접근 가능한 폼으로
+조합하는 방법과, 대부분의 앱의 진입점을 형성하는 인증 흐름(로그인, 회원가입, 비밀번호 재설정)을 다뤄요.
+
+## 폼 레이아웃 조합
+
+잘 구조화된 폼은 필드당 세 가지 종류의 정보를 계층화하며, 모두 `sys.spacing.*`으로 간격을 두어요:
+
+```
+┌─ FormField ──────────────────────────────┐
+│  라벨 (필수/선택 표시)                    │  ← comp.formField.label.*
+│  ┌─ Input / Select / Textarea ──────────┐ │
+│  │                                      │ │  ← comp.formField.input.*
+│  └──────────────────────────────────────┘ │
+│  도움말 텍스트 (문맥적, 선택적)            │  ← comp.formField.helper.*
+│  에러 메시지 (role="alert", 조건부)       │  ← comp.formField.error.*
+└───────────────────────────────────────────┘
+```
+
+`FormField`가 연결을 자동화해요: `htmlFor` / `for`로 라벨을 연결하고, `aria-describedby` +
+`aria-invalid`로 에러 메시지를 입력에 연결해서, 보조 기술이 에러를 나타날 때 알려줘요.
+
+### 간격
+
+필드, 라벨, 메시지 사이의 모든 간격은 `sys.spacing.*`에서 가져와요. `comp.formField.gap` 토큰이
+쌓인 `FormField` 인스턴스 간의 수직 리듬을 제어해요; 내부 라벨→입력→도움말→에러 간격도 토큰 기반이에요.
+
+```css
+/* 폼 필드 쌓기 */
+.form { display: flex; flex-direction: column; gap: var(--comp-formField-gap); }
+```
+
+## 검증
+
+### 검증 시기
+
+<DoDont
+  do={[
+    '블러 시 검증(필드별) — 사용자가 타이핑을 마친 다음에 검증하세요.',
+    '제출 시 검증(전체 폼) — 요청 전에 모든 것을 한 번에 잡아내요.',
+    'role="alert"로 단정적으로 에러를 알려서 스크린 리더가 중단하게 하세요.',
+    '필수 필드를 별표 또는 "(필수)" 텍스트로 표시하세요 — 색상만으로는 안 돼요.',
+  ]}
+  dont={[
+    '매 키 입력마다 검증하지 마세요 — 시끄럽고 빠른 타이피스트를 벌해요.',
+    '필드가 다시 포커스되거나 다시 제출되기 전까지 에러를 지우지 마세요.',
+    '플레이스홀더 텍스트를 라벨로 사용하지 마세요 — 포커스 시 사라져요.',
+  ]}
+/>
+
+### 인라인 vs 요약 에러
+
+| 전략 | 사용 시기 | 구현 |
+|----------|-------------|----------------|
+| **인라인 (필드별)** | 짧은 폼(≤ 5 필드), 또는 에러가 하나의 필드에 강하게 결합될 때 | `FormField error="..."` |
+| **요약 (폼 상단)** | 긴 폼(≥ 6 필드), 또는 하나의 결정이 여러 필드에 영향을 미칠 때 | 폼 위에 모든 에러를 요약하는 `Alert variant="danger"`를 렌더링하고, 인라인 표시기를 추가 |
+
+요약 에러의 경우, 최상위 `Alert`과 필드별 `aria-invalid="true"` 표시기를 함께 사용하세요 —
+요약이 에러 수를 알리고, 각 필드는 시각적 표시기를 보여줘요.
+
+```tsx
+// React — 요약 + 인라인 패턴
+{errors.length > 0 && (
+  <Alert variant="danger" title={`${errors.length} field(s) need attention`}>
+    <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+      {errors.map((e) => <li key={e.field}>{e.message}</li>)}
+    </ul>
+  </Alert>
+)}
+<FormField label="Email" error={fieldErrors.email}>
+  <Input aria-invalid={!!fieldErrors.email} />
+</FormField>
+```
+
+## 인증 흐름
+
+### 로그인
+
+최소한의 2필드 폼(이메일/비밀번호용 `FormField` + `Input`, 제출용 `Button variant="primary"`).
+"비밀번호를 잊으셨나요?" 링크가 재설정 흐름으로 이동해요. 로그인 실패 시 인라인 에러 또는
+폼 상단의 `Alert variant="danger"`를 보여줘요.
+
+```tsx
+// React — 로그인 폼
+<FormField label="Email">
+  <Input type="email" placeholder="you@example.com" />
+</FormField>
+<FormField label="Password">
+  <Input type="password" />
+</FormField>
+<Button variant="primary">Log in</Button>
+```
+
+### 회원가입 (단계별)
+
+다단계 회원가입은 `Tabs`(또는 순차적 패널)을 사용해서 폼을 관리 가능한 단위로 나눠요.
+각 단계는 자체 검증을 가지고, "다음" 버튼은 현재 단계가 유효할 때만 활성화돼요.
+`Progress` 표시줄이나 단계 표시기가 위치를 보여줘요.
+
+```tsx
+// React — Tabs를 사용한 3단계 회원가입
+const [step, setStep] = useState(0);
+<Tabs activeTab={step} onChange={setStep} items={[
+  { label: 'Account', content: <AccountStep /> },
+  { label: 'Profile', content: <ProfileStep /> },
+  { label: 'Confirm', content: <ConfirmStep /> },
+]} />;
+```
+
+### 비밀번호 재설정
+
+두 화면: (1) 이메일 입력 → `Button` 제출 → `Toast variant="success"`("받은편지함을 확인하세요");
+(2) 새 비밀번호 + 확인 입력 → `Button` 제출 → 로그인으로 리다이렉트. 에러 시, 재시도 프롬프트와 함께
+`Alert variant="danger"`.
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <PatternFormDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <PatternFormDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native — 로그인 폼
+import { Button, FormField, Input } from '@ghds/react-native';
+
+<FormField label="Email">
+  <Input placeholder="you@example.com" />
+</FormField>
+<FormField label="Password">
+  <Input secureTextEntry />
+</FormField>
+<Button label="Log in" variant="primary" onPress={handleLogin} />
+```
+
+## 접근성
+
+<KeyboardTable
+  rows={[
+    { keys: 'Tab', action: '문서 순서대로 폼 필드 사이를 이동해요.' },
+    { keys: 'Enter', action: '폼을 제출해요 (포커스가 필드에 있을 때).' },
+    { keys: 'Space', action: 'Checkbox / Switch를 토글하고, Button을 활성화해요.' },
+  ]}
+/>
+
+- **에러 알림**: `FormField`가 `aria-describedby`를 에러에 연결하고, 에러 엘리먼트는
+  `role="alert"`를 가지고 있어서 스크린 리더를 중단시켜요.
+- **필수 필드**: 색상만이 아닌 텍스트("필수")로 표시하세요. `FormField`는 `required` prop을 받아서
+  별표를 추가해요 — 시각적으로 그리고 스크린 리더용으로.
+- **비활성화 버튼**: 비활성화된 제출 버튼은 "폼이 준비되지 않음"을 전달해요 — 주의가 필요한 필드에
+  대한 보이는 힌트와 함께 사용하세요.
+- 전체 키보드 및 ARIA 참조는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 관련 컴포넌트
+
+- <a href={withBase('/components/form-field/')}>FormField</a> — 라벨 + 도움말 + 에러 래퍼
+- <a href={withBase('/components/input/')}>Input</a> / <a href={withBase('/components/textarea/')}>Textarea</a> — 텍스트 입력
+- <a href={withBase('/components/select/')}>Select</a> — 드롭다운 선택
+- <a href={withBase('/components/checkbox/')}>Checkbox</a> / <a href={withBase('/components/radio/')}>Radio</a> / <a href={withBase('/components/switch/')}>Switch</a> — 선택 컨트롤
+- <a href={withBase('/components/button/')}>Button</a> — 제출 및 동작
+- <a href={withBase('/components/alert/')}>Alert</a> / <a href={withBase('/components/toast/')}>Toast</a> — 피드백
+- <a href={withBase('/components/tabs/')}>Tabs</a> / <a href={withBase('/components/progress/')}>Progress</a> — 다단계 회원가입

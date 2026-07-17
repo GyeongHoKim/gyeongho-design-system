@@ -18,5 +18,17 @@ export default defineConfig({
   // injected tags; authored links are made base-aware via `src/lib/withBase`.
   site: 'https://gyeonghokim.github.io',
   base: '/gyeongho-design-system',
+  // i18n: English (default) + Korean. `prefixDefaultLocale` gives both locales
+  // an explicit URL prefix (/en/…, /ko/…) for parity, and `redirectToDefaultLocale`
+  // auto-redirects the bare root to /en/.
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'ko'],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: true,
+      fallbackType: 'redirect',
+    },
+  },
   integrations: [react(), mdx()],
 });

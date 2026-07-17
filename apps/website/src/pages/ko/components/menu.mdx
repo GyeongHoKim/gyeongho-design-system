@@ -1,0 +1,128 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 메뉴
+description: 버튼으로 실행되는 동작들의 손그림 스타일 드롭다운 메뉴입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import MenuDemoReact from '../../../components/demos/MenuDemo.tsx';
+import MenuDemoLit from '../../../components/demos/MenuDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Menu`(드롭다운)은 버튼으로 실행되는 **동작** 목록을 제공해요 — Edit, Duplicate, Delete. 목록에서 지속적인 값을 선택하려면 <a href={withBase('/components/select/')}>Select</a>를 대신 사용하세요.
+
+## 구조
+
+`aria-haspopup="menu"`를 가진 `<button>` 트리거가 `role="menuitem"`들의 떠 있는 `role="menu"` 패널을 열어요. 트리거와 패널 모두 손그림 박스(`@ghds/sketch-core`)예요. 데이터 기반 — `{ value, label, disabled? }` 형태의 `items` 배열을 전달하세요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '닫힘', present: true, note: '기본값; aria-expanded=false.' },
+    { name: '열림', present: true, note: '패널 표시; 포커스가 항목으로 이동해요.' },
+    { name: '강조된 항목', present: true, note: '포커스된 menuitem이 강조돼요.' },
+    { name: '비활성화된 항목', present: true, note: '항목별; 키보드로 건너뛰어요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '폼 값 선택이 아니라 객체에 대한 동작에 사용하세요(폼 값은 Select 사용).',
+    '라벨을 동작 지향적으로(동사) 유지하세요.',
+    '파괴적인 동작을 조심스럽게 묶고, 되돌릴 수 없는 동작에는 확인을 고려하세요.',
+  ]}
+  dont={[
+    "하나의 메뉴에 관련 없는 동작을 너무 많이 넣지 마세요.",
+    "몇 개의 보이는 버튼이 더 명확할 자리에 Menu를 사용하지 마세요.",
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: `aria-haspopup="menu"` + `aria-expanded` 트리거; `role="menu"` 패널의 `role="menuitem"`. Enter/Space/ArrowDown이 열고 첫 항목에 포커스; Arrow/Home/End로 포커스 이동; Enter/Space로 활성화; Escape로 닫고 트리거로 포커스 복원; 외부 클릭으로 닫아요. Web Components는 `select` 이벤트를 발생시켜요.
+- **React Native**: `Modal`에 고정된 패널; 탭으로 선택. `accessibilityRole="menu"`/`"menuitem"`. 화살표 키 roving은 웹 전용이에요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Enter / Space / ↓', description: '메뉴를 열고 첫 항목에 포커스.' },
+    { keys: 'Arrow Up / Down', description: '항목 간 포커스 이동(순환).' },
+    { keys: 'Home / End', description: '첫 번째 / 마지막 항목에 포커스.' },
+    { keys: 'Enter / Space', description: '포커스된 항목 활성화.' },
+    { keys: 'Escape', description: '닫고 트리거로 포커스 복귀.' },
+  ]}
+/>
+
+## 콘텐츠
+
+동작 라벨(동사). 짧게 유지하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: '트리거 버튼 라벨.' },
+        { name: 'items', type: 'MenuItem[]', description: '항목별 { value, label, disabled? }.' },
+        { name: 'onSelect', type: '(value: string) => void', description: '활성화된 항목 값으로 호출돼요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '전체 메뉴를 비활성화해요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'items', type: 'GhMenuItem[]', description: '{ value, label, disabled? } (프로퍼티).' },
+        { name: 'label', type: 'string', description: '트리거 라벨.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '전체 메뉴를 비활성화해요.' },
+        { name: 'select event', type: 'CustomEvent<string>', description: '활성화된 값으로 발생해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'label', type: 'string', description: '트리거 버튼 라벨.' },
+        { name: 'items', type: 'MenuItem[]', description: '항목별 { value, label, disabled? }.' },
+        { name: 'onSelect', type: '(value: string) => void', description: '활성화된 항목 값으로 호출돼요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '전체 메뉴를 비활성화해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <MenuDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <MenuDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Menu } from '@ghds/react-native';
+
+<Menu
+  label="Actions"
+  items={[{ value: 'edit', label: 'Edit' }, { value: 'delete', label: 'Delete' }]}
+  onSelect={(value) => run(value)}
+/>;
+```

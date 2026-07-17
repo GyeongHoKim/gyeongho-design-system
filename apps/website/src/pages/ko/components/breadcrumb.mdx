@@ -1,0 +1,113 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 브레드크럼
+description: 현재 페이지로 가는 경로를 보여주는 손그림 스타일의 브레드크럼 내비게이션 경로입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import BreadcrumbDemoReact from '../../../components/demos/BreadcrumbDemo.tsx';
+import BreadcrumbDemoLit from '../../../components/demos/BreadcrumbDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Breadcrumb`은 사이트 계층 구조에서 현재 페이지의 위치를 보여주고, 사람들이 경로를 따라 상위로 이동할 수 있게 해줘요. 보조 내비게이션 보조 도구예요 — 주 내비게이션을 대체하지 않아요.
+
+## 구조
+
+정렬된 목록을 감싸는 `<nav>` 랜드마크예요: 각 상위 항목은 링크이고, 손그림 셰브론으로 구분되며, 마지막 항목은 현재 페이지(링크 아님)예요. API는 모든 플랫폼에서 **데이터 기반**이에요 — `{ label, href? }` 형태의 `items` 배열을 전달하세요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '링크', present: true, note: '마지막을 제외한 모든 항목은 활성화 가능한 링크예요.' },
+    { name: '현재 페이지', present: true, note: '마지막 항목은 aria-current="page"로 표시되며 링크가 아니에요.' },
+    { name: 'Hover', present: true, note: '링크가 hover 시 primary 텍스트 색상으로 변해요(웹).' },
+    { name: '비활성화', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '사이트 루트부터 현재 페이지 순으로 항목을 정렬하세요.',
+    '라벨을 짧게 유지하세요 — 링크하는 페이지 제목과 일치시키세요.',
+    '계층 구조에 사용하고, 단계별 흐름에는 사용하지 마세요(그런 경우 stepper/wizard를 사용하세요).',
+  ]}
+  dont={[
+    "현재 페이지를 링크로 만들지 마세요 — 현재 있는 페이지예요.",
+    "브레드크럼을 유일한 내비게이션 수단으로 사용하지 마세요; 주 내비게이션을 보완해요.",
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: `<nav aria-label="Breadcrumb">` 랜드마크가 `<ol>`을 감싸고, 현재 페이지는 `aria-current="page"`를 가져요. Web Components는 링크 활성화 시 `select` 이벤트를 발생시켜요.
+- **React Native**: 행은 라벨과 함께 `role="navigation"`을 노출하고, 항목은 `accessibilityRole="link"`예요. React Native에는 `href`가 없어요 — `onSelect` 콜백에서 내비게이션을 처리하세요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+목적지 페이지 제목을 반영하는 짧고 인식하기 쉬운 라벨이에요. 마지막 항목은 현재 페이지의 이름이에요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'items', type: 'BreadcrumbItem[]', description: '{ label, href? } 경로; 마지막 항목이 현재 페이지예요.' },
+        { name: 'label', type: 'string', default: "'Breadcrumb'", description: 'nav 랜드마크의 접근성 이름.' },
+        { name: 'onSelect', type: '(item, index) => void', description: '링크가 활성화될 때 호출돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'items', type: 'GhBreadcrumbItem[]', description: '프로퍼티(속성 아님) — JS로 설정해요.' },
+        { name: 'label', type: 'string', default: "'Breadcrumb'", description: 'nav 랜드마크의 접근성 이름.' },
+        { name: 'select event', type: 'CustomEvent<{ item, index }>', description: '링크 활성화 시 발생해요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'items', type: 'BreadcrumbItem[]', description: '{ label, href? } 경로.' },
+        { name: 'label', type: 'string', default: "'Breadcrumb'", description: '접근성 이름.' },
+        { name: 'onSelect', type: '(item, index) => void', description: '여기로 이동 — RN에는 href가 없어요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <BreadcrumbDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <BreadcrumbDemoLit />
+  </div>
+</div>
+
+```tsx
+// React Native
+import { Breadcrumb } from '@ghds/react-native';
+
+<Breadcrumb
+  items={[{ label: 'Home', href: '/' }, { label: 'Data' }]}
+  onSelect={(item) => navigate(item.href)}
+/>;
+```
