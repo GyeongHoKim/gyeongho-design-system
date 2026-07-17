@@ -48,6 +48,14 @@ jobs:
           # reg-keygen-git-hash-plugin walks git history to find the baseline commit.
           fetch-depth: 0
 
+      # actions/checkout leaves a detached HEAD. reg-keygen-git-hash-plugin reads the
+      # current branch name straight off git (no override option, unlike the notify
+      # plugin's `ref` config) to compute its own snapshot key — on detached HEAD that
+      # throws and reg-suit exits 1. Materialize a real local branch pointing at the
+      # checked-out commit so `git branch --show-current` resolves.
+      - name: Ensure a real branch (reg-keygen-git-hash-plugin needs non-detached HEAD)
+        run: git checkout -B "${{ github.head_ref || github.ref_name }}"
+
       - name: Setup toolchain
         uses: ./.github/actions/setup
 
