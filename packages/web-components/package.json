@@ -1,6 +1,6 @@
 {
   "name": "@ghds/web-components",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Framework-agnostic hand-drawn (sketchy) web components for GHDS, authored with Lit. Outlines from @ghds/sketch-core, design values from @ghds/tokens.",
   "license": "MIT",
   "repository": {
