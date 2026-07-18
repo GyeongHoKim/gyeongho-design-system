@@ -2,6 +2,20 @@
 
 GHDS ships the same design as three separate implementations — `@ghds/react`, `@ghds/web-components` (Lit, `gh-*` custom elements), and `@ghds/react-native`. They are **not** a single API with three renderers; prop names, event shapes, and even the supported variant set diverge in specific, verified ways. Do not port a prop name from one platform to another without checking this file first.
 
+## Contents
+
+- Dialog family accessible title: `title` vs `heading`
+- Change events: three different shapes
+- Button content: children vs `label`-only
+- Button `variant`: React Native has no `'neutral'`
+- React-Native-only props
+- Web-Components-only: native form participation
+- Selection groups: Web Components has no shared `value`
+- `orientation` union: React Native uses `'row' | 'column'`
+- `Separator` `decorative` default differs
+- React Native touch adaptations: no hover / no right-click
+- Accessibility prop gaps on React Native
+
 ## Dialog family accessible title: `title` vs `heading`
 
 React and React Native use `title` for a dialog's accessible heading. Web Components uses `heading` for the identical concept. This applies to the **entire dialog family**, not just `Modal`: `Modal`, `AlertDialog`, `Drawer`, and `Sheet` all take `title` on React/React Native and `heading` on Web Components. (`Empty` — an empty-state placeholder, not a dialog — follows the same `title`→`heading` rename in Web Components.)
@@ -89,23 +103,6 @@ React and Web Components support `'primary' | 'danger' | 'neutral'`. React Nativ
 <Button label="Cancel" variant="primary" />
 ```
 
-## Button as a link: Web Components `href` vs React `asChild`
-
-A navigation action that should *look* like a button but behave as a real link (right-clickable, focusable, `Cmd`-clickable) is expressed differently per platform.
-
-```tsx
-// Web Components — set href on gh-button; it renders an <a> internally.
-// target/rel are forwarded. A disabled gh-button stays a <button>.
-<gh-button variant="neutral" href="/ko/" aria-label="한국어로 보기">한국어</gh-button>
-```
-
-```tsx
-// React — Button has no href; use `asChild` to project your own anchor.
-<Button variant="neutral" asChild><a href="/ko/">한국어</a></Button>
-```
-
-React Native has neither — navigation there is a `Button`/`Pressable` with an `onPress` handler that drives your navigator, not an href.
-
 ## React-Native-only props
 
 `testID` and `accessibilityHint` exist only on React Native — they have no equivalent prop on React or Web Components. When porting a component's usage from React/Web Components to React Native, add them where useful for testing/accessibility; when porting the other direction, drop them (they don't exist elsewhere and TypeScript will reject them on React/Web Components).
@@ -113,15 +110,6 @@ React Native has neither — navigation there is a `Button`/`Pressable` with an 
 ## Web-Components-only: native form participation
 
 `Button`, `Checkbox`, and `Switch` on Web Components participate in native `<form>` submission and reset via `ElementInternals`/form-association — a real `<form>` submit or reset affects them automatically. React has no equivalent (plain DOM form semantics apply instead — you wire submission yourself), and React Native has no native `<form>` concept at all.
-
-## Web-Components-only: `gh-navigation-menu` `current`
-
-`gh-navigation-menu` on Web Components takes a `current` property (the active page's path) and highlights the matching item itself: a standalone link matches its path exactly, a dropdown group lights up when a child is the current page or an ancestor of it, and the exact leaf link gets `aria-current="page"`. React and React Native `NavigationMenu` have no `current` prop — mark the active route yourself (React is href-based, so compare against the router location; React Native is selection-callback based, so track the active `value`).
-
-```tsx
-// Web Components — the element resolves the highlight from the path.
-<gh-navigation-menu .items=${items} current="/en/components/button"></gh-navigation-menu>
-```
 
 ## Selection groups: Web Components has no shared `value`
 
