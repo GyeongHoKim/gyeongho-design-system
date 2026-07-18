@@ -1,5 +1,17 @@
 # @ghds/react-native
 
+## 0.11.2
+
+### Patch Changes
+
+- 76a586b: Add a `homepage` field pointing at the documentation site
+  (`https://gyeonghokim.github.io/gyeongho-design-system/`) to each published
+  package's `package.json`. This improves discoverability on npm and for external
+  documentation indexers (e.g. Context7), which use package/repository metadata to
+  resolve and link the project.
+- Updated dependencies [76a586b]
+  - @ghds/tokens@0.12.1
+
 ## 0.11.1
 
 ### Patch Changes
