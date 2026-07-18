@@ -1,0 +1,101 @@
+---
+import ThemePlayground from '../../components/ThemePlayground.tsx';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="테마 커스터마이징"
+  description="CSS 커스텀 속성 몇 개만 덮어써서 GHDS를 리브랜딩하세요 — 컴포넌트 코드 수정도, 포크도 필요 없습니다."
+>
+  <section class="page-intro">
+    <span class="eyebrow">가이드</span>
+    <h1>테마 커스터마이징</h1>
+    <p>
+      GHDS는 다시 입히기 쉽게 설계되었습니다. 컴포넌트가 칠하는 모든 색은 살아있는
+      <code>comp → sys → ref</code> CSS 커스텀 속성 체인을 통해 해석되므로, 시맨틱 변수 하나만
+      덮어써도 그 변수를 쓰는 모든 것이 재테마링됩니다 — 컴포넌트 코드를 건드리거나 라이브러리를
+      포크할 필요가 없습니다.
+    </p>
+  </section>
+
+  <section class="section prose">
+    <h2>테마링 동작 원리</h2>
+    <p>
+      <code>@ghds/tokens</code>는 CSS 변수를 평탄한 리터럴이 아니라 <strong>참조 체인</strong>으로
+      내보냅니다. 컴포넌트는 자신의 <code>--comp-*</code> 변수를 읽고, 이는 시맨틱
+      <code>--sys-*</code> 변수를 가리키며, 그것은 다시 원시 <code>--ref-*</code> 값을 가리킵니다:
+    </p>
+    <pre><code>{`--ref-palette-brand-600: #3e47c9;                            /* 원시 값     */
+--sys-color-bg-primary-default: var(--ref-palette-brand-600); /* 시맨틱 역할 */
+--comp-button-bg-primary-default: var(--sys-color-bg-primary-default); /* 컴포넌트 */`}</code></pre>
+    <p>
+      별칭이 런타임에 살아있기 때문에, 체인의 어느 고리든 재정의하면 아래로 cascade됩니다.
+      <code>--sys-color-bg-primary-default</code>를 덮어쓰면 primary 역할에 매핑된 모든
+      컴포넌트 — 버튼, 배지, 링크, 포커스 링 — 이 한 번에 바뀝니다.
+    </p>
+
+    <h2>세 단계로 커스터마이징하기</h2>
+    <h3>1. 토큰 스타일시트 로드</h3>
+    <p>앱 진입점에서 한 번만 임포트하세요. 모든 기본 변수가 정의됩니다:</p>
+    <pre><code>{`import '@ghds/tokens/css';`}</code></pre>
+
+    <h3>2. 원하는 변수 덮어쓰기</h3>
+    <p>
+      여러분의 전역 스타일시트에서 <code>:root</code> 아래에 시맨틱 변수를 재정의하세요. 컴포넌트
+      코드는 절대 수정하지 않습니다 — 컴포넌트가 이미 소비하는 토큰을 다시 가리키게 할 뿐입니다:
+    </p>
+    <pre><code>{`:root {
+  --sys-color-bg-primary-default: #0969da;
+  --sys-color-bg-primary-hover:   #0757ba;
+  --sys-color-text-link:          #0969da;
+  --sys-color-border-focus:       #218bff;
+}`}</code></pre>
+
+    <h3>3. 다크 모드 대응</h3>
+    <p>
+      GHDS는 <code>data-theme="dark"</code> 속성으로 테마를 전환합니다(없으면
+      <code>prefers-color-scheme</code>로 폴백). 다크 테마는 시맨틱 변수를 다시 선언하므로,
+      같은 명시도(specificity)에서 다크 값을 지정하지 않으면 덮어써집니다:
+    </p>
+    <pre><code>{`[data-theme="dark"] {
+  --sys-color-bg-primary-default: #218bff;
+  --sys-color-text-link:          #6cb6ff;
+}`}</code></pre>
+
+    <h2>어느 계층을 덮어써야 할까?</h2>
+    <ul>
+      <li>
+        <strong><code>--sys-*</code> (시맨틱) — 여기서 시작하세요.</strong> 가장 안전하고 효율이
+        높은 표면입니다. 각 변수가 역할(<code>primary</code>, <code>danger</code>,
+        <code>text-link</code>…)이라 오버라이드의 의도가 명확하고, 그 역할을 하는 모든 컴포넌트에
+        도달합니다. 아래 playground가 이 계층을 편집합니다.
+      </li>
+      <li>
+        <strong><code>--ref-*</code> (팔레트) — 팔레트 전체를 갈아엎을 때.</strong>
+        <code>--ref-palette-brand-600</code>을 재정의하면 이를 참조하는 모든 시맨틱 토큰이 한
+        번에 이동합니다. 단일 역할이 아니라 밑바탕 컬러 램프를 바꿀 때 사용하세요.
+      </li>
+      <li>
+        <strong><code>--comp-*</code> (컴포넌트) — 특정 컴포넌트 하나만.</strong>
+        <code>--comp-button-bg-primary-default</code>를 덮어쓰면 같은 시맨틱 토큰을 공유하는 다른
+        것에 영향을 주지 않고 그 컴포넌트만 미세 조정합니다.
+      </li>
+    </ul>
+    <p>
+      시맨틱 변수 전체 목록과 라이트/다크 기본값은
+      <a href={withBase('/design-style/')}>디자인 스타일</a> 페이지에 있습니다.
+    </p>
+  </section>
+
+  <section class="section" id="playground">
+    <h2>Playground</h2>
+    <p class="demo-label">
+      시맨틱 색상을 조절하면 실제 GHDS 컴포넌트가 실시간으로 재테마링됩니다. Light/Dark를 전환해
+      테마별 값을 따로 지정하세요 — 생성된 CSS는 <code>:root</code> 블록과
+      <code>[data-theme="dark"]</code> 블록을 함께 내보내므로 그대로 스타일시트에 붙여넣으면 됩니다.
+    </p>
+    {/* client:only — GHDS React 컴포넌트는 브라우저에서 스케치 표면을 그립니다. */}
+    <ThemePlayground client:only="react" />
+  </section>
+</BaseLayout>

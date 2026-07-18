@@ -1,0 +1,101 @@
+---
+import ThemePlayground from '../../components/ThemePlayground.tsx';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/withBase';
+---
+
+<BaseLayout
+  title="Theming"
+  description="Rebrand GHDS by overriding a handful of CSS custom properties — no component code, no fork."
+>
+  <section class="page-intro">
+    <span class="eyebrow">Guides</span>
+    <h1>Theming</h1>
+    <p>
+      GHDS is built to be re-skinned. Every color a component paints resolves through a live
+      <code>comp → sys → ref</code> chain of CSS custom properties, so overriding one semantic
+      variable re-themes everything that uses it — without touching component code or forking the
+      library.
+    </p>
+  </section>
+
+  <section class="section prose">
+    <h2>How theming works</h2>
+    <p>
+      <code>@ghds/tokens</code> emits its CSS variables as a <strong>reference chain</strong>, not
+      as flat literals. A component reads its own <code>--comp-*</code> variable, which aliases a
+      semantic <code>--sys-*</code> variable, which in turn aliases a raw <code>--ref-*</code> value:
+    </p>
+    <pre><code>{`--ref-palette-brand-600: #3e47c9;                            /* raw value      */
+--sys-color-bg-primary-default: var(--ref-palette-brand-600); /* semantic role */
+--comp-button-bg-primary-default: var(--sys-color-bg-primary-default); /* component */`}</code></pre>
+    <p>
+      Because the aliases stay live at runtime, redefining any link in the chain cascades downward.
+      Override <code>--sys-color-bg-primary-default</code> and every component that maps to the
+      primary role — buttons, badges, links, focus rings — updates at once.
+    </p>
+
+    <h2>Customizing in three steps</h2>
+    <h3>1. Load the token stylesheet</h3>
+    <p>Import it once, at your app's entry point. This defines every default variable:</p>
+    <pre><code>{`import '@ghds/tokens/css';`}</code></pre>
+
+    <h3>2. Override the variables you want</h3>
+    <p>
+      In your own global stylesheet, redefine the semantic variables under <code>:root</code>. You
+      never edit component code — you re-point the tokens they already consume:
+    </p>
+    <pre><code>{`:root {
+  --sys-color-bg-primary-default: #0969da;
+  --sys-color-bg-primary-hover:   #0757ba;
+  --sys-color-text-link:          #0969da;
+  --sys-color-border-focus:       #218bff;
+}`}</code></pre>
+
+    <h3>3. Cover dark mode</h3>
+    <p>
+      GHDS switches themes with a <code>data-theme="dark"</code> attribute (falling back to
+      <code>prefers-color-scheme</code>). The dark theme re-declares the semantic variables, so set
+      your dark values at the same specificity or they'll be overridden:
+    </p>
+    <pre><code>{`[data-theme="dark"] {
+  --sys-color-bg-primary-default: #218bff;
+  --sys-color-text-link:          #6cb6ff;
+}`}</code></pre>
+
+    <h2>Which layer should I override?</h2>
+    <ul>
+      <li>
+        <strong><code>--sys-*</code> (semantic) — start here.</strong> The safest, highest-leverage
+        surface. Each variable is a role (<code>primary</code>, <code>danger</code>,
+        <code>text-link</code>…), so an override reads clearly and reaches every component that plays
+        that role. The playground below edits this layer.
+      </li>
+      <li>
+        <strong><code>--ref-*</code> (palette) — for a whole-palette reskin.</strong> Redefining
+        <code>--ref-palette-brand-600</code> shifts every semantic token that references it, in one
+        move. Use when you're changing the underlying color ramp, not a single role.
+      </li>
+      <li>
+        <strong><code>--comp-*</code> (component) — for one component only.</strong> Override
+        <code>--comp-button-bg-primary-default</code> to retune a single component without affecting
+        anything else that shares its semantic token.
+      </li>
+    </ul>
+    <p>
+      The full list of semantic variables and their default light/dark values lives on the
+      <a href={withBase('/design-style/')}>Design Style</a> page.
+    </p>
+  </section>
+
+  <section class="section" id="playground">
+    <h2>Playground</h2>
+    <p class="demo-label">
+      Adjust the semantic colors and watch real GHDS components re-theme. Switch between Light and
+      Dark to set each theme's values independently — the generated CSS emits a <code>:root</code>
+      block and a <code>[data-theme="dark"]</code> block, ready to paste into your stylesheet.
+    </p>
+    {/* client:only — GHDS React components paint their sketch surface in the browser. */}
+    <ThemePlayground client:only="react" />
+  </section>
+</BaseLayout>

@@ -44,6 +44,14 @@ export const NAV: readonly NavItem[] = [
     },
   },
   {
+    href: '/theming/',
+    label: { en: 'Theming', ko: '테마 커스터마이징' },
+    summary: {
+      en: 'Rebrand GHDS by overriding a few CSS variables — with a live playground.',
+      ko: 'CSS 변수 몇 개만 덮어써서 GHDS를 리브랜딩하세요 — 실시간 playground 포함.',
+    },
+  },
+  {
     href: '/components/',
     label: { en: 'Components', ko: '컴포넌트' },
     summary: {
@@ -137,7 +145,12 @@ export const NAV_CATEGORIES: readonly NavCategory[] = [
   },
   {
     label: { en: 'Foundations', ko: '파운데이션' },
-    children: [byHref('/fonts/'), byHref('/design-style/'), byHref('/foundations/')],
+    children: [
+      byHref('/fonts/'),
+      byHref('/design-style/'),
+      byHref('/foundations/'),
+      byHref('/theming/'),
+    ],
   },
   {
     label: { en: 'Library', ko: '라이브러리' },
