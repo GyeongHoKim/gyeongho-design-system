@@ -66,4 +66,74 @@ describe('gh-button', () => {
     await setSize(el, 140, 44);
     expect(el.shadowRoot?.querySelectorAll('path.sketch-stroke').length).toBeGreaterThan(0);
   });
+
+  describe('as a link (href)', () => {
+    it('renders an <a href> instead of a <button> when href is set', async () => {
+      const el = await mount(new GhButton());
+      el.href = '/ko/';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector('a');
+      expect(anchor).not.toBeNull();
+      expect(anchor?.getAttribute('href')).toBe('/ko/');
+      expect(el.shadowRoot?.querySelector('button')).toBeNull();
+    });
+
+    it('exposes the slotted label inside the anchor', async () => {
+      const el = new GhButton();
+      el.href = '/ko/';
+      el.textContent = '한국어';
+      await mount(el);
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a .label')).not.toBeNull();
+      expect(el.textContent).toBe('한국어');
+    });
+
+    it('forwards target and rel to the anchor, omitting them when unset', async () => {
+      const el = await mount(new GhButton());
+      el.href = 'https://example.com/';
+      el.target = '_blank';
+      el.rel = 'noopener';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector('a');
+      expect(anchor?.getAttribute('target')).toBe('_blank');
+      expect(anchor?.getAttribute('rel')).toBe('noopener');
+
+      const plain = await mount(new GhButton());
+      plain.href = '/ko/';
+      await plain.updateComplete;
+      const plainAnchor = plain.shadowRoot?.querySelector('a');
+      expect(plainAnchor?.hasAttribute('target')).toBe(false);
+      expect(plainAnchor?.hasAttribute('rel')).toBe(false);
+    });
+
+    it('moves semantics to the inner <a> when it becomes a link', async () => {
+      const el = await mount(new GhButton());
+      expect(el.shadowRoot?.querySelector('button')).not.toBeNull();
+      el.href = '/ko/';
+      await el.updateComplete;
+      // The link's role now comes from the inner <a>, not a host role="button".
+      expect(el.shadowRoot?.querySelector('a')).not.toBeNull();
+      expect(el.shadowRoot?.querySelector('button')).toBeNull();
+    });
+
+    it('still renders a <button> when disabled even if href is set', async () => {
+      const el = await mount(new GhButton());
+      el.href = '/ko/';
+      el.disabled = true;
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+      expect(el.shadowRoot?.querySelector('button')?.disabled).toBe(true);
+    });
+
+    it('reverts to a <button> when href is cleared', async () => {
+      const el = await mount(new GhButton());
+      el.href = '/ko/';
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a')).not.toBeNull();
+      el.href = undefined;
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+      expect(el.shadowRoot?.querySelector('button')).not.toBeNull();
+    });
+  });
 });

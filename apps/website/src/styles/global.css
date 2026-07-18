@@ -160,23 +160,6 @@ code {
   gap: var(--sys-spacing-xs);
 }
 
-.lang-toggle {
-  cursor: pointer;
-  font-family: var(--sys-typography-label-fontFamily);
-  font-size: var(--sys-typography-label-fontSize);
-  font-weight: var(--sys-typography-label-fontWeight);
-  color: var(--sys-color-text-primary);
-  background-color: var(--sys-color-bg-surface);
-  border: var(--sys-border-width-default) solid var(--sys-color-border-strong);
-  border-radius: var(--sys-radius-pill);
-  padding: var(--sys-spacing-xs) var(--sys-spacing-sm);
-  text-decoration: none;
-}
-
-.lang-toggle:hover {
-  background-color: var(--sys-color-bg-muted);
-}
-
 .cta-row {
   gap: var(--sys-spacing-sm);
 }
