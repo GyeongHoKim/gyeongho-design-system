@@ -121,28 +121,16 @@ code {
   color: var(--sys-color-text-secondary);
 }
 
+/* The nav is a <gh-navigation-menu> custom element; it owns its own item,
+   hover, dropdown, and current-page styling in shadow DOM (from
+   comp.navigationMenu.* tokens). Here we only place it in the header: let it
+   take the middle space and scroll horizontally on very narrow viewports
+   instead of forcing the header to wrap. */
 .site-nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sys-spacing-xs);
-}
-
-.site-nav a {
-  color: var(--sys-color-text-secondary);
-  padding: var(--sys-spacing-xs) var(--sys-spacing-sm);
-  border-radius: var(--sys-radius-md);
-  font-size: var(--sys-typography-label-fontSize);
-}
-
-.site-nav a:hover {
-  background-color: var(--sys-color-bg-muted);
-  text-decoration: none;
-}
-
-.site-nav a[aria-current="page"] {
-  color: var(--sys-color-text-onPrimary);
-  background-color: var(--sys-color-bg-primary-default);
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 /* Theme toggle is now a <gh-button variant="neutral"> — styled by the

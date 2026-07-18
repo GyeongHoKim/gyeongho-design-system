@@ -100,3 +100,52 @@ export const NAV: readonly NavItem[] = [
     },
   },
 ];
+
+/**
+ * A top-level entry in the site header: either a direct link (`href`, no
+ * dropdown) or a category that opens a dropdown of its `children`.
+ */
+export interface NavCategory {
+  /** Localized top-level label. */
+  readonly label: Record<Locale, string>;
+  /** Route path for a direct (childless) link. */
+  readonly href?: string;
+  /** Sub-links shown in the dropdown panel (reuse the flat {@link NAV} items). */
+  readonly children?: readonly NavItem[];
+}
+
+/** Look up a flat NAV entry by href so categories reuse a single source. */
+function byHref(href: string): NavItem {
+  const item = NAV.find((entry) => entry.href === href);
+  if (!item) {
+    throw new Error(`NAV has no entry for "${href}"`);
+  }
+  return item;
+}
+
+/**
+ * The header's information architecture: the eleven flat {@link NAV} sections
+ * grouped into a compact set of top-level entries so the nav fits one row and
+ * exposes categorized dropdowns. `Home` and `Resources` are direct links; the
+ * rest open dropdown panels. Child summaries become the dropdown descriptions.
+ */
+export const NAV_CATEGORIES: readonly NavCategory[] = [
+  { label: { en: 'Home', ko: '홈' }, href: '/' },
+  {
+    label: { en: 'Start', ko: '시작' },
+    children: [byHref('/getting-started/'), byHref('/skills/')],
+  },
+  {
+    label: { en: 'Foundations', ko: '파운데이션' },
+    children: [byHref('/fonts/'), byHref('/design-style/'), byHref('/foundations/')],
+  },
+  {
+    label: { en: 'Library', ko: '라이브러리' },
+    children: [byHref('/components/'), byHref('/patterns/')],
+  },
+  {
+    label: { en: 'Guidelines', ko: '가이드라인' },
+    children: [byHref('/principles/'), byHref('/ux-writing/'), byHref('/about/')],
+  },
+  { label: byHref('/resources/').label, href: '/resources/' },
+];
