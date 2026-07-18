@@ -56,9 +56,12 @@ export function ResizablePanel({
   return (
     <Box
       style={{
-        flexGrow: 0,
-        flexShrink: 0,
-        flexBasis: `${__size ?? defaultSize ?? 0}%`,
+        // Proportional flex: panels share the space left after the fixed-width
+        // handles, dividing it in proportion to their size numbers. A percentage
+        // flex-basis would overflow, since each handle also takes fixed space.
+        flexGrow: __size ?? defaultSize ?? 0,
+        flexShrink: 1,
+        flexBasis: 0,
         overflow: 'hidden',
       }}
     >
@@ -83,6 +86,7 @@ interface ResizableHandleInternal {
   __valueNow?: number;
   __onDragStart?: () => void;
   __onDrag?: (delta: number) => void;
+  __onStep?: (deltaPct: number) => void;
 }
 
 /** The draggable divider between two {@link ResizablePanel}s. */
@@ -93,6 +97,7 @@ export function ResizableHandle({
   __valueNow,
   __onDragStart,
   __onDrag,
+  __onStep,
 }: ResizableHandleProps & ResizableHandleInternal) {
   const theme = useTheme<Theme>();
   const horizontal = __direction === 'horizontal';
@@ -143,6 +148,16 @@ export function ResizableHandle({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(__valueNow ?? 0)}
+      // Screen-reader adjust actions (VoiceOver/TalkBack) for the adjustable
+      // role — the non-touch path to resizing, since there is no arrow-key UI.
+      accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+      onAccessibilityAction={(event) => {
+        if (event.nativeEvent.actionName === 'increment') {
+          __onStep?.(5);
+        } else if (event.nativeEvent.actionName === 'decrement') {
+          __onStep?.(-5);
+        }
+      }}
       style={[
         { alignSelf: 'stretch' },
         horizontal ? { width: theme.resizableSize } : { height: theme.resizableSize },
@@ -271,6 +286,7 @@ export function ResizablePanelGroup({
           const deltaPct = extent > 0 ? (delta / extent) * 100 : 0;
           resizePair(before, startSizesRef.current, deltaPct);
         },
+        __onStep: (deltaPct: number) => resizePair(before, sizes, deltaPct),
       });
     }
     return item;

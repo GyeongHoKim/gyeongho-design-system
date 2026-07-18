@@ -32,7 +32,7 @@ function PickerItem({ label, value }: PickerItemProps) {
   return <option value={value}>{label}</option>;
 }
 
-export function Picker({
+function PickerBase({
   selectedValue,
   onValueChange,
   enabled,
@@ -57,4 +57,4 @@ export function Picker({
   );
 }
 
-Picker.Item = PickerItem;
+export const Picker = Object.assign(PickerBase, { Item: PickerItem });

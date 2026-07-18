@@ -46,4 +46,13 @@ describe('NativeSelect', () => {
     renderWithTheme(<NativeSelect items={ITEMS} disabled testID="colour" />);
     expect(screen.getByTestId('colour')).toBeDisabled();
   });
+
+  it('renders through a focus → blur cycle (stroke switches on focus)', () => {
+    renderWithTheme(<NativeSelect items={ITEMS} testID="colour" />);
+    const select = screen.getByTestId('colour');
+    fireEvent.focus(select);
+    expect(select).toBeInTheDocument();
+    fireEvent.blur(select);
+    expect(select).toBeInTheDocument();
+  });
 });

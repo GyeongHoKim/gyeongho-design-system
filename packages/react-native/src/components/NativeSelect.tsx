@@ -130,7 +130,14 @@ export function NativeSelect({
           dropdownIconColor={
             disabled ? theme.colors.nativeSelectIconDisabled : theme.colors.nativeSelectIconDefault
           }
-          onValueChange={(value) => onValueChange?.(value)}
+          onValueChange={(value) => {
+            // The native picker has no per-item disabled state, so guard here:
+            // never emit a value whose item is explicitly disabled.
+            if (items.find((item) => item.value === value)?.enabled === false) {
+              return;
+            }
+            onValueChange?.(value);
+          }}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           style={[{ color: textColor }, pickerReset]}

@@ -48,22 +48,17 @@ export function ScrollArea({
   });
 
   const inner = both ? (
-    <ScrollView>
+    <ScrollView accessibilityLabel={accessibilityLabel}>
       <ScrollView horizontal>{children}</ScrollView>
     </ScrollView>
   ) : (
-    <ScrollView horizontal={horizontal}>{children}</ScrollView>
+    <ScrollView horizontal={horizontal} accessibilityLabel={accessibilityLabel}>
+      {children}
+    </ScrollView>
   );
 
   return (
-    <Box
-      onLayout={onLayout}
-      padding="sm"
-      borderRadius="scrollArea"
-      style={style}
-      testID={testID}
-      accessibilityLabel={accessibilityLabel}
-    >
+    <Box onLayout={onLayout} padding="sm" borderRadius="scrollArea" style={style} testID={testID}>
       <SketchBackground
         drawable={drawable}
         size={size}

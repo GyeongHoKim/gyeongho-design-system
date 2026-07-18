@@ -35,8 +35,12 @@ describe('ScrollArea', () => {
     expect(screen.getByText('Large content')).toBeInTheDocument();
   });
 
-  it('is exposed as a labelled region when an accessibility label is given', () => {
+  it('labels the scroll region (not the wrapper) for assistive tech', () => {
     renderWithTheme(<ScrollArea accessibilityLabel="Log output" testID="labelled" />);
-    expect(screen.getByTestId('labelled')).toHaveAttribute('aria-label', 'Log output');
+    // The label lives on the ScrollView, so AT identifies the scroll region.
+    const region = screen.getByLabelText('Log output');
+    expect(region).toBeInTheDocument();
+    // The wrapper Box keeps only the testID, not the label.
+    expect(screen.getByTestId('labelled')).not.toHaveAttribute('aria-label');
   });
 });
