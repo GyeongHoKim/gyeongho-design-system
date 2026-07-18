@@ -82,5 +82,7 @@ that triggers a publish. The mechanics and the SemVer policy are documented in
 ## Code of conduct
 
 Be respectful and assume good intent. Harassment or abuse is not tolerated in
-issues, PRs, or Discussions. The maintainer may remove comments or block
-accounts that violate this.
+issues, PRs, or Discussions. The full policy — expected behavior, scope, and how
+to report and enforce violations — is in
+[`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) (Contributor Covenant 2.1). Report
+violations to [me@gyeongho.dev](mailto:me@gyeongho.dev).
