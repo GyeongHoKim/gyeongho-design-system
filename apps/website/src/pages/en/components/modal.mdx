@@ -108,6 +108,54 @@ A concise title and focused body. Put primary/secondary actions at the end of th
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Modal } from '@ghds/react/modal';
+import { Button } from '@ghds/react/button';
+import { useState } from 'react';
+
+const [open, setOpen] = useState(false);
+
+<>
+  <Button onClick={() => setOpen(true)}>Open dialog</Button>
+  <Modal open={open} onClose={() => setOpen(false)} title="Delete item?">
+    <p>This action cannot be undone.</p>
+    <Button variant="danger" onClick={() => setOpen(false)}>Delete</Button>
+  </Modal>
+</>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/modal';
+  const modal = document.getElementById('dialog');
+  // `heading`, not `title`; `open` is a property; listen for the `close` event
+  modal.open = true;
+  modal.addEventListener('close', () => {
+    modal.open = false;
+  });
+</script>
+<gh-modal id="dialog" heading="Delete item?">
+  <p>This action cannot be undone.</p>
+</gh-modal>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Modal } from '@ghds/react-native/modal';
+import { Text } from '@ghds/react-native/theme';
+import { useState } from 'react';
+
+const [open, setOpen] = useState(false);
+
+<Modal open={open} onClose={() => setOpen(false)} title="Delete item?">
+  <Text>This action cannot be undone.</Text>
+</Modal>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -120,14 +168,3 @@ A concise title and focused body. Put primary/secondary actions at the end of th
     <ModalDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Modal } from '@ghds/react-native/modal';
-import { Text } from '@ghds/react-native/theme';
-
-const [open, setOpen] = useState(false);
-<Modal open={open} onClose={() => setOpen(false)} title="Delete item?">
-  <Text>This action cannot be undone.</Text>
-</Modal>;
-```

@@ -119,6 +119,34 @@ trailing punctuation.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Button } from '@ghds/react/button';
+
+<Button variant="primary">Primary</Button>;
+<Button variant="danger">Delete</Button>;
+<Button variant="neutral">Cancel</Button>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/button';
+</script>
+<gh-button variant="primary">Primary</gh-button>
+<gh-button variant="danger">Delete</gh-button>
+<gh-button variant="neutral">Cancel</gh-button>
+```
+
+```tsx
+// React Native — @ghds/react-native (no 'neutral' variant; label string + onPress, no children)
+import { Button } from '@ghds/react-native/button';
+
+<Button label="Delete" variant="danger" onPress={() => {}} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -135,10 +163,3 @@ header to see both respond identically. React Native can't run in a browser with
     <ButtonDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Button } from '@ghds/react-native/button';
-
-<Button label="Delete" variant="danger" onPress={() => {}} />;
-```

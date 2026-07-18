@@ -1,0 +1,25 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "GHDS — GH Design System",
+  "description": "Cross-platform, token-driven design system: React (@ghds/react), framework-agnostic Web Components/Lit (@ghds/web-components), and React Native (@ghds/react-native) components sharing @ghds/tokens design values.",
+  "branch": "main",
+  "folders": ["skills/ghds", "apps/website/src/pages/en", "packages"],
+  "excludeFolders": [
+    "**/node_modules",
+    "**/dist",
+    "packages/*/src",
+    "packages/tsconfig",
+    ".agents"
+  ],
+  "excludeFiles": ["CHANGELOG.md"],
+  "rules": [
+    "Consume sys.*/comp.* design tokens; never hardcode colors/spacing/typography and never reference ref.* tokens directly.",
+    "@ghds/react, @ghds/web-components and @ghds/react-native have NO root export — import each component from its kebab-case subpath, e.g. import { Button } from '@ghds/react/button'.",
+    "Import '@ghds/tokens/css' once at the app entry for React/Web Components. React Native reads tokens from the JS object: import { tokens } from '@ghds/tokens'.",
+    "Rebrand/theme by overriding --sys-* CSS custom properties (they cascade to every component); never hardcode brand colors or fork components. Always cover dark mode via [data-theme=\"dark\"].",
+    "Prop and event names diverge across platforms — never port a prop from one platform to another. React Native change events are onChangeText/onCheckedChange (not onChange); Web Components emit gh-* custom events.",
+    "React Native drops some variants and props (e.g. Button has no neutral variant and takes label: string, no children). Check rules/platform-differences.md before assuming parity.",
+    "FormField wraps exactly one control and wires its label, helper text, error, and aria.",
+    "Feedback: Alert = inline persistent, Toast = auto-dismiss, Modal = blocking decision; Skeleton = first-paint placeholder, Spinner = inline loading."
+  ]
+}

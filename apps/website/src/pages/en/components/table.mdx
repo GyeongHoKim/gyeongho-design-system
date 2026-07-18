@@ -110,6 +110,58 @@ inside a cell.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Table, type TableSort } from '@ghds/react/table';
+
+<Table
+  caption="Contributors"
+  columns={[
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'commits', header: 'Commits', sortable: true, align: 'right' },
+  ]}
+  rows={rows}
+  sort={sort}
+  onSortChange={setSort}
+  selectedIds={selected}
+  onSelectionChange={setSelected}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/table';
+</script>
+<gh-table id="my-table" caption="Contributors"></gh-table>
+<script>
+  const el = document.getElementById('my-table');
+  el.columns = [
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'commits', header: 'Commits', sortable: true, align: 'right' },
+  ];
+  el.rows = [{ id: '1', name: 'Ada', commits: 128 }];
+  el.selectedIds = [];
+  el.addEventListener('sort-change', (e) => { el.sort = e.detail; });
+  el.addEventListener('selection-change', (e) => { el.selectedIds = e.detail; });
+</script>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Table } from '@ghds/react-native/table';
+
+<Table
+  caption="Contributors"
+  columns={[{ key: 'name', header: 'Name', sortable: true }]}
+  rows={[{ id: '1', name: 'Ada' }]}
+  sort={sort}
+  onSortChange={setSort}
+/>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -122,16 +174,3 @@ inside a cell.
     <TableDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Table } from '@ghds/react-native/table';
-
-<Table
-  caption="Contributors"
-  columns={[{ key: 'name', header: 'Name', sortable: true }]}
-  rows={[{ id: '1', name: 'Ada' }]}
-  sort={sort}
-  onSortChange={setSort}
-/>;
-```

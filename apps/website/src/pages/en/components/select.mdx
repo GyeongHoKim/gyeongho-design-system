@@ -119,6 +119,47 @@ select"). Option labels name the option itself, not an action.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (children composition with SelectOption)
+import { Select, SelectOption } from '@ghds/react/select';
+import { useState } from 'react';
+
+const [fruit, setFruit] = useState<string | undefined>(undefined);
+<Select label="Fruit" placeholder="Choose a fruit" value={fruit} onValueChange={setFruit}>
+  <SelectOption value="apple">Apple</SelectOption>
+  <SelectOption value="banana">Banana</SelectOption>
+  <SelectOption value="cherry" disabled>
+    Cherry (out of stock)
+  </SelectOption>
+</Select>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<!-- `options` is a data array (JSON attribute), not slotted children -->
+<script type="module">
+  import '@ghds/web-components/select';
+</script>
+<gh-select
+  label="Fruit"
+  placeholder="Choose a fruit"
+  options='[{"value":"apple","label":"Apple"},{"value":"banana","label":"Banana"}]'
+></gh-select>
+```
+
+```tsx
+// React Native — @ghds/react-native (data-array options, like Web Components)
+import { Select } from '@ghds/react-native/select';
+
+const FRUIT_OPTIONS = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+];
+<Select label="Fruit" options={FRUIT_OPTIONS} value={fruit} onValueChange={setFruit} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below. React Native can't run in a browser without
@@ -135,15 +176,3 @@ sample instead.
     <SelectDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Select } from '@ghds/react-native/select';
-
-const FRUIT_OPTIONS = [
-  { value: 'apple', label: 'Apple' },
-  { value: 'banana', label: 'Banana' },
-];
-
-<Select label="Fruit" options={FRUIT_OPTIONS} value={fruit} onValueChange={setFruit} />;
-```

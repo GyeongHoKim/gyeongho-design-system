@@ -112,6 +112,51 @@ React/React Native; on Web Components it is section **text** (`content` string).
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Accordion } from '@ghds/react/accordion';
+
+<Accordion
+  type="single"
+  defaultValue={['shipping']}
+  items={[
+    { value: 'shipping', label: 'Shipping', content: <p>Ships in 2–3 business days.</p> },
+    { value: 'returns', label: 'Returns', content: <p>Free returns within 30 days.</p> },
+  ]}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/accordion';
+  const el = document.getElementById('acc');
+  el.type = 'single';
+  el.value = ['shipping'];
+  el.items = [
+    { value: 'shipping', label: 'Shipping', content: 'Ships in 2–3 business days.' },
+    { value: 'returns', label: 'Returns', content: 'Free returns within 30 days.' },
+  ];
+  el.addEventListener('value-change', (e) => {
+    el.value = e.detail;
+  });
+</script>
+<gh-accordion id="acc"></gh-accordion>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Accordion } from '@ghds/react-native/accordion';
+import { Text } from '@ghds/react-native/theme';
+
+<Accordion
+  type="single"
+  items={[{ value: 'shipping', label: 'Shipping', content: <Text>Ships in 2–3 days.</Text> }]}
+/>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -124,14 +169,3 @@ React/React Native; on Web Components it is section **text** (`content` string).
     <AccordionDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Accordion } from '@ghds/react-native/accordion';
-import { Text } from '@ghds/react-native/theme';
-
-<Accordion
-  type="single"
-  items={[{ value: 'a', label: 'Shipping', content: <Text>Ships in 2–3 days.</Text> }]}
-/>;
-```

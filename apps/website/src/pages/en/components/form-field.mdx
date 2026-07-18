@@ -127,6 +127,38 @@ error text explains what went wrong and how to fix it, after validation.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (wraps one control; label/error render on FormField)
+import { FormField } from '@ghds/react/form-field';
+import { Input } from '@ghds/react/input';
+
+<FormField label="Password" error="Must be at least 8 characters">
+  <Input type="password" />
+</FormField>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (auto-wires id/aria onto the slotted control) -->
+<script type="module">
+  import '@ghds/web-components/form-field';
+</script>
+<gh-form-field for="password" label="Password" error="Must be at least 8 characters">
+  <input type="password" />
+</gh-form-field>
+```
+
+```tsx
+// React Native — @ghds/react-native (visual composition only; no ARIA linkage on this platform)
+import { FormField } from '@ghds/react-native/form-field';
+import { Input } from '@ghds/react-native/input';
+
+<FormField label="Email" error={emailError}>
+  <Input value={email} onChangeText={setEmail} />
+</FormField>;
+```
+
 ## Live Demo
 
 React and Web Components render live below. React Native can't run in a browser without additional

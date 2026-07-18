@@ -116,6 +116,47 @@ controls so the row stays scannable.
 The subcomponents — `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions` —
 each accept the standard `HTMLAttributes<HTMLDivElement>` and render a styled `<div>`.
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Item, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@ghds/react/item';
+import { Badge } from '@ghds/react/badge';
+
+<Item variant="outline">
+  <ItemContent>
+    <ItemTitle>GyeongHo Kim</ItemTitle>
+    <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Badge variant="success">Online</Badge>
+  </ItemActions>
+</Item>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/item';
+</script>
+<gh-item variant="outline">
+  <span slot="title">GyeongHo Kim</span>
+  <span slot="description">Maintainer · 3 open PRs</span>
+</gh-item>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Item, ItemContent, ItemTitle, ItemDescription } from '@ghds/react-native/item';
+
+<Item variant="outline" onPress={() => {}} accessibilityLabel="GyeongHo Kim">
+  <ItemContent>
+    <ItemTitle>GyeongHo Kim</ItemTitle>
+    <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
+  </ItemContent>
+</Item>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -132,15 +173,3 @@ header to see both respond identically. React Native can't run in a browser with
     <ItemDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Item, ItemContent, ItemTitle, ItemDescription } from '@ghds/react-native/item';
-
-<Item variant="outline" onPress={() => {}} accessibilityLabel="GyeongHo Kim">
-  <ItemContent>
-    <ItemTitle>GyeongHo Kim</ItemTitle>
-    <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
-  </ItemContent>
-</Item>;
-```

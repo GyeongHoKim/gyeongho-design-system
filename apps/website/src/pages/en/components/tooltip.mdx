@@ -94,6 +94,39 @@ A short phrase. Long text is capped to a readable max width; keep it concise.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (hover or focus the trigger)
+import { Button } from '@ghds/react/button';
+import { Tooltip } from '@ghds/react/tooltip';
+
+<Tooltip content="Saves your changes">
+  <Button>Save</Button>
+</Tooltip>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (trigger goes in the default slot) -->
+<script type="module">
+  import '@ghds/web-components/button';
+  import '@ghds/web-components/tooltip';
+</script>
+<gh-tooltip content="Saves your changes">
+  <gh-button>Save</gh-button>
+</gh-tooltip>
+```
+
+```tsx
+// React Native — @ghds/react-native (tap to toggle)
+import { Button } from '@ghds/react-native/button';
+import { Tooltip } from '@ghds/react-native/tooltip';
+
+<Tooltip content="Saves your changes">
+  <Button label="Save" onPress={save} />
+</Tooltip>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -106,13 +139,3 @@ A short phrase. Long text is capped to a readable max width; keep it concise.
     <TooltipDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native (tap to toggle)
-import { Button } from '@ghds/react-native/button';
-import { Tooltip } from '@ghds/react-native/tooltip';
-
-<Tooltip content="Saves your changes">
-  <Button label="Save" onPress={save} />
-</Tooltip>;
-```

@@ -114,6 +114,56 @@ fruit…") only when no default is appropriate; otherwise pre-select the most co
 > On React Native, `NativeSelect` wraps `@react-native-picker/picker`, an **optional peer
 > dependency** — install it in your app with `pnpm add @react-native-picker/picker`.
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { NativeSelect } from '@ghds/react/native-select';
+
+// <option> children + onChange + error string
+<NativeSelect label="Fruit" error="Please choose a fruit." onChange={(e) => setValue(e.target.value)}>
+  <option value="">Select a fruit…</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+  <option value="cherry">Cherry</option>
+</NativeSelect>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/native-select';
+</script>
+<!-- Slot a real <select>; `invalid` (boolean), not an error string -->
+<gh-native-select label="Fruit" invalid>
+  <select>
+    <option value="">Select a fruit…</option>
+    <option value="apple">Apple</option>
+    <option value="banana">Banana</option>
+    <option value="cherry">Cherry</option>
+  </select>
+</gh-native-select>
+```
+
+```tsx
+// React Native — @ghds/react-native — requires the picker peer dependency:
+//   pnpm add @react-native-picker/picker
+import { NativeSelect } from '@ghds/react-native/native-select';
+
+// Data-driven via items[] + selectedValue/onValueChange (no <option> children)
+<NativeSelect
+  label="Fruit"
+  placeholder="Select a fruit…"
+  selectedValue={value}
+  onValueChange={setValue}
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Cherry', value: 'cherry' },
+  ]}
+/>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — open either to see the
@@ -133,21 +183,3 @@ than taking `<option>` children.
     <NativeSelectDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native — requires the picker peer dependency:
-//   pnpm add @react-native-picker/picker
-import { NativeSelect } from '@ghds/react-native/native-select';
-
-<NativeSelect
-  label="Fruit"
-  placeholder="Select a fruit…"
-  selectedValue={value}
-  onValueChange={setValue}
-  items={[
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Cherry', value: 'cherry' },
-  ]}
-/>;
-```

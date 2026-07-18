@@ -113,6 +113,47 @@ shrunken panel scrolls rather than clipping. Keep the most important pane above 
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react/resizable';
+
+<div style={{ width: 480, height: 240 }}>
+  <ResizablePanelGroup direction="horizontal">
+    <ResizablePanel defaultSize={50}>One</ResizablePanel>
+    <ResizableHandle withHandle />
+    <ResizablePanel defaultSize={50}>Two</ResizablePanel>
+  </ResizablePanelGroup>
+</div>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/resizable-group';
+  import '@ghds/web-components/resizable-panel';
+  import '@ghds/web-components/resizable-handle';
+</script>
+<gh-resizable-group direction="horizontal">
+  <gh-resizable-panel default-size="50">One</gh-resizable-panel>
+  <gh-resizable-handle with-handle></gh-resizable-handle>
+  <gh-resizable-panel default-size="50">Two</gh-resizable-panel>
+</gh-resizable-group>
+```
+
+```tsx
+// React Native — @ghds/react-native
+// Touch-drag only — there is no arrow-key resize on React Native.
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react-native/resizable';
+
+<ResizablePanelGroup direction="horizontal" style={{ height: 240 }}>
+  <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
+</ResizablePanelGroup>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — drag either divider, or
@@ -131,14 +172,3 @@ touch-drag only — there is no arrow-key resize.)
     <ResizableDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react-native/resizable';
-
-<ResizablePanelGroup direction="horizontal" style={{ height: 240 }}>
-  <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
-  <ResizableHandle withHandle />
-  <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
-</ResizablePanelGroup>;
-```

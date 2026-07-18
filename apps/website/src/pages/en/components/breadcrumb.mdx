@@ -95,6 +95,46 @@ page.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Breadcrumb } from '@ghds/react/breadcrumb';
+
+<Breadcrumb
+  items={[
+    { label: 'Home', href: '#' },
+    { label: 'Components', href: '#' },
+    { label: 'Breadcrumb' },
+  ]}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/breadcrumb';
+  const el = document.getElementById('crumbs');
+  el.items = [
+    { label: 'Home', href: '#' },
+    { label: 'Components', href: '#' },
+    { label: 'Breadcrumb' },
+  ];
+  el.addEventListener('select', (e) => console.log(e.detail.item, e.detail.index));
+</script>
+<gh-breadcrumb id="crumbs"></gh-breadcrumb>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Breadcrumb } from '@ghds/react-native/breadcrumb';
+
+<Breadcrumb
+  items={[{ label: 'Home', href: '/' }, { label: 'Data' }]}
+  onSelect={(item) => navigate(item.href)}
+/>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -107,13 +147,3 @@ page.
     <BreadcrumbDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Breadcrumb } from '@ghds/react-native/breadcrumb';
-
-<Breadcrumb
-  items={[{ label: 'Home', href: '/' }, { label: 'Data' }]}
-  onSelect={(item) => navigate(item.href)}
-/>;
-```

@@ -95,6 +95,34 @@ An optional short title plus a concise message.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Alert } from '@ghds/react/alert';
+
+<Alert variant="danger" title="Error" onDismiss={() => dismiss()}>
+  Something went wrong.
+</Alert>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/alert';
+</script>
+<gh-alert variant="danger" heading="Error" dismissible>Something went wrong.</gh-alert>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Alert } from '@ghds/react-native/alert';
+
+<Alert variant="danger" title="Error" onDismiss={() => dismiss()}>
+  Something went wrong.
+</Alert>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -107,10 +135,3 @@ An optional short title plus a concise message.
     <AlertDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Alert } from '@ghds/react-native/alert';
-
-<Alert variant="danger" title="Error">Something went wrong.</Alert>;
-```

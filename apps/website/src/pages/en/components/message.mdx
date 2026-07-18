@@ -106,6 +106,71 @@ Keep the header to a short author name and a compact timestamp. The message text
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageAuthor,
+  MessageTimestamp,
+} from '@ghds/react/message';
+import { Bubble } from '@ghds/react/bubble';
+import { Avatar } from '@ghds/react/avatar';
+
+<Message side="received">
+  <MessageAvatar>
+    <Avatar name="Bo Ram" />
+  </MessageAvatar>
+  <MessageContent>
+    <MessageAuthor>Bo Ram</MessageAuthor>
+    <MessageTimestamp>10:02</MessageTimestamp>
+    <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+  </MessageContent>
+</Message>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/message';
+  import '@ghds/web-components/avatar';
+  import '@ghds/web-components/bubble';
+</script>
+<gh-message side="received">
+  <gh-avatar slot="avatar" name="Bo Ram"></gh-avatar>
+  <span slot="author">Bo Ram</span>
+  <span slot="timestamp">10:02</span>
+  <gh-bubble variant="received">Hey — are we still on for tomorrow?</gh-bubble>
+</gh-message>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageAuthor,
+  MessageTimestamp,
+} from '@ghds/react-native/message';
+import { Bubble } from '@ghds/react-native/bubble';
+import { Avatar } from '@ghds/react-native/avatar';
+
+<Message side="received">
+  <MessageAvatar>
+    <Avatar name="Bo Ram" />
+  </MessageAvatar>
+  <MessageContent>
+    <MessageAuthor>Bo Ram</MessageAuthor>
+    <MessageTimestamp>10:02</MessageTimestamp>
+    <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+  </MessageContent>
+</Message>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -122,21 +187,3 @@ header to see both respond identically. React Native can't run in a browser with
     <MessageDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react-native/message';
-import { Bubble } from '@ghds/react-native/bubble';
-import { Avatar } from '@ghds/react-native/avatar';
-
-<Message side="received">
-  <MessageAvatar>
-    <Avatar name="Bo Ram" />
-  </MessageAvatar>
-  <MessageContent>
-    <MessageAuthor>Bo Ram</MessageAuthor>
-    <MessageTimestamp>10:02</MessageTimestamp>
-    <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
-  </MessageContent>
-</Message>;
-```

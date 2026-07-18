@@ -100,6 +100,38 @@ or slots (Web Components).
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (has `fill`, no `elevated`)
+import { Card } from '@ghds/react/card';
+
+<Card fill="hachure">
+  <h3>Hachure</h3>
+  <p>Sketched, translucent fill.</p>
+</Card>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (has `elevated` + `label`, no `fill`) -->
+<script type="module">
+  import '@ghds/web-components/card';
+</script>
+<gh-card label="Elevated" elevated>
+  <p>Drop-shadow sketch outline suggests elevation.</p>
+</gh-card>
+```
+
+```tsx
+// React Native — @ghds/react-native (has `elevated`, no `fill`)
+import { Card } from '@ghds/react-native/card';
+import { Text } from 'react-native';
+
+<Card elevated accessibilityLabel="Summary">
+  <Text>Elevated card content</Text>
+</Card>;
+```
+
 ## Live Demo
 
 React uses `fill`; Web Components uses `elevated` + `label` — the demo below deliberately shows

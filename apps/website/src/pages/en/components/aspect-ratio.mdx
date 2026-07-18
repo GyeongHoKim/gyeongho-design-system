@@ -99,6 +99,41 @@ sized to fill the box.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { AspectRatio } from '@ghds/react/aspect-ratio';
+
+<AspectRatio ratio={16 / 9}>
+  <img src="https://example.com/cover.jpg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+</AspectRatio>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/aspect-ratio';
+</script>
+<gh-aspect-ratio ratio="1.7778">
+  <img src="https://example.com/cover.jpg" style="width: 100%; height: 100%; object-fit: cover;" />
+</gh-aspect-ratio>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { AspectRatio } from '@ghds/react-native/aspect-ratio';
+import { Image } from 'react-native';
+
+<AspectRatio ratio={16 / 9}>
+  <Image
+    source={{ uri: 'https://example.com/cover.jpg' }}
+    style={{ width: '100%', height: '100%' }}
+    resizeMode="cover"
+  />
+</AspectRatio>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -115,17 +150,3 @@ header to see both respond identically. React Native can't run in a browser with
     <AspectRatioDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { AspectRatio } from '@ghds/react-native/aspect-ratio';
-import { Image } from 'react-native';
-
-<AspectRatio ratio={16 / 9}>
-  <Image
-    source={{ uri: 'https://example.com/cover.jpg' }}
-    style={{ width: '100%', height: '100%' }}
-    resizeMode="cover"
-  />
-</AspectRatio>;
-```

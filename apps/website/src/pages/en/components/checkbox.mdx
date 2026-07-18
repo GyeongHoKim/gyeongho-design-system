@@ -117,6 +117,36 @@ Button.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (onChange receives an event; read event.target.checked)
+import { Checkbox } from '@ghds/react/checkbox';
+
+<Checkbox
+  label="Subscribe to updates"
+  checked={subscribed}
+  onChange={(event) => setSubscribed(event.target.checked)}
+/>;
+<Checkbox label="Select all" indeterminate />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (no callback prop; listen for the `change` event) -->
+<script type="module">
+  import '@ghds/web-components/checkbox';
+</script>
+<gh-checkbox label="Subscribe to updates"></gh-checkbox>
+<gh-checkbox label="Select all" indeterminate></gh-checkbox>
+```
+
+```tsx
+// React Native — @ghds/react-native (onCheckedChange receives a bare boolean, not an event)
+import { Checkbox } from '@ghds/react-native/checkbox';
+
+<Checkbox label="Subscribe to updates" checked={subscribed} onCheckedChange={setSubscribed} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below. React Native can't run in a browser without additional

@@ -104,6 +104,32 @@ whitespace-separated words, uppercased (e.g. "Ada Lovelace" → "AL").
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Avatar } from '@ghds/react/avatar';
+
+<Avatar src="https://example.com/ada.png" name="Ada Lovelace" size="lg" />
+<Avatar name="Ada Lovelace" size="md" />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/avatar';
+</script>
+<gh-avatar src="https://example.com/ada.png" name="Ada Lovelace" size="lg"></gh-avatar>
+<gh-avatar name="Ada Lovelace" size="md"></gh-avatar>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Avatar } from '@ghds/react-native/avatar';
+
+<Avatar src="https://example.com/ada.png" name="Ada Lovelace" size="lg" />;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -116,10 +142,3 @@ whitespace-separated words, uppercased (e.g. "Ada Lovelace" → "AL").
     <AvatarDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Avatar } from '@ghds/react-native/avatar';
-
-<Avatar src="https://example.com/ada.png" name="Ada Lovelace" size="lg" />;
-```
