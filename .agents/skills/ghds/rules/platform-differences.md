@@ -89,6 +89,23 @@ React and Web Components support `'primary' | 'danger' | 'neutral'`. React Nativ
 <Button label="Cancel" variant="primary" />
 ```
 
+## Button as a link: Web Components `href` vs React `asChild`
+
+A navigation action that should *look* like a button but behave as a real link (right-clickable, focusable, `Cmd`-clickable) is expressed differently per platform.
+
+```tsx
+// Web Components — set href on gh-button; it renders an <a> internally.
+// target/rel are forwarded. A disabled gh-button stays a <button>.
+<gh-button variant="neutral" href="/ko/" aria-label="한국어로 보기">한국어</gh-button>
+```
+
+```tsx
+// React — Button has no href; use `asChild` to project your own anchor.
+<Button variant="neutral" asChild><a href="/ko/">한국어</a></Button>
+```
+
+React Native has neither — navigation there is a `Button`/`Pressable` with an `onPress` handler that drives your navigator, not an href.
+
 ## React-Native-only props
 
 `testID` and `accessibilityHint` exist only on React Native — they have no equivalent prop on React or Web Components. When porting a component's usage from React/Web Components to React Native, add them where useful for testing/accessibility; when porting the other direction, drop them (they don't exist elsewhere and TypeScript will reject them on React/Web Components).

@@ -1,8 +1,15 @@
 ---
-import LitDemo from '../../components/LitDemo.astro';
-import ReactDemo from '../../components/ReactDemo';
+import ButtonDemoLit from '../../components/demos/ButtonDemo.astro';
+import ButtonDemoReact from '../../components/demos/ButtonDemo.tsx';
+import CardDemoLit from '../../components/demos/CardDemo.astro';
+import CardDemoReact from '../../components/demos/CardDemo.tsx';
+import InputDemoLit from '../../components/demos/InputDemo.astro';
+import InputDemoReact from '../../components/demos/InputDemo.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ACCESSIBILITY_GUIDE_LINK, COMPONENTS } from '../../lib/components';
 import { withBase } from '../../lib/withBase';
+
+const locale = 'en';
 ---
 
 <BaseLayout
@@ -26,12 +33,38 @@ import { withBase } from '../../lib/withBase';
       <div class="demo-column">
         <h3>React <span class="demo-tag">@ghds/react</span></h3>
         {/* client:only — the sketch surface paints in the browser. */}
-        <ReactDemo client:only="react" />
+        <div class="demo-stack">
+          <div>
+            <p class="demo-label">Button</p>
+            <ButtonDemoReact client:only="react" />
+          </div>
+          <div>
+            <p class="demo-label">Input</p>
+            <InputDemoReact client:only="react" />
+          </div>
+          <div>
+            <p class="demo-label">Card</p>
+            <CardDemoReact client:only="react" />
+          </div>
+        </div>
       </div>
 
       <div class="demo-column">
         <h3>Lit <span class="demo-tag">@ghds/web-components</span></h3>
-        <LitDemo />
+        <div class="demo-stack">
+          <div>
+            <p class="demo-label">Button</p>
+            <ButtonDemoLit />
+          </div>
+          <div>
+            <p class="demo-label">Input</p>
+            <InputDemoLit />
+          </div>
+          <div>
+            <p class="demo-label">Card</p>
+            <CardDemoLit />
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -49,162 +82,18 @@ import { withBase } from '../../lib/withBase';
     <h2>Component Documentation</h2>
     <p>Anatomy, variants &amp; states, accessibility, props, and a live demo for each component:</p>
     <ul>
+      {
+        COMPONENTS.map((component) => (
+          <li>
+            <a href={withBase(`/components/${component.slug}/`)}>{component.label}</a> —{' '}
+            {component.summary[locale]}
+          </li>
+        ))
+      }
       <li>
-        <a href={withBase('/components/accordion/')}>Accordion</a> — collapsible sections
-        (single or multiple open)
-      </li>
-      <li>
-        <a href={withBase('/components/alert/')}>Alert</a> — an inline status banner in four
-        severities
-      </li>
-      <li>
-        <a href={withBase('/components/avatar/')}>Avatar</a> — a circular image with an initials
-        fallback
-      </li>
-      <li>
-        <a href={withBase('/components/badge/')}>Badge</a> — a small status/label pill in six
-        semantic variants
-      </li>
-      <li>
-        <a href={withBase('/components/breadcrumb/')}>Breadcrumb</a> — a navigation trail to the
-        current page
-      </li>
-      <li>
-        <a href={withBase('/components/button/')}>Button</a> — variants, states, accessibility,
-        and props
-      </li>
-      <li>
-        <a href={withBase('/components/card/')}>Card</a> — a generic hand-drawn surface container
-      </li>
-      <li>
-        <a href={withBase('/components/input/')}>Input</a> — a labeled text field with an error
-        state
-      </li>
-      <li>
-        <a href={withBase('/components/menu/')}>Menu</a> — a dropdown of actions triggered by a
-        button
-      </li>
-      <li>
-        <a href={withBase('/components/modal/')}>Modal</a> — a focus-trapping dialog with a scrim
-      </li>
-      <li>
-        <a href={withBase('/components/pagination/')}>Pagination</a> — a pager for splitting long
-        lists across numbered pages
-      </li>
-      <li>
-        <a href={withBase('/components/progress/')}>Progress</a> — a determinate/indeterminate
-        progress bar
-      </li>
-      <li>
-        <a href={withBase('/components/textarea/')}>Textarea</a> — a multi-line text field with an
-        opt-in auto-resize
-      </li>
-      <li>
-        <a href={withBase('/components/toast/')}>Toast</a> — a transient, auto-dismissing
-        notification
-      </li>
-      <li>
-        <a href={withBase('/components/tooltip/')}>Tooltip</a> — a short hint revealed on hover or
-        focus
-      </li>
-      <li>
-        <a href={withBase('/components/checkbox/')}>Checkbox</a> — boolean input with an
-        indeterminate state, plus CheckboxGroup
-      </li>
-      <li>
-        <a href={withBase('/components/radio/')}>Radio</a> — single-selection input, used inside
-        RadioGroup
-      </li>
-      <li>
-        <a href={withBase('/components/switch/')}>Switch</a> — an immediate on/off toggle
-      </li>
-      <li>
-        <a href={withBase('/components/table/')}>Table</a> — a data table with sortable headers and
-        row selection
-      </li>
-      <li>
-        <a href={withBase('/components/tabs/')}>Tabs</a> — switch between related panels with
-        keyboard-navigable tabs
-      </li>
-      <li>
-        <a href={withBase('/components/select/')}>Select</a> — a single-select dropdown with a
-        hand-implemented listbox
-      </li>
-      <li>
-        <a href={withBase('/components/skeleton/')}>Skeleton</a> — a loading placeholder that
-        pulses while content loads
-      </li>
-      <li>
-        <a href={withBase('/components/slider/')}>Slider</a> — a range input with a hand-drawn
-        rail and thumb
-      </li>
-      <li>
-        <a href={withBase('/components/spinner/')}>Spinner</a> — an indeterminate loading indicator
-        that respects reduced motion
-      </li>
-      <li>
-        <a href={withBase('/components/form-field/')}>FormField</a> — a Label + HelperText +
-        ErrorText composition wrapper
-      </li>
-      <li>
-        <a href={withBase('/components/aspect-ratio/')}>AspectRatio</a> — a layout box that holds
-        media at a fixed width-to-height ratio
-      </li>
-      <li>
-        <a href={withBase('/components/direction/')}>Direction</a> — an LTR/RTL context provider and
-        useDirection hook
-      </li>
-      <li>
-        <a href={withBase('/components/item/')}>Item</a> — a flexible list row with media, content,
-        and actions slots
-      </li>
-      <li>
-        <a href={withBase('/components/input-group/')}>InputGroup</a> — an input with leading/trailing
-        addons in one sketchy box
-      </li>
-      <li>
-        <a href={withBase('/components/scroll-area/')}>ScrollArea</a> — a bounded scroll viewport with
-        a sketchy border and themed scrollbar
-      </li>
-      <li>
-        <a href={withBase('/components/input-otp/')}>InputOTP</a> — a segmented one-time-code field
-        with sequential entry and paste distribution
-      </li>
-      <li>
-        <a href={withBase('/components/native-select/')}>NativeSelect</a> — a hand-drawn box around a
-        real native select, with a chevron and error state
-      </li>
-      <li>
-        <a href={withBase('/components/carousel/')}>Carousel</a> — a scroll-snap slideshow with
-        prev/next controls
-      </li>
-      <li>
-        <a href={withBase('/components/resizable/')}>Resizable</a> — a split view with drag- and
-        keyboard-resizable panels
-      </li>
-      <li>
-        <a href={withBase('/components/marker/')}>Marker</a> — a hand-drawn inline highlighter in
-        four tones
-      </li>
-      <li>
-        <a href={withBase('/components/attachment/')}>Attachment</a> — a file chip with an icon,
-        metadata, and remove button
-      </li>
-      <li>
-        <a href={withBase('/components/bubble/')}>Bubble</a> — a chat bubble in a received or sent
-        variant
-      </li>
-      <li>
-        <a href={withBase('/components/message/')}>Message</a> — a chat row with avatar, author,
-        timestamp, and bubble
-      </li>
-      <li>
-        <a href={withBase('/components/message-scroller/')}>MessageScroller</a> — an auto-sticking
-        chat log bounded by maxHeight
-      </li>
-      <li>
-        <a href={withBase('/accessibility/')}>Accessibility Guide</a> — keyboard interaction,
-        focus management, and ARIA patterns shared across all components
+        <a href={withBase(ACCESSIBILITY_GUIDE_LINK.href)}>
+          {ACCESSIBILITY_GUIDE_LINK.label[locale]}
+        </a> — {ACCESSIBILITY_GUIDE_LINK.summary[locale]}
       </li>
     </ul>
   </section>

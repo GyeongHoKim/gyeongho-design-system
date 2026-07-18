@@ -104,13 +104,13 @@ function switchLocaleHref(target: Locale): string {
         }
       </nav>
       <div class="header-actions">
-        <a
-          class="lang-toggle"
+        <gh-button
+          variant="neutral"
           href={switchLocaleHref(locale === 'en' ? 'ko' : 'en')}
           aria-label={locale === 'en' ? '한국어로 보기' : 'View in English'}
         >
           {locale === 'en' ? '한국어' : 'EN'}
-        </a>
+        </gh-button>
         <gh-button id="theme-toggle" variant="neutral" aria-live="polite">
           <span data-theme-icon aria-hidden="true">🌗</span>
           <span data-theme-label>{ui.theme}</span>
@@ -131,6 +131,8 @@ function switchLocaleHref(target: Locale): string {
     </script>
 
     <script>
+      import { UI } from '../i18n/ui';
+
       const toggle = document.getElementById('theme-toggle');
       const root = document.documentElement;
       const label = toggle?.querySelector('[data-theme-label]');
@@ -147,18 +149,18 @@ function switchLocaleHref(target: Locale): string {
 
       function paint(): void {
         const current = effectiveTheme();
-        const isKo = document.documentElement.lang === 'ko';
-        const lightLabel = isKo ? '라이트 모드' : 'Light Mode';
-        const darkLabel = isKo ? '다크 모드' : 'Dark Mode';
-        const toLight = isKo ? '라이트 모드로 전환' : 'Switch to light mode';
-        const toDark = isKo ? '다크 모드로 전환' : 'Switch to dark mode';
+        // Reuse the shared UI dictionary so the chrome labels stay in one place.
+        const dict = UI[root.lang === 'ko' ? 'ko' : 'en'];
         if (label) {
-          label.textContent = current === 'dark' ? lightLabel : darkLabel;
+          label.textContent = current === 'dark' ? dict.lightMode : dict.darkMode;
         }
         if (icon) {
           icon.textContent = current === 'dark' ? '☀️' : '🌙';
         }
-        toggle?.setAttribute('aria-label', current === 'dark' ? toLight : toDark);
+        toggle?.setAttribute(
+          'aria-label',
+          current === 'dark' ? dict.switchToLight : dict.switchToDark,
+        );
       }
 
       toggle?.addEventListener('click', () => {
