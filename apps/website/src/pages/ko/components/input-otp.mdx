@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import InputOTPDemoReact from '../../../components/demos/InputOTPDemo.tsx';
+import InputOTPDemoLit from '../../../components/demos/InputOTPDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`InputOTP`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -82,22 +81,57 @@ import { withBase } from '../../../lib/withBase';
         { name: 'aria-label', type: 'string', description: '보이는 label이 없을 때 접근 가능한 이름.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: '셀의 개수.' },
+        { name: 'value', type: 'string', default: "''", description: '현재 값(왼쪽 채움 접두사).' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: '허용 문자.' },
+        { name: 'mask', type: 'boolean', default: 'false', description: '입력된 문자를 마스킹해요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'reflected 속성; 입력을 비활성화해요.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'reflected 속성; 모든 셀에 danger 스트로크.' },
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨, 첫 셀과 연결돼요.' },
+        { name: 'events', type: 'gh-change, gh-complete', description: 'CustomEvent(detail: { value }) — 매 편집마다 gh-change, 모든 셀이 채워지면 gh-complete.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: '셀의 개수.' },
+        { name: 'value', type: 'string', description: '제어 값.' },
+        { name: 'defaultValue', type: 'string', default: "''", description: '비제어일 때 초기 값.' },
+        { name: 'onChange', type: '(value: string) => void', description: '변경마다 발생해요.' },
+        { name: 'onComplete', type: '(value: string) => void', description: '마지막 셀이 채워지면 발생해요.' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: "허용 문자; keyboardType를 구동해요." },
+        { name: 'mask', type: 'boolean', default: 'false', description: '셀에 secureTextEntry.' },
+        { name: 'disabled / invalid', type: 'boolean', default: 'false', description: '비활성화하거나 모든 셀을 invalid로 표시해요.' },
+        { name: 'label / accessibilityLabel', type: 'string', description: '보이는 라벨, 또는 그룹의 접근 가능한 이름.' },
+        { name: 'testID', type: 'string', description: '테스트 핸들(셀 그룹에 적용).' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 라벨이 지정된 6자리 코드와 invalid 코드를 렌더해요 — 타이핑하면 셀이 채워지고 활성 스트로크가 진행돼요; 헤더에서 다크 모드를 토글하면 셀이 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <InputOTPDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <InputOTPDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { InputOTP } from '@ghds/react/input-otp';
+// React Native
+import { InputOTP } from '@ghds/react-native/input-otp';
 
 <InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
 ```

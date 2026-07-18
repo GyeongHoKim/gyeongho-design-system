@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ScrollAreaDemoReact from '../../../components/demos/ScrollAreaDemo.tsx';
+import ScrollAreaDemoLit from '../../../components/demos/ScrollAreaDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`ScrollArea`는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -72,17 +71,29 @@ N/A — ScrollArea는 고정된 콘텐츠 모델이 없어요. 안에 넣는 자
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 전달돼요; style로 maxHeight / maxWidth를 설정하세요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'orientation', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: '반영되는 속성; 영역이 스크롤하는 축(또는 축들).' },
+        { name: '(기본 슬롯)', type: 'slot', description: '스크롤 가능한 콘텐츠. 호스트에 max-height(또는 max-width)를 설정하세요.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 200px로 제한된 수직 스크롤 영역을 렌더해요 — 스크롤하면 토큰으로 테마된 스크롤바가 나타나요. 헤더에서 다크 모드를 토글하면 테두리와 스크롤바가 반응해요.
+React와 Web Components가 아래에서 같은 토큰으로 라이브 렌더돼요 — 어느 쪽이든 스크롤하면 토큰으로 테마된 스크롤바가 나타나고, 헤더에서 다크 모드를 토글하면 둘이 동일하게 반응해요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ScrollAreaDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ScrollAreaDemoLit />
   </div>
 </div>
 

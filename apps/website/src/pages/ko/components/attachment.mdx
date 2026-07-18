@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import AttachmentDemoReact from '../../../components/demos/AttachmentDemo.tsx';
+import AttachmentDemoLit from '../../../components/demos/AttachmentDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Attachment`은 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -75,22 +74,50 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'name', type: 'string', description: '주요 라벨로 표시되는 파일(또는 리소스) 이름.' },
+        { name: 'meta', type: 'string', description: '보조 메타데이터, 예: 읽기 쉬운 크기.' },
+        { name: 'icon', type: 'string', description: '선택적 선행 아이콘(@ghds/icons 이름).' },
+        { name: 'removable', type: 'boolean', default: 'false', description: 'reflected 속성; gh-remove를 emit하는 제거 버튼을 렌더해요.' },
+        { name: 'gh-remove', type: 'CustomEvent', description: '제거 버튼을 누르면 발생해요(detail 없음).' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'name', type: 'string', description: '주요 라벨로 표시되는 파일(또는 리소스) 이름. 필수.' },
+        { name: 'meta', type: 'string', description: '보조 메타데이터, 예: 읽기 쉬운 크기.' },
+        { name: 'icon', type: 'IconName', description: '선택적 선행 아이콘(@ghds/icons 이름).' },
+        { name: 'onRemove', type: '() => void', description: '제공되면 이 핸들러를 호출하는 제거 버튼을 렌더해요.' },
+        { name: 'removeLabel', type: 'string', default: "'Remove {name}'", description: '제거 버튼의 접근 가능한 라벨.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 몇 개의 칩을 렌더해요 — 하나는 메일 아이콘, 하나는 캘린더 아이콘, 하나는 제거 가능. 헤더에서 다크 모드를 토글하면 칩이 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요. 제거 API가 다르다는 점에 유의하세요: React/React Native는 `onRemove` 콜백을 받고, Web Components는 `removable`을 설정하고 `gh-remove` 이벤트를 emit해요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <AttachmentDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AttachmentDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Attachment } from '@ghds/react/attachment';
+// React Native
+import { Attachment } from '@ghds/react-native/attachment';
 
 <Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
 ```

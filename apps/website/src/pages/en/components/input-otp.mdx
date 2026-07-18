@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import InputOTPDemoReact from '../../../components/demos/InputOTPDemo.tsx';
+import InputOTPDemoLit from '../../../components/demos/InputOTPDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`InputOTP` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
-React Native counterpart yet.
 
 ## Overview
 
@@ -94,23 +92,59 @@ code`) and put any "resend" affordance or error message outside the field.
         { name: 'aria-label', type: 'string', description: 'Accessible name when no visible label is provided.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: 'Number of cells.' },
+        { name: 'value', type: 'string', default: "''", description: 'Current value (a left-filled prefix).' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: 'Accepted characters.' },
+        { name: 'mask', type: 'boolean', default: 'false', description: 'Masks the entered characters.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute; disables entry.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Reflected attribute; danger stroke on every cell.' },
+        { name: 'label', type: 'string', description: 'Optional visible label, associated with the first cell.' },
+        { name: 'events', type: 'gh-change, gh-complete', description: 'CustomEvents (detail: { value }) — gh-change on every edit, gh-complete once all cells are filled.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: 'Number of cells.' },
+        { name: 'value', type: 'string', description: 'Controlled value.' },
+        { name: 'defaultValue', type: 'string', default: "''", description: 'Initial value when uncontrolled.' },
+        { name: 'onChange', type: '(value: string) => void', description: 'Fires on every change.' },
+        { name: 'onComplete', type: '(value: string) => void', description: 'Fires once the last cell is filled.' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: "Accepted characters; drives the keyboardType." },
+        { name: 'mask', type: 'boolean', default: 'false', description: 'secureTextEntry for the cells.' },
+        { name: 'disabled / invalid', type: 'boolean', default: 'false', description: 'Disable, or mark every cell invalid.' },
+        { name: 'label / accessibilityLabel', type: 'string', description: 'Visible label, or an accessible name for the group.' },
+        { name: 'testID', type: 'string', description: 'Test handle (applied to the cell group).' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a labeled 6-digit code and an invalid one below — type to see cells fill and the
-active stroke advance; toggle dark mode in the header to see the cells respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <InputOTPDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <InputOTPDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { InputOTP } from '@ghds/react/input-otp';
+// React Native
+import { InputOTP } from '@ghds/react-native/input-otp';
 
 <InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
 ```

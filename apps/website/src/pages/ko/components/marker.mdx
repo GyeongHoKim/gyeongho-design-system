@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import MarkerDemoReact from '../../../components/demos/MarkerDemo.tsx';
+import MarkerDemoLit from '../../../components/demos/MarkerDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Marker`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -71,24 +70,45 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: 'HTMLAttributes<HTMLElement>', description: '네이티브 속성이 <mark> 요소로 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'default' | 'success' | 'info' | 'danger'", default: "'default'", description: '반영되는 속성; 하이라이트 색상.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'default' | 'success' | 'info' | 'danger'", default: "'default'", description: '하이라이트 색상.' },
+        { name: 'children', type: 'ReactNode', description: '하이라이트할 텍스트.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 네 가지 톤을 문장 안에 렌더해요 — 헤더에서 다크 모드를 토글하면 두 스킴 모두에서 하이라이트가 단어를 읽기 좋게 유지해요.
+React와 Web Components가 아래에서 같은 토큰으로 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘이 동일하게 반응해요. React Native는 추가 `react-native-web` 연결(이 사이트에는 설정되지 않음) 없이는 브라우저에서 실행할 수 없어서, 사용법을 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <MarkerDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <MarkerDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Marker } from '@ghds/react/marker';
+// React Native
+import { Marker } from '@ghds/react-native/marker';
 
-<p>
+<Text>
   Remember to <Marker variant="danger">back up</Marker> before you upgrade.
-</p>;
+</Text>;
 ```

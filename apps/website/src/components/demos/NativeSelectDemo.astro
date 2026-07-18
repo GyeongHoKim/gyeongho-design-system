@@ -1,0 +1,30 @@
+---
+// Live demo of `<gh-native-select>`: a labeled control plus its invalid state.
+// A real native <select> rides the default slot; `label` names it and
+// `invalid` paints the danger stroke. The module script registers
+// <gh-native-select>.
+---
+
+<div class="demo-stack" style="max-width: 260px;">
+  <gh-native-select label="Fruit" style="min-width: 220px;">
+    <select>
+      <option value="">Select a fruit…</option>
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+      <option value="cherry">Cherry</option>
+    </select>
+  </gh-native-select>
+
+  <gh-native-select label="Fruit" invalid style="min-width: 220px;">
+    <select>
+      <option value="">Select a fruit…</option>
+      <option value="apple">Apple</option>
+      <option value="banana">Banana</option>
+      <option value="cherry">Cherry</option>
+    </select>
+  </gh-native-select>
+</div>
+
+<script>
+  import '@ghds/web-components/native-select';
+</script>

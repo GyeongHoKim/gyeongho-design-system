@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import MessageDemoReact from '../../../components/demos/MessageDemo.tsx';
+import MessageDemoLit from '../../../components/demos/MessageDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Message` and its subcomponents are **React-only** (`@ghds/react`). There is no Web Components or
-React Native counterpart yet.
 
 ## Overview
 
@@ -84,25 +82,52 @@ Keep the header to a short author name and a compact timestamp. The message text
         { name: 'MessageAuthor / MessageTimestamp', type: 'HTMLAttributes<HTMLSpanElement>', description: 'The author name and timestamp in the header.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'side', type: "'received' | 'sent'", default: "'received'", description: "Reflected attribute; 'received' aligns to the start, 'sent' to the end." },
+        { name: 'slot="avatar"', type: 'slot', description: 'Leading avatar (e.g. <gh-avatar slot="avatar">).' },
+        { name: 'slot="author" / slot="timestamp"', type: 'slot', description: 'The header author name and timestamp.' },
+        { name: '(default slot)', type: 'slot', description: 'The message body, typically a <gh-bubble>.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'side', type: "'received' | 'sent'", default: "'received'", description: "'received' aligns to the start; 'sent' aligns to the end (Message)." },
+        { name: 'children', type: 'ReactNode', description: 'Row content — compose with the Message* sub-components.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries (Message).' },
+        { name: 'MessageAvatar / MessageContent', type: 'ReactNode', description: 'The avatar slot and the header + bubble column.' },
+        { name: 'MessageAuthor / MessageTimestamp', type: 'ReactNode', description: 'The author name and timestamp in the header.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a short received/sent exchange below — toggle dark mode in the header to see the rows
-and bubbles respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <MessageDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <MessageDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react/message';
-import { Bubble } from '@ghds/react/bubble';
-import { Avatar } from '@ghds/react/avatar';
+// React Native
+import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react-native/message';
+import { Bubble } from '@ghds/react-native/bubble';
+import { Avatar } from '@ghds/react-native/avatar';
 
 <Message side="received">
   <MessageAvatar>

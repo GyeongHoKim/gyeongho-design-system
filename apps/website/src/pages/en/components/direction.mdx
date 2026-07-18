@@ -8,11 +8,12 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import DirectionDemoReact from '../../../components/demos/DirectionDemo.tsx';
+import DirectionDemoLit from '../../../components/demos/DirectionDemo.astro';
 import { withBase } from '../../../lib/withBase';
 
-`DirectionProvider` and the `useDirection()` hook are a **React-only** utility (`@ghds/react`).
-They render no DOM and own no design values, so there is no Web Components or React Native
-counterpart.
+React exposes this as the `DirectionProvider` context and the `useDirection()` hook; Web Components
+ship the `<gh-direction>` element, which mirrors `dir` onto its host so the slotted subtree inherits
+it. There is no React Native counterpart.
 
 ## Overview
 
@@ -80,18 +81,31 @@ N/A — Direction carries no content. It wraps a subtree and supplies a value.
         { name: 'useDirection()', type: "() => 'ltr' | 'rtl'", description: "Hook returning the nearest provider's direction (defaults to 'ltr')." },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'dir', type: "'ltr' | 'rtl'", default: "'ltr'", description: 'Reflected attribute; mirrored onto the host so the slotted subtree and CSS logical properties resolve against it.' },
+        { name: '(default slot)', type: 'slot', description: 'The subtree that inherits this direction.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-The same two items rendered under an LTR provider and an RTL provider — note how the RTL column
-mirrors. Each column also sets the native `dir` attribute so logical properties resolve.
+React and Web Components render live below — the same content under an LTR and an RTL direction, with
+the RTL column mirrored. Each column also carries a native `dir` attribute so logical properties
+resolve.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <DirectionDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <DirectionDemoLit />
   </div>
 </div>
 

@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import BubbleDemoReact from '../../../components/demos/BubbleDemo.tsx';
+import BubbleDemoLit from '../../../components/demos/BubbleDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Bubble`은 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -70,22 +69,44 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(최대 너비용 style 등)이 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'received' | 'sent'", default: "'received'", description: "reflected 속성; 'received'는 은은한 수신, 'sent'는 채워진 발신 말풍선." },
+        { name: 'slot', type: '(default)', description: '메시지 콘텐츠.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'received' | 'sent'", default: "'received'", description: "'received'는 은은한 수신 말풍선; 'sent'는 채워진 발신 말풍선." },
+        { name: 'children', type: 'ReactNode', description: '말풍선 콘텐츠.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 수신 말풍선과 발신 말풍선을 렌더해요 — 헤더에서 다크 모드를 토글하면 두 채우기가 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <BubbleDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <BubbleDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Bubble } from '@ghds/react/bubble';
+// React Native
+import { Bubble } from '@ghds/react-native/bubble';
 
 <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
 <Bubble variant="sent">Yes! See you at 10.</Bubble>;

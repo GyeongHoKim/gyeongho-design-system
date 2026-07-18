@@ -1,0 +1,16 @@
+---
+// Live demo of <gh-attachment>. Registered as a client-side island: the module
+// script below imports the package, whose @customElement side-effect defines
+// <gh-attachment>. The removable chip emits a gh-remove event when its close
+// button is pressed.
+---
+
+<div class="demo-row" style="flex-wrap: wrap;">
+  <gh-attachment name="newsletter.eml" meta="12 KB" icon="mail"></gh-attachment>
+  <gh-attachment name="event.ics" meta="2 KB" icon="calendar"></gh-attachment>
+  <gh-attachment name="quarterly-report.pdf" meta="2.4 MB" removable></gh-attachment>
+</div>
+
+<script>
+  import '@ghds/web-components/attachment';
+</script>

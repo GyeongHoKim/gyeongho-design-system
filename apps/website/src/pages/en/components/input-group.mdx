@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import InputGroupDemoReact from '../../../components/demos/InputGroupDemo.tsx';
+import InputGroupDemoLit from '../../../components/demos/InputGroupDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`InputGroup`, `InputGroupInput`, and `InputGroupAddon` are **React-only** (`@ghds/react`). There is
-no Web Components or React Native counterpart yet.
 
 ## Overview
 
@@ -91,27 +89,52 @@ button. Long addon text competes with the input value for space.
         { name: 'InputGroupAddon', type: 'HTMLAttributes<HTMLSpanElement>', description: 'A leading/trailing addon <span>; position set by child order.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute; disables the group and mutes the surface.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Reflected attribute; paints the danger stroke.' },
+        { name: 'slot', type: '(default)', description: 'Slot addons (text/icons) and a bare <input> in child order; a slotted <input> loses its own chrome and the group paints the box.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the whole group and mutes the surface (InputGroup).' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Marks the group invalid, painting the danger stroke (InputGroup).' },
+        { name: 'InputGroupInput', type: "TextInputProps (minus editable/onFocus/onBlur) + disabled", description: 'The bare inner TextInput; disabled is inherited from the group unless set.' },
+        { name: 'InputGroupAddon', type: '{ children }', description: 'A leading/trailing addon; a string child renders as muted addon text.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries (InputGroup).' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders live below — a leading `https://`, a trailing `USD`, an invalid field, and a disabled
-field. Focus the first input to see the outline shift to the focus stroke; toggle dark mode in the
-header to see the fill respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <InputGroupDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <InputGroupDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react/input-group';
+// React Native
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react-native/input-group';
 
 <InputGroup>
   <InputGroupAddon>https://</InputGroupAddon>
-  <InputGroupInput placeholder="example.com" aria-label="Website" />
+  <InputGroupInput placeholder="example.com" accessibilityLabel="Website" />
 </InputGroup>;
 ```

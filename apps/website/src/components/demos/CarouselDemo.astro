@@ -1,0 +1,26 @@
+---
+// Live demo of <gh-carousel>. Registered as a client-side island: the module
+// script below imports both the carousel and its slide element, whose
+// @customElement side-effects define <gh-carousel> and <gh-carousel-item>. The
+// carousel renders its own prev/next controls and indicator dots.
+const slide =
+  'height: 200px; display: flex; align-items: center; justify-content: center; ' +
+  'background: var(--sys-color-bg-muted); color: var(--sys-color-text-secondary); ' +
+  'border-radius: var(--sys-radius-md); font-family: var(--sys-typography-title-fontFamily); ' +
+  'font-size: var(--sys-typography-title-fontSize);';
+---
+
+<div style="max-width: 420px;">
+  <gh-carousel aria-label="Photos">
+    <gh-carousel-item><div style={slide}>Slide 1</div></gh-carousel-item>
+    <gh-carousel-item><div style={slide}>Slide 2</div></gh-carousel-item>
+    <gh-carousel-item><div style={slide}>Slide 3</div></gh-carousel-item>
+    <gh-carousel-item><div style={slide}>Slide 4</div></gh-carousel-item>
+    <gh-carousel-item><div style={slide}>Slide 5</div></gh-carousel-item>
+  </gh-carousel>
+</div>
+
+<script>
+  import '@ghds/web-components/carousel';
+  import '@ghds/web-components/carousel-item';
+</script>

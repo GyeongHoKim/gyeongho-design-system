@@ -1,0 +1,29 @@
+---
+// Live demo of `<gh-direction>`: the same card rendered under an LTR and an
+// RTL reading direction. The element mirrors its `dir` onto the host so CSS
+// logical properties (padding-inline-start, border-inline-start) resolve
+// against it and the layout flips. The module script registers <gh-direction>.
+---
+
+<div class="demo-row">
+  <gh-direction dir="ltr">
+    <div
+      style="flex: 1 1 220px; padding-inline-start: var(--sys-spacing-md); border-inline-start: var(--sys-border-width-thick) solid var(--sys-color-border-default); font-family: var(--sys-typography-body-fontFamily); color: var(--sys-color-text-primary);"
+    >
+      <strong>Balance</strong>
+      <div style="color: var(--sys-color-text-secondary);">LTR layout</div>
+    </div>
+  </gh-direction>
+  <gh-direction dir="rtl">
+    <div
+      style="flex: 1 1 220px; padding-inline-start: var(--sys-spacing-md); border-inline-start: var(--sys-border-width-thick) solid var(--sys-color-border-default); font-family: var(--sys-typography-body-fontFamily); color: var(--sys-color-text-primary);"
+    >
+      <strong>الرصيد</strong>
+      <div style="color: var(--sys-color-text-secondary);">RTL layout</div>
+    </div>
+  </gh-direction>
+</div>
+
+<script>
+  import '@ghds/web-components/direction';
+</script>

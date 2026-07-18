@@ -1,0 +1,29 @@
+---
+// Live demo of <gh-item> variants. Registered as a client-side island: the
+// module script below imports the package, whose @customElement side-effect
+// defines <gh-item>.
+const chip =
+  'width: 36px; height: 36px; border-radius: var(--sys-radius-pill); display: flex; ' +
+  'align-items: center; justify-content: center; background: var(--sys-color-bg-subtle); ' +
+  'color: var(--sys-color-text-primary); font-family: var(--sys-typography-label-fontFamily);';
+---
+
+<div class="demo-stack" style="max-width: 420px;">
+  <gh-item variant="outline">
+    <div slot="media" style={chip}>GH</div>
+    <span slot="title">GyeongHo Kim</span>
+    <span slot="description">Maintainer · 3 open PRs</span>
+  </gh-item>
+  <gh-item variant="muted">
+    <span slot="title">Muted row</span>
+    <span slot="description">A subtle filled background.</span>
+  </gh-item>
+  <gh-item selected>
+    <span slot="title">Selected row</span>
+    <span slot="description">Marked as the active choice.</span>
+  </gh-item>
+</div>
+
+<script>
+  import '@ghds/web-components/item';
+</script>
