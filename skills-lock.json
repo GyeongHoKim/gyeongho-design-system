@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "ghds": {
+      "source": "GyeongHoKim/gyeongho-design-system",
+      "sourceType": "github",
+      "skillPath": "skills/ghds/SKILL.md",
+      "computedHash": "75bc4462806dc3f2b4959bb3db74a44aa96ab3fbb5f59571f03e9f59d122f04c"
+    }
+  }
+}
