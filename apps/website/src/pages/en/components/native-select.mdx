@@ -94,14 +94,34 @@ fruit…") only when no default is appropriate; otherwise pre-select the most co
         { name: '(default slot)', type: 'slot', description: 'A native <select> (with its <option>s).' },
       ],
     },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'items', type: '{ label; value; enabled? }[]', description: 'Data-driven options (React Native has no <option> children). enabled: false only dims the text — the native picker has no per-item disabled.' },
+        { name: 'selectedValue', type: 'string', description: 'Currently selected value.' },
+        { name: 'onValueChange', type: '(value: string) => void', description: 'Fires with the chosen value.' },
+        { name: 'placeholder', type: 'string', description: 'Shown as a leading, empty-valued option.' },
+        { name: 'label', type: 'string', description: 'Visible label rendered above the control.' },
+        { name: 'error', type: 'string', description: 'Error message; marks the field invalid and announces the text.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the control and applies the disabled palette.' },
+        { name: 'accessibilityLabel / testID', type: 'string', description: 'Accessible name for the picker, and a test handle.' },
+      ],
+    },
   ]}
 />
+
+> On React Native, `NativeSelect` wraps `@react-native-picker/picker`, an **optional peer
+> dependency** — install it in your app with `pnpm add @react-native-picker/picker`.
 
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — open either to see the
 native OS picker, and toggle dark mode in the header to see both respond identically. React exposes
-the message as an `error` string; Web Components expose the boolean `invalid` state.
+the message as an `error` string; Web Components expose the boolean `invalid` state. React Native
+can't run in a browser without additional `react-native-web` wiring (not set up in this site), so
+its usage is shown as a code sample instead — and it is **data-driven** (an `items` array) rather
+than taking `<option>` children.
 
 <div class="demo-columns">
   <div class="demo-column">
@@ -115,11 +135,19 @@ the message as an `error` string; Web Components expose the boolean `invalid` st
 </div>
 
 ```tsx
-import { NativeSelect } from '@ghds/react/native-select';
+// React Native — requires the picker peer dependency:
+//   pnpm add @react-native-picker/picker
+import { NativeSelect } from '@ghds/react-native/native-select';
 
-<NativeSelect label="Fruit">
-  <option value="">Select a fruit…</option>
-  <option value="apple">Apple</option>
-  <option value="banana">Banana</option>
-</NativeSelect>;
+<NativeSelect
+  label="Fruit"
+  placeholder="Select a fruit…"
+  selectedValue={value}
+  onValueChange={setValue}
+  items={[
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Cherry', value: 'cherry' },
+  ]}
+/>;
 ```

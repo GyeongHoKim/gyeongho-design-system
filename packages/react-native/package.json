@@ -133,6 +133,11 @@
       "import": "./dist/date-picker.mjs",
       "require": "./dist/date-picker.cjs"
     },
+    "./direction": {
+      "types": "./dist/components/Direction.d.ts",
+      "import": "./dist/direction.mjs",
+      "require": "./dist/direction.cjs"
+    },
     "./drawer": {
       "types": "./dist/components/Drawer.d.ts",
       "import": "./dist/drawer.mjs",
@@ -218,6 +223,11 @@
       "import": "./dist/modal.mjs",
       "require": "./dist/modal.cjs"
     },
+    "./native-select": {
+      "types": "./dist/components/NativeSelect.d.ts",
+      "import": "./dist/native-select.mjs",
+      "require": "./dist/native-select.cjs"
+    },
     "./navigation-menu": {
       "types": "./dist/components/NavigationMenu.d.ts",
       "import": "./dist/navigation-menu.mjs",
@@ -247,6 +257,16 @@
       "types": "./dist/components/RadioGroup.d.ts",
       "import": "./dist/radio-group.mjs",
       "require": "./dist/radio-group.cjs"
+    },
+    "./resizable": {
+      "types": "./dist/components/Resizable.d.ts",
+      "import": "./dist/resizable.mjs",
+      "require": "./dist/resizable.cjs"
+    },
+    "./scroll-area": {
+      "types": "./dist/components/ScrollArea.d.ts",
+      "import": "./dist/scroll-area.mjs",
+      "require": "./dist/scroll-area.cjs"
     },
     "./select": {
       "types": "./dist/components/Select.d.ts",
@@ -345,9 +365,15 @@
     "clean": "rm -rf dist .turbo"
   },
   "peerDependencies": {
+    "@react-native-picker/picker": ">=2.0.0",
     "react": ">=18.0.0",
     "react-native": ">=0.74.0",
     "react-native-svg": ">=15.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@react-native-picker/picker": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@ghds/icons": "workspace:*",
@@ -357,6 +383,7 @@
   },
   "devDependencies": {
     "@ghds/tsconfig": "workspace:*",
+    "@react-native-picker/picker": "^2.11.4",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.3.0",
     "@types/node": "catalog:",
