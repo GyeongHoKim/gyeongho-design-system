@@ -1,6 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { useTheme } from '@shopify/restyle';
 import { useState } from 'react';
+import type { TextStyle } from 'react-native';
 import { SketchBackground } from '../sketch/SketchBackground.js';
 import { useSketch } from '../sketch/useSketch.js';
 import { Box, Text } from '../theme/primitives.js';
@@ -85,6 +86,18 @@ export function NativeSelect({
   const fillColor = disabled
     ? theme.colors.nativeSelectBgDisabled
     : theme.colors.nativeSelectBgDefault;
+
+  // The sketchy box (SketchBackground) is the only frame. On native the Picker
+  // has no border/fill of its own; on react-native-web it renders a real
+  // <select> whose default border, background and focus outline would otherwise
+  // double up with our box — strip all three. `outlineStyle` is a
+  // react-native-web style extension not present in RN's core TextStyle, so the
+  // web-only reset is applied through a cast; it is inert on native.
+  const pickerReset = {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    outlineStyle: 'none',
+  } as unknown as TextStyle;
   const textColor = disabled
     ? theme.colors.nativeSelectTextDisabled
     : theme.colors.nativeSelectTextValue;
@@ -120,7 +133,7 @@ export function NativeSelect({
           onValueChange={(value) => onValueChange?.(value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          style={{ color: textColor }}
+          style={[{ color: textColor }, pickerReset]}
         >
           {placeholder !== undefined ? (
             <Picker.Item
