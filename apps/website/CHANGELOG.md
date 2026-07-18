@@ -1,5 +1,13 @@
 # @ghds/website
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [883cc94]
+- Updated dependencies [9574a3c]
+  - @ghds/web-components@0.11.0
+
 ## 0.1.1
 
 ### Patch Changes

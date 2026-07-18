@@ -1,5 +1,12 @@
 # @ghds/web-components
 
+## 0.11.0
+
+### Minor Changes
+
+- 883cc94: `gh-button` now accepts an optional `href` (plus `target`/`rel`). When `href` is set and the button is not `disabled`, it renders as a real link (`<a href>`) instead of a `<button>`, keeping the sketch outline, variant colours, and focus styling. This is for navigation actions that should look like a button but stay right-clickable, keyboard-focusable links (e.g. a language switcher). A `disabled` button still renders a `<button>` since a link cannot be truly disabled. The link's semantics come from the inner anchor rather than a host `role="button"`.
+- 9574a3c: `gh-navigation-menu` now accepts a `current` property — the active page's path — and highlights the matching item. A standalone top-level link matches its path exactly (so a root `/` link is current only on the home page); a dropdown group is highlighted when any of its child links matches the current path exactly _or_ as an ancestor (`/components/` is current on `/components/button/`). Matching leaf links receive `aria-current="page"`. Trailing slashes and query/hash are ignored when comparing. Leaving `current` unset preserves the previous behaviour (nothing highlighted).
+
 ## 0.10.0
 
 ### Minor Changes
