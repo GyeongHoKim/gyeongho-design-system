@@ -2,6 +2,14 @@
 
 GHDS components are deliberately small — most real UI is a *pattern*, a recipe combining several components. These are the recurring recipes and the decisions behind them.
 
+## Contents
+
+- FormField wraps exactly one control
+- Validate on blur + submit, not on every keystroke
+- Choosing between Toast, Alert, and Modal
+- Choosing between Skeleton and Spinner
+- Debounce search inputs
+
 ## FormField wraps exactly one control
 
 `FormField` composes a label, helper text, and error message around a **single** form control, wiring `id`/`aria-describedby`/`aria-invalid` to that one control. Wrapping more than one control breaks that wiring — only one of them ends up connected.
