@@ -1,0 +1,19 @@
+{
+  "comp": {
+    "marker": {
+      "$description": "Tier 3 component tokens for the hand-drawn Marker (highlighter). References sys only.",
+      "color": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.warning.default}" },
+        "success": { "$value": "{sys.color.bg.success.default}" },
+        "info": { "$value": "{sys.color.bg.info.default}" },
+        "danger": { "$value": "{sys.color.bg.danger.default}" }
+      },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

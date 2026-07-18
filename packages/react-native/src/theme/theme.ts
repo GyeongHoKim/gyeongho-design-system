@@ -450,6 +450,36 @@ function buildTheme(t: Tokens) {
       carouselIndicatorDefault: t.comp.carousel.indicator.default,
       carouselIndicatorActive: t.comp.carousel.indicator.active,
 
+      // comp.marker colors (highlight tones; text colour is inherited, not set)
+      markerColorDefault: t.comp.marker.color.default,
+      markerColorSuccess: t.comp.marker.color.success,
+      markerColorInfo: t.comp.marker.color.info,
+      markerColorDanger: t.comp.marker.color.danger,
+
+      // comp.attachment colors
+      attachmentBgDefault: t.comp.attachment.bg.default,
+      attachmentStrokeDefault: t.comp.attachment.stroke.default,
+      attachmentTextName: t.comp.attachment.text.name,
+      attachmentTextMeta: t.comp.attachment.text.meta,
+      attachmentIconDefault: t.comp.attachment.icon.default,
+
+      // comp.bubble colors (sent text = onPrimary over primary; received = primary over muted)
+      bubbleBgReceived: t.comp.bubble.bg.received,
+      bubbleBgSent: t.comp.bubble.bg.sent,
+      bubbleStrokeReceived: t.comp.bubble.stroke.received,
+      bubbleStrokeSent: t.comp.bubble.stroke.sent,
+      bubbleTextReceived: t.comp.bubble.text.received,
+      bubbleTextSent: t.comp.bubble.text.sent,
+
+      // comp.message colors
+      messageTextAuthor: t.comp.message.text.author,
+      messageTextTimestamp: t.comp.message.text.timestamp,
+
+      // comp.messageScroller colors (RN cannot theme the native scrollbar; kept
+      // for token parity with the web build)
+      messageScrollerThumbDefault: t.comp.messageScroller.thumb.default,
+      messageScrollerTrackDefault: t.comp.messageScroller.track.default,
+
       // toast system needs a canvas/overlay scrim reference
       toastScrim: t.sys.color.bg.overlay,
     },
@@ -475,6 +505,17 @@ function buildTheme(t: Tokens) {
       inputGroupGap: t.comp.inputGroup.gap,
       inputOtpGap: t.comp.inputOtp.gap,
       carouselGap: t.comp.carousel.gap,
+      // comp.attachment / comp.bubble padding + gap (named comp keys).
+      attachmentHorizontal: t.comp.attachment.padding.horizontal,
+      attachmentVertical: t.comp.attachment.padding.vertical,
+      attachmentGap: t.comp.attachment.gap,
+      bubbleHorizontal: t.comp.bubble.padding.horizontal,
+      bubbleVertical: t.comp.bubble.padding.vertical,
+      // comp.message row/content gaps and comp.messageScroller gap + padding.
+      messageRowGap: t.comp.message.rowGap,
+      messageGap: t.comp.message.gap,
+      messageScrollerGap: t.comp.messageScroller.gap,
+      messageScrollerPadding: t.comp.messageScroller.padding,
     },
     borderRadii: {
       sm: t.sys.radius.sm,
@@ -485,6 +526,8 @@ function buildTheme(t: Tokens) {
       item: t.comp.item.radius,
       inputGroup: t.comp.inputGroup.radius,
       inputOtp: t.comp.inputOtp.radius,
+      attachment: t.comp.attachment.radius,
+      bubble: t.comp.bubble.radius,
     },
     borderWidths: {
       thin: t.sys.border.width.thin,
@@ -713,6 +756,18 @@ function buildTheme(t: Tokens) {
     inputOtpSize: t.comp.inputOtp.size,
     // Carousel dot-indicator diameter, read directly from `comp.carousel`.
     carouselIndicatorSize: t.comp.carousel.indicatorSize,
+    markerSketch: {
+      roughness: t.comp.marker.sketch.roughness,
+      bowing: t.comp.marker.sketch.bowing,
+    },
+    attachmentSketch: {
+      roughness: t.comp.attachment.sketch.roughness,
+      bowing: t.comp.attachment.sketch.bowing,
+    },
+    bubbleSketch: {
+      roughness: t.comp.bubble.sketch.roughness,
+      bowing: t.comp.bubble.sketch.bowing,
+    },
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.

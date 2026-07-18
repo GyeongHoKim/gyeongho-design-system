@@ -1,0 +1,37 @@
+{
+  "comp": {
+    "attachment": {
+      "$description": "Tier 3 component tokens for the hand-drawn Attachment chip. References sys only.",
+      "bg": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.surface}" },
+        "hover": { "$value": "{sys.color.bg.muted}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "name": { "$value": "{sys.color.text.primary}" },
+        "meta": { "$value": "{sys.color.text.secondary}" }
+      },
+      "icon": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.icon.default}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.md}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

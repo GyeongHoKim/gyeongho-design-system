@@ -1,0 +1,103 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Marker
+description: A hand-drawn inline highlighter that paints a sketchy stroke behind text.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import MarkerDemoReact from '../../../components/demos/MarkerDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Marker` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Marker` is an inline highlighter — it wraps a run of text in a semantic `<mark>` and paints a
+sketchy hachure stroke behind it, so the words stay readable through the scribble. Use it to draw
+attention to a phrase within running text; the four variants tint the highlight to signal intent.
+
+## Anatomy
+
+A semantic `<mark>` with a hand-drawn hachure fill (`@ghds/sketch-core`) behind the text. The
+highlight colour comes from `@ghds/tokens` (`comp.marker.*`); the text colour is always inherited,
+never set, so the marker adapts to whatever prose it sits in.
+
+## Variants & States
+
+Four highlight tones, no interactive states — `Marker` is static inline decoration.
+
+<StateList
+  states={[
+    { name: 'default', present: true, note: 'A warm highlighter yellow.' },
+    { name: 'success', present: true },
+    { name: 'info', present: true },
+    { name: 'danger', present: true },
+    { name: 'Hover / Focus', present: false, note: 'Not interactive.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use Marker to emphasize a short phrase inside running text.',
+    'Choose the variant that matches meaning — danger for a warning phrase, success for a positive one.',
+    'Let the text colour inherit so the highlight works in any prose context.',
+  ]}
+  dont={[
+    "Don't highlight whole paragraphs — the emphasis loses its meaning when everything is marked.",
+    "Don't rely on the highlight colour alone to carry meaning; the words should still say it.",
+  ]}
+/>
+
+## Accessibility
+
+- Renders a real `<mark>` element, so the highlight is exposed with the semantics of marked/
+  highlighted text where assistive technology supports it.
+- The sketch stroke is decorative and painted behind the text; it never changes what is announced.
+- Because the text colour is inherited (not overridden), contrast is governed by the surrounding
+  prose — keep that prose on an accessible background.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Mark short, meaningful phrases — a term, a name, a key number — not entire sentences. The highlight
+is a spotlight; it only works when most of the text is unmarked.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'default' | 'success' | 'info' | 'danger'", default: "'default'", description: 'Highlight colour; default is a warm highlighter yellow.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLElement>', description: 'Native attributes pass through to the <mark> element.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders the four tones inside a sentence below — toggle dark mode in the header to see the
+highlights hold their words legible in both schemes.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <MarkerDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Marker } from '@ghds/react/marker';
+
+<p>
+  Remember to <Marker variant="danger">back up</Marker> before you upgrade.
+</p>;
+```

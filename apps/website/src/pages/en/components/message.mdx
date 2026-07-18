@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Message
+description: A chat message row composing an avatar, author, timestamp, and bubble.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import MessageDemoReact from '../../../components/demos/MessageDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Message` and its subcomponents are **React-only** (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Message` is a chat message row: an optional avatar, then a content column with an author +
+timestamp header and a `Bubble`. The `side` prop flips the layout so outgoing messages align to the
+end. Compose it from `MessageAvatar`, `MessageContent`, `MessageAuthor`, and `MessageTimestamp`,
+with a `Bubble` (from `@ghds/react/bubble`) and an `Avatar` (from `@ghds/react/avatar`).
+
+## Anatomy
+
+A flex row laid out as: `MessageAvatar` (a leading `Avatar`) and `MessageContent` — a column holding
+a header (`MessageAuthor` + `MessageTimestamp`) above a `Bubble`. `side="sent"` reverses the row so
+the avatar and bubble align to the end. Spacing and text colours come from `@ghds/tokens`
+(`comp.message.*`).
+
+## Variants & States
+
+The only axis is `side` (`received` aligns to the start, `sent` to the end). The bubble carries the
+visual variant.
+
+<StateList
+  states={[
+    { name: 'received', present: true, note: 'Aligns to the start (incoming).' },
+    { name: 'sent', present: true, note: 'Aligns to the end (outgoing).' },
+    { name: 'Hover / Focus', present: false, note: 'The row is static; interactive controls set their own states.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Match side to direction: received for incoming, sent for the current user.',
+    'Pair Bubble’s variant with side (received bubble on a received row, sent on sent).',
+    'Give MessageContent align-items: flex-end on sent rows so the header and bubble hug the edge.',
+  ]}
+  dont={[
+    "Don't hand-build message rows from raw divs — the subcomponents carry the spacing and text tokens.",
+    "Don't convey who sent a message with colour alone; keep the author name visible.",
+  ]}
+/>
+
+## Accessibility
+
+- The author name (`MessageAuthor`) makes the speaker explicit, so identity doesn't rely on avatar
+  or bubble colour alone.
+- Provide the `Avatar` a `name` so it has an accessible label / initials fallback.
+- For a full log, wrap messages in `MessageScroller` (or a list/log landmark) so the sequence is
+  conveyed to assistive technology.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Keep the header to a short author name and a compact timestamp. The message text lives in the
+`Bubble`; don't repeat the author inside it.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'side', type: "'received' | 'sent'", default: "'received'", description: "'received' aligns to the start; 'sent' aligns to the end (Message)." },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through to the row.' },
+        { name: 'MessageAvatar / MessageContent', type: 'HTMLAttributes<HTMLDivElement>', description: 'The avatar slot and the header + bubble column.' },
+        { name: 'MessageAuthor / MessageTimestamp', type: 'HTMLAttributes<HTMLSpanElement>', description: 'The author name and timestamp in the header.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a short received/sent exchange below — toggle dark mode in the header to see the rows
+and bubbles respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <MessageDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react/message';
+import { Bubble } from '@ghds/react/bubble';
+import { Avatar } from '@ghds/react/avatar';
+
+<Message side="received">
+  <MessageAvatar>
+    <Avatar name="Bo Ram" />
+  </MessageAvatar>
+  <MessageContent>
+    <MessageAuthor>Bo Ram</MessageAuthor>
+    <MessageTimestamp>10:02</MessageTimestamp>
+    <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+  </MessageContent>
+</Message>;
+```

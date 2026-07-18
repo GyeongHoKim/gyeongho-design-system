@@ -1,0 +1,102 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Bubble
+description: A hand-drawn chat bubble in a received or sent variant.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import BubbleDemoReact from '../../../components/demos/BubbleDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Bubble` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Bubble` is a single chat bubble — a sketchy rounded box holding message text. It comes in two
+variants: `received` (a muted incoming bubble) and `sent` (a filled outgoing bubble in the primary
+colour). It only paints itself; alignment within a conversation is the caller's concern (see the
+`Message` component).
+
+## Anatomy
+
+A hand-drawn rounded box (outline + fill from `@ghds/sketch-core`) wrapping inline message text.
+Colour, padding, radius, and sketch parameters come from `@ghds/tokens` (`comp.bubble.*`). The box
+is `inline-block` with `max-width: 100%`, so long text wraps rather than overflowing.
+
+## Variants & States
+
+Two variants, no interactive states — the bubble is static content.
+
+<StateList
+  states={[
+    { name: 'received', present: true, note: 'A muted incoming bubble.' },
+    { name: 'sent', present: true, note: 'A filled outgoing bubble in the primary colour.' },
+    { name: 'Hover / Focus', present: false, note: 'Not interactive on its own.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use received for incoming messages and sent for the current user’s outgoing ones.',
+    'Wrap bubbles in Message to handle avatar, author, timestamp, and alignment.',
+    'Constrain the bubble’s max width in long threads so lines stay readable.',
+  ]}
+  dont={[
+    "Don't rely on Bubble for alignment — it paints itself but doesn't position within a row.",
+    "Don't put interactive controls that need their own semantics directly inside a bubble without proper roles.",
+  ]}
+/>
+
+## Accessibility
+
+- The bubble is a plain container; the meaning is its text content. Colour distinguishes sent from
+  received, but the conversation structure (who said what) should come from `Message`'s author and
+  layout, not colour alone.
+- The sketch box is decorative and never changes what is announced.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Keep bubble content to the message itself. Author and timestamp belong in the surrounding `Message`
+header, not inside the bubble.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'received' | 'sent'", default: "'received'", description: "'received' is a muted incoming bubble; 'sent' is a filled outgoing bubble." },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (style for max-width, etc.) pass through.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a received and a sent bubble below — toggle dark mode in the header to see both fills
+respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <BubbleDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Bubble } from '@ghds/react/bubble';
+
+<Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+<Bubble variant="sent">Yes! See you at 10.</Bubble>;
+```

@@ -43,6 +43,11 @@
       "import": "./dist/aspect-ratio.mjs",
       "require": "./dist/aspect-ratio.cjs"
     },
+    "./attachment": {
+      "types": "./dist/components/Attachment.d.ts",
+      "import": "./dist/attachment.mjs",
+      "require": "./dist/attachment.cjs"
+    },
     "./avatar": {
       "types": "./dist/components/Avatar.d.ts",
       "import": "./dist/avatar.mjs",
@@ -52,6 +57,11 @@
       "types": "./dist/components/Badge.d.ts",
       "import": "./dist/badge.mjs",
       "require": "./dist/badge.cjs"
+    },
+    "./bubble": {
+      "types": "./dist/components/Bubble.d.ts",
+      "import": "./dist/bubble.mjs",
+      "require": "./dist/bubble.cjs"
     },
     "./breadcrumb": {
       "types": "./dist/components/Breadcrumb.d.ts",
@@ -178,6 +188,11 @@
       "import": "./dist/label.mjs",
       "require": "./dist/label.cjs"
     },
+    "./marker": {
+      "types": "./dist/components/Marker.d.ts",
+      "import": "./dist/marker.mjs",
+      "require": "./dist/marker.cjs"
+    },
     "./menu": {
       "types": "./dist/components/Menu.d.ts",
       "import": "./dist/menu.mjs",
@@ -187,6 +202,16 @@
       "types": "./dist/components/Menubar.d.ts",
       "import": "./dist/menubar.mjs",
       "require": "./dist/menubar.cjs"
+    },
+    "./message": {
+      "types": "./dist/components/Message.d.ts",
+      "import": "./dist/message.mjs",
+      "require": "./dist/message.cjs"
+    },
+    "./message-scroller": {
+      "types": "./dist/components/MessageScroller.d.ts",
+      "import": "./dist/message-scroller.mjs",
+      "require": "./dist/message-scroller.cjs"
     },
     "./modal": {
       "types": "./dist/components/Modal.d.ts",
