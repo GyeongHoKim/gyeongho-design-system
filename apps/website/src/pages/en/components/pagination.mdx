@@ -112,6 +112,40 @@ and chevron icons.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Pagination } from '@ghds/react/pagination';
+import { useState } from 'react';
+
+const [page, setPage] = useState(3);
+<Pagination count={12} page={page} onPageChange={setPage} />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/pagination';
+</script>
+<gh-pagination id="pager" count="12" page="3"></gh-pagination>
+<script>
+  const el = document.getElementById('pager');
+  el.addEventListener('page-change', (e) => {
+    el.page = e.detail;
+  });
+</script>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Pagination } from '@ghds/react-native/pagination';
+import { useState } from 'react';
+
+const [page, setPage] = useState(1);
+<Pagination count={12} page={page} onPageChange={setPage} />;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -124,11 +158,3 @@ and chevron icons.
     <PaginationDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Pagination } from '@ghds/react-native/pagination';
-
-const [page, setPage] = useState(1);
-<Pagination count={12} page={page} onPageChange={setPage} />;
-```

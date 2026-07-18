@@ -105,6 +105,39 @@ The label names the setting itself ("Enable notifications"), not the current sta
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Switch } from '@ghds/react/switch';
+
+<Switch
+  label="Enable notifications"
+  checked={notifications}
+  onChange={(event) => setNotifications(event.target.checked)}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/switch';
+</script>
+<gh-switch id="notify" label="Enable notifications"></gh-switch>
+<script>
+  document.getElementById('notify').addEventListener('change', (e) => {
+    console.log(e.target.checked);
+  });
+</script>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Switch } from '@ghds/react-native/switch';
+
+<Switch label="Enable notifications" checked={notifications} onCheckedChange={setNotifications} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below. React Native can't run in a browser without additional
@@ -120,10 +153,3 @@ React and Web Components render live below. React Native can't run in a browser 
     <SwitchDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Switch } from '@ghds/react-native/switch';
-
-<Switch label="Enable notifications" checked={notifications} onCheckedChange={setNotifications} />;
-```

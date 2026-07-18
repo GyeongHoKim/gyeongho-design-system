@@ -102,6 +102,42 @@ N/A — Direction carries no content. It wraps a subtree and supplies a value.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (DirectionProvider context + useDirection hook)
+import { DirectionProvider, useDirection } from '@ghds/react/direction';
+
+<DirectionProvider dir="rtl">
+  {/* descendant GHDS components read this direction */}
+</DirectionProvider>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (mirrors `dir` onto the host) -->
+<script type="module">
+  import '@ghds/web-components/direction';
+</script>
+<gh-direction dir="rtl">
+  <!-- slotted subtree inherits the direction -->
+</gh-direction>
+```
+
+```tsx
+// React Native — @ghds/react-native (falls back to I18nManager when no provider is present)
+import { DirectionProvider, useDirection } from '@ghds/react-native/direction';
+import { Text } from '@ghds/react-native/theme';
+
+function Price() {
+  const dir = useDirection();
+  return <Text>{dir === 'rtl' ? 'السعر' : 'Price'}</Text>;
+}
+
+<DirectionProvider dir="rtl">
+  <Price />
+</DirectionProvider>;
+```
+
 ## Live Demo
 
 React and Web Components render live below — the same content under an LTR and an RTL direction, with
@@ -119,18 +155,3 @@ up in this site), so its usage is shown as a code sample instead.
     <DirectionDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { DirectionProvider, useDirection } from '@ghds/react-native/direction';
-import { Text } from 'react-native';
-
-function Price() {
-  const dir = useDirection(); // falls back to I18nManager.isRTL when no provider is present
-  return <Text>{dir === 'rtl' ? 'السعر' : 'Price'}</Text>;
-}
-
-<DirectionProvider dir="rtl">
-  <Price />
-</DirectionProvider>;
-```

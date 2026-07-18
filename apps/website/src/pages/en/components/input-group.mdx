@@ -112,6 +112,39 @@ button. Long addon text competes with the input value for space.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react (addon position set by child order)
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@ghds/react/input-group';
+
+<InputGroup>
+  <InputGroupAddon>https://</InputGroupAddon>
+  <InputGroupInput placeholder="example.com" aria-label="Website" />
+</InputGroup>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (slot a bare <input>; the group paints the box) -->
+<script type="module">
+  import '@ghds/web-components/input-group';
+</script>
+<gh-input-group>
+  <span>https://</span>
+  <input aria-label="Website" placeholder="example.com" />
+</gh-input-group>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react-native/input-group';
+
+<InputGroup>
+  <InputGroupAddon>https://</InputGroupAddon>
+  <InputGroupInput placeholder="example.com" accessibilityLabel="Website" />
+</InputGroup>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -128,13 +161,3 @@ header to see both respond identically. React Native can't run in a browser with
     <InputGroupDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react-native/input-group';
-
-<InputGroup>
-  <InputGroupAddon>https://</InputGroupAddon>
-  <InputGroupInput placeholder="example.com" accessibilityLabel="Website" />
-</InputGroup>;
-```

@@ -97,6 +97,33 @@ header, not inside the bubble.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Bubble } from '@ghds/react/bubble';
+
+<Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+<Bubble variant="sent">Yes! See you at 10.</Bubble>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/bubble';
+</script>
+<gh-bubble variant="received">Hey — are we still on for tomorrow?</gh-bubble>
+<gh-bubble variant="sent">Yes! See you at 10.</gh-bubble>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Bubble } from '@ghds/react-native/bubble';
+
+<Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
+<Bubble variant="sent">Yes! See you at 10.</Bubble>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -113,11 +140,3 @@ header to see both respond identically. React Native can't run in a browser with
     <BubbleDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Bubble } from '@ghds/react-native/bubble';
-
-<Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
-<Bubble variant="sent">Yes! See you at 10.</Bubble>;
-```

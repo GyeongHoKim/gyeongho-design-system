@@ -125,6 +125,44 @@ code`) and put any "resend" affordance or error message outside the field.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { InputOTP } from '@ghds/react/input-otp';
+
+<InputOTP
+  label="Verification code"
+  value={code}
+  onChange={setCode}
+  onComplete={(code) => verify(code)}
+/>;
+// Invalid state:
+<InputOTP label="Invalid code" defaultValue="123456" invalid />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/input-otp';
+</script>
+<gh-input-otp id="otp" label="Verification code"></gh-input-otp>
+<script>
+  // Controlled-only; it dispatches gh-change on every edit and
+  // gh-complete once every cell is filled (detail: { value }).
+  document.getElementById('otp').addEventListener('gh-complete', (e) => {
+    verify(e.detail.value);
+  });
+</script>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { InputOTP } from '@ghds/react-native/input-otp';
+
+<InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -141,10 +179,3 @@ header to see both respond identically. React Native can't run in a browser with
     <InputOTPDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { InputOTP } from '@ghds/react-native/input-otp';
-
-<InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
-```

@@ -106,6 +106,62 @@ on any one first — and avoid splitting a single message across slides.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@ghds/react/carousel';
+
+<Carousel orientation="horizontal" aria-label="Photos">
+  <CarouselContent>
+    <CarouselItem>Slide 1</CarouselItem>
+    <CarouselItem>Slide 2</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (renders its own prev/next controls + dots) -->
+<script type="module">
+  import '@ghds/web-components/carousel';
+  import '@ghds/web-components/carousel-item';
+</script>
+<gh-carousel aria-label="Photos">
+  <gh-carousel-item>Slide 1</gh-carousel-item>
+  <gh-carousel-item>Slide 2</gh-carousel-item>
+</gh-carousel>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselIndicators,
+} from '@ghds/react-native/carousel';
+
+<Carousel accessibilityLabel="Photos">
+  <CarouselContent>
+    <CarouselItem>{/* slide 1 */}</CarouselItem>
+    <CarouselItem>{/* slide 2 */}</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+  <CarouselIndicators />
+</Carousel>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -123,18 +179,3 @@ header to see both respond identically. React Native can't run in a browser with
     <CarouselDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, CarouselIndicators } from '@ghds/react-native/carousel';
-
-<Carousel accessibilityLabel="Photos">
-  <CarouselContent>
-    <CarouselItem>{/* slide 1 */}</CarouselItem>
-    <CarouselItem>{/* slide 2 */}</CarouselItem>
-  </CarouselContent>
-  <CarouselPrevious />
-  <CarouselNext />
-  <CarouselIndicators />
-</Carousel>;
-```

@@ -99,6 +99,49 @@ place inside.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { MessageScroller } from '@ghds/react/message-scroller';
+import { Message } from '@ghds/react/message';
+
+<MessageScroller style={{ maxHeight: 320 }}>
+  {messages.map((m) => (
+    <Message key={m.id} side={m.side}>
+      {/* … MessageAvatar / MessageContent / Bubble … */}
+    </Message>
+  ))}
+</MessageScroller>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/message-scroller';
+  import '@ghds/web-components/message';
+  // Imperative: scroller.scrollToBottom() jumps to the newest message
+</script>
+<gh-message-scroller style="max-height: 320px;">
+  <gh-message side="received">
+    <span slot="author">Bo Ram</span>
+    <gh-bubble variant="received">Hey — are we still on for tomorrow?</gh-bubble>
+  </gh-message>
+</gh-message-scroller>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { MessageScroller } from '@ghds/react-native/message-scroller';
+import { Message } from '@ghds/react-native/message';
+
+<MessageScroller style={{ maxHeight: 320 }}>
+  {messages.map((m) => (
+    <Message key={m.id} side={m.side}>{/* … */}</Message>
+  ))}
+</MessageScroller>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -115,14 +158,3 @@ header to see both respond identically. React Native can't run in a browser with
     <MessageScrollerDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { MessageScroller } from '@ghds/react-native/message-scroller';
-
-<MessageScroller style={{ maxHeight: 320 }}>
-  {messages.map((m) => (
-    <Message key={m.id} side={m.side}>{/* … */}</Message>
-  ))}
-</MessageScroller>;
-```

@@ -111,6 +111,53 @@ Action labels (verbs). Keep them short.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Menu } from '@ghds/react/menu';
+
+<Menu
+  label="Actions"
+  items={[
+    { value: 'edit', label: 'Edit' },
+    { value: 'duplicate', label: 'Duplicate' },
+    { value: 'archive', label: 'Archive', disabled: true },
+    { value: 'delete', label: 'Delete' },
+  ]}
+  onSelect={(value) => run(value)}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/menu';
+  const menu = document.getElementById('actions');
+  // items is a property, not an attribute
+  menu.items = [
+    { value: 'edit', label: 'Edit' },
+    { value: 'delete', label: 'Delete' },
+  ];
+  menu.addEventListener('select', (e) => run(e.detail));
+</script>
+<gh-menu id="actions" label="Actions"></gh-menu>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Menu } from '@ghds/react-native/menu';
+
+<Menu
+  label="Actions"
+  items={[
+    { value: 'edit', label: 'Edit' },
+    { value: 'delete', label: 'Delete' },
+  ]}
+  onSelect={(value) => run(value)}
+/>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -123,14 +170,3 @@ Action labels (verbs). Keep them short.
     <MenuDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Menu } from '@ghds/react-native/menu';
-
-<Menu
-  label="Actions"
-  items={[{ value: 'edit', label: 'Edit' }, { value: 'delete', label: 'Delete' }]}
-  onSelect={(value) => run(value)}
-/>;
-```

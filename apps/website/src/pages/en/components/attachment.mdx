@@ -108,6 +108,32 @@ duplicating the name inside `meta`.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Attachment } from '@ghds/react/attachment';
+
+<Attachment name="newsletter.eml" meta="12 KB" icon="mail" />
+<Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/attachment';
+</script>
+<gh-attachment name="newsletter.eml" meta="12 KB" icon="mail"></gh-attachment>
+<gh-attachment name="quarterly-report.pdf" meta="2.4 MB" removable></gh-attachment>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Attachment } from '@ghds/react-native/attachment';
+
+<Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
+```
+
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — toggle dark mode in the
@@ -126,10 +152,3 @@ sets `removable` and emits a `gh-remove` event.
     <AttachmentDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Attachment } from '@ghds/react-native/attachment';
-
-<Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
-```

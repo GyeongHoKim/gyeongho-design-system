@@ -123,6 +123,45 @@ Button, whose label names an action. Error messages state what's wrong and how t
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Textarea } from '@ghds/react/textarea';
+
+<Textarea
+  label="Bio"
+  placeholder="Tell us about yourself"
+  value={bio}
+  onChange={(event) => setBio(event.target.value)}
+/>;
+// React-only error state:
+<Textarea label="Feedback" error="Feedback is required." />;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/textarea';
+</script>
+<gh-textarea label="Bio" placeholder="Tell us about yourself" autoresize></gh-textarea>
+<!-- No error prop; Web Components uses native `required` instead -->
+<gh-textarea label="Feedback" required></gh-textarea>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Textarea } from '@ghds/react-native/textarea';
+
+<Textarea
+  label="Bio"
+  placeholder="Tell us about yourself"
+  value={bio}
+  onChangeText={setBio}
+  autoResize
+/>;
+```
+
 ## Live Demo
 
 React's demo includes the error state; the Web Components demo intentionally does not (it has no
@@ -138,16 +177,3 @@ error prop) and shows `required` instead. Both demos include an `autoResize` exa
     <TextareaDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Textarea } from '@ghds/react-native/textarea';
-
-<Textarea
-  label="Bio"
-  placeholder="Tell us about yourself"
-  value={bio}
-  onChangeText={setBio}
-  autoResize
-/>;
-```

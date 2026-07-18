@@ -109,6 +109,47 @@ The label names the option itself ("Small", "Medium", "Large"), not an action.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Radio } from '@ghds/react/radio';
+import { RadioGroup } from '@ghds/react/radio-group';
+import { useState } from 'react';
+
+const [size, setSize] = useState('sm');
+<RadioGroup label="Size" value={size} onValueChange={setSize}>
+  <Radio label="Small" value="sm" />
+  <Radio label="Medium" value="md" />
+  <Radio label="Large" value="lg" disabled />
+</RadioGroup>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<!-- No group value: repeat `name` on each child; the group unchecks siblings -->
+<script type="module">
+  import '@ghds/web-components/radio';
+  import '@ghds/web-components/radio-group';
+</script>
+<gh-radio-group label="Size">
+  <gh-radio label="Small" name="size" value="sm" checked></gh-radio>
+  <gh-radio label="Medium" name="size" value="md"></gh-radio>
+  <gh-radio label="Large" name="size" value="lg" disabled></gh-radio>
+</gh-radio-group>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Radio } from '@ghds/react-native/radio';
+import { RadioGroup } from '@ghds/react-native/radio-group';
+
+<RadioGroup label="Size" value={size} onValueChange={setSize}>
+  <Radio label="Small" value="sm" />
+  <Radio label="Medium" value="md" />
+</RadioGroup>;
+```
+
 ## Live Demo
 
 React and Web Components render live below, each wrapped in their own `RadioGroup`/`<gh-radio-group>`.
@@ -125,14 +166,3 @@ shown as a code sample instead.
     <RadioDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Radio } from '@ghds/react-native/radio';
-import { RadioGroup } from '@ghds/react-native/radio-group';
-
-<RadioGroup label="Size" value={size} onValueChange={setSize}>
-  <Radio label="Small" value="sm" />
-  <Radio label="Medium" value="md" />
-</RadioGroup>;
-```

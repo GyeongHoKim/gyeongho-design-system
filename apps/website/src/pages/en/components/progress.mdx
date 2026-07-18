@@ -99,6 +99,32 @@ No visible text — the label is for assistive tech. Represent the value visuall
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Progress } from '@ghds/react/progress';
+
+<Progress value={30} label="30 percent" />; // determinate
+<Progress label="Loading" />; // indeterminate (omit value)
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/progress';
+</script>
+<gh-progress value="30" label="30 percent"></gh-progress>
+<gh-progress label="Loading"></gh-progress>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Progress } from '@ghds/react-native/progress';
+
+<Progress value={60} label="Uploading" />;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -111,10 +137,3 @@ No visible text — the label is for assistive tech. Represent the value visuall
     <ProgressDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Progress } from '@ghds/react-native/progress';
-
-<Progress value={60} label="Uploading" />;
-```

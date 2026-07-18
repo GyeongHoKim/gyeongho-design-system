@@ -113,6 +113,51 @@ drive it from the `value-change` event.
   ]}
 />
 
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Tabs } from '@ghds/react/tabs';
+
+<Tabs
+  label="Product details"
+  items={[
+    { value: 'overview', label: 'Overview', content: <p>The overview panel.</p> },
+    { value: 'specs', label: 'Specs', content: <p>The specifications panel.</p> },
+  ]}
+/>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/tabs';
+</script>
+<gh-tabs id="my-tabs" label="Product details"></gh-tabs>
+<script>
+  const el = document.getElementById('my-tabs');
+  el.items = [
+    { value: 'overview', label: 'Overview', content: 'The overview panel.' },
+    { value: 'specs', label: 'Specs', content: 'The specifications panel.' },
+  ];
+  el.addEventListener('value-change', (e) => { el.value = e.detail; });
+</script>
+```
+
+```tsx
+// React Native — @ghds/react-native
+import { Tabs } from '@ghds/react-native/tabs';
+import { Text } from '@ghds/react-native/theme';
+
+<Tabs
+  label="Product details"
+  items={[
+    { value: 'overview', label: 'Overview', content: <Text>Overview</Text> },
+    { value: 'specs', label: 'Specs', content: <Text>Specs</Text> },
+  ]}
+/>;
+```
+
 ## Live Demo
 
 <div class="demo-columns">
@@ -125,17 +170,3 @@ drive it from the `value-change` event.
     <TabsDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Tabs } from '@ghds/react-native/tabs';
-import { Text } from '@ghds/react-native/theme';
-
-<Tabs
-  label="Details"
-  items={[
-    { value: 'a', label: 'Overview', content: <Text>Overview</Text> },
-    { value: 'b', label: 'Specs', content: <Text>Specs</Text> },
-  ]}
-/>;
-```
