@@ -43,6 +43,11 @@
       "import": "./dist/alert.mjs",
       "require": "./dist/alert.cjs"
     },
+    "./aspect-ratio": {
+      "types": "./dist/components/aspect-ratio.d.ts",
+      "import": "./dist/aspect-ratio.mjs",
+      "require": "./dist/aspect-ratio.cjs"
+    },
     "./avatar": {
       "types": "./dist/components/avatar.d.ts",
       "import": "./dist/avatar.mjs",
@@ -118,6 +123,11 @@
       "import": "./dist/date-picker.mjs",
       "require": "./dist/date-picker.cjs"
     },
+    "./direction": {
+      "types": "./dist/components/direction.d.ts",
+      "import": "./dist/direction.mjs",
+      "require": "./dist/direction.cjs"
+    },
     "./drawer": {
       "types": "./dist/components/drawer.d.ts",
       "import": "./dist/drawer.mjs",
@@ -143,10 +153,20 @@
       "import": "./dist/icon.mjs",
       "require": "./dist/icon.cjs"
     },
+    "./input-group": {
+      "types": "./dist/components/input-group.d.ts",
+      "import": "./dist/input-group.mjs",
+      "require": "./dist/input-group.cjs"
+    },
     "./input": {
       "types": "./dist/components/input.d.ts",
       "import": "./dist/input.mjs",
       "require": "./dist/input.cjs"
+    },
+    "./item": {
+      "types": "./dist/components/item.d.ts",
+      "import": "./dist/item.mjs",
+      "require": "./dist/item.cjs"
     },
     "./kbd": {
       "types": "./dist/components/kbd.d.ts",
@@ -207,6 +227,11 @@
       "types": "./dist/components/radio.d.ts",
       "import": "./dist/radio.mjs",
       "require": "./dist/radio.cjs"
+    },
+    "./scroll-area": {
+      "types": "./dist/components/scroll-area.d.ts",
+      "import": "./dist/scroll-area.mjs",
+      "require": "./dist/scroll-area.cjs"
     },
     "./select-listbox": {
       "types": "./dist/components/select-listbox.d.ts",

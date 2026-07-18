@@ -1,0 +1,33 @@
+{
+  "comp": {
+    "item": {
+      "$description": "Tier 3 component tokens for the hand-drawn Item list row. References sys only.",
+      "bg": {
+        "$type": "color",
+        "hover": { "$value": "{sys.color.bg.muted}" },
+        "selected": { "$value": "{sys.color.bg.subtle}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "title": { "$value": "{sys.color.text.primary}" },
+        "description": { "$value": "{sys.color.text.secondary}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.md}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

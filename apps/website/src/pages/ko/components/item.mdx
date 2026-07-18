@@ -1,0 +1,112 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Item
+description: 선택적 선행 미디어, 콘텐츠 열, 후행 액션을 갖춘 유연한 목록 행 프리미티브입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ItemDemoReact from '../../../components/demos/ItemDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Item`과 그 하위 컴포넌트는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`Item`은 유연한 목록 행 프리미티브예요: 선택적 선행 미디어, 늘어나는 콘텐츠 열, 후행 액션의 가로 띠예요. `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`로 조합하세요. 설정 행, 멤버 목록, 선택 가능한 옵션, 유사한 목록형 UI에 사용하세요.
+
+## 구조
+
+세 개의 선택적 슬롯을 좌에서 우로 배치하는 flex 행(`<div>`)이에요:
+
+- **`ItemMedia`** — 아이콘, 아바타, 썸네일을 위한 고정된 선행 슬롯.
+- **`ItemContent`** — 늘어나는 가운데 열로, 보통 `ItemTitle` 위에 `ItemDescription`이 있어요.
+- **`ItemActions`** — 버튼, 배지, 셰브론을 위한 고정된 후행 슬롯.
+
+`outline` 변형은 `@ghds/sketch-core`를 통해 손그림 테두리를 그려요; 모든 색상, 간격, 스케치 파라미터는 `@ghds/tokens`(`comp.item.*`)에서 와요.
+
+## 변형 및 상태
+
+세 가지 표면 변형 — `default`(투명), `muted`(은은한 채우기), `outline`(손그림 테두리) — 에 더해 선택된 배경을 채우는 `selected` 불린이 있어요.
+
+<StateList
+  states={[
+    { name: 'Selected', present: true, note: 'selected 불린이 comp.item.bg.selected를 채워요.' },
+    { name: 'Hover', present: false, note: 'Item 자체는 hover 상태를 그리지 않아요 — 필요하면 조합에서 연결하세요.' },
+    { name: 'Focus', present: false, note: '일반 div를 렌더해요; 인터랙티브하게 만들 때 포커스 스타일을 추가하세요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '원시 div를 스타일링하지 말고 ItemMedia / ItemContent / ItemTitle / ItemDescription / ItemActions로 행을 조합하세요.',
+    '목록이 사용되는 방식에 맞게 컨테이너에 적절한 role(listitem, option 등)을 설정하세요.',
+    '행이 선택 가능한 옵션일 때 selected를 aria-selected와 함께 사용하세요.',
+  ]}
+  dont={[
+    "인터랙션 시맨틱을 Item에 의존하지 마세요 — 일반 div를 렌더하므로 role, tabIndex, 핸들러를 직접 추가하세요.",
+    "같은 목록에서 outline과 비-outline 행을 섞지 마세요; 일관된 리듬을 위해 목록당 하나의 변형을 유지하세요.",
+  ]}
+/>
+
+## 접근성
+
+- `Item`은 암시적 role이 없는 일반 `<div>`를 렌더해요 — 조합에 필요한 대로 컨테이너에 `role="listitem"`, `role="option"` 등을 설정하고, 일치하는 컨테이너 role(`list`, `listbox`)로 감싸세요.
+- 행이 무언가를 활성화하게 만들 때 `tabIndex`, `button` 같은 role, 키보드 처리를 추가하세요 — 어느 것도 기본 제공되지 않아요.
+- 선택 상태가 그려지기만 하지 않고 알려지도록 `selected` prop을 `aria-selected`와 함께 사용하세요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+`ItemTitle`은 주요 줄이에요 — 문장이 아닌 짧은 라벨. `ItemDescription`은 보조 정보를 위한 은은한 두 번째 줄이에요. 행이 스캔하기 좋도록 미디어는 아이콘/아바타 하나로, 액션은 한두 개의 컨트롤로 유지하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: '표면 처리: 투명, 은은한 채우기, 손그림 테두리.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: '행을 선택된/활성 행으로 표시해요(선택된 배경을 채워요).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(role, onClick, tabIndex 등)이 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+하위 컴포넌트 — `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions` — 는 각각 표준 `HTMLAttributes<HTMLDivElement>`를 받고 스타일이 지정된 `<div>`를 렌더해요.
+
+## 라이브 데모
+
+아래에서 React가 라이브 렌더돼요 — 미디어와 배지 액션이 있는 outline 행, muted 행, selected 행. 헤더에서 다크 모드를 토글하면 표면이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ItemDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@ghds/react/item';
+import { Badge } from '@ghds/react/badge';
+
+<Item variant="outline">
+  <ItemMedia>{/* avatar */}</ItemMedia>
+  <ItemContent>
+    <ItemTitle>GyeongHo Kim</ItemTitle>
+    <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Badge variant="success">Online</Badge>
+  </ItemActions>
+</Item>;
+```

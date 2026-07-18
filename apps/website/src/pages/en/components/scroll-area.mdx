@@ -1,0 +1,106 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: ScrollArea
+description: A bounded, hand-drawn scroll viewport with a sketchy border and a token-themed scrollbar.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ScrollAreaDemoReact from '../../../components/demos/ScrollAreaDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`ScrollArea` is **React-only** (`@ghds/react`). There is no Web Components or React Native
+counterpart yet.
+
+## Overview
+
+`ScrollArea` is a bounded scroll viewport: it draws a hand-drawn border around a scrollable region
+whose native scrollbar is themed to match the design system. Use it to cap the height (or width) of
+overflowing content — a long list, a code block, a panel of options — while keeping the sketchy
+look consistent.
+
+## Anatomy
+
+A sketchy border (`@ghds/sketch-core`) around an inner viewport. The viewport uses the standard
+`scrollbar-color` / `scrollbar-width` CSS properties, so the thumb and track pick up
+`comp.scrollArea.*` tokens without a custom scrollbar overlay (Firefox and Chromium 121+).
+Constrain the region by passing `maxHeight` (or `maxWidth`) via `style`.
+
+## Variants & States
+
+No interactive states — the only axis is `orientation`, which chooses the scroll axis.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false },
+    { name: 'Focus', present: false, note: 'The scroll region is keyboard-scrollable when focused, but paints no focus style itself.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+The `orientation` prop is `'vertical'` (default), `'horizontal'`, or `'both'`.
+
+## Usage
+
+<DoDont
+  do={[
+    'Constrain the box with maxHeight (or maxWidth) via style — that bound is what makes content scroll.',
+    'Match orientation to the axis your content actually overflows on.',
+    'Keep the scrolled content simple; the viewport is a plain overflow container.',
+  ]}
+  dont={[
+    "Don't nest scroll areas on the same axis; it traps the user in dueling scrollbars.",
+    "Don't rely on the themed scrollbar for browsers older than Chromium 121 — they fall back to the native scrollbar.",
+  ]}
+/>
+
+## Accessibility
+
+- A region that scrolls should be reachable by keyboard. When the content isn't naturally
+  focusable, give the viewport `tabIndex={0}` and an `aria-label` so keyboard users can scroll it.
+- The themed scrollbar uses standard `scrollbar-*` properties, so it degrades gracefully to the
+  native scrollbar — never hiding the scroll affordance entirely.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+N/A — ScrollArea has no fixed content model. It bounds whatever children you place inside and lets
+them overflow along the chosen axis.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'orientation', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: 'Which axis (or axes) the region scrolls.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through; use style to set maxHeight / maxWidth.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a vertical scroll area capped at 200px below — scroll it to reveal the token-themed
+scrollbar. Toggle dark mode in the header to see the border and scrollbar respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ScrollAreaDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { ScrollArea } from '@ghds/react/scroll-area';
+
+<ScrollArea orientation="vertical" style={{ maxHeight: 200 }}>
+  {/* long content */}
+</ScrollArea>;
+```

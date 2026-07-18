@@ -38,6 +38,11 @@
       "import": "./dist/alert-dialog.mjs",
       "require": "./dist/alert-dialog.cjs"
     },
+    "./aspect-ratio": {
+      "types": "./dist/components/AspectRatio.d.ts",
+      "import": "./dist/aspect-ratio.mjs",
+      "require": "./dist/aspect-ratio.cjs"
+    },
     "./avatar": {
       "types": "./dist/components/Avatar.d.ts",
       "import": "./dist/avatar.mjs",
@@ -142,6 +147,16 @@
       "types": "./dist/components/Input.d.ts",
       "import": "./dist/input.mjs",
       "require": "./dist/input.cjs"
+    },
+    "./input-group": {
+      "types": "./dist/components/InputGroup.d.ts",
+      "import": "./dist/input-group.mjs",
+      "require": "./dist/input-group.cjs"
+    },
+    "./item": {
+      "types": "./dist/components/Item.d.ts",
+      "import": "./dist/item.mjs",
+      "require": "./dist/item.cjs"
     },
     "./kbd": {
       "types": "./dist/components/Kbd.d.ts",

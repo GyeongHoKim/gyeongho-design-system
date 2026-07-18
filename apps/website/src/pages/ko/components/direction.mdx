@@ -1,0 +1,102 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Direction
+description: 읽기 방향(LTR / RTL)을 하위 컴포넌트에 전파하는 컨텍스트 프로바이더입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import DirectionDemoReact from '../../../components/demos/DirectionDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`DirectionProvider`와 `useDirection()` 훅은 **React 전용** 유틸리티예요(`@ghds/react`). DOM을 렌더하지 않고 디자인 값을 소유하지 않으므로, Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`DirectionProvider`는 읽기 방향 — `'ltr'` 또는 `'rtl'` — 을 React 컨텍스트를 통해 하위 GHDS 컴포넌트에 전파하고, `useDirection()`은 가장 가까운 프로바이더의 값을 읽어요. 순전히 동작용이에요: 각 컴포넌트가 DOM을 검사하지 않고도 JS에서 방향을 읽을 수 있게 해줘요.
+
+## 구조
+
+프로바이더는 **어떤 요소도 렌더하지 않아요** — 컨텍스트 값만 제공해요. CSS 논리 속성(`margin-inline-start`, `inset-inline-end`, …)이 해석되도록 문서나 감싸는 요소에 일치하는 `dir` 속성을 설정하세요; 프로바이더는 그 속성의 JS에서 읽을 수 있는 거울이에요.
+
+## 변형 및 상태
+
+시각적 변형이나 상태가 없어요 — 유일한 축은 프로바이더가 전달하는 `dir` 값이에요.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: '어떤 요소도 렌더하지 않아요.' },
+    { name: 'Focus', present: false },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    'CSS 논리 속성이 해석되도록 프로바이더에 더해 감싸는 요소에 네이티브 dir 속성을 설정하세요.',
+    'JS에서 방향에 따라 분기해야 하는 컴포넌트 안에서 useDirection()으로 값을 읽으세요.',
+    '트리 상단에 프로바이더 하나를 두고 모든 하위 요소가 상속하게 하세요.',
+  ]}
+  dont={[
+    "프로바이더만으로 레이아웃을 뒤집을 거라 기대하지 마세요 — 자체적으로는 dir 속성도 CSS도 설정하지 않아요.",
+    "하위 트리가 정말로 반대 방향이 필요한 경우가 아니면 충돌하는 프로바이더를 중첩하지 마세요.",
+  ]}
+/>
+
+## 접근성
+
+- 올바른 방향은 오른쪽에서 왼쪽으로 쓰는 언어(아랍어, 히브리어, 페르시아어)에서 실질적인 접근성 요구사항이에요 — 텍스트, 포커스 순서, 아이콘이 미러링되어야 해요.
+- 프로바이더는 DOM에 `dir`을 설정하지 않아요; 보조 기술과 브라우저의 양방향 알고리즘도 방향을 얻도록 네이티브 `dir` 속성과 함께 사용하세요.
+- `useDirection()`은 프로바이더가 없을 때 `'ltr'`을 반환하므로 컴포넌트에 안전한 기본값이 있어요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+N/A — Direction은 콘텐츠를 담지 않아요. 하위 트리를 감싸고 값을 제공해요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'dir', type: "'ltr' | 'rtl'", description: '모든 하위 GHDS 컴포넌트에 적용되는 읽기 방향. 필수.' },
+        { name: 'children', type: 'ReactNode', description: '이 방향을 읽는 하위 트리.' },
+        { name: 'useDirection()', type: "() => 'ltr' | 'rtl'", description: "가장 가까운 프로바이더의 방향을 반환하는 훅(기본값 'ltr')." },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+LTR 프로바이더와 RTL 프로바이더 아래에서 렌더된 동일한 두 항목 — RTL 열이 어떻게 미러링되는지 보세요. 각 열은 논리 속성이 해석되도록 네이티브 `dir` 속성도 설정해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <DirectionDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { DirectionProvider, useDirection } from '@ghds/react/direction';
+
+function Price() {
+  const dir = useDirection();
+  return <span>{dir === 'rtl' ? 'السعر' : 'Price'}</span>;
+}
+
+<DirectionProvider dir="rtl">
+  <div dir="rtl">
+    <Price />
+  </div>
+</DirectionProvider>;
+```

@@ -418,6 +418,24 @@ function buildTheme(t: Tokens) {
       chartAxis: t.comp.chart.axis,
       chartText: t.comp.chart.text,
 
+      // comp.item colors
+      itemBgHover: t.comp.item.bg.hover,
+      itemBgSelected: t.comp.item.bg.selected,
+      itemStrokeDefault: t.comp.item.stroke.default,
+      itemTextTitle: t.comp.item.text.title,
+      itemTextDescription: t.comp.item.text.description,
+
+      // comp.inputGroup colors
+      inputGroupBgDefault: t.comp.inputGroup.bg.default,
+      inputGroupBgDisabled: t.comp.inputGroup.bg.disabled,
+      inputGroupStrokeDefault: t.comp.inputGroup.stroke.default,
+      inputGroupStrokeFocus: t.comp.inputGroup.stroke.focus,
+      inputGroupStrokeDanger: t.comp.inputGroup.stroke.danger,
+      inputGroupAddonBg: t.comp.inputGroup.addon.bg,
+      inputGroupAddonText: t.comp.inputGroup.addon.text,
+      inputGroupTextValue: t.comp.inputGroup.text.value,
+      inputGroupTextDisabled: t.comp.inputGroup.text.disabled,
+
       // toast system needs a canvas/overlay scrim reference
       toastScrim: t.sys.color.bg.overlay,
     },
@@ -433,6 +451,14 @@ function buildTheme(t: Tokens) {
       // as named comp keys so Button consumes its own component tier tokens)
       buttonHorizontal: t.comp.button.padding.horizontal,
       buttonVertical: t.comp.button.padding.vertical,
+      // comp.item / comp.inputGroup padding + gap (named comp keys so each
+      // component consumes its own component-tier tokens, like Button above).
+      itemHorizontal: t.comp.item.padding.horizontal,
+      itemVertical: t.comp.item.padding.vertical,
+      itemGap: t.comp.item.gap,
+      inputGroupHorizontal: t.comp.inputGroup.padding.horizontal,
+      inputGroupVertical: t.comp.inputGroup.padding.vertical,
+      inputGroupGap: t.comp.inputGroup.gap,
     },
     borderRadii: {
       sm: t.sys.radius.sm,
@@ -440,6 +466,8 @@ function buildTheme(t: Tokens) {
       lg: t.sys.radius.lg,
       pill: t.sys.radius.pill,
       button: t.comp.button.radius,
+      item: t.comp.item.radius,
+      inputGroup: t.comp.inputGroup.radius,
     },
     borderWidths: {
       thin: t.sys.border.width.thin,
@@ -652,6 +680,14 @@ function buildTheme(t: Tokens) {
       bowing: t.comp.chart.sketch.bowing,
     },
     chartStrokeWidth: t.comp.chart.stroke.width,
+    itemSketch: {
+      roughness: t.comp.item.sketch.roughness,
+      bowing: t.comp.item.sketch.bowing,
+    },
+    inputGroupSketch: {
+      roughness: t.comp.inputGroup.sketch.roughness,
+      bowing: t.comp.inputGroup.sketch.bowing,
+    },
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.

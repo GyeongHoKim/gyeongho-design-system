@@ -1,0 +1,126 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Item
+description: A flexible list-row primitive with optional leading media, a content column, and trailing actions.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ItemDemoReact from '../../../components/demos/ItemDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Item` and its subcomponents are **React-only** (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Item` is a flexible list-row primitive: a horizontal band of optional leading media, a growing
+content column, and trailing actions. Compose it from `ItemMedia`, `ItemContent`, `ItemTitle`,
+`ItemDescription`, and `ItemActions`. Use it for settings rows, member lists, selectable options,
+and similar list-like UI.
+
+## Anatomy
+
+A flex row (`<div>`) laying out three optional slots left to right:
+
+- **`ItemMedia`** — a fixed leading slot for an icon, avatar, or thumbnail.
+- **`ItemContent`** — the growing middle column, usually an `ItemTitle` over an `ItemDescription`.
+- **`ItemActions`** — a fixed trailing slot for buttons, badges, or a chevron.
+
+The `outline` variant paints a hand-drawn border via `@ghds/sketch-core`; all colors, spacing, and
+sketch parameters come from `@ghds/tokens` (`comp.item.*`).
+
+## Variants & States
+
+Three surface variants — `default` (transparent), `muted` (subtle fill), `outline` (hand-drawn
+border) — plus a `selected` boolean that fills the selected background.
+
+<StateList
+  states={[
+    { name: 'Selected', present: true, note: 'The selected boolean fills comp.item.bg.selected.' },
+    { name: 'Hover', present: false, note: 'Item paints no hover state itself — wire it in your composition if needed.' },
+    { name: 'Focus', present: false, note: 'Renders a plain div; add focus styling when you make it interactive.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Compose rows from ItemMedia / ItemContent / ItemTitle / ItemDescription / ItemActions rather than styling raw divs.',
+    'Set the appropriate role on the container (listitem, option, …) to match how the list is used.',
+    'Use selected together with aria-selected when the row is a selectable option.',
+  ]}
+  dont={[
+    "Don't rely on Item for interaction semantics — it renders a plain div, so add role, tabIndex, and handlers yourself.",
+    "Don't mix outline and non-outline rows in the same list; keep one variant per list for a consistent rhythm.",
+  ]}
+/>
+
+## Accessibility
+
+- `Item` renders a plain `<div>` with no implicit role — set `role="listitem"`, `role="option"`,
+  etc. on the container as your composition requires, and wrap it in the matching container role
+  (`list`, `listbox`).
+- When you make a row activate something, add `tabIndex`, a role such as `button`, and keyboard
+  handling — none of that is built in.
+- Pair the `selected` prop with `aria-selected` so the selected state is announced, not just
+  painted.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+`ItemTitle` is the primary line — a short label, not a sentence. `ItemDescription` is a muted
+secondary line for supporting detail. Keep media to a single icon/avatar and actions to one or two
+controls so the row stays scannable.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: 'Surface treatment: transparent, subtle fill, or hand-drawn border.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: 'Marks the row as the selected/active one (fills the selected background).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (role, onClick, tabIndex, …) pass through.' },
+      ],
+    },
+  ]}
+/>
+
+The subcomponents — `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions` —
+each accept the standard `HTMLAttributes<HTMLDivElement>` and render a styled `<div>`.
+
+## Live Demo
+
+React renders live below — an outline row with media and a badge action, a muted row, and a
+selected row. Toggle dark mode in the header to see the surfaces respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ItemDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@ghds/react/item';
+import { Badge } from '@ghds/react/badge';
+
+<Item variant="outline">
+  <ItemMedia>{/* avatar */}</ItemMedia>
+  <ItemContent>
+    <ItemTitle>GyeongHo Kim</ItemTitle>
+    <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Badge variant="success">Online</Badge>
+  </ItemActions>
+</Item>;
+```

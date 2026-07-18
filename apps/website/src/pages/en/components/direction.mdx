@@ -1,0 +1,111 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Direction
+description: A context provider that propagates a reading direction (LTR / RTL) to descendant components.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import DirectionDemoReact from '../../../components/demos/DirectionDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`DirectionProvider` and the `useDirection()` hook are a **React-only** utility (`@ghds/react`).
+They render no DOM and own no design values, so there is no Web Components or React Native
+counterpart.
+
+## Overview
+
+`DirectionProvider` propagates a reading direction — `'ltr'` or `'rtl'` — to descendant GHDS
+components through React context, and `useDirection()` reads the nearest provider's value. It's
+behavioral only: it lets components read the direction in JS without each one inspecting the DOM.
+
+## Anatomy
+
+The provider renders **no element** — it only supplies a context value. Set the matching `dir`
+attribute on your document or a wrapping element so CSS logical properties (`margin-inline-start`,
+`inset-inline-end`, …) resolve; the provider is the JS-readable mirror of that attribute.
+
+## Variants & States
+
+There are no visual variants or states — the only axis is the `dir` value the provider carries.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: 'Renders no element.' },
+    { name: 'Focus', present: false },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Set the native dir attribute on a wrapping element in addition to the provider, so CSS logical properties resolve.',
+    'Read the value with useDirection() inside components that need to branch on direction in JS.',
+    'Place one provider high in the tree and let all descendants inherit it.',
+  ]}
+  dont={[
+    "Don't rely on the provider alone to flip layout — it sets no dir attribute and no CSS by itself.",
+    "Don't nest conflicting providers unless a subtree genuinely needs the opposite direction.",
+  ]}
+/>
+
+## Accessibility
+
+- Correct direction is a real accessibility requirement for right-to-left languages (Arabic,
+  Hebrew, Persian) — text, focus order, and iconography should mirror.
+- The provider does not set `dir` on the DOM; pair it with a native `dir` attribute so assistive
+  technology and the browser's bidi algorithm get the direction too.
+- `useDirection()` returns `'ltr'` when no provider is present, so components have a safe default.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+N/A — Direction carries no content. It wraps a subtree and supplies a value.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'dir', type: "'ltr' | 'rtl'", description: 'Reading direction applied to all descendant GHDS components. Required.' },
+        { name: 'children', type: 'ReactNode', description: 'The subtree that reads this direction.' },
+        { name: 'useDirection()', type: "() => 'ltr' | 'rtl'", description: "Hook returning the nearest provider's direction (defaults to 'ltr')." },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+The same two items rendered under an LTR provider and an RTL provider — note how the RTL column
+mirrors. Each column also sets the native `dir` attribute so logical properties resolve.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <DirectionDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { DirectionProvider, useDirection } from '@ghds/react/direction';
+
+function Price() {
+  const dir = useDirection();
+  return <span>{dir === 'rtl' ? 'السعر' : 'Price'}</span>;
+}
+
+<DirectionProvider dir="rtl">
+  <div dir="rtl">
+    <Price />
+  </div>
+</DirectionProvider>;
+```
