@@ -1,6 +1,6 @@
 {
   "name": "@ghds/react",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Hand-drawn (sketchy) React component library for GHDS — token-driven visuals rendered from @ghds/sketch-core.",
   "license": "MIT",
   "repository": {

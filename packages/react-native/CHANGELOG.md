@@ -1,5 +1,43 @@
 # @ghds/react-native
 
+## 0.10.0
+
+### Minor Changes
+
+- a44abd9: Add shadcn-parity batch 1 — layout & utility primitives: `AspectRatio`, `ScrollArea`, `Item` (with `ItemMedia`/`ItemContent`/`ItemTitle`/`ItemDescription`/`ItemActions`), `InputGroup` (with `InputGroupInput`/`InputGroupAddon`), and a `Direction` (RTL) provider.
+
+  - `@ghds/tokens`: new `comp.scrollArea`, `comp.item`, and `comp.inputGroup` component tokens.
+  - `@ghds/react`: all five components (`aspect-ratio`, `scroll-area`, `item`, `input-group`, `direction` subpaths).
+  - `@ghds/web-components`: `gh-aspect-ratio`, `gh-scroll-area`, `gh-item`, `gh-input-group`, `gh-direction`.
+  - `@ghds/react-native`: `AspectRatio`, `Item`, and `InputGroup` (`ScrollArea` and `Direction` are web-only and intentionally omitted on RN, which uses native scrolling and `I18nManager`).
+
+- 46d80a2: Add shadcn-parity batch 2 — specialized inputs: `InputOTP` (segmented one-time-code field) and `NativeSelect` (a hand-drawn wrapper around a real native `<select>`).
+
+  - `@ghds/tokens`: new `comp.inputOtp` and `comp.nativeSelect` component tokens.
+  - `@ghds/react`: `input-otp` and `native-select` subpaths.
+  - `@ghds/web-components`: `gh-input-otp` and `gh-native-select`.
+  - `@ghds/react-native`: `InputOTP` (`NativeSelect` is omitted on RN, which uses the platform picker paradigm rather than a styled native `<select>`).
+
+- 93ff3be: Add shadcn-parity batch 3 — interactive containers: `Carousel` (scroll-snap slides with `CarouselContent`/`CarouselItem`/`CarouselPrevious`/`CarouselNext`) and `Resizable` (`ResizablePanelGroup`/`ResizablePanel`/`ResizableHandle`, a pointer- and keyboard-driven split view). Both are built on native primitives — no third-party carousel or resize engine.
+
+  - `@ghds/tokens`: new `comp.carousel` and `comp.resizable` component tokens.
+  - `@ghds/react`: `carousel` and `resizable` subpaths.
+  - `@ghds/web-components`: `gh-carousel` and `gh-resizable-*`.
+  - `@ghds/react-native`: `Carousel` (`Resizable` is omitted on RN — pointer-drag splitting is not a touch-idiomatic pattern).
+
+- e954117: Add shadcn-parity batch 4 — chat & annotation primitives: `Marker` (hand-drawn text highlighter), `Attachment` (file chip), `Bubble` (chat bubble), `Message` (message row with `MessageAvatar`/`MessageContent`/`MessageAuthor`/`MessageTimestamp`), and `MessageScroller` (auto-sticking chat log). This completes shadcn component parity.
+
+  - `@ghds/tokens`: new `comp.marker`, `comp.attachment`, `comp.bubble`, `comp.message`, `comp.messageScroller` component tokens.
+  - `@ghds/react`, `@ghds/web-components`, `@ghds/react-native`: all five components on every platform.
+
+### Patch Changes
+
+- Updated dependencies [a44abd9]
+- Updated dependencies [46d80a2]
+- Updated dependencies [93ff3be]
+- Updated dependencies [e954117]
+  - @ghds/tokens@0.11.0
+
 ## 0.9.1
 
 ### Patch Changes
