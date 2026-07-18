@@ -1,0 +1,100 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: NativeSelect
+description: 셰브론과 오류 상태를 갖춘, 실제 네이티브 select를 감싼 손그림 박스입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import NativeSelectDemoReact from '../../../components/demos/NativeSelectDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`NativeSelect`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`NativeSelect`는 실제 네이티브 `<select>`를 셰브론이 있는 손그림 박스로 감싸요. `Select`(완전한 커스텀 리스트박스)와 달리, 플랫폼의 네이티브 드롭다운을 유지해요 — 터치 기기, 매우 긴 옵션 목록, OS의 네이티브 피커를 원할 때 올바른 선택이에요. 바 `<select>`에 하듯이 `<option>` 자식을 그대로 전달하세요.
+
+## 구조
+
+스케치 박스 위의 Radix `Label`이며, 박스는 네이티브 `<select>`(자체 테두리와 화살표는 `appearance: none`으로 제거됨)와 겹쳐진 셰브론 아이콘을 담아요. `error`가 설정되면 필드가 invalid로 표시되고 메시지가 `role="alert"`로 렌더돼요. 모든 색상, 패딩, 반경, 스케치 파라미터는 `@ghds/tokens`(`comp.nativeSelect.*`)에서 와요.
+
+## 변형 및 상태
+
+명명된 변형은 없어요 — 필드는 포커스에 반응하고, `disabled` / `error`가 상태를 설정해요.
+
+<StateList
+  states={[
+    { name: 'Focus', present: true, note: '포커스가 외곽선을 comp.nativeSelect.stroke.focus로 전환해요.' },
+    { name: 'Error / invalid', present: true, note: 'error 설정이 danger 스트로크를 그리고 메시지를 알려요.' },
+    { name: '비활성화', present: true },
+    { name: 'Hover', present: false },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '터치 기기와 긴 옵션 목록에는 커스텀 Select보다 NativeSelect를 선호하세요.',
+    '적절한 기본 선택이 없을 때 선행 플레이스홀더 <option value="">를 전달하세요.',
+    'danger 스트로크가 메시지로 설명되도록 error를 클라이언트 측 검증과 함께 설정하세요.',
+  ]}
+  dont={[
+    "리치한 비-텍스트 옵션이나 커스텀 옵션 렌더링이 필요할 때 NativeSelect를 찾지 마세요 — Select를 사용하세요.",
+    "danger 스트로크만으로 오류를 전달하지 마세요 — 오류 텍스트가 무엇이 잘못됐는지 말해줘야 해요.",
+  ]}
+/>
+
+## 접근성
+
+- Radix `Label`이 `htmlFor` / `id`를 통해 `<select>`와 연결되므로, 컨트롤은 실제 접근 가능한 이름을 가지고 라벨을 클릭할 수 있어요.
+- 오류 상태는 `aria-invalid`와 `role="alert"` 메시지를 가리키는 `aria-describedby`로 노출되므로, 스크린 리더가 invalid 상태와 이유를 모두 알려요.
+- 기저 요소가 실제 `<select>`이므로 모든 네이티브 키보드 동작과 OS 피커가 무료로 제공돼요.
+- 셰브론은 장식용(`pointer-events: none`)이며 인터랙션을 가로채지 않아요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+옵션 라벨은 짧고 병렬적으로 유지하세요. 기본값이 적절하지 않을 때만 플레이스홀더 `<option value="">`(예: "Select a fruit…")를 사용하고, 그렇지 않으면 가장 일반적인 선택을 미리 선택하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Radix Label을 통해 select와 연결된 보이는 라벨.' },
+        { name: 'error', type: 'string', description: '오류 메시지. 설정되면 필드가 invalid로 표시되고 텍스트가 알려져요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: 'children', type: 'ReactNode', description: '네이티브 <select>에서와 똑같이, <option>(및 <optgroup>) 요소들.' },
+        { name: '...rest', type: "SelectHTMLAttributes ('size' 제외)", description: '다른 모든 네이티브 <select> 속성(value, defaultValue, onChange, name 등)이 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 라벨이 지정된 select와 오류가 있는 select를 렌더해요 — 둘 중 하나를 열면 네이티브 OS 피커가 나와요; 헤더에서 다크 모드를 토글하면 박스와 셰브론이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <NativeSelectDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { NativeSelect } from '@ghds/react/native-select';
+
+<NativeSelect label="Fruit">
+  <option value="">Select a fruit…</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+</NativeSelect>;
+```

@@ -1,0 +1,94 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Marker
+description: 텍스트 뒤에 스케치 스트로크를 그리는 손그림 인라인 하이라이터입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import MarkerDemoReact from '../../../components/demos/MarkerDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Marker`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`Marker`는 인라인 하이라이터예요 — 텍스트 구간을 시맨틱 `<mark>`로 감싸고 그 뒤에 스케치 해칭 스트로크를 그려서, 낙서 너머로도 단어가 읽히도록 해요. 흐르는 텍스트 안의 구절에 주의를 끌 때 사용하세요; 네 가지 변형이 하이라이트를 물들여 의도를 나타내요.
+
+## 구조
+
+텍스트 뒤에 손그림 해칭 채움(`@ghds/sketch-core`)이 있는 시맨틱 `<mark>`예요. 하이라이트 색상은 `@ghds/tokens`(`comp.marker.*`)에서 오고, 텍스트 색상은 항상 상속되며 절대 설정하지 않아요 — 그래서 마커는 어떤 산문 맥락에도 적응해요.
+
+## 변형 및 상태
+
+네 가지 하이라이트 톤, 인터랙티브 상태 없음 — `Marker`는 정적 인라인 장식이에요.
+
+<StateList
+  states={[
+    { name: 'default', present: true, note: '따뜻한 형광펜 노랑.' },
+    { name: 'success', present: true },
+    { name: 'info', present: true },
+    { name: 'danger', present: true },
+    { name: 'Hover / Focus', present: false, note: '인터랙티브하지 않아요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '흐르는 텍스트 안의 짧은 구절을 강조할 때 Marker를 사용하세요.',
+    '의미에 맞는 변형을 선택하세요 — 경고 구절에는 danger, 긍정 구절에는 success.',
+    '어떤 산문 맥락에서도 하이라이트가 동작하도록 텍스트 색상을 상속하게 두세요.',
+  ]}
+  dont={[
+    "문단 전체를 하이라이트하지 마세요 — 전부 표시되면 강조의 의미가 사라져요.",
+    "하이라이트 색상만으로 의미를 전달하지 마세요; 단어가 여전히 그것을 말해야 해요.",
+  ]}
+/>
+
+## 접근성
+
+- 실제 `<mark>` 요소를 렌더하므로, 보조 기술이 지원하는 곳에서는 표시된/강조된 텍스트의 시맨틱으로 하이라이트가 노출돼요.
+- 스케치 스트로크는 장식용이며 텍스트 뒤에 그려져요; 알려지는 내용을 절대 바꾸지 않아요.
+- 텍스트 색상이 상속되므로(재정의되지 않으므로), 대비는 주변 산문에 의해 좌우돼요 — 그 산문을 접근 가능한 배경 위에 두세요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+짧고 의미 있는 구절 — 용어, 이름, 핵심 숫자 — 을 표시하세요, 문장 전체가 아니라. 하이라이트는 스포트라이트예요; 대부분의 텍스트가 표시되지 않을 때만 효과가 있어요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'default' | 'success' | 'info' | 'danger'", default: "'default'", description: '하이라이트 색상; default는 따뜻한 형광펜 노랑.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLElement>', description: '네이티브 속성이 <mark> 요소로 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 네 가지 톤을 문장 안에 렌더해요 — 헤더에서 다크 모드를 토글하면 두 스킴 모두에서 하이라이트가 단어를 읽기 좋게 유지해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <MarkerDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Marker } from '@ghds/react/marker';
+
+<p>
+  Remember to <Marker variant="danger">back up</Marker> before you upgrade.
+</p>;
+```

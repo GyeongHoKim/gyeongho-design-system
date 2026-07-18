@@ -1,0 +1,14 @@
+{
+  "comp": {
+    "carousel": {
+      "$description": "Tier 3 component tokens for the hand-drawn Carousel. References sys only.",
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "indicator": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "active": { "$value": "{sys.color.bg.primary.default}" }
+      },
+      "indicatorSize": { "$type": "dimension", "$value": "{sys.spacing.sm}" }
+    }
+  }
+}

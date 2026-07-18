@@ -1,0 +1,95 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: ScrollArea
+description: 손그림 테두리와 토큰으로 테마된 스크롤바를 갖춘 경계 스크롤 뷰포트입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ScrollAreaDemoReact from '../../../components/demos/ScrollAreaDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`ScrollArea`는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`ScrollArea`는 경계 스크롤 뷰포트예요: 네이티브 스크롤바가 디자인 시스템에 맞게 테마된, 스크롤 가능한 영역 주위에 손그림 테두리를 그려요. 넘치는 콘텐츠 — 긴 목록, 코드 블록, 옵션 패널 — 의 높이(또는 너비)를 제한하면서 스케치 느낌을 일관되게 유지할 때 사용하세요.
+
+## 구조
+
+내부 뷰포트 주위의 손그림 테두리(`@ghds/sketch-core`)예요. 뷰포트는 표준 `scrollbar-color` / `scrollbar-width` CSS 속성을 사용하므로, 커스텀 스크롤바 오버레이 없이도 썸과 트랙이 `comp.scrollArea.*` 토큰을 가져와요(Firefox 및 Chromium 121+). `style`을 통해 `maxHeight`(또는 `maxWidth`)를 전달해 영역을 제한하세요.
+
+## 변형 및 상태
+
+인터랙티브 상태가 없어요 — 유일한 축은 스크롤 축을 선택하는 `orientation`이에요.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false },
+    { name: 'Focus', present: false, note: '스크롤 영역은 포커스되면 키보드로 스크롤 가능하지만, 자체적으로 포커스 스타일을 그리지 않아요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false },
+  ]}
+/>
+
+`orientation` prop은 `'vertical'`(기본값), `'horizontal'`, `'both'`예요.
+
+## 사용법
+
+<DoDont
+  do={[
+    'style을 통해 maxHeight(또는 maxWidth)로 박스를 제한하세요 — 그 경계가 콘텐츠를 스크롤되게 만들어요.',
+    'orientation을 콘텐츠가 실제로 넘치는 축에 맞추세요.',
+    '스크롤되는 콘텐츠는 단순하게 유지하세요; 뷰포트는 일반 overflow 컨테이너예요.',
+  ]}
+  dont={[
+    "같은 축에 스크롤 영역을 중첩하지 마세요; 스크롤바가 서로 다투어 사용자를 가둬요.",
+    "Chromium 121보다 오래된 브라우저에서 테마된 스크롤바에 의존하지 마세요 — 네이티브 스크롤바로 폴백해요.",
+  ]}
+/>
+
+## 접근성
+
+- 스크롤되는 영역은 키보드로 도달할 수 있어야 해요. 콘텐츠가 자연스럽게 포커스 가능하지 않을 때, 키보드 사용자가 스크롤할 수 있도록 뷰포트에 `tabIndex={0}`과 `aria-label`을 지정하세요.
+- 테마된 스크롤바는 표준 `scrollbar-*` 속성을 사용하므로 네이티브 스크롤바로 우아하게 저하돼요 — 스크롤 어포던스를 완전히 숨기지 않아요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+N/A — ScrollArea는 고정된 콘텐츠 모델이 없어요. 안에 넣는 자식을 제한하고 선택한 축을 따라 넘치게 해요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'orientation', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: '영역이 스크롤하는 축(또는 축들).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 전달돼요; style로 maxHeight / maxWidth를 설정하세요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 200px로 제한된 수직 스크롤 영역을 렌더해요 — 스크롤하면 토큰으로 테마된 스크롤바가 나타나요. 헤더에서 다크 모드를 토글하면 테두리와 스크롤바가 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ScrollAreaDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { ScrollArea } from '@ghds/react/scroll-area';
+
+<ScrollArea orientation="vertical" style={{ maxHeight: 200 }}>
+  {/* long content */}
+</ScrollArea>;
+```

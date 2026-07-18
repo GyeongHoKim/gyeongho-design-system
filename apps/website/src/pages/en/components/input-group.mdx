@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: InputGroup
+description: A hand-drawn field that composes a bare input with leading and trailing addons in one sketchy box.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import InputGroupDemoReact from '../../../components/demos/InputGroupDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`InputGroup`, `InputGroupInput`, and `InputGroupAddon` are **React-only** (`@ghds/react`). There is
+no Web Components or React Native counterpart yet.
+
+## Overview
+
+`InputGroup` composes a bare text input with one or more leading and/or trailing addons — icons,
+short text, or buttons — inside a single hand-drawn box. Use it for fields that need an affordance
+attached to the input: a `https://` prefix, a currency unit, a search icon, or a submit button.
+
+## Anatomy
+
+A flex row painting one sketchy `SketchSurface` box around its children:
+
+- **`InputGroupInput`** — a bare, borderless, transparent `<input>` that grows to fill the row.
+- **`InputGroupAddon`** — a leading or trailing slot (icon, text, or button), rendered in muted
+  text color. Its position is set by child order, before or after the input.
+
+Focus anywhere inside the group switches the box outline to the focus stroke. Every color, padding,
+radius, and sketch parameter comes from `@ghds/tokens` (`comp.inputGroup.*`).
+
+## Variants & States
+
+There are no named variants — instead the group carries `disabled` and `invalid` booleans, and it
+reacts to focus.
+
+<StateList
+  states={[
+    { name: 'Focus', present: true, note: 'Focus within the group switches the outline to comp.inputGroup.stroke.focus.' },
+    { name: 'Invalid', present: true, note: 'The invalid prop paints the danger stroke.' },
+    { name: 'Disabled', present: true, note: 'Disables the input and mutes the fill.' },
+    { name: 'Hover', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: true, note: 'Same as invalid — there is no separate error state.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Place the addon before or after InputGroupInput in child order to make it lead or trail.',
+    'Set invalid together with an external error message so the reason is explained, not just colored.',
+    'Give InputGroupInput an aria-label (or an associated <label>) — the group is not a labeled field by itself.',
+  ]}
+  dont={[
+    "Don't rely on the danger stroke alone to convey an error — pair it with text describing the problem.",
+    "Don't put more than one InputGroupInput in a group; it is one field with addons, not a multi-input row.",
+  ]}
+/>
+
+## Accessibility
+
+- The group aggregates focus/blur from its inner controls to paint one shared focus outline; it is
+  not itself an interactive target and takes no role.
+- Label the field via `InputGroupInput` (an `aria-label` or an associated `<label>`) — the addon is
+  decorative-ish text, not a substitute for a label.
+- Setting `disabled` on the group disables `InputGroupInput` through context; an individual input's
+  own `disabled` prop still wins if you set it.
+- Pair `invalid` with `aria-invalid` / an error message so the state is announced, not only painted.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Keep addons short — a prefix (`https://`, `@`), a unit (`USD`, `/ mo`), an icon, or a single small
+button. Long addon text competes with the input value for space.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the whole group and mutes the surface (InputGroup).' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Marks the group invalid, painting the danger stroke (InputGroup).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through to the group container.' },
+        { name: 'InputGroupInput', type: "InputHTMLAttributes (minus 'size')", description: 'The bare inner <input>; accepts native input attributes.' },
+        { name: 'InputGroupAddon', type: 'HTMLAttributes<HTMLSpanElement>', description: 'A leading/trailing addon <span>; position set by child order.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders live below — a leading `https://`, a trailing `USD`, an invalid field, and a disabled
+field. Focus the first input to see the outline shift to the focus stroke; toggle dark mode in the
+header to see the fill respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <InputGroupDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react/input-group';
+
+<InputGroup>
+  <InputGroupAddon>https://</InputGroupAddon>
+  <InputGroupInput placeholder="example.com" aria-label="Website" />
+</InputGroup>;
+```

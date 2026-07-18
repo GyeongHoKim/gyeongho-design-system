@@ -1,0 +1,93 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: AspectRatio
+description: 콘텐츠를 고정된 가로세로 비율로 제한하는 레이아웃 프리미티브입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AspectRatioDemoReact from '../../../components/demos/AspectRatioDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`AspectRatio`는 현재 **React 전용** 프리미티브예요(`@ghds/react`). 디자인 값을 소유하지 않고 아무것도 그리지 않으므로, 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`AspectRatio`는 네이티브 CSS `aspect-ratio` 속성을 사용해 고정된 가로세로 비율의 박스를 확보해요 — 대표적인 용도는 반응형 미디어(이미지, 비디오, 지도 임베드)를 담아 에셋이 로드되는 동안 레이아웃이 흔들리지 않게 하는 거예요. 사용 가능한 너비를 채우고, `ratio`로부터 높이를 도출해요.
+
+## 구조
+
+`width: 100%`, 주어진 `aspect-ratio`, `overflow: hidden`으로 설정된 단일 `<div>`예요. 단일 자식을 `width: 100%; height: 100%`로 크기 지정하면(예: `object-fit: cover`인 `<img>`) 박스를 채워요. 스케치 레이어는 없어요 — 이 프리미티브는 순전히 구조적이에요.
+
+## 변형 및 상태
+
+AspectRatio는 **정적 레이아웃 박스**예요 — 인터랙티브 상태가 없어요. 유일한 변화는 `ratio` 값 자체예요.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: '인터랙티브하지 않아요.' },
+    { name: 'Focus', present: false, note: '포커스할 수 없어요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '단일 자식을 width: 100%; height: 100%로 크기 지정하세요(object-fit: cover인 <img>가 일반적인 경우예요).',
+    '의도가 읽기 쉽게 남도록 ratio를 16 / 9나 4 / 3 같은 숫자 식으로 전달하세요.',
+    '바깥 너비를 제한하세요(예: max-width 래퍼) — 박스는 그 너비로부터 높이를 도출해요.',
+  ]}
+  dont={[
+    "박스에 명시적인 높이를 설정하지 마세요 — 비율이 너비로부터 높이를 도출해요.",
+    "단순히 간격을 추가하려고 사용하지 마세요; 일반 레이아웃 여백이 아니라 미디어 비율을 확보하기 위한 거예요.",
+  ]}
+/>
+
+## 접근성
+
+- role이나 label이 없는 일반 `<div>`를 렌더해요 — 레이아웃 래퍼이므로, 접근 가능한 콘텐츠는 안에 넣는 자식(예: `<img>`는 자체 `alt`가 필요해요)이에요.
+- 미디어가 로드되기 전에 공간을 확보하므로 레이아웃 이동을 방지해요 — 느린 연결의 사용자에게 실질적인 접근성 및 사용성 이점이에요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+N/A — AspectRatio는 고정된 콘텐츠 모델이 없어요. 콘텐츠는 박스를 채우도록 크기 지정된, 안에 넣는 단일 요소예요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: '원하는 가로세로 비율. 예: 와이드스크린은 16 / 9, 정사각형은 1.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(className, style 등)이 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 세 가지 일반적인 비율로 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하세요; 박스는 순전히 구조적이므로 플레이스홀더 채우기만 테마에 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AspectRatioDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { AspectRatio } from '@ghds/react/aspect-ratio';
+
+<AspectRatio ratio={16 / 9}>
+  <img src="/cover.jpg" alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+</AspectRatio>;
+```

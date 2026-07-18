@@ -1,0 +1,33 @@
+{
+  "comp": {
+    "bubble": {
+      "$description": "Tier 3 component tokens for the hand-drawn chat Bubble. References sys only.",
+      "bg": {
+        "$type": "color",
+        "received": { "$value": "{sys.color.bg.muted}" },
+        "sent": { "$value": "{sys.color.bg.primary.default}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "received": { "$value": "{sys.color.border.default}" },
+        "sent": { "$value": "{sys.color.bg.primary.default}" }
+      },
+      "text": {
+        "$type": "color",
+        "received": { "$value": "{sys.color.text.primary}" },
+        "sent": { "$value": "{sys.color.text.onPrimary}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.md}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.lg}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

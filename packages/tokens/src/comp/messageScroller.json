@@ -1,0 +1,17 @@
+{
+  "comp": {
+    "messageScroller": {
+      "$description": "Tier 3 component tokens for the hand-drawn MessageScroller (auto-sticking chat log). References sys only.",
+      "thumb": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" }
+      },
+      "track": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.muted}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" }
+    }
+  }
+}

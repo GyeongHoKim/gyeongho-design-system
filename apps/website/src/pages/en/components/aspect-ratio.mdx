@@ -1,0 +1,104 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: AspectRatio
+description: A layout primitive that constrains its content to a fixed width-to-height ratio.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AspectRatioDemoReact from '../../../components/demos/AspectRatioDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`AspectRatio` is currently a **React-only** primitive (`@ghds/react`). It owns no design values and
+paints nothing, so there is no Web Components or React Native counterpart yet.
+
+## Overview
+
+An `AspectRatio` reserves a box at a fixed width-to-height ratio using the native CSS `aspect-ratio`
+property — the classic use is holding responsive media (an image, a video, a map embed) so the
+layout doesn't reflow while the asset loads. It fills the available width and derives its height
+from the `ratio`.
+
+## Anatomy
+
+A single `<div>` set to `width: 100%`, the given `aspect-ratio`, and `overflow: hidden`. Size a
+single child to `width: 100%; height: 100%` (e.g. an `<img>` with `object-fit: cover`) to fill the
+box. There is no sketch layer — this primitive is purely structural.
+
+## Variants & States
+
+AspectRatio is a **static layout box** — it has no interactive states. The only variation is the
+`ratio` value itself.
+
+<StateList
+  states={[
+    { name: 'Hover', present: false, note: 'Not interactive.' },
+    { name: 'Focus', present: false, note: 'Not focusable.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+    { name: 'Error', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Place a single child sized to width: 100%; height: 100% (an <img> with object-fit: cover is the common case).',
+    'Pass the ratio as a number expression like 16 / 9 or 4 / 3 so intent stays readable.',
+    'Constrain the outer width (e.g. a max-width wrapper) — the box derives its height from that width.',
+  ]}
+  dont={[
+    "Don't set an explicit height on the box — the ratio derives it from the width.",
+    "Don't use it purely to add spacing; it's for reserving media proportions, not general layout gaps.",
+  ]}
+/>
+
+## Accessibility
+
+- Renders a plain `<div>` with no role or label — it is a layout wrapper, so the accessible content
+  is whatever child you place inside (e.g. an `<img>` needs its own `alt`).
+- Because it reserves space before media loads, it prevents layout shift — a real accessibility and
+  usability win for users on slow connections.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+N/A — AspectRatio has no fixed content model. Content is whatever single element you place inside,
+sized to fill the box.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: 'Desired width-to-height ratio, e.g. 16 / 9 for widescreen or 1 for a square.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (className, style, etc.) pass through.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders live below at three common ratios — toggle dark mode in the header; the box is
+purely structural, so only the placeholder fill responds to the theme.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AspectRatioDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { AspectRatio } from '@ghds/react/aspect-ratio';
+
+<AspectRatio ratio={16 / 9}>
+  <img src="/cover.jpg" alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+</AspectRatio>;
+```

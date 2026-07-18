@@ -1,0 +1,115 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Carousel
+description: A hand-drawn scroll-snap carousel with prev/next controls, built on native scrolling.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CarouselDemoReact from '../../../components/demos/CarouselDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Carousel` and its subcomponents are **React-only** (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Carousel` is a slideshow of horizontally (or vertically) scrolling slides, built on native CSS
+scroll-snap — no third-party engine. Use it to browse a set of peer items one viewport at a time:
+a photo gallery, a set of feature cards, an onboarding sequence. Compose it from `CarouselContent`,
+`CarouselItem`, `CarouselPrevious`, and `CarouselNext`.
+
+## Anatomy
+
+A `role="region"` labelled as a carousel wrapping a scroll-snap track (`CarouselContent`) of slides
+(`CarouselItem`, each `role="group"` described as a slide). `CarouselPrevious` / `CarouselNext` are
+`Button`s that move one viewport per step and disable at the start / end respectively. Arrow keys
+scroll along the orientation axis; the scrollbar is visually hidden while snapping stays native.
+
+## Variants & States
+
+The only variant axis is `orientation` (`'horizontal'` default, or `'vertical'`). The control states
+come from scroll position.
+
+<StateList
+  states={[
+    { name: 'At start', present: true, note: 'CarouselPrevious is disabled when the viewport is at the start.' },
+    { name: 'At end', present: true, note: 'CarouselNext is disabled when the viewport is at the end.' },
+    { name: 'Focus', present: true, note: 'The region is arrow-key scrollable when focused.' },
+    { name: 'Disabled', present: false, note: 'The carousel itself has no disabled state.' },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Give the carousel (or a wrapper) an explicit width — and, for a vertical carousel, a bounded height on CarouselContent.',
+    'Provide an aria-label describing the set of slides (e.g. "Photos").',
+    'Keep one slide per viewport unless you deliberately override flexBasis on CarouselItem.',
+  ]}
+  dont={[
+    "Don't put essential, time-sensitive content in a carousel — users may never scroll past the first slide.",
+    "Don't auto-advance without a pause control; motion that can't be stopped is an accessibility problem.",
+  ]}
+/>
+
+## Accessibility
+
+- The root is the ARIA APG carousel pattern: `role="region"` + `aria-roledescription="carousel"`,
+  named by your `aria-label`. Each slide is a `role="group"` with `aria-roledescription="slide"`.
+- The controls are real `<button>`s labelled "Previous slide" / "Next slide" and become `disabled`
+  at the respective ends, so their state is announced.
+- Arrow keys (Left/Right when horizontal, Up/Down when vertical) scroll the region, and the native
+  scroll container remains keyboard- and touch-operable.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Slides should be peers of roughly equal weight. Keep each slide self-contained — a user might land
+on any one first — and avoid splitting a single message across slides.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Scroll axis (Carousel).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (aria-label, etc.) pass through to the region.' },
+        { name: 'CarouselContent', type: 'HTMLAttributes<HTMLDivElement>', description: 'The scroll-snap track; set maxHeight/maxWidth via style to bound it.' },
+        { name: 'CarouselItem', type: 'HTMLAttributes<HTMLDivElement>', description: 'A single slide; override flexBasis via style for multiple-per-view.' },
+        { name: 'CarouselPrevious / CarouselNext', type: 'ButtonProps', description: 'The prev/next controls (Button); auto-disable at the ends.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a horizontal carousel below — use the prev/next controls or arrow keys to move one
+slide at a time; toggle dark mode in the header to see the slides and controls respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CarouselDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@ghds/react/carousel';
+
+<Carousel aria-label="Photos">
+  <CarouselContent>
+    <CarouselItem>{/* slide 1 */}</CarouselItem>
+    <CarouselItem>{/* slide 2 */}</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>;
+```

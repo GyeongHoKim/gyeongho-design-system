@@ -1,0 +1,106 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: MessageScroller
+description: A bounded, auto-sticking chat log that keeps the newest message in view.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import MessageScrollerDemoReact from '../../../components/demos/MessageScrollerDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`MessageScroller` is currently a **React-only** component (`@ghds/react`). There is no Web Components
+or React Native counterpart yet.
+
+## Overview
+
+`MessageScroller` is the scroll viewport for a chat log. It stacks its children vertically and, while
+the reader is at the bottom, keeps the newest message in view as content grows — pausing the moment
+they scroll up to read history, and resuming when they return to the bottom. Constrain its height
+via `style`.
+
+## Anatomy
+
+A vertical flex stack inside a scroll viewport with a themed scrollbar (`comp.messageScroller.*`).
+After each update it checks whether the reader is near the bottom; if so, it pins `scrollTop` to the
+newest message. Fill it with `Message` rows.
+
+## Variants & States
+
+No visual variants — the one behavioral toggle is `stickToBottom`.
+
+<StateList
+  states={[
+    { name: 'Following (at bottom)', present: true, note: 'New messages auto-scroll into view.' },
+    { name: 'Reading history (scrolled up)', present: true, note: 'Auto-scroll pauses until the reader returns to the bottom.' },
+    { name: 'stickToBottom=false', present: true, note: 'Opts out of auto-scrolling entirely.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Constrain the height via style (maxHeight) — the bound is what makes the log scroll.',
+    'Fill it with Message rows so avatars, authors, and bubbles stay consistent.',
+    'Keep stickToBottom on for live chat so new messages appear without manual scrolling.',
+  ]}
+  dont={[
+    "Don't force-scroll the reader back to the bottom while they're reading history — the pause behavior is intentional.",
+    "Don't nest another vertical scroll region inside it on the same axis.",
+  ]}
+/>
+
+## Accessibility
+
+- Respect the reader's scroll position: auto-scroll only resumes when they choose to return to the
+  bottom, so focus and reading are never yanked away.
+- Consider a `role="log"` (or `aria-live="polite"`) on the region when messages arrive live, so new
+  content is announced without stealing focus.
+- The themed scrollbar uses standard `scrollbar-*` properties and degrades to the native scrollbar.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+N/A — the scroller has no content model of its own. It bounds and follows whatever message rows you
+place inside.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'stickToBottom', type: 'boolean', default: 'true', description: 'Keep the view pinned to the newest message while the reader is at the bottom.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through; use style to set maxHeight.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a bounded log (capped at 320px) below — scroll up to read history, then back to the
+bottom. Toggle dark mode in the header to see the log and scrollbar respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <MessageScrollerDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { MessageScroller } from '@ghds/react/message-scroller';
+
+<MessageScroller style={{ maxHeight: 320 }}>
+  {messages.map((m) => (
+    <Message key={m.id} side={m.side}>{/* … */}</Message>
+  ))}
+</MessageScroller>;
+```

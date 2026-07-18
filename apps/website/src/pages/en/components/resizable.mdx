@@ -1,0 +1,117 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Resizable
+description: A hand-drawn split view whose panels resize by dragging or arrow-keying the divider.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ResizableDemoReact from '../../../components/demos/ResizableDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`ResizablePanelGroup`, `ResizablePanel`, and `ResizableHandle` are **React-only** (`@ghds/react`).
+There is no Web Components or React Native counterpart yet.
+
+## Overview
+
+`Resizable` is a split view whose panels the user can resize — built on pointer events, no
+third-party engine. Use it for adjustable layouts: a nav / editor / inspector three-pane, a
+list-detail split, a preview pane. Lay out `ResizablePanel`s separated by `ResizableHandle`s inside
+a `ResizablePanelGroup`; sizes are percentages of the group.
+
+## Anatomy
+
+A flex `ResizablePanelGroup` laid out along its `direction`, holding `ResizablePanel`s split by
+`ResizableHandle`s. Each handle is a hand-drawn divider (`@ghds/sketch-core` line) that is a
+focusable `role="separator"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax`. Dragging a
+handle — or focusing it and pressing the arrow keys — redistributes space between its two
+neighbouring panels.
+
+## Variants & States
+
+The group's `direction` (`'horizontal'` or `'vertical'`) is the main axis; the handle can show a
+grip via `withHandle`.
+
+<StateList
+  states={[
+    { name: 'Dragging', present: true, note: 'Pointer drag on a handle resizes the adjacent panels.' },
+    { name: 'Focus', present: true, note: 'The handle is a focusable separator; arrow keys resize in 5% steps.' },
+    { name: 'With grip', present: true, note: 'withHandle renders a visible grip in the middle of the handle.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Give the ResizablePanelGroup (or a wrapper) an explicit width AND height — it fills its container.',
+    'Set minSize / maxSize on panels that must not collapse or dominate.',
+    'Use withHandle on the divider so the drag affordance is visible, especially on touch.',
+  ]}
+  dont={[
+    "Don't rely on drag alone — the arrow-key path is what makes it keyboard accessible; keep the handle focusable.",
+    "Don't nest deeply resizable groups without need; the resize model is per-pair of neighbours.",
+  ]}
+/>
+
+## Accessibility
+
+- Each handle is a `role="separator"` with `tabIndex={0}`, `aria-valuenow` (its leading panel's
+  percentage), `aria-valuemin={0}`, and `aria-valuemax={100}`, and `aria-orientation` matching the
+  split — so screen readers announce it as an operable splitter with a live value.
+- Keyboard resize is built in: with the handle focused, Left/Right (horizontal) or Up/Down
+  (vertical) move in 5% steps, and `aria-valuenow` updates.
+- Sizes are clamped to each panel's `minSize` / `maxSize`, so keyboard and pointer resizing can't
+  push a panel past its bounds.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Put a scrollable region inside each panel — panels set `overflow: auto`, so content that exceeds a
+shrunken panel scrolls rather than clipping. Keep the most important pane above its `minSize`.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", description: 'Axis panels are laid out and resized along (ResizablePanelGroup). Required.' },
+        { name: 'defaultSize', type: 'number', description: 'Initial panel size as a percentage of the group (ResizablePanel). Defaults to an equal split.' },
+        { name: 'minSize', type: 'number', default: '10', description: 'Smallest percentage the panel may shrink to (ResizablePanel).' },
+        { name: 'maxSize', type: 'number', default: '90', description: 'Largest percentage the panel may grow to (ResizablePanel).' },
+        { name: 'withHandle', type: 'boolean', default: 'false', description: 'Shows a visible grip in the middle of the handle (ResizableHandle).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through to each part.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a horizontal two-pane split below — drag the divider, or focus it and press the arrow
+keys to resize; toggle dark mode in the header to see the panes and handle respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ResizableDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react/resizable';
+
+<div style={{ width: 480, height: 240 }}>
+  <ResizablePanelGroup direction="horizontal">
+    <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
+    <ResizableHandle withHandle />
+    <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
+  </ResizablePanelGroup>
+</div>;
+```

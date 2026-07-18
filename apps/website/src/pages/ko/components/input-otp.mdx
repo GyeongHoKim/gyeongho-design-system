@@ -1,0 +1,103 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: InputOTP
+description: 순차 입력, 백스페이스 삭제, 붙여넣기 분배를 지원하는 분할형 일회용 코드 필드입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import InputOTPDemoReact from '../../../components/demos/InputOTPDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`InputOTP`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`InputOTP`는 일회용 코드를 위한 분할형 필드예요 — 하나의 왼쪽 채움 문자열 값으로 뒷받침되는 단일 문자 셀의 행이에요. 이메일이나 SMS로 전송되는 인증 코드와 인증기(TOTP) 입력에 사용하세요. 타이핑하면 셀 사이를 진행하고, 백스페이스는 마지막 문자를 삭제하며, 코드를 붙여넣으면 셀 전체에 분배돼요.
+
+## 구조
+
+`length`개의 셀을 감싸는 라벨이 지정된 `role="group"`이에요. 각 셀은 자체 스케치 `SketchSurface` 박스 안의 바 단일 문자 `<input>`이에요: 활성 셀은 포커스 스트로크를, 채워진 셀은 더 강한 스트로크를 보여주고, invalid 필드는 모든 셀을 danger 스트로크로 그려요. 모든 색상, 크기, 스케치 파라미터는 `@ghds/tokens`(`comp.inputOtp.*`)에서 와요.
+
+## 변형 및 상태
+
+명명된 변형은 없어요 — 대신 `length`, `mode`, `mask`가 필드를 형성하고, `disabled` / `invalid`가 상태를 설정해요. 셀은 또한 활성(포커스)과 채워짐에 반응해요.
+
+<StateList
+  states={[
+    { name: 'Active', present: true, note: '포커스된 셀이 comp.inputOtp.stroke.active를 보여줘요.' },
+    { name: 'Filled', present: true, note: '채워진 셀이 빈 셀보다 더 강한 스트로크를 보여줘요.' },
+    { name: 'Invalid', present: true, note: 'invalid prop이 모든 셀을 danger 스트로크로 그려요.' },
+    { name: '비활성화', present: true },
+    { name: 'Masked', present: true, note: 'mask가 각 셀을 비밀번호 필드로 렌더해요.' },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    'onChange를 폴링하지 말고, 마지막 셀이 채워지면 onComplete로 제출하거나 검증하세요.',
+    '숫자 전용 코드에는 mode="numeric"(기본값)을 유지해 모바일 키보드에 숫자 패드가 나오게 하세요.',
+    '그룹에 접근 가능한 이름이 있도록 label(또는 aria-label)을 제공하세요.',
+  ]}
+  dont={[
+    "일반 텍스트 입력에 InputOTP를 사용하지 마세요 — 짧고 고정 길이의 코드 전용이에요.",
+    "전송하는 코드와 맞지 않는 length를 설정하지 마세요; 입력은 length에서 제한돼요.",
+  ]}
+/>
+
+## 접근성
+
+- 셀은 `label`(Radix `Label`을 통해) 또는 `aria-label`로 이름 지어진 `role="group"`으로 감싸지므로, 보조 기술이 이를 하나의 필드로 알려요.
+- 각 셀은 자체 위치 `aria-label`(`Digit 1`, `Digit 2`, …)을 가지고, 내부 입력은 `autoComplete="one-time-code"`를 사용해 모바일 OS가 수신된 코드를 제안할 수 있어요.
+- 키보드 지원이 기본 제공돼요: 타이핑은 진행하고, 백스페이스는 마지막 문자를 삭제하며, Arrow/Home/End는 셀 사이를 이동해요.
+- 이유가 색상만이 아니라 설명되도록 `invalid`를 외부 오류 메시지와 함께 사용하세요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+자유 텍스트가 없어요 — 콘텐츠는 코드 자체예요. 함께 붙는 라벨은 짧게(`Verification code`) 유지하고, "재전송" 어포던스나 오류 메시지는 필드 밖에 두세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: '세그먼트/셀의 개수.' },
+        { name: 'value', type: 'string', description: '제어 값(왼쪽 채움 접두사, length보다 길지 않음).' },
+        { name: 'defaultValue', type: 'string', default: "''", description: '비제어일 때 초기 값.' },
+        { name: 'onChange', type: '(value: string) => void', description: '변경마다 전체 현재 값과 함께 발생해요.' },
+        { name: 'onComplete', type: '(value: string) => void', description: '마지막 셀이 채워지면 완성된 코드와 함께 한 번 발생해요.' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: "허용 문자; 'numeric'은 숫자로 제한해요." },
+        { name: 'mask', type: 'boolean', default: 'false', description: '입력된 문자를 비밀번호처럼 마스킹해요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '인터랙션을 비활성화해요.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: '모든 셀을 invalid로 표시해요(danger 스트로크).' },
+        { name: 'label', type: 'string', description: 'Radix Label을 통해 그룹과 연결된 보이는 라벨.' },
+        { name: 'aria-label', type: 'string', description: '보이는 label이 없을 때 접근 가능한 이름.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 라벨이 지정된 6자리 코드와 invalid 코드를 렌더해요 — 타이핑하면 셀이 채워지고 활성 스트로크가 진행돼요; 헤더에서 다크 모드를 토글하면 셀이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <InputOTPDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { InputOTP } from '@ghds/react/input-otp';
+
+<InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
+```

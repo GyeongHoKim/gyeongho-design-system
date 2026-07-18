@@ -1,0 +1,39 @@
+{
+  "comp": {
+    "inputGroup": {
+      "$description": "Tier 3 component tokens for the hand-drawn InputGroup (input + addons). References sys only.",
+      "bg": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.surface}" },
+        "disabled": { "$value": "{sys.color.bg.muted}" }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "focus": { "$value": "{sys.color.border.focus}" },
+        "danger": { "$value": "{sys.color.border.danger}" }
+      },
+      "addon": {
+        "bg": { "$type": "color", "$value": "{sys.color.bg.muted}" },
+        "text": { "$type": "color", "$value": "{sys.color.text.secondary}" }
+      },
+      "text": {
+        "$type": "color",
+        "value": { "$value": "{sys.color.text.primary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "padding": {
+        "$type": "dimension",
+        "horizontal": { "$value": "{sys.spacing.md}" },
+        "vertical": { "$value": "{sys.spacing.sm}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

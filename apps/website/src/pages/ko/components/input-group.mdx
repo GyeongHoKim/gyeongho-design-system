@@ -1,0 +1,105 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: InputGroup
+description: 하나의 손그림 박스 안에 선행/후행 애드온과 함께 바 입력을 조합하는 필드입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import InputGroupDemoReact from '../../../components/demos/InputGroupDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`InputGroup`, `InputGroupInput`, `InputGroupAddon`은 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`InputGroup`은 하나 이상의 선행 및/또는 후행 애드온 — 아이콘, 짧은 텍스트, 버튼 — 과 함께 바 텍스트 입력을 하나의 손그림 박스 안에 조합해요. 입력에 부착된 어포던스가 필요한 필드에 사용하세요: `https://` 접두사, 통화 단위, 검색 아이콘, 제출 버튼.
+
+## 구조
+
+자식 주위에 하나의 스케치 `SketchSurface` 박스를 그리는 flex 행이에요:
+
+- **`InputGroupInput`** — 행을 채우도록 늘어나는, 테두리 없고 투명한 바 `<input>`.
+- **`InputGroupAddon`** — 선행 또는 후행 슬롯(아이콘, 텍스트, 버튼)으로, 은은한 텍스트 색상으로 렌더돼요. 위치는 입력 앞뒤의 자식 순서로 설정돼요.
+
+그룹 안 어디든 포커스하면 박스 외곽선이 포커스 스트로크로 전환돼요. 모든 색상, 패딩, 반경, 스케치 파라미터는 `@ghds/tokens`(`comp.inputGroup.*`)에서 와요.
+
+## 변형 및 상태
+
+명명된 변형은 없어요 — 대신 그룹이 `disabled`와 `invalid` 불린을 가지고, 포커스에 반응해요.
+
+<StateList
+  states={[
+    { name: 'Focus', present: true, note: '그룹 내 포커스가 외곽선을 comp.inputGroup.stroke.focus로 전환해요.' },
+    { name: 'Invalid', present: true, note: 'invalid prop이 danger 스트로크를 그려요.' },
+    { name: '비활성화', present: true, note: '입력을 비활성화하고 채우기를 음소거해요.' },
+    { name: 'Hover', present: false },
+    { name: '로딩', present: false },
+    { name: '오류', present: true, note: 'invalid와 동일 — 별도의 오류 상태는 없어요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '애드온을 선행 또는 후행하게 하려면 InputGroupInput 앞이나 뒤 자식 순서에 배치하세요.',
+    '이유가 색상만이 아니라 설명되도록 invalid를 외부 오류 메시지와 함께 설정하세요.',
+    'InputGroupInput에 aria-label(또는 연결된 <label>)을 지정하세요 — 그룹 자체는 라벨이 지정된 필드가 아니에요.',
+  ]}
+  dont={[
+    "danger 스트로크만으로 오류를 전달하지 마세요 — 문제를 설명하는 텍스트와 함께 사용하세요.",
+    "한 그룹에 InputGroupInput을 두 개 이상 넣지 마세요; 이것은 애드온이 있는 하나의 필드이지 다중 입력 행이 아니에요.",
+  ]}
+/>
+
+## 접근성
+
+- 그룹은 내부 컨트롤의 focus/blur를 모아 하나의 공유 포커스 외곽선을 그려요; 자체는 인터랙티브 대상이 아니므로 role을 갖지 않아요.
+- `InputGroupInput`을 통해 필드에 라벨을 지정하세요(`aria-label` 또는 연결된 `<label>`) — 애드온은 라벨을 대체하지 않는 다소 장식적인 텍스트예요.
+- 그룹에 `disabled`를 설정하면 컨텍스트를 통해 `InputGroupInput`이 비활성화돼요; 개별 입력의 자체 `disabled` prop을 설정하면 그게 우선해요.
+- 상태가 그려지기만 하지 않고 알려지도록 `invalid`를 `aria-invalid` / 오류 메시지와 함께 사용하세요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+애드온은 짧게 유지하세요 — 접두사(`https://`, `@`), 단위(`USD`, `/ mo`), 아이콘, 또는 작은 버튼 하나. 긴 애드온 텍스트는 입력 값과 공간을 다퉈요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: '전체 그룹을 비활성화하고 표면을 음소거해요(InputGroup).' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: '그룹을 invalid로 표시하고 danger 스트로크를 그려요(InputGroup).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 그룹 컨테이너로 전달돼요.' },
+        { name: 'InputGroupInput', type: "InputHTMLAttributes ('size' 제외)", description: '바 내부 <input>; 네이티브 입력 속성을 받아요.' },
+        { name: 'InputGroupAddon', type: 'HTMLAttributes<HTMLSpanElement>', description: '선행/후행 애드온 <span>; 위치는 자식 순서로 설정돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 라이브 렌더돼요 — 선행 `https://`, 후행 `USD`, invalid 필드, disabled 필드. 첫 입력에 포커스하면 외곽선이 포커스 스트로크로 이동해요; 헤더에서 다크 모드를 토글하면 채우기가 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <InputGroupDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react/input-group';
+
+<InputGroup>
+  <InputGroupAddon>https://</InputGroupAddon>
+  <InputGroupInput placeholder="example.com" aria-label="Website" />
+</InputGroup>;
+```

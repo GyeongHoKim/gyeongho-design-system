@@ -1,0 +1,116 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: InputOTP
+description: A segmented one-time-code field with sequential entry, backspace deletion, and paste distribution.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import InputOTPDemoReact from '../../../components/demos/InputOTPDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`InputOTP` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`InputOTP` is a segmented field for one-time codes — a row of single-character cells backed by one
+left-filled string value. Use it for the verification codes sent by email or SMS and for
+authenticator (TOTP) entry. Typing advances through the cells, Backspace deletes the last
+character, and pasting a code distributes it across the cells.
+
+## Anatomy
+
+A labeled `role="group"` wrapping `length` cells. Each cell is a bare, single-character `<input>`
+inside its own sketchy `SketchSurface` box: the active cell shows the focus stroke, filled cells a
+stronger stroke, and an invalid field paints every cell in the danger stroke. Every color, size,
+and sketch parameter comes from `@ghds/tokens` (`comp.inputOtp.*`).
+
+## Variants & States
+
+No named variants — instead `length`, `mode`, and `mask` shape the field, and `disabled` / `invalid`
+set its state. Cells also react to being active (focused) and filled.
+
+<StateList
+  states={[
+    { name: 'Active', present: true, note: 'The focused cell shows comp.inputOtp.stroke.active.' },
+    { name: 'Filled', present: true, note: 'Filled cells show a stronger stroke than empty ones.' },
+    { name: 'Invalid', present: true, note: 'The invalid prop paints every cell in the danger stroke.' },
+    { name: 'Disabled', present: true },
+    { name: 'Masked', present: true, note: 'mask renders each cell as a password field.' },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use onComplete to submit or verify once the final cell is filled, rather than polling onChange.',
+    'Keep mode="numeric" (the default) for digit-only codes so mobile keyboards show the number pad.',
+    'Provide a label (or aria-label) so the group has an accessible name.',
+  ]}
+  dont={[
+    "Don't use InputOTP for general text entry — it's for short, fixed-length codes only.",
+    "Don't set a length that doesn't match the code you send; entry is capped at length.",
+  ]}
+/>
+
+## Accessibility
+
+- The cells are wrapped in a `role="group"` named by the `label` (via Radix `Label`) or the
+  `aria-label`, so assistive technology announces them as one field.
+- Each cell carries its own positional `aria-label` (`Digit 1`, `Digit 2`, …), and the inner inputs
+  use `autoComplete="one-time-code"` so mobile OSes can offer the received code.
+- Keyboard support is built in: typing advances, Backspace deletes the last character, and
+  Arrow/Home/End move between cells.
+- Pair `invalid` with an external error message so the reason is explained, not only colored.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+There's no free text — content is the code itself. Keep the accompanying label short (`Verification
+code`) and put any "resend" affordance or error message outside the field.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'length', type: 'number', default: '6', description: 'Number of segments/cells.' },
+        { name: 'value', type: 'string', description: 'Controlled value (a left-filled prefix, never longer than length).' },
+        { name: 'defaultValue', type: 'string', default: "''", description: 'Initial value when uncontrolled.' },
+        { name: 'onChange', type: '(value: string) => void', description: 'Fires on every change with the full current value.' },
+        { name: 'onComplete', type: '(value: string) => void', description: 'Fires once the last cell is filled, with the complete code.' },
+        { name: 'mode', type: "'numeric' | 'text'", default: "'numeric'", description: "Accepted characters; 'numeric' restricts to digits." },
+        { name: 'mask', type: 'boolean', default: 'false', description: 'Masks the entered characters like a password.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Marks every cell invalid (danger stroke).' },
+        { name: 'label', type: 'string', description: 'Visible label, associated with the group via Radix Label.' },
+        { name: 'aria-label', type: 'string', description: 'Accessible name when no visible label is provided.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a labeled 6-digit code and an invalid one below — type to see cells fill and the
+active stroke advance; toggle dark mode in the header to see the cells respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <InputOTPDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { InputOTP } from '@ghds/react/input-otp';
+
+<InputOTP label="Verification code" onComplete={(code) => verify(code)} />;
+```

@@ -43,6 +43,16 @@
       "import": "./dist/alert.mjs",
       "require": "./dist/alert.cjs"
     },
+    "./aspect-ratio": {
+      "types": "./dist/components/aspect-ratio.d.ts",
+      "import": "./dist/aspect-ratio.mjs",
+      "require": "./dist/aspect-ratio.cjs"
+    },
+    "./attachment": {
+      "types": "./dist/components/attachment.d.ts",
+      "import": "./dist/attachment.mjs",
+      "require": "./dist/attachment.cjs"
+    },
     "./avatar": {
       "types": "./dist/components/avatar.d.ts",
       "import": "./dist/avatar.mjs",
@@ -52,6 +62,11 @@
       "types": "./dist/components/badge.d.ts",
       "import": "./dist/badge.mjs",
       "require": "./dist/badge.cjs"
+    },
+    "./bubble": {
+      "types": "./dist/components/bubble.d.ts",
+      "import": "./dist/bubble.mjs",
+      "require": "./dist/bubble.cjs"
     },
     "./breadcrumb": {
       "types": "./dist/components/breadcrumb.d.ts",
@@ -77,6 +92,16 @@
       "types": "./dist/components/card.d.ts",
       "import": "./dist/card.mjs",
       "require": "./dist/card.cjs"
+    },
+    "./carousel-item": {
+      "types": "./dist/components/carousel-item.d.ts",
+      "import": "./dist/carousel-item.mjs",
+      "require": "./dist/carousel-item.cjs"
+    },
+    "./carousel": {
+      "types": "./dist/components/carousel.d.ts",
+      "import": "./dist/carousel.mjs",
+      "require": "./dist/carousel.cjs"
     },
     "./chart": {
       "types": "./dist/components/chart.d.ts",
@@ -118,6 +143,11 @@
       "import": "./dist/date-picker.mjs",
       "require": "./dist/date-picker.cjs"
     },
+    "./direction": {
+      "types": "./dist/components/direction.d.ts",
+      "import": "./dist/direction.mjs",
+      "require": "./dist/direction.cjs"
+    },
     "./drawer": {
       "types": "./dist/components/drawer.d.ts",
       "import": "./dist/drawer.mjs",
@@ -143,10 +173,25 @@
       "import": "./dist/icon.mjs",
       "require": "./dist/icon.cjs"
     },
+    "./input-group": {
+      "types": "./dist/components/input-group.d.ts",
+      "import": "./dist/input-group.mjs",
+      "require": "./dist/input-group.cjs"
+    },
+    "./input-otp": {
+      "types": "./dist/components/input-otp.d.ts",
+      "import": "./dist/input-otp.mjs",
+      "require": "./dist/input-otp.cjs"
+    },
     "./input": {
       "types": "./dist/components/input.d.ts",
       "import": "./dist/input.mjs",
       "require": "./dist/input.cjs"
+    },
+    "./item": {
+      "types": "./dist/components/item.d.ts",
+      "import": "./dist/item.mjs",
+      "require": "./dist/item.cjs"
     },
     "./kbd": {
       "types": "./dist/components/kbd.d.ts",
@@ -158,6 +203,11 @@
       "import": "./dist/label.mjs",
       "require": "./dist/label.cjs"
     },
+    "./marker": {
+      "types": "./dist/components/marker.d.ts",
+      "import": "./dist/marker.mjs",
+      "require": "./dist/marker.cjs"
+    },
     "./menu": {
       "types": "./dist/components/menu.d.ts",
       "import": "./dist/menu.mjs",
@@ -168,10 +218,25 @@
       "import": "./dist/menubar.mjs",
       "require": "./dist/menubar.cjs"
     },
+    "./message-scroller": {
+      "types": "./dist/components/message-scroller.d.ts",
+      "import": "./dist/message-scroller.mjs",
+      "require": "./dist/message-scroller.cjs"
+    },
+    "./message": {
+      "types": "./dist/components/message.d.ts",
+      "import": "./dist/message.mjs",
+      "require": "./dist/message.cjs"
+    },
     "./modal": {
       "types": "./dist/components/modal.d.ts",
       "import": "./dist/modal.mjs",
       "require": "./dist/modal.cjs"
+    },
+    "./native-select": {
+      "types": "./dist/components/native-select.d.ts",
+      "import": "./dist/native-select.mjs",
+      "require": "./dist/native-select.cjs"
     },
     "./navigation-menu": {
       "types": "./dist/components/navigation-menu.d.ts",
@@ -207,6 +272,26 @@
       "types": "./dist/components/radio.d.ts",
       "import": "./dist/radio.mjs",
       "require": "./dist/radio.cjs"
+    },
+    "./resizable-group": {
+      "types": "./dist/components/resizable-group.d.ts",
+      "import": "./dist/resizable-group.mjs",
+      "require": "./dist/resizable-group.cjs"
+    },
+    "./resizable-handle": {
+      "types": "./dist/components/resizable-handle.d.ts",
+      "import": "./dist/resizable-handle.mjs",
+      "require": "./dist/resizable-handle.cjs"
+    },
+    "./resizable-panel": {
+      "types": "./dist/components/resizable-panel.d.ts",
+      "import": "./dist/resizable-panel.mjs",
+      "require": "./dist/resizable-panel.cjs"
+    },
+    "./scroll-area": {
+      "types": "./dist/components/scroll-area.d.ts",
+      "import": "./dist/scroll-area.mjs",
+      "require": "./dist/scroll-area.cjs"
     },
     "./select-listbox": {
       "types": "./dist/components/select-listbox.d.ts",

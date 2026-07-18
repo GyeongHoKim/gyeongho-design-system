@@ -1,0 +1,14 @@
+{
+  "comp": {
+    "message": {
+      "$description": "Tier 3 component tokens for the hand-drawn chat Message row. References sys only.",
+      "text": {
+        "$type": "color",
+        "author": { "$value": "{sys.color.text.primary}" },
+        "timestamp": { "$value": "{sys.color.text.secondary}" }
+      },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "rowGap": { "$type": "dimension", "$value": "{sys.spacing.sm}" }
+    }
+  }
+}

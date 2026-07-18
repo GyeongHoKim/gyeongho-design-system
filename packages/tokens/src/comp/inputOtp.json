@@ -1,0 +1,34 @@
+{
+  "comp": {
+    "inputOtp": {
+      "$description": "Tier 3 component tokens for the hand-drawn InputOTP (segmented one-time-code field). References sys only.",
+      "cell": {
+        "bg": {
+          "$type": "color",
+          "default": { "$value": "{sys.color.bg.surface}" },
+          "disabled": { "$value": "{sys.color.bg.muted}" }
+        }
+      },
+      "stroke": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "active": { "$value": "{sys.color.border.focus}" },
+        "filled": { "$value": "{sys.color.border.strong}" },
+        "danger": { "$value": "{sys.color.border.danger}" }
+      },
+      "text": {
+        "$type": "color",
+        "value": { "$value": "{sys.color.text.primary}" },
+        "disabled": { "$value": "{sys.color.text.disabled}" }
+      },
+      "size": { "$type": "dimension", "$value": "{sys.spacing.2xl}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

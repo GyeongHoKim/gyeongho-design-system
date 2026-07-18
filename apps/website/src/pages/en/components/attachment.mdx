@@ -1,0 +1,106 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Attachment
+description: A hand-drawn file chip with an optional icon, metadata, and remove button.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AttachmentDemoReact from '../../../components/demos/AttachmentDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Attachment` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`Attachment` is a compact chip representing a file or resource — an optional leading icon, a name
+with optional metadata (like a size), and an optional remove button. Use it to show uploaded files,
+email attachments, or any referenced resource that a user can review and optionally remove.
+
+## Anatomy
+
+A hand-drawn box (`@ghds/sketch-core`) laying out, left to right: an optional `Icon`, a stacked
+name + `meta` column, and — when `onRemove` is set — a remove `<button>` with a close icon. Every
+colour, padding, radius, and sketch parameter comes from `@ghds/tokens` (`comp.attachment.*`).
+
+## Variants & States
+
+No named variants — the chip is shaped by which optional parts you supply (`icon`, `meta`,
+`onRemove`).
+
+<StateList
+  states={[
+    { name: 'With icon', present: true, note: 'A leading @ghds/icons glyph via the icon prop.' },
+    { name: 'With meta', present: true, note: 'A secondary line, e.g. a file size.' },
+    { name: 'Removable', present: true, note: 'onRemove renders a labelled remove button.' },
+    { name: 'Disabled', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Show a human-readable size or type in meta so users can judge the file at a glance.',
+    'Provide onRemove for attachments the user can detach, and keep the default Remove {name} label meaningful.',
+    'Pick an icon that matches the file kind when one is available.',
+  ]}
+  dont={[
+    "Don't put a long file name in an unbounded row; let the layout wrap or truncate as your container needs.",
+    "Don't use Attachment as a button for opening the file — it's a descriptive chip, with only the remove action interactive.",
+  ]}
+/>
+
+## Accessibility
+
+- The remove control is a real `<button>` with an accessible label — `removeLabel`, or the default
+  `Remove {name}` — so screen-reader users know exactly which attachment it detaches.
+- The leading icon is decorative; the name text carries the meaning.
+- When you render a set of attachments, place them in a list structure so their count and grouping
+  are conveyed.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Keep `name` the actual file name and `meta` a short, factual descriptor (size, type, or date). Avoid
+duplicating the name inside `meta`.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'name', type: 'string', description: 'File (or resource) name shown as the primary label. Required.' },
+        { name: 'meta', type: 'string', description: 'Secondary metadata, e.g. a human-readable size like "2.4 MB".' },
+        { name: 'icon', type: 'IconName', description: 'Optional leading icon (a @ghds/icons name).' },
+        { name: 'onRemove', type: '() => void', description: 'When provided, renders a remove button that calls this handler.' },
+        { name: 'removeLabel', type: 'string', default: "'Remove {name}'", description: 'Accessible label for the remove button.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a few chips below — one with a mail icon, one with a calendar icon, and one removable.
+Toggle dark mode in the header to see the chips respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AttachmentDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Attachment } from '@ghds/react/attachment';
+
+<Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
+```

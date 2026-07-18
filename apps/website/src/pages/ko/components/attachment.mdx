@@ -1,0 +1,96 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Attachment
+description: 선택적 아이콘, 메타데이터, 제거 버튼을 갖춘 손그림 파일 칩입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import AttachmentDemoReact from '../../../components/demos/AttachmentDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Attachment`은 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`Attachment`은 파일이나 리소스를 나타내는 컴팩트한 칩이에요 — 선택적 선행 아이콘, 선택적 메타데이터(크기 등)가 있는 이름, 선택적 제거 버튼. 업로드된 파일, 이메일 첨부, 또는 사용자가 검토하고 선택적으로 제거할 수 있는 참조 리소스를 보여줄 때 사용하세요.
+
+## 구조
+
+손그림 박스(`@ghds/sketch-core`)가 좌에서 우로 배치해요: 선택적 `Icon`, 쌓인 이름 + `meta` 열, 그리고 — `onRemove`가 설정되면 — 닫기 아이콘이 있는 제거 `<button>`. 모든 색상, 패딩, 반경, 스케치 파라미터는 `@ghds/tokens`(`comp.attachment.*`)에서 와요.
+
+## 변형 및 상태
+
+명명된 변형은 없어요 — 칩은 제공하는 선택적 부분(`icon`, `meta`, `onRemove`)에 따라 형성돼요.
+
+<StateList
+  states={[
+    { name: 'With icon', present: true, note: 'icon prop을 통한 선행 @ghds/icons 글리프.' },
+    { name: 'With meta', present: true, note: '보조 줄, 예: 파일 크기.' },
+    { name: 'Removable', present: true, note: 'onRemove가 라벨이 지정된 제거 버튼을 렌더해요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '사용자가 한눈에 파일을 판단할 수 있도록 meta에 읽기 쉬운 크기나 타입을 보여주세요.',
+    '사용자가 분리할 수 있는 첨부에 onRemove를 제공하고, 기본 Remove {name} 라벨을 의미 있게 유지하세요.',
+    '가능한 경우 파일 종류에 맞는 아이콘을 선택하세요.',
+  ]}
+  dont={[
+    "경계 없는 행에 긴 파일 이름을 넣지 마세요; 컨테이너 필요에 따라 줄바꿈이나 잘림을 하게 두세요.",
+    "파일을 여는 버튼으로 Attachment를 사용하지 마세요 — 서술형 칩이며 제거 동작만 인터랙티브해요.",
+  ]}
+/>
+
+## 접근성
+
+- 제거 컨트롤은 접근 가능한 라벨(`removeLabel`, 또는 기본 `Remove {name}`)을 가진 실제 `<button>`이므로, 스크린 리더 사용자가 어떤 첨부를 분리하는지 정확히 알아요.
+- 선행 아이콘은 장식용이에요; 이름 텍스트가 의미를 가져요.
+- 첨부 집합을 렌더할 때는 개수와 그룹핑이 전달되도록 목록 구조에 배치하세요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+`name`은 실제 파일 이름으로, `meta`는 짧고 사실적인 설명자(크기, 타입, 날짜)로 유지하세요. `meta` 안에 이름을 중복하지 마세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'name', type: 'string', description: '주요 라벨로 표시되는 파일(또는 리소스) 이름. 필수.' },
+        { name: 'meta', type: 'string', description: '보조 메타데이터, 예: "2.4 MB" 같은 읽기 쉬운 크기.' },
+        { name: 'icon', type: 'IconName', description: '선택적 선행 아이콘(@ghds/icons 이름).' },
+        { name: 'onRemove', type: '() => void', description: '제공되면 이 핸들러를 호출하는 제거 버튼을 렌더해요.' },
+        { name: 'removeLabel', type: 'string', default: "'Remove {name}'", description: '제거 버튼의 접근 가능한 라벨.' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 몇 개의 칩을 렌더해요 — 하나는 메일 아이콘, 하나는 캘린더 아이콘, 하나는 제거 가능. 헤더에서 다크 모드를 토글하면 칩이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <AttachmentDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Attachment } from '@ghds/react/attachment';
+
+<Attachment name="quarterly-report.pdf" meta="2.4 MB" onRemove={() => detach()} />;
+```

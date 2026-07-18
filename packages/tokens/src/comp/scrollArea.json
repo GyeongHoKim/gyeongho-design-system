@@ -1,0 +1,23 @@
+{
+  "comp": {
+    "scrollArea": {
+      "$description": "Tier 3 component tokens for the hand-drawn ScrollArea. References sys only.",
+      "thumb": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "hover": { "$value": "{sys.color.border.strong}" }
+      },
+      "track": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.muted}" }
+      },
+      "size": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.pill}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
