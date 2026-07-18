@@ -393,6 +393,101 @@ code {
   gap: var(--sys-spacing-lg);
 }
 
+/* ---- Theme playground ---------------------------------------------- */
+
+.playground {
+  display: grid;
+  grid-template-columns: minmax(16rem, 22rem) 1fr;
+  gap: var(--sys-spacing-lg);
+  align-items: start;
+}
+
+@media (max-width: 48rem) {
+  .playground {
+    grid-template-columns: 1fr;
+  }
+}
+
+.playground-controls,
+.playground-output {
+  min-width: 0;
+}
+
+.playground-controls-head,
+.playground-output-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sys-spacing-sm);
+  margin-bottom: var(--sys-spacing-sm);
+  flex-wrap: wrap;
+}
+
+.playground-theme-toggle {
+  display: inline-flex;
+  gap: var(--sys-spacing-xs);
+}
+
+.playground-swatches {
+  display: grid;
+  gap: var(--sys-spacing-xs);
+}
+
+.playground-swatch {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-spacing-sm);
+  cursor: pointer;
+}
+
+.playground-swatch input[type="color"] {
+  inline-size: var(--sys-spacing-xl);
+  block-size: var(--sys-spacing-xl);
+  padding: 0;
+  border: var(--sys-border-width-thin) solid var(--sys-color-border-default);
+  border-radius: var(--sys-radius-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.playground-swatch-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.playground-swatch-name {
+  font-family: var(--sys-typography-label-fontFamily);
+  font-size: var(--sys-typography-label-fontSize);
+  color: var(--sys-color-text-primary);
+}
+
+.playground-swatch-label code {
+  background: none;
+  padding: 0;
+  font-size: var(--sys-typography-caption-fontSize);
+  color: var(--sys-color-text-secondary);
+}
+
+/* The live preview is a self-contained light canvas: every `--sys-color-*` is
+ * set inline on this element, so nested components resolve their `--comp-*`
+ * aliases here rather than inheriting the surrounding site theme. */
+.playground-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-spacing-md);
+  padding: var(--sys-spacing-lg);
+  background-color: var(--sys-color-bg-canvas);
+  border: var(--sys-border-width-default) solid var(--sys-color-border-default);
+  border-radius: var(--sys-radius-lg);
+  color: var(--sys-color-text-primary);
+  grid-row: span 2;
+}
+
+.playground-output pre {
+  margin: 0;
+}
+
 /* ---- Prose (MDX content pages) -------------------------------------- */
 
 .prose {

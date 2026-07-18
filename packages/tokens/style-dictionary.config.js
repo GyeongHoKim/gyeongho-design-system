@@ -128,12 +128,30 @@ StyleDictionary.registerTransform({
   },
 });
 
+/**
+ * A token's CSS value with `{a.b.c}` aliases preserved as `var(--a-b-c)`
+ * references instead of resolved to a literal. Keeping the alias live means the
+ * whole `comp → sys → ref` chain stays wired at runtime: a consumer can
+ * override a single `--sys-*` (or `--ref-*`) custom property and every token
+ * that aliases it re-themes, without touching component code. Literal values
+ * (the `ref` tier, and any non-string leaf like `lineHeight`) pass through
+ * unchanged. Composite strings (e.g. a shadow referencing a color) have each
+ * `{…}` segment swapped independently, so partial references work too.
+ */
+function cssValue(token) {
+  const original = token.original?.$value;
+  if (typeof original === 'string' && original.includes('{')) {
+    return original.replace(/\{([^}]+)\}/g, (_, ref) => `var(--${ref.split('.').join('-')})`);
+  }
+  return token.$value;
+}
+
 StyleDictionary.registerFormat({
   name: 'ghds/css',
   format: ({ dictionary, options }) => {
     const selector = options.selector ?? ':root';
     const lines = dictionary.allTokens.map(
-      (token) => `  --${token.path.join('-')}: ${token.$value};`,
+      (token) => `  --${token.path.join('-')}: ${cssValue(token)};`,
     );
     return `${HEADER}${selector} {\n${lines.join('\n')}\n}\n`;
   },

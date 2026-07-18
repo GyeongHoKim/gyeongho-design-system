@@ -42,6 +42,7 @@ import { tokens } from '@ghds/tokens';
 Each rule below is enforced — follow the link for the full Incorrect/Correct code pairs.
 
 - **[Token usage](rules/tokens.md)** — always consume `sys.*`/`comp.*` tokens, never `ref.*` directly or a hardcoded value.
+- **[Theming](rules/theming.md)** — rebrand by overriding `--sys-*` CSS custom properties (they cascade to every component), never by hardcoding brand colors or forking components; always cover dark mode.
 - **[Accessibility](rules/accessibility.md)** — ARIA patterns, keyboard interaction, and focus management per component.
 - **[Composition](rules/composition.md)** — `FormField` wraps exactly one control; choosing between Toast/Alert/Modal and Skeleton/Spinner; debounce search inputs.
 - **[Platform differences](rules/platform-differences.md)** — prop and event naming diverges across React / Web Components / React Native. Never port a prop name from one platform to another without checking this file.
@@ -180,6 +181,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 ## Reference
 
 - [rules/tokens.md](rules/tokens.md) — token consumption rules
+- [rules/theming.md](rules/theming.md) — rebranding/customization via CSS-variable overrides
 - [rules/accessibility.md](rules/accessibility.md) — ARIA, keyboard, focus management
 - [rules/composition.md](rules/composition.md) — component composition patterns
 - [rules/platform-differences.md](rules/platform-differences.md) — React / Web Components / React Native API differences
