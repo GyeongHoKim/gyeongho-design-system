@@ -480,6 +480,31 @@ function buildTheme(t: Tokens) {
       messageScrollerThumbDefault: t.comp.messageScroller.thumb.default,
       messageScrollerTrackDefault: t.comp.messageScroller.track.default,
 
+      // comp.scrollArea colors (thumb doubles as the sketch border stroke; RN
+      // cannot theme the native scrollbar, so track is kept for token parity)
+      scrollAreaThumbDefault: t.comp.scrollArea.thumb.default,
+      scrollAreaThumbHover: t.comp.scrollArea.thumb.hover,
+      scrollAreaTrackDefault: t.comp.scrollArea.track.default,
+
+      // comp.nativeSelect colors
+      nativeSelectBgDefault: t.comp.nativeSelect.bg.default,
+      nativeSelectBgDisabled: t.comp.nativeSelect.bg.disabled,
+      nativeSelectStrokeDefault: t.comp.nativeSelect.stroke.default,
+      nativeSelectStrokeFocus: t.comp.nativeSelect.stroke.focus,
+      nativeSelectStrokeDanger: t.comp.nativeSelect.stroke.danger,
+      nativeSelectTextValue: t.comp.nativeSelect.text.value,
+      nativeSelectTextPlaceholder: t.comp.nativeSelect.text.placeholder,
+      nativeSelectTextDisabled: t.comp.nativeSelect.text.disabled,
+      nativeSelectTextLabel: t.comp.nativeSelect.text.label,
+      nativeSelectTextDanger: t.comp.nativeSelect.text.danger,
+      nativeSelectIconDefault: t.comp.nativeSelect.icon.default,
+      nativeSelectIconDisabled: t.comp.nativeSelect.icon.disabled,
+
+      // comp.resizable colors
+      resizableHandleDefault: t.comp.resizable.handle.default,
+      resizableHandleHover: t.comp.resizable.handle.hover,
+      resizableGripDefault: t.comp.resizable.grip.default,
+
       // toast system needs a canvas/overlay scrim reference
       toastScrim: t.sys.color.bg.overlay,
     },
@@ -516,6 +541,9 @@ function buildTheme(t: Tokens) {
       messageGap: t.comp.message.gap,
       messageScrollerGap: t.comp.messageScroller.gap,
       messageScrollerPadding: t.comp.messageScroller.padding,
+      nativeSelectHorizontal: t.comp.nativeSelect.padding.horizontal,
+      nativeSelectVertical: t.comp.nativeSelect.padding.vertical,
+      nativeSelectGap: t.comp.nativeSelect.gap,
     },
     borderRadii: {
       sm: t.sys.radius.sm,
@@ -528,6 +556,9 @@ function buildTheme(t: Tokens) {
       inputOtp: t.comp.inputOtp.radius,
       attachment: t.comp.attachment.radius,
       bubble: t.comp.bubble.radius,
+      scrollArea: t.comp.scrollArea.radius,
+      nativeSelect: t.comp.nativeSelect.radius,
+      resizable: t.comp.resizable.radius,
     },
     borderWidths: {
       thin: t.sys.border.width.thin,
@@ -768,6 +799,24 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.bubble.sketch.roughness,
       bowing: t.comp.bubble.sketch.bowing,
     },
+    scrollAreaSketch: {
+      roughness: t.comp.scrollArea.sketch.roughness,
+      bowing: t.comp.scrollArea.sketch.bowing,
+    },
+    // ScrollArea scrollbar thickness token (RN cannot theme the native
+    // scrollbar; kept for parity with the web build).
+    scrollAreaSize: t.comp.scrollArea.size,
+    nativeSelectSketch: {
+      roughness: t.comp.nativeSelect.sketch.roughness,
+      bowing: t.comp.nativeSelect.sketch.bowing,
+    },
+    resizableSketch: {
+      roughness: t.comp.resizable.sketch.roughness,
+      bowing: t.comp.resizable.sketch.bowing,
+    },
+    // Resizable handle thickness (px) — the sketch line stroke width + the
+    // handle's flex-basis along the split axis.
+    resizableSize: t.comp.resizable.size,
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.

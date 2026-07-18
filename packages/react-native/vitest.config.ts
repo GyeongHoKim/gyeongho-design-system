@@ -15,11 +15,13 @@ import { defineConfig } from 'vitest/config';
  *   module-resolution level in `vitest.setup.ts`.
  */
 const svgStub = fileURLToPath(new URL('./src/test/react-native-svg.stub.tsx', import.meta.url));
+const pickerStub = fileURLToPath(new URL('./src/test/picker.stub.tsx', import.meta.url));
 
 export default defineConfig({
   resolve: {
     alias: [
       { find: /^react-native-svg$/, replacement: svgStub },
+      { find: /^@react-native-picker\/picker$/, replacement: pickerStub },
       { find: /^react-native$/, replacement: 'react-native-web' },
     ],
     extensions: [

@@ -88,13 +88,27 @@ them overflow along the chosen axis.
         { name: '(default slot)', type: 'slot', description: 'The scrollable content. Set max-height (or max-width) on the host.' },
       ],
     },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'orientation', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: 'Which axis (or axes) the region scrolls (wraps native ScrollView).' },
+        { name: 'children', type: 'ReactNode', description: 'Scrollable content.' },
+        { name: 'style', type: 'StyleProp<ViewStyle>', description: 'Merged onto the bordered box; constrain height/width here (e.g. maxHeight).' },
+        { name: 'accessibilityLabel', type: 'string', description: 'Accessible label for the scroll region.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
 React and Web Components render live below, driven by the same tokens — scroll either to reveal the
-token-themed scrollbar, and toggle dark mode in the header to see both respond identically.
+token-themed scrollbar, and toggle dark mode in the header to see both respond identically. React
+Native can't run in a browser without additional `react-native-web` wiring (not set up in this
+site), so its usage is shown as a code sample instead. (On React Native the native scrollbar can't
+be themed, so the platform scroll indicators are kept as-is.)
 
 <div class="demo-columns">
   <div class="demo-column">
@@ -108,7 +122,8 @@ token-themed scrollbar, and toggle dark mode in the header to see both respond i
 </div>
 
 ```tsx
-import { ScrollArea } from '@ghds/react/scroll-area';
+// React Native
+import { ScrollArea } from '@ghds/react-native/scroll-area';
 
 <ScrollArea orientation="vertical" style={{ maxHeight: 200 }}>
   {/* long content */}

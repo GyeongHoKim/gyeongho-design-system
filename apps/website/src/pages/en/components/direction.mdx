@@ -13,7 +13,8 @@ import { withBase } from '../../../lib/withBase';
 
 React exposes this as the `DirectionProvider` context and the `useDirection()` hook; Web Components
 ship the `<gh-direction>` element, which mirrors `dir` onto its host so the slotted subtree inherits
-it. There is no React Native counterpart.
+it. React Native ships the same `DirectionProvider` + `useDirection()` — but when no provider is
+present it falls back to the app's `I18nManager` layout direction, not `'ltr'`.
 
 ## Overview
 
@@ -89,6 +90,15 @@ N/A — Direction carries no content. It wraps a subtree and supplies a value.
         { name: '(default slot)', type: 'slot', description: 'The subtree that inherits this direction.' },
       ],
     },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'dir', type: "'ltr' | 'rtl'", description: 'Reading direction applied to all descendant GHDS components. Required (DirectionProvider).' },
+        { name: 'children', type: 'ReactNode', description: 'The subtree that reads this direction.' },
+        { name: 'useDirection()', type: "() => 'ltr' | 'rtl'", description: "Hook returning the nearest provider's direction; falls back to the app's I18nManager layout direction when no provider is present." },
+      ],
+    },
   ]}
 />
 
@@ -96,7 +106,8 @@ N/A — Direction carries no content. It wraps a subtree and supplies a value.
 
 React and Web Components render live below — the same content under an LTR and an RTL direction, with
 the RTL column mirrored. Each column also carries a native `dir` attribute so logical properties
-resolve.
+resolve. React Native can't run in a browser without additional `react-native-web` wiring (not set
+up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
@@ -110,16 +121,16 @@ resolve.
 </div>
 
 ```tsx
-import { DirectionProvider, useDirection } from '@ghds/react/direction';
+// React Native
+import { DirectionProvider, useDirection } from '@ghds/react-native/direction';
+import { Text } from 'react-native';
 
 function Price() {
-  const dir = useDirection();
-  return <span>{dir === 'rtl' ? 'السعر' : 'Price'}</span>;
+  const dir = useDirection(); // falls back to I18nManager.isRTL when no provider is present
+  return <Text>{dir === 'rtl' ? 'السعر' : 'Price'}</Text>;
 }
 
 <DirectionProvider dir="rtl">
-  <div dir="rtl">
-    <Price />
-  </div>
+  <Price />
 </DirectionProvider>;
 ```

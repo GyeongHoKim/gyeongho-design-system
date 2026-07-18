@@ -98,6 +98,18 @@ shrunken panel scrolls rather than clipping. Keep the most important pane above 
         { name: 'with-handle', type: 'boolean', default: 'false', description: 'Reflected attribute; shows a visible grip in the middle of the handle (<gh-resizable-handle>).' },
       ],
     },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", description: 'Axis the panels are laid out and resized along (ResizablePanelGroup). Required.' },
+        { name: 'defaultSize', type: 'number', description: 'Initial panel size as a percentage of the group (ResizablePanel). Defaults to an equal split.' },
+        { name: 'minSize', type: 'number', default: '10', description: 'Smallest percentage the panel may shrink to (ResizablePanel).' },
+        { name: 'maxSize', type: 'number', default: '90', description: 'Largest percentage the panel may grow to (ResizablePanel).' },
+        { name: 'withHandle', type: 'boolean', default: 'false', description: 'Shows a visible grip in the middle of the handle (ResizableHandle).' },
+        { name: 'style / testID', type: 'StyleProp<ViewStyle> / string', description: 'Group container style, and a test handle. Touch-drag only — there is no arrow-key resize on React Native.' },
+      ],
+    },
   ]}
 />
 
@@ -105,7 +117,9 @@ shrunken panel scrolls rather than clipping. Keep the most important pane above 
 
 React and Web Components render live below, driven by the same tokens — drag either divider, or
 focus it and press the arrow keys to resize, and toggle dark mode in the header to see both respond
-identically.
+identically. React Native can't run in a browser without additional `react-native-web` wiring (not
+set up in this site), so its usage is shown as a code sample instead. (On React Native the handle is
+touch-drag only — there is no arrow-key resize.)
 
 <div class="demo-columns">
   <div class="demo-column">
@@ -119,13 +133,12 @@ identically.
 </div>
 
 ```tsx
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react/resizable';
+// React Native
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react-native/resizable';
 
-<div style={{ width: 480, height: 240 }}>
-  <ResizablePanelGroup direction="horizontal">
-    <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
-    <ResizableHandle withHandle />
-    <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
-  </ResizablePanelGroup>
-</div>;
+<ResizablePanelGroup direction="horizontal" style={{ height: 240 }}>
+  <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
+</ResizablePanelGroup>;
 ```
