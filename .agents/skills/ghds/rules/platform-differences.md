@@ -114,6 +114,15 @@ React Native has neither — navigation there is a `Button`/`Pressable` with an 
 
 `Button`, `Checkbox`, and `Switch` on Web Components participate in native `<form>` submission and reset via `ElementInternals`/form-association — a real `<form>` submit or reset affects them automatically. React has no equivalent (plain DOM form semantics apply instead — you wire submission yourself), and React Native has no native `<form>` concept at all.
 
+## Web-Components-only: `gh-navigation-menu` `current`
+
+`gh-navigation-menu` on Web Components takes a `current` property (the active page's path) and highlights the matching item itself: a standalone link matches its path exactly, a dropdown group lights up when a child is the current page or an ancestor of it, and the exact leaf link gets `aria-current="page"`. React and React Native `NavigationMenu` have no `current` prop — mark the active route yourself (React is href-based, so compare against the router location; React Native is selection-callback based, so track the active `value`).
+
+```tsx
+// Web Components — the element resolves the highlight from the path.
+<gh-navigation-menu .items=${items} current="/en/components/button"></gh-navigation-menu>
+```
+
 ## Selection groups: Web Components has no shared `value`
 
 `CheckboxGroup` and `RadioGroup` manage a shared selection on React and React Native — you read/write the group's state via `value` (a `string[]` for `CheckboxGroup`, a `string` for `RadioGroup`) plus `onValueChange`. **Web Components' group elements do not have `value`/`onValueChange` at all** — they are presentational (label, layout, disabled), and each child `gh-checkbox`/`gh-radio` owns its own `checked`/`value`. So on Web Components you wire state per-child and listen to each child's DOM event; there is no group-level callback.

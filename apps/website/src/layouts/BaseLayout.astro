@@ -17,9 +17,10 @@ import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';
 import '../styles/global.css';
+import type { GhNavigationItem } from '@ghds/web-components/navigation-menu';
 import type { Locale } from '../i18n/ui';
 import { UI } from '../i18n/ui';
-import { NAV } from '../lib/nav';
+import { NAV_CATEGORIES } from '../lib/nav';
 import { setLocale, withBase } from '../lib/withBase';
 
 interface Props {
@@ -39,19 +40,23 @@ setLocale(locale);
 const ui = UI[locale];
 
 const normalize = (path: string): string => path.replace(/\/+$/, '') || '/';
-const here = normalize(Astro.url.pathname);
+// The current path (base + locale aware); `gh-navigation-menu` resolves which
+// item to highlight from this. `withBase` produces matching base-aware hrefs.
+const currentPath = normalize(Astro.url.pathname);
 
-// A link is current on its own page and any nested route beneath it. The home
-// link ('/') matches only the home page, so Getting Started is no longer wrongly active.
-// `here` includes the configured base path, so compare against base-aware hrefs.
-const home = normalize(withBase('/'));
-function isCurrent(href: string): boolean {
-  const target = normalize(withBase(href));
-  if (target === home) {
-    return here === home;
-  }
-  return here === target || here.startsWith(`${target}/`);
-}
+// The header IA: categories → base-aware nav items for <gh-navigation-menu>.
+// Direct links carry an href; categories carry children whose per-section
+// `summary` becomes the dropdown description.
+const navLabel = locale === 'ko' ? '주요 내비게이션' : 'Main navigation';
+const navItems: GhNavigationItem[] = NAV_CATEGORIES.map((category) => ({
+  label: category.label[locale],
+  href: category.href ? withBase(category.href) : undefined,
+  children: category.children?.map((child) => ({
+    label: child.label[locale],
+    href: withBase(child.href),
+    description: child.summary[locale],
+  })),
+}));
 
 // Language switcher: build the equivalent URL in the other locale.
 function switchLocaleHref(target: Locale): string {
@@ -93,16 +98,7 @@ function switchLocaleHref(target: Locale): string {
       <a class="brand" href={withBase('/')}>
         {ui.brand} <small>{ui.brandSubtitle}</small>
       </a>
-      <nav class="site-nav" aria-label={locale === 'ko' ? '주요 내비게이션' : 'Main navigation'}>
-        <a href={withBase('/')} aria-current={isCurrent('/') ? 'page' : undefined}>{ui.home}</a>
-        {
-          NAV.map((item) => (
-            <a href={withBase(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-              {item.label[locale]}
-            </a>
-          ))
-        }
-      </nav>
+      <gh-navigation-menu id="site-nav" class="site-nav" label={navLabel}></gh-navigation-menu>
       <div class="header-actions">
         <gh-button
           variant="neutral"
@@ -128,6 +124,19 @@ function switchLocaleHref(target: Locale): string {
 
     <script>
       import '@ghds/web-components/button';
+      import '@ghds/web-components/navigation-menu';
+    </script>
+
+    {/* Feed the nav its items/current as JS properties (arrays can't be set via
+        attributes). Lit re-applies instance properties set before the element
+        upgrades, so ordering against the registration script above is safe. */}
+    <script define:vars={{ navItems, navLabel, currentPath }}>
+      const nav = document.getElementById('site-nav');
+      if (nav) {
+        nav.items = navItems;
+        nav.label = navLabel;
+        nav.current = currentPath;
+      }
     </script>
 
     <script>
