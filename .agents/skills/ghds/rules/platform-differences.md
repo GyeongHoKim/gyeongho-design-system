@@ -2,20 +2,6 @@
 
 GHDS ships the same design as three separate implementations — `@ghds/react`, `@ghds/web-components` (Lit, `gh-*` custom elements), and `@ghds/react-native`. They are **not** a single API with three renderers; prop names, event shapes, and even the supported variant set diverge in specific, verified ways. Do not port a prop name from one platform to another without checking this file first.
 
-## Contents
-
-- Dialog family accessible title: `title` vs `heading`
-- Change events: three different shapes
-- Button content: children vs `label`-only
-- Button `variant`: React Native has no `'neutral'`
-- React-Native-only props
-- Web-Components-only: native form participation
-- Selection groups: Web Components has no shared `value`
-- `orientation` union: React Native uses `'row' | 'column'`
-- `Separator` `decorative` default differs
-- React Native touch adaptations: no hover / no right-click
-- Accessibility prop gaps on React Native
-
 ## Dialog family accessible title: `title` vs `heading`
 
 React and React Native use `title` for a dialog's accessible heading. Web Components uses `heading` for the identical concept. This applies to the **entire dialog family**, not just `Modal`: `Modal`, `AlertDialog`, `Drawer`, and `Sheet` all take `title` on React/React Native and `heading` on Web Components. (`Empty` — an empty-state placeholder, not a dialog — follows the same `title`→`heading` rename in Web Components.)

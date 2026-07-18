@@ -91,6 +91,14 @@ import '@fontsource/pretendard/700.css';
 See the [Fonts guide](https://gyeonghokim.github.io/gyeongho-design-system/fonts/) on the website
 for the full rationale and weight/payload guidance.
 
+## Contributing & Community
+
+- [Contributing Guide](./CONTRIBUTING.md) — how to set up, propose changes, and the Code Quality Gate
+- [Code of Conduct](./CODE_OF_CONDUCT.md) — Contributor Covenant; expected behavior and reporting
+- [Security Policy](./SECURITY.md) — how to report a vulnerability privately
+- [Governance](./GOVERNANCE.md) — how decisions are made and the component lifecycle
+- [Discussions](https://github.com/GyeongHoKim/gyeongho-design-system/discussions) — questions that aren't bugs or feature requests
+
 ## License
 
 [MIT](./LICENSE)
