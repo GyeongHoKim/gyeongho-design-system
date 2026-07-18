@@ -76,33 +76,106 @@ System event, informational only              → Toast (auto-dismiss)
 
 ## Component Selection
 
+All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
+
+### Forms & inputs
+
 | Need | Component | Notes |
 |---|---|---|
-| Clickable action trigger | `Button` | `variant`: `primary`/`danger`/`neutral` on React & Web Components; React Native omits `neutral` |
-| Single-line text entry | `Input` | Pair with `FormField` for label/helper/error |
+| Clickable action trigger | `Button` | `variant`: `primary`/`danger`/`neutral` on React & WC; RN omits `neutral` and takes `label: string` only (no children) |
+| Group related buttons | `ButtonGroup` | RN `orientation: 'row'\|'column'` vs React/WC `'horizontal'\|'vertical'` |
+| Single-line text entry | `Input` | Pair with `FormField`; RN change event is `onChangeText`, not `onChange` |
+| Input with inline addons | `InputGroup` | Wraps an input + prefix/suffix addons in one box; RN addons are icon/text only |
+| One-time-code entry | `InputOTP` | WC dispatches `gh-change`/`gh-complete` events (no callback) and is controlled-only (no `defaultValue`) |
 | Multi-line text entry | `Textarea` | Pair with `FormField` |
 | Dropdown selection | `Select` | Pair with `FormField` |
-| Binary toggle (form-style) | `Checkbox` | React Native: `onCheckedChange`, not `onChange` |
-| Binary toggle (on/off setting) | `Switch` | React Native: `onCheckedChange`, not `onChange` |
-| Single choice from a set | `Radio` | Group multiple with the corresponding group component |
-| Numeric range input | `Slider` | No arrow-key stepping on React Native |
+| Native platform select | `NativeSelect` | React `<option>` children + `onChange` + `error`; RN `items[]` + `selectedValue`/`onValueChange`; WC slotted `<select>` + `invalid` (no `error`) |
+| Searchable single-select | `Combobox` | React is an inline input+listbox; RN is a modal picker; empty-text prop `emptyMessage` (React) vs `emptyText` (RN) |
+| Binary toggle (form-style) | `Checkbox` | RN: `onCheckedChange`, not `onChange` |
+| Group of checkboxes | `CheckboxGroup` | React/RN share `value: string[]`+`onValueChange`; WC is presentational (each `gh-checkbox` self-manages) |
+| Single choice from a set | `Radio` | Group with `RadioGroup` |
+| Mutually-exclusive radios | `RadioGroup` | WC has no shared `value`/`onValueChange` (children self-manage); React shares `name` via context |
+| Binary toggle (on/off setting) | `Switch` | RN: `onCheckedChange`, not `onChange` |
+| Numeric range input | `Slider` | No arrow-key stepping on RN |
+| Two-state pressed button | `Toggle` | RN requires `label`; WC is form-associated, fires `change` (no `onPressedChange`/`defaultPressed`) |
+| Group of toggles (single/multi) | `ToggleGroup` | React types `value` by mode (`string`\|`string[]`); RN/WC always `string[]`; RN `orientation: 'row'\|'column'` |
+| Date field + calendar | `DatePicker` | WC `value` is an ISO string + `change` event; React/RN use `Date` + `onChange` |
+| Month-grid date selection | `Calendar` | Select cb differs: React `onSelect(Date)`, RN `onChange(Date)`, WC `select` event (ISO string) |
+| Form label | `Label` | Association prop: React `htmlFor`, RN `nativeID`, WC `for` |
 | Label + helper + error wrapper | `FormField` | Wraps exactly one control — see [composition.md](rules/composition.md) |
-| Blocking dialog requiring a decision | `Modal` | `title` (React/React Native) vs `heading` (Web Components) |
-| Transient, non-blocking notification | `Toast` | Auto-dismiss ~5s |
-| Persistent inline status message | `Alert` | `role="status"` default, `role="alert"` for `danger` |
+
+### Overlays & dialogs
+
+| Need | Component | Notes |
+|---|---|---|
+| Blocking dialog requiring a decision | `Modal` | `title` (React/RN) vs `heading` (WC) |
+| Confirm/cancel dialog | `AlertDialog` | WC uses `heading` not `title`, and `variant: 'default'\|'danger'` vs React/RN `destructive` boolean |
+| Bottom drawer / tray | `Drawer` | WC `heading` not `title`; RN has no `closeOnScrimClick` |
+| Edge-anchored side panel | `Sheet` | `side`: left/right/top/bottom; WC `heading` not `title`; RN has no `closeOnScrimClick` |
+| Click-triggered floating panel | `Popover` | RN requires `triggerLabel` and has no `placement`; WC dispatches no open-change event |
+| Hover-reveal card | `HoverCard` | RN has no hover — opens on long-press and requires `triggerLabel` |
 | Contextual popup hint | `Tooltip` | `role="tooltip"`, `aria-describedby` |
 | Dropdown/contextual action list | `Menu` | Arrow-key navigation, Escape dismiss |
+| Horizontal menu bar | `Menubar` | RN `onSelect(menuValue, itemValue)` (two args); WC `menu-select` event |
+| Right-click / long-press menu | `ContextMenu` | React opens on right-click of `children`; RN long-press + `triggerLabel`; danger flag `danger`(React)/`destructive`(RN)/`dangerValues[]`(WC) |
+| Command palette | `Command` | React `groups[]` + a separate `CommandDialog`; RN/WC take flat `items[]` and are themselves modal |
+
+### Navigation
+
+| Need | Component | Notes |
+|---|---|---|
+| Multi-step or grouped navigation | `Tabs` | No roving-tabindex arrow nav on RN |
+| Page/section location trail | `Breadcrumb` | — |
+| Paged navigation control | `Pagination` | — |
+| Top-level nav with dropdown links | `NavigationMenu` | React/WC are href-based (`<a>`); RN is selection-callback (`value`+`onSelect`, no `href`) |
+| App navigation sidebar | `Sidebar` | React/RN data-driven (`sections`); WC slot-based; RN has no collapse; section heading prop React `.heading` vs RN `.title` |
+
+### Feedback & status
+
+| Need | Component | Notes |
+|---|---|---|
+| Transient, non-blocking notification | `Toast` | Auto-dismiss ~5s |
+| Persistent inline status message | `Alert` | `role="status"` default, `role="alert"` for `danger` |
+| Sequential step progress | `Progress` | Combine with `Tabs` for multi-step forms |
 | First-paint loading placeholder | `Skeleton` | Use when nothing is on screen yet |
 | Subsequent/inline loading indicator | `Spinner` | Use when existing content stays visible |
-| Multi-step or grouped navigation | `Tabs` | No roving-tabindex arrow nav on React Native |
-| Sequential step progress | `Progress` | Combine with `Tabs` for multi-step forms |
-| Tabular data display | `Table` | `sort`/`onSort` props for sortable columns |
-| Paged navigation control | `Pagination` | — |
 | Status/category label | `Badge` | Combine with a dismiss action for filter chips |
-| User identity image | `Avatar` | — |
-| Page/section location trail | `Breadcrumb` | — |
+| Empty-state placeholder | `Empty` | WC `heading` not `title`; action slot React `action` / RN `children` / WC `actions` |
+
+### Layout & containers
+
+| Need | Component | Notes |
+|---|---|---|
 | Card-style content container | `Card` | React: no default role, you supply one |
 | Collapsible sections | `Accordion` | — |
+| Single disclosure toggle | `Collapsible` | WC is `open` + `toggle` event (no `defaultOpen`/controlled split) |
+| Divider between content | `Separator` | `decorative` defaults to `true` on RN vs `false` on React/WC — changes a11y exposure |
+| Bounded scroll viewport | `ScrollArea` | `orientation`: vertical/horizontal/both; RN cannot theme the native scrollbar |
+| Fixed-ratio box | `AspectRatio` | Constrain content to a width/height `ratio` |
+| Draggable split panels | `Resizable` | Compound Panel/Handle/Group; no arrow-key resize on RN (touch-drag only) |
+| Scroll-snap carousel | `Carousel` | RN adds a `CarouselIndicators` sub-component; WC renders its own controls + dots |
+| Propagate text direction | `Direction` | React/RN `DirectionProvider` + `useDirection()`; WC `<gh-direction dir>`; RN default derives from `I18nManager.isRTL` |
+
+### Data display
+
+| Need | Component | Notes |
+|---|---|---|
+| Tabular data display | `Table` | `sort`/`onSort` props for sortable columns |
+| Bar/line chart | `Chart` | Data shape differs: React `series`+`categories`, WC `series`+`labels`, RN single-series `data[]` |
+| User identity image | `Avatar` | — |
+| Icon by name | `Icon` | RN needs an explicit `color` prop (no CSS `currentColor`); React/WC inherit `currentColor` |
+| Keyboard-key hint | `Kbd` | — |
+| Flexible list-row primitive | `Item` | RN adds `onPress` (makes the row a button); React/WC have no press handling |
+| Highlighter over text | `Marker` | `variant`: default/success/info/danger |
+
+### Chat / messaging
+
+| Need | Component | Notes |
+|---|---|---|
+| Chat bubble | `Bubble` | `variant`: received/sent |
+| Chat message row | `Message` | `side`: received/sent |
+| Auto-stick-to-bottom chat log | `MessageScroller` | `stickToBottom`; WC also exposes an imperative `scrollToBottom()` |
+| File attachment chip | `Attachment` | React/RN use `onRemove` + `removeLabel`; WC uses a `removable` boolean + `gh-remove` event |
 
 ## Reference
 

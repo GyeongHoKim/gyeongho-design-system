@@ -2,9 +2,9 @@
 
 GHDS ships the same design as three separate implementations — `@ghds/react`, `@ghds/web-components` (Lit, `gh-*` custom elements), and `@ghds/react-native`. They are **not** a single API with three renderers; prop names, event shapes, and even the supported variant set diverge in specific, verified ways. Do not port a prop name from one platform to another without checking this file first.
 
-## Modal accessible title: `title` vs `heading`
+## Dialog family accessible title: `title` vs `heading`
 
-React and React Native both use `title`. Web Components uses `heading` for the identical concept.
+React and React Native use `title` for a dialog's accessible heading. Web Components uses `heading` for the identical concept. This applies to the **entire dialog family**, not just `Modal`: `Modal`, `AlertDialog`, `Drawer`, and `Sheet` all take `title` on React/React Native and `heading` on Web Components. (`Empty` — an empty-state placeholder, not a dialog — follows the same `title`→`heading` rename in Web Components.)
 
 ```tsx
 // React / React Native
@@ -21,6 +21,8 @@ React and React Native both use `title`. Web Components uses `heading` for the i
 ```
 
 **Gotcha:** `title` is also a native HTML global attribute (hover tooltip). Setting `title="Delete item?"` on `<gh-modal>` does not error — it silently renders a browser tooltip instead of wiring the dialog's accessible name. This is a wrong-behavior trap, not a compile-time catch.
+
+**Related:** `AlertDialog` also diverges on its variant model — React/React Native use a `destructive` boolean, while Web Components uses `variant: 'default' | 'danger'`. And `Drawer`/`Sheet` expose `closeOnScrimClick` on React and Web Components but **not** on React Native.
 
 ## Change events: three different shapes
 
@@ -94,6 +96,39 @@ React and Web Components support `'primary' | 'danger' | 'neutral'`. React Nativ
 ## Web-Components-only: native form participation
 
 `Button`, `Checkbox`, and `Switch` on Web Components participate in native `<form>` submission and reset via `ElementInternals`/form-association — a real `<form>` submit or reset affects them automatically. React has no equivalent (plain DOM form semantics apply instead — you wire submission yourself), and React Native has no native `<form>` concept at all.
+
+## Selection groups: Web Components has no shared `value`
+
+`CheckboxGroup` and `RadioGroup` manage a shared selection on React and React Native — you read/write the group's state via `value` (a `string[]` for `CheckboxGroup`, a `string` for `RadioGroup`) plus `onValueChange`. **Web Components' group elements do not have `value`/`onValueChange` at all** — they are presentational (label, layout, disabled), and each child `gh-checkbox`/`gh-radio` owns its own `checked`/`value`. So on Web Components you wire state per-child and listen to each child's DOM event; there is no group-level callback.
+
+```tsx
+// React / React Native — group owns the shared value
+<CheckboxGroup value={selected} onValueChange={setSelected}>
+  <Checkbox value="a" /> <Checkbox value="b" />
+</CheckboxGroup>
+```
+
+```html
+<!-- Web Components — no group value; each child self-manages -->
+<gh-checkbox-group label="Pick some">
+  <gh-checkbox name="a"></gh-checkbox>
+  <gh-checkbox name="b"></gh-checkbox>
+</gh-checkbox-group>
+```
+
+## `orientation` union: React Native uses `'row' | 'column'`
+
+`ButtonGroup` and `ToggleGroup` accept an `orientation`, but the allowed string literals differ. React and Web Components use `'horizontal' | 'vertical'`; **React Native uses `'row' | 'column'`** (matching its flexbox naming). Porting `orientation="horizontal"` to React Native is a type error, not a silent fallback.
+
+Relatedly, `ToggleGroup`'s `value` typing differs: React types it by mode via a discriminated union (`string` when `type="single"`, `string[]` when `type="multiple"`), whereas React Native and Web Components always use `string[]` even in single-select mode.
+
+## `Separator` `decorative` default differs
+
+`Separator` takes a `decorative` boolean, but its default is not the same everywhere: **React Native defaults `decorative` to `true`** (the divider is hidden from assistive tech), while React and Web Components default it to `false` (exposed as `role="separator"`/`aria-orientation`). If a separator is semantically meaningful on React Native, set `decorative={false}` explicitly.
+
+## React Native touch adaptations: no hover / no right-click
+
+Components that open on hover or right-click on the web have no such gesture on React Native, so their RN API differs: `HoverCard` opens on **long-press**, `ContextMenu` opens on **long-press**, `Popover` opens on **press**, and `NavigationMenu` opens on **tap**. Each of these RN components therefore requires a `triggerLabel` (for the accessible pressable) and drops hover-specific props — `placement` and the `openDelay`/`closeDelay` family exist on React but not on React Native.
 
 ## Accessibility prop gaps on React Native
 
