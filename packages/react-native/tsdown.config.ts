@@ -29,6 +29,7 @@ export default defineConfig({
     icon: 'src/components/Icon.tsx',
     input: 'src/components/Input.tsx',
     'input-group': 'src/components/InputGroup.tsx',
+    'input-otp': 'src/components/InputOTP.tsx',
     item: 'src/components/Item.tsx',
     kbd: 'src/components/Kbd.tsx',
     label: 'src/components/Label.tsx',

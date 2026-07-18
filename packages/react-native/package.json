@@ -153,6 +153,11 @@
       "import": "./dist/input-group.mjs",
       "require": "./dist/input-group.cjs"
     },
+    "./input-otp": {
+      "types": "./dist/components/InputOTP.d.ts",
+      "import": "./dist/input-otp.mjs",
+      "require": "./dist/input-otp.cjs"
+    },
     "./item": {
       "types": "./dist/components/Item.d.ts",
       "import": "./dist/item.mjs",

@@ -1,0 +1,112 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: NativeSelect
+description: A hand-drawn box around a real native select, with a chevron and an error state.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import NativeSelectDemoReact from '../../../components/demos/NativeSelectDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`NativeSelect` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
+React Native counterpart yet.
+
+## Overview
+
+`NativeSelect` wraps a real native `<select>` in a hand-drawn box with a chevron. Unlike `Select`
+(a fully custom listbox), it keeps the platform's native dropdown — which is the right call on touch
+devices, for very long option lists, and when you want the OS's native picker. Pass `<option>`
+children exactly as you would to a bare `<select>`.
+
+## Anatomy
+
+A Radix `Label` above a sketchy box containing the native `<select>` (its own border and arrow
+removed via `appearance: none`) and an overlaid chevron icon. When an `error` is set, the field is
+marked invalid and the message is rendered in a `role="alert"`. Every color, padding, radius, and
+sketch parameter comes from `@ghds/tokens` (`comp.nativeSelect.*`).
+
+## Variants & States
+
+No named variants — the field reacts to focus, and `disabled` / `error` set its state.
+
+<StateList
+  states={[
+    { name: 'Focus', present: true, note: 'Focus switches the outline to comp.nativeSelect.stroke.focus.' },
+    { name: 'Error / invalid', present: true, note: 'Setting error paints the danger stroke and announces the message.' },
+    { name: 'Disabled', present: true },
+    { name: 'Hover', present: false },
+    { name: 'Loading', present: false },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Prefer NativeSelect over the custom Select on touch devices and for long option lists.',
+    'Pass a leading placeholder <option value=""> when there is no sensible default choice.',
+    'Set error together with client-side validation so the danger stroke is explained by the message.',
+  ]}
+  dont={[
+    "Don't reach for NativeSelect when you need rich, non-text options or custom option rendering — use Select.",
+    "Don't rely on the danger stroke alone to convey an error — the error text should say what's wrong.",
+  ]}
+/>
+
+## Accessibility
+
+- A Radix `Label` is associated with the `<select>` via `htmlFor` / `id`, so the control has a real
+  accessible name and the label is clickable.
+- Error state is exposed with `aria-invalid` and `aria-describedby` pointing at a `role="alert"`
+  message, so screen readers announce both the invalid state and the reason.
+- Because the underlying element is a real `<select>`, all native keyboard behavior and the OS
+  picker come for free.
+- The chevron is decorative (`pointer-events: none`) and never intercepts interaction.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for shared conventions.
+
+## Content
+
+Keep option labels short and parallel. Use a placeholder `<option value="">` (e.g. "Select a
+fruit…") only when no default is appropriate; otherwise pre-select the most common choice.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Visible label, associated with the select via Radix Label.' },
+        { name: 'error', type: 'string', description: 'Error message. When set, the field is marked invalid and the text announced.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables interaction.' },
+        { name: 'children', type: 'ReactNode', description: 'The <option> (and <optgroup>) elements, exactly as for a native <select>.' },
+        { name: '...rest', type: "SelectHTMLAttributes (minus 'size')", description: 'All other native <select> attributes (value, defaultValue, onChange, name, …) pass through.' },
+      ],
+    },
+  ]}
+/>
+
+## Live Demo
+
+React renders a labeled select and one with an error below — open either to see the native OS
+picker; toggle dark mode in the header to see the box and chevron respond.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <NativeSelectDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { NativeSelect } from '@ghds/react/native-select';
+
+<NativeSelect label="Fruit">
+  <option value="">Select a fruit…</option>
+  <option value="apple">Apple</option>
+  <option value="banana">Banana</option>
+</NativeSelect>;
+```

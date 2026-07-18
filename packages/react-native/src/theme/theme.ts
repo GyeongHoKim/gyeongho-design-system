@@ -436,6 +436,16 @@ function buildTheme(t: Tokens) {
       inputGroupTextValue: t.comp.inputGroup.text.value,
       inputGroupTextDisabled: t.comp.inputGroup.text.disabled,
 
+      // comp.inputOtp colors
+      inputOtpCellBgDefault: t.comp.inputOtp.cell.bg.default,
+      inputOtpCellBgDisabled: t.comp.inputOtp.cell.bg.disabled,
+      inputOtpStrokeDefault: t.comp.inputOtp.stroke.default,
+      inputOtpStrokeActive: t.comp.inputOtp.stroke.active,
+      inputOtpStrokeFilled: t.comp.inputOtp.stroke.filled,
+      inputOtpStrokeDanger: t.comp.inputOtp.stroke.danger,
+      inputOtpTextValue: t.comp.inputOtp.text.value,
+      inputOtpTextDisabled: t.comp.inputOtp.text.disabled,
+
       // toast system needs a canvas/overlay scrim reference
       toastScrim: t.sys.color.bg.overlay,
     },
@@ -459,6 +469,7 @@ function buildTheme(t: Tokens) {
       inputGroupHorizontal: t.comp.inputGroup.padding.horizontal,
       inputGroupVertical: t.comp.inputGroup.padding.vertical,
       inputGroupGap: t.comp.inputGroup.gap,
+      inputOtpGap: t.comp.inputOtp.gap,
     },
     borderRadii: {
       sm: t.sys.radius.sm,
@@ -468,6 +479,7 @@ function buildTheme(t: Tokens) {
       button: t.comp.button.radius,
       item: t.comp.item.radius,
       inputGroup: t.comp.inputGroup.radius,
+      inputOtp: t.comp.inputOtp.radius,
     },
     borderWidths: {
       thin: t.sys.border.width.thin,
@@ -688,6 +700,12 @@ function buildTheme(t: Tokens) {
       roughness: t.comp.inputGroup.sketch.roughness,
       bowing: t.comp.inputGroup.sketch.bowing,
     },
+    inputOtpSketch: {
+      roughness: t.comp.inputOtp.sketch.roughness,
+      bowing: t.comp.inputOtp.sketch.bowing,
+    },
+    // Square OTP cell edge length, read directly from `comp.inputOtp.size`.
+    inputOtpSize: t.comp.inputOtp.size,
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.

@@ -158,6 +158,11 @@
       "import": "./dist/input-group.mjs",
       "require": "./dist/input-group.cjs"
     },
+    "./input-otp": {
+      "types": "./dist/components/InputOTP.d.ts",
+      "import": "./dist/input-otp.mjs",
+      "require": "./dist/input-otp.cjs"
+    },
     "./item": {
       "types": "./dist/components/Item.d.ts",
       "import": "./dist/item.mjs",
@@ -187,6 +192,11 @@
       "types": "./dist/components/Modal.d.ts",
       "import": "./dist/modal.mjs",
       "require": "./dist/modal.cjs"
+    },
+    "./native-select": {
+      "types": "./dist/components/NativeSelect.d.ts",
+      "import": "./dist/native-select.mjs",
+      "require": "./dist/native-select.cjs"
     },
     "./navigation-menu": {
       "types": "./dist/components/NavigationMenu.d.ts",
