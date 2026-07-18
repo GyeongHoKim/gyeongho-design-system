@@ -1,5 +1,12 @@
 # @ghds/react
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [700860c]
+  - @ghds/tokens@0.12.0
+
 ## 0.10.0
 
 ### Minor Changes
