@@ -1,6 +1,6 @@
 {
   "name": "@ghds/tokens",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Single source of truth for GHDS design values — W3C DTCG tokens (ref/sys/comp) built to CSS, TS, React Native, and platform-agnostic JSON via Style Dictionary.",
   "license": "MIT",
   "repository": {
