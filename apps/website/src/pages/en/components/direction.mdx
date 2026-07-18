@@ -126,7 +126,7 @@ import { DirectionProvider, useDirection } from '@ghds/react/direction';
 ```tsx
 // React Native — @ghds/react-native (falls back to I18nManager when no provider is present)
 import { DirectionProvider, useDirection } from '@ghds/react-native/direction';
-import { Text } from 'react-native';
+import { Text } from '@ghds/react-native/theme';
 
 function Price() {
   const dir = useDirection();
@@ -155,18 +155,3 @@ up in this site), so its usage is shown as a code sample instead.
     <DirectionDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { DirectionProvider, useDirection } from '@ghds/react-native/direction';
-import { Text } from 'react-native';
-
-function Price() {
-  const dir = useDirection(); // falls back to I18nManager.isRTL when no provider is present
-  return <Text>{dir === 'rtl' ? 'السعر' : 'Price'}</Text>;
-}
-
-<DirectionProvider dir="rtl">
-  <Price />
-</DirectionProvider>;
-```

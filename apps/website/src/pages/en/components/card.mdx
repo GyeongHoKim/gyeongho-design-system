@@ -125,7 +125,7 @@ import { Card } from '@ghds/react/card';
 ```tsx
 // React Native — @ghds/react-native (has `elevated`, no `fill`)
 import { Card } from '@ghds/react-native/card';
-import { Text } from 'react-native';
+import { Text } from '@ghds/react-native/theme';
 
 <Card elevated accessibilityLabel="Summary">
   <Text>Elevated card content</Text>
@@ -147,12 +147,3 @@ each platform's *actual* prop, not a unified example.
     <CardDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Card } from '@ghds/react-native/card';
-
-<Card elevated accessibilityLabel="Summary">
-  <Text>Elevated card content</Text>
-</Card>;
-```
