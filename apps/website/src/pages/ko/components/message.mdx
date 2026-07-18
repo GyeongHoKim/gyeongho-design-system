@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import MessageDemoReact from '../../../components/demos/MessageDemo.tsx';
+import MessageDemoLit from '../../../components/demos/MessageDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Message`와 그 하위 컴포넌트는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -73,24 +72,50 @@ import { withBase } from '../../../lib/withBase';
         { name: 'MessageAuthor / MessageTimestamp', type: 'HTMLAttributes<HTMLSpanElement>', description: '헤더의 작성자 이름과 타임스탬프.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'side', type: "'received' | 'sent'", default: "'received'", description: "반영되는 속성; 'received'는 시작에, 'sent'는 끝에 정렬." },
+        { name: 'slot="avatar"', type: 'slot', description: '선행 아바타(예: <gh-avatar slot="avatar">).' },
+        { name: 'slot="author" / slot="timestamp"', type: 'slot', description: '헤더의 작성자 이름과 타임스탬프.' },
+        { name: '(기본 슬롯)', type: 'slot', description: '메시지 본문, 보통 <gh-bubble>.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'side', type: "'received' | 'sent'", default: "'received'", description: "'received'는 시작에, 'sent'는 끝에 정렬(Message)." },
+        { name: 'children', type: 'ReactNode', description: '행 콘텐츠 — Message* 하위 컴포넌트로 조합해요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들(Message).' },
+        { name: 'MessageAvatar / MessageContent', type: 'ReactNode', description: '아바타 슬롯과 헤더 + 말풍선 열.' },
+        { name: 'MessageAuthor / MessageTimestamp', type: 'ReactNode', description: '헤더의 작성자 이름과 타임스탬프.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 짧은 수신/발신 대화를 렌더해요 — 헤더에서 다크 모드를 토글하면 행과 말풍선이 반응해요.
+React와 Web Components가 아래에서 같은 토큰으로 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘이 동일하게 반응해요. React Native는 추가 `react-native-web` 연결(이 사이트에는 설정되지 않음) 없이는 브라우저에서 실행할 수 없어서, 사용법을 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <MessageDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <MessageDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react/message';
-import { Bubble } from '@ghds/react/bubble';
-import { Avatar } from '@ghds/react/avatar';
+// React Native
+import { Message, MessageAvatar, MessageContent, MessageAuthor, MessageTimestamp } from '@ghds/react-native/message';
+import { Bubble } from '@ghds/react-native/bubble';
+import { Avatar } from '@ghds/react-native/avatar';
 
 <Message side="received">
   <MessageAvatar>

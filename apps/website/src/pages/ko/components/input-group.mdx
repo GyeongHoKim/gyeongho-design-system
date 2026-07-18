@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import InputGroupDemoReact from '../../../components/demos/InputGroupDemo.tsx';
+import InputGroupDemoLit from '../../../components/demos/InputGroupDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`InputGroup`, `InputGroupInput`, `InputGroupAddon`은 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -81,25 +80,50 @@ import { withBase } from '../../../lib/withBase';
         { name: 'InputGroupAddon', type: 'HTMLAttributes<HTMLSpanElement>', description: '선행/후행 애드온 <span>; 위치는 자식 순서로 설정돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'reflected 속성; 그룹을 비활성화하고 표면을 음소거해요.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'reflected 속성; danger 스트로크를 그려요.' },
+        { name: 'slot', type: '(default)', description: '애드온(텍스트/아이콘)과 바 <input>을 자식 순서로 슬롯하세요; 슬롯된 <input>은 자체 크롬을 잃고 그룹이 박스를 그려요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'disabled', type: 'boolean', default: 'false', description: '전체 그룹을 비활성화하고 표면을 음소거해요(InputGroup).' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: '그룹을 invalid로 표시하고 danger 스트로크를 그려요(InputGroup).' },
+        { name: 'InputGroupInput', type: "TextInputProps (editable/onFocus/onBlur 제외) + disabled", description: '바 내부 TextInput; disabled를 설정하지 않으면 그룹에서 상속돼요.' },
+        { name: 'InputGroupAddon', type: '{ children }', description: '선행/후행 애드온; 문자열 자식은 음소거된 애드온 텍스트로 렌더돼요.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들(InputGroup).' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 라이브 렌더돼요 — 선행 `https://`, 후행 `USD`, invalid 필드, disabled 필드. 첫 입력에 포커스하면 외곽선이 포커스 스트로크로 이동해요; 헤더에서 다크 모드를 토글하면 채우기가 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <InputGroupDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <InputGroupDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react/input-group';
+// React Native
+import { InputGroup, InputGroupInput, InputGroupAddon } from '@ghds/react-native/input-group';
 
 <InputGroup>
   <InputGroupAddon>https://</InputGroupAddon>
-  <InputGroupInput placeholder="example.com" aria-label="Website" />
+  <InputGroupInput placeholder="example.com" accessibilityLabel="Website" />
 </InputGroup>;
 ```

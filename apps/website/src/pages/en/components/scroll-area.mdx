@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ScrollAreaDemoReact from '../../../components/demos/ScrollAreaDemo.tsx';
+import ScrollAreaDemoLit from '../../../components/demos/ScrollAreaDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`ScrollArea` is **React-only** (`@ghds/react`). There is no Web Components or React Native
-counterpart yet.
 
 ## Overview
 
@@ -82,18 +80,30 @@ them overflow along the chosen axis.
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through; use style to set maxHeight / maxWidth.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'orientation', type: "'vertical' | 'horizontal' | 'both'", default: "'vertical'", description: 'Reflected attribute; which axis (or axes) the region scrolls.' },
+        { name: '(default slot)', type: 'slot', description: 'The scrollable content. Set max-height (or max-width) on the host.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a vertical scroll area capped at 200px below — scroll it to reveal the token-themed
-scrollbar. Toggle dark mode in the header to see the border and scrollbar respond.
+React and Web Components render live below, driven by the same tokens — scroll either to reveal the
+token-themed scrollbar, and toggle dark mode in the header to see both respond identically.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ScrollAreaDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ScrollAreaDemoLit />
   </div>
 </div>
 

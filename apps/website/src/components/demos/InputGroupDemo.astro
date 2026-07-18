@@ -1,0 +1,32 @@
+---
+// Live demo of <gh-input-group> with slotted addons + a bare <input>. Registered
+// as a client-side island: the module script below imports the package, whose
+// @customElement side-effect defines <gh-input-group>. A bare <input> slotted in
+// loses its own chrome — the group paints the sketchy box.
+---
+
+<div class="demo-stack" style="max-width: 360px;">
+  <gh-input-group>
+    <span>https://</span>
+    <input aria-label="Website" placeholder="example.com" />
+  </gh-input-group>
+
+  <gh-input-group>
+    <input aria-label="Amount" placeholder="0.00" />
+    <span>USD</span>
+  </gh-input-group>
+
+  <gh-input-group invalid>
+    <span>@</span>
+    <input aria-label="Email" value="not-an-email" />
+  </gh-input-group>
+
+  <gh-input-group disabled>
+    <span>https://</span>
+    <input aria-label="Disabled website" value="ghds.dev" disabled />
+  </gh-input-group>
+</div>
+
+<script>
+  import '@ghds/web-components/input-group';
+</script>

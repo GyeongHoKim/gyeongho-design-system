@@ -1,0 +1,26 @@
+---
+// Live demo of a horizontal `<gh-resizable-group>`: two panels split by a
+// draggable (and arrow-keyable) handle. The group owns the layout maths; the
+// module script registers all three elements —
+// <gh-resizable-group>, <gh-resizable-panel>, and <gh-resizable-handle>.
+const PANE_STYLE =
+  'display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; box-sizing: border-box; padding: var(--sys-spacing-md); background: var(--sys-color-bg-muted); color: var(--sys-color-text-secondary); font-family: var(--sys-typography-label-fontFamily);';
+---
+
+<div style="width: 100%; max-width: 480px; height: 240px;">
+  <gh-resizable-group direction="horizontal">
+    <gh-resizable-panel default-size="50">
+      <div style={PANE_STYLE}>One</div>
+    </gh-resizable-panel>
+    <gh-resizable-handle with-handle></gh-resizable-handle>
+    <gh-resizable-panel default-size="50">
+      <div style={PANE_STYLE}>Two</div>
+    </gh-resizable-panel>
+  </gh-resizable-group>
+</div>
+
+<script>
+  import '@ghds/web-components/resizable-group';
+  import '@ghds/web-components/resizable-panel';
+  import '@ghds/web-components/resizable-handle';
+</script>

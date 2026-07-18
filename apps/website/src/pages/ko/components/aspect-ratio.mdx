@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import AspectRatioDemoReact from '../../../components/demos/AspectRatioDemo.tsx';
+import AspectRatioDemoLit from '../../../components/demos/AspectRatioDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`AspectRatio`는 현재 **React 전용** 프리미티브예요(`@ghds/react`). 디자인 값을 소유하지 않고 아무것도 그리지 않으므로, 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -70,24 +69,52 @@ N/A — AspectRatio는 고정된 콘텐츠 모델이 없어요. 콘텐츠는 박
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(className, style 등)이 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: 'reflected 속성; 호스트의 aspect-ratio를 설정해요. 단일 자식을 슬롯하면 박스를 채워요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: '네이티브 aspectRatio 스타일로 적용되는 가로세로 비율.' },
+        { name: 'children', type: 'ReactNode', description: '비율 박스에 제한되는 콘텐츠.' },
+        { name: 'style', type: 'StyleProp<ViewStyle>', description: '비율 박스에 병합되는 추가 스타일.' },
+        { name: 'accessibilityLabel', type: 'string', description: '영역의 접근 가능한 라벨.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 세 가지 일반적인 비율로 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하세요; 박스는 순전히 구조적이므로 플레이스홀더 채우기만 테마에 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <AspectRatioDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AspectRatioDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { AspectRatio } from '@ghds/react/aspect-ratio';
+// React Native
+import { AspectRatio } from '@ghds/react-native/aspect-ratio';
+import { Image } from 'react-native';
 
 <AspectRatio ratio={16 / 9}>
-  <img src="/cover.jpg" alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  <Image
+    source={{ uri: 'https://example.com/cover.jpg' }}
+    style={{ width: '100%', height: '100%' }}
+    resizeMode="cover"
+  />
 </AspectRatio>;
 ```

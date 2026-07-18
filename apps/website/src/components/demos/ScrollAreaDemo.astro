@@ -1,0 +1,25 @@
+---
+// Live demo of `<gh-scroll-area>`: a vertical viewport constrained by
+// `max-height`. That bound is what makes the content overflow and the
+// token-themed scrollbar appear. The module script registers <gh-scroll-area>.
+const PARAGRAPHS = Array.from({ length: 8 }, (_, i) => i + 1);
+---
+
+<gh-scroll-area orientation="vertical" style="max-height: 200px; max-width: 360px;">
+  <div style="display: flex; flex-direction: column; gap: var(--sys-spacing-sm);">
+    {
+      PARAGRAPHS.map((n) => (
+        <p
+          style="margin: 0; color: var(--sys-color-text-primary); font-family: var(--sys-typography-body-fontFamily); font-size: var(--sys-typography-body-fontSize);"
+        >
+          {n}. The quick brown fox jumps over the lazy dog, again and again until the box overflows
+          and the themed scrollbar appears.
+        </p>
+      ))
+    }
+  </div>
+</gh-scroll-area>
+
+<script>
+  import '@ghds/web-components/scroll-area';
+</script>

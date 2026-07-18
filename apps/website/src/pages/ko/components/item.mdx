@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ItemDemoReact from '../../../components/demos/ItemDemo.tsx';
+import ItemDemoLit from '../../../components/demos/ItemDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Item`과 그 하위 컴포넌트는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -79,6 +78,27 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(role, onClick, tabIndex 등)이 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: 'reflected 속성; 표면 처리.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: 'reflected 속성; 선택된 배경을 채워요.' },
+        { name: 'slots', type: 'media, title, description, (default), actions', description: 'media / title / description / actions 슬롯에 콘텐츠를 넣어요; 기본 슬롯은 추가 본문 콘텐츠예요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: '표면 처리.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: '선택된 배경을 채워요.' },
+        { name: 'onPress', type: '(event: GestureResponderEvent) => void', description: '설정되면 행이 버튼(Pressable)으로 노출돼요.' },
+        { name: 'children', type: 'ReactNode', description: 'ItemMedia / ItemContent / ItemTitle / ItemDescription / ItemActions로 조합하세요.' },
+        { name: 'accessibilityLabel', type: 'string', description: '행의 접근 가능한 라벨.' },
+        { name: 'testID', type: 'string', description: '쿼리용 테스트 핸들.' },
+      ],
+    },
   ]}
 />
 
@@ -86,27 +106,27 @@ import { withBase } from '../../../lib/withBase';
 
 ## 라이브 데모
 
-아래에서 React가 라이브 렌더돼요 — 미디어와 배지 액션이 있는 outline 행, muted 행, selected 행. 헤더에서 다크 모드를 토글하면 표면이 반응해요.
+아래에서 React와 Web Components가 동일한 토큰으로 구동되며 라이브 렌더돼요 — 헤더에서 다크 모드를 토글하면 둘 다 동일하게 반응해요. React Native는 추가 `react-native-web` 연결 없이는 브라우저에서 실행할 수 없어요(이 사이트에 설정되지 않음), 따라서 사용법은 코드 샘플로 보여줘요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ItemDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ItemDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@ghds/react/item';
-import { Badge } from '@ghds/react/badge';
+// React Native
+import { Item, ItemContent, ItemTitle, ItemDescription } from '@ghds/react-native/item';
 
-<Item variant="outline">
-  <ItemMedia>{/* avatar */}</ItemMedia>
+<Item variant="outline" onPress={() => {}} accessibilityLabel="GyeongHo Kim">
   <ItemContent>
     <ItemTitle>GyeongHo Kim</ItemTitle>
     <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
   </ItemContent>
-  <ItemActions>
-    <Badge variant="success">Online</Badge>
-  </ItemActions>
 </Item>;
 ```

@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import NativeSelectDemoReact from '../../../components/demos/NativeSelectDemo.tsx';
+import NativeSelectDemoLit from '../../../components/demos/NativeSelectDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`NativeSelect`는 현재 **React 전용** 컴포넌트예요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -75,17 +74,31 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: "SelectHTMLAttributes ('size' 제외)", description: '다른 모든 네이티브 <select> 속성(value, defaultValue, onChange, name 등)이 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'label', type: 'string', description: '선택적 보이는 라벨; 슬롯된 <select>의 접근 가능한 이름이기도 해요.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: '반영되는 속성; danger 스트로크를 그리고 <select>에 aria-invalid를 설정해요.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: '반영되는 속성; 컨트롤을 비활성화하고 표면을 muted 처리해요(슬롯된 <select>로 전파됨).' },
+        { name: '(기본 슬롯)', type: 'slot', description: '네이티브 <select>(및 그 <option>들).' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 라벨이 지정된 select와 오류가 있는 select를 렌더해요 — 둘 중 하나를 열면 네이티브 OS 피커가 나와요; 헤더에서 다크 모드를 토글하면 박스와 셰브론이 반응해요.
+React와 Web Components가 아래에서 같은 토큰으로 라이브 렌더돼요 — 둘 중 하나를 열면 네이티브 OS 피커가 나오고, 헤더에서 다크 모드를 토글하면 둘이 동일하게 반응해요. React는 메시지를 `error` 문자열로 노출하고, Web Components는 불리언 `invalid` 상태로 노출해요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <NativeSelectDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <NativeSelectDemoLit />
   </div>
 </div>
 

@@ -1,0 +1,16 @@
+---
+// Live demo of <gh-bubble>. Registered as a client-side island: the module
+// script below imports the package, whose @customElement side-effect defines
+// <gh-bubble>.
+---
+
+<div class="demo-stack" style="max-width: 360px;">
+  <gh-bubble variant="received">Hey — are we still on for tomorrow?</gh-bubble>
+  <div style="align-self: flex-end;">
+    <gh-bubble variant="sent">Yes! See you at 10.</gh-bubble>
+  </div>
+</div>
+
+<script>
+  import '@ghds/web-components/bubble';
+</script>

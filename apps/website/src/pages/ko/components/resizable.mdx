@@ -8,9 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ResizableDemoReact from '../../../components/demos/ResizableDemo.tsx';
+import ResizableDemoLit from '../../../components/demos/ResizableDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`은 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
 
 ## 개요
 
@@ -75,17 +74,32 @@ import { withBase } from '../../../lib/withBase';
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 각 부분으로 전달돼요.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: '반영되는 속성; 패널이 배치되고 크기 조정되는 축(<gh-resizable-group>).' },
+        { name: 'default-size', type: 'number', description: '그룹의 백분율로 표현한 초기 패널 크기(<gh-resizable-panel>). 기본값은 균등 분할.' },
+        { name: 'min-size', type: 'number', default: '10', description: '패널이 줄어들 수 있는 최소 백분율(<gh-resizable-panel>).' },
+        { name: 'max-size', type: 'number', default: '90', description: '패널이 커질 수 있는 최대 백분율(<gh-resizable-panel>).' },
+        { name: 'with-handle', type: 'boolean', default: 'false', description: '반영되는 속성; 핸들 가운데에 보이는 그립을 표시해요(<gh-resizable-handle>).' },
+      ],
+    },
   ]}
 />
 
 ## 라이브 데모
 
-아래에서 React가 가로 2분할을 렌더해요 — 구분선을 드래그하거나, 포커스한 뒤 화살표 키로 크기를 조정하세요; 헤더에서 다크 모드를 토글하면 패널과 핸들이 반응해요.
+React와 Web Components가 아래에서 같은 토큰으로 라이브 렌더돼요 — 어느 쪽 구분선이든 드래그하거나, 포커스한 뒤 화살표 키로 크기를 조정하고, 헤더에서 다크 모드를 토글하면 둘이 동일하게 반응해요.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ResizableDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ResizableDemoLit />
   </div>
 </div>
 

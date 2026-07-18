@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import BubbleDemoReact from '../../../components/demos/BubbleDemo.tsx';
+import BubbleDemoLit from '../../../components/demos/BubbleDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Bubble` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
-React Native counterpart yet.
 
 ## Overview
 
@@ -79,23 +77,46 @@ header, not inside the bubble.
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (style for max-width, etc.) pass through.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'received' | 'sent'", default: "'received'", description: "Reflected attribute; 'received' is muted incoming, 'sent' is a filled outgoing bubble." },
+        { name: 'slot', type: '(default)', description: 'The message content.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'received' | 'sent'", default: "'received'", description: "'received' is a muted incoming bubble; 'sent' is a filled outgoing bubble." },
+        { name: 'children', type: 'ReactNode', description: 'Bubble content.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a received and a sent bubble below — toggle dark mode in the header to see both fills
-respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <BubbleDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <BubbleDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Bubble } from '@ghds/react/bubble';
+// React Native
+import { Bubble } from '@ghds/react-native/bubble';
 
 <Bubble variant="received">Hey — are we still on for tomorrow?</Bubble>
 <Bubble variant="sent">Yes! See you at 10.</Bubble>;

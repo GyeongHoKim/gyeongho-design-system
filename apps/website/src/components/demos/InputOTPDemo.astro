@@ -1,0 +1,15 @@
+---
+// Live demo of <gh-input-otp>. Registered as a client-side island: the module
+// script below imports the package, whose @customElement side-effect defines
+// <gh-input-otp>. It emits gh-change on every edit and gh-complete once every
+// cell is filled (detail: { value }).
+---
+
+<div class="demo-stack">
+  <gh-input-otp label="Verification code"></gh-input-otp>
+  <gh-input-otp label="Invalid code" value="123456" invalid></gh-input-otp>
+</div>
+
+<script>
+  import '@ghds/web-components/input-otp';
+</script>

@@ -1,0 +1,27 @@
+---
+// Live demo of `<gh-message>`: a short received/sent exchange. The avatar,
+// author, and timestamp ride named slots; the bubble is the default slot. The
+// module script imports each element so their `@customElement` side-effects
+// register <gh-message>, <gh-avatar>, and <gh-bubble>.
+---
+
+<div style="display: flex; flex-direction: column; gap: var(--sys-spacing-md); max-width: 480px;">
+  <gh-message side="received">
+    <gh-avatar slot="avatar" name="Bo Ram"></gh-avatar>
+    <span slot="author">Bo Ram</span>
+    <span slot="timestamp">10:02</span>
+    <gh-bubble variant="received">Hey — are we still on for tomorrow?</gh-bubble>
+  </gh-message>
+  <gh-message side="sent">
+    <gh-avatar slot="avatar" name="Me"></gh-avatar>
+    <span slot="author">You</span>
+    <span slot="timestamp">10:03</span>
+    <gh-bubble variant="sent">Yes! See you at 10.</gh-bubble>
+  </gh-message>
+</div>
+
+<script>
+  import '@ghds/web-components/message';
+  import '@ghds/web-components/avatar';
+  import '@ghds/web-components/bubble';
+</script>

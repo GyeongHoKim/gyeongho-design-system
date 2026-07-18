@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ResizableDemoReact from '../../../components/demos/ResizableDemo.tsx';
+import ResizableDemoLit from '../../../components/demos/ResizableDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`ResizablePanelGroup`, `ResizablePanel`, and `ResizableHandle` are **React-only** (`@ghds/react`).
-There is no Web Components or React Native counterpart yet.
 
 ## Overview
 
@@ -89,18 +87,34 @@ shrunken panel scrolls rather than clipping. Keep the most important pane above 
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through to each part.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Reflected attribute; axis the panels are laid out and resized along (<gh-resizable-group>).' },
+        { name: 'default-size', type: 'number', description: 'Initial panel size as a percentage of the group (<gh-resizable-panel>). Defaults to an equal split.' },
+        { name: 'min-size', type: 'number', default: '10', description: 'Smallest percentage the panel may shrink to (<gh-resizable-panel>).' },
+        { name: 'max-size', type: 'number', default: '90', description: 'Largest percentage the panel may grow to (<gh-resizable-panel>).' },
+        { name: 'with-handle', type: 'boolean', default: 'false', description: 'Reflected attribute; shows a visible grip in the middle of the handle (<gh-resizable-handle>).' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a horizontal two-pane split below — drag the divider, or focus it and press the arrow
-keys to resize; toggle dark mode in the header to see the panes and handle respond.
+React and Web Components render live below, driven by the same tokens — drag either divider, or
+focus it and press the arrow keys to resize, and toggle dark mode in the header to see both respond
+identically.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ResizableDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ResizableDemoLit />
   </div>
 </div>
 

@@ -1,0 +1,18 @@
+---
+// Live demo of `<gh-marker>`'s four highlight tones inside a sentence. The
+// module script imports the package, whose `@customElement` side-effect
+// defines <gh-marker>.
+---
+
+<p
+  style="max-width: 520px; margin: 0; font-family: var(--sys-typography-body-fontFamily); font-size: var(--sys-typography-body-fontSize); color: var(--sys-color-text-primary); line-height: 1.7;"
+>
+  Highlight tones read as intent: <gh-marker>default</gh-marker>, <gh-marker variant="success"
+    >success</gh-marker
+  >, <gh-marker variant="info">info</gh-marker>, and <gh-marker variant="danger">danger</gh-marker> each
+  paint a different sketchy colour behind the words.
+</p>
+
+<script>
+  import '@ghds/web-components/marker';
+</script>

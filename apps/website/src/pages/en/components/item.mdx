@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import ItemDemoReact from '../../../components/demos/ItemDemo.tsx';
+import ItemDemoLit from '../../../components/demos/ItemDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`Item` and its subcomponents are **React-only** (`@ghds/react`). There is no Web Components or
-React Native counterpart yet.
 
 ## Overview
 
@@ -91,6 +89,27 @@ controls so the row stays scannable.
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (role, onClick, tabIndex, …) pass through.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: 'Reflected attribute; surface treatment.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: 'Reflected attribute; fills the selected background.' },
+        { name: 'slots', type: 'media, title, description, (default), actions', description: 'Slot content into media / title / description / actions; the default slot is extra body content.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'default' | 'muted' | 'outline'", default: "'default'", description: 'Surface treatment.' },
+        { name: 'selected', type: 'boolean', default: 'false', description: 'Fills the selected background.' },
+        { name: 'onPress', type: '(event: GestureResponderEvent) => void', description: 'When set, the row is exposed as a button (Pressable).' },
+        { name: 'children', type: 'ReactNode', description: 'Compose with ItemMedia / ItemContent / ItemTitle / ItemDescription / ItemActions.' },
+        { name: 'accessibilityLabel', type: 'string', description: 'Accessible label for the row.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
   ]}
 />
 
@@ -99,28 +118,29 @@ each accept the standard `HTMLAttributes<HTMLDivElement>` and render a styled `<
 
 ## Live Demo
 
-React renders live below — an outline row with media and a badge action, a muted row, and a
-selected row. Toggle dark mode in the header to see the surfaces respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <ItemDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <ItemDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { Item, ItemMedia, ItemContent, ItemTitle, ItemDescription, ItemActions } from '@ghds/react/item';
-import { Badge } from '@ghds/react/badge';
+// React Native
+import { Item, ItemContent, ItemTitle, ItemDescription } from '@ghds/react-native/item';
 
-<Item variant="outline">
-  <ItemMedia>{/* avatar */}</ItemMedia>
+<Item variant="outline" onPress={() => {}} accessibilityLabel="GyeongHo Kim">
   <ItemContent>
     <ItemTitle>GyeongHo Kim</ItemTitle>
     <ItemDescription>Maintainer · 3 open PRs</ItemDescription>
   </ItemContent>
-  <ItemActions>
-    <Badge variant="success">Online</Badge>
-  </ItemActions>
 </Item>;
 ```

@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import AspectRatioDemoReact from '../../../components/demos/AspectRatioDemo.tsx';
+import AspectRatioDemoLit from '../../../components/demos/AspectRatioDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`AspectRatio` is currently a **React-only** primitive (`@ghds/react`). It owns no design values and
-paints nothing, so there is no Web Components or React Native counterpart yet.
 
 ## Overview
 
@@ -80,25 +78,54 @@ sized to fill the box.
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (className, style, etc.) pass through.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: 'Reflected attribute; sets the host aspect-ratio. Slot a single child to fill the box.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'ratio', type: 'number', default: '1', description: 'Width-to-height ratio applied via the native aspectRatio style.' },
+        { name: 'children', type: 'ReactNode', description: 'Content constrained to the ratio box.' },
+        { name: 'style', type: 'StyleProp<ViewStyle>', description: 'Extra style merged onto the ratio box.' },
+        { name: 'accessibilityLabel', type: 'string', description: 'Accessible label for the region.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders live below at three common ratios — toggle dark mode in the header; the box is
-purely structural, so only the placeholder fill responds to the theme.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <AspectRatioDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <AspectRatioDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { AspectRatio } from '@ghds/react/aspect-ratio';
+// React Native
+import { AspectRatio } from '@ghds/react-native/aspect-ratio';
+import { Image } from 'react-native';
 
 <AspectRatio ratio={16 / 9}>
-  <img src="/cover.jpg" alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  <Image
+    source={{ uri: 'https://example.com/cover.jpg' }}
+    style={{ width: '100%', height: '100%' }}
+    resizeMode="cover"
+  />
 </AspectRatio>;
 ```

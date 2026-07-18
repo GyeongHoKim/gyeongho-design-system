@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import MessageScrollerDemoReact from '../../../components/demos/MessageScrollerDemo.tsx';
+import MessageScrollerDemoLit from '../../../components/demos/MessageScrollerDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`MessageScroller` is currently a **React-only** component (`@ghds/react`). There is no Web Components
-or React Native counterpart yet.
 
 ## Overview
 
@@ -80,23 +78,47 @@ place inside.
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes pass through; use style to set maxHeight.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'stick-to-bottom', type: 'boolean', default: 'true', description: 'Reflected attribute; keep the view pinned to the newest message while the reader is at the bottom.' },
+        { name: 'scrollToBottom()', type: '() => void', description: 'Method that jumps the viewport to the newest message.' },
+        { name: '(default slot)', type: 'slot', description: 'The vertical stack of <gh-message> rows. Set max-height on the host.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'stickToBottom', type: 'boolean', default: 'true', description: 'Keep the view pinned to the newest message while the reader is at the bottom.' },
+        { name: 'children', type: 'ReactNode', description: 'The vertical stack of messages.' },
+        { name: 'testID', type: 'string', description: 'Test handle for queries.' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a bounded log (capped at 320px) below — scroll up to read history, then back to the
-bottom. Toggle dark mode in the header to see the log and scrollbar respond.
+React and Web Components render live below, driven by the same tokens — toggle dark mode in the
+header to see both respond identically. React Native can't run in a browser without additional
+`react-native-web` wiring (not set up in this site), so its usage is shown as a code sample instead.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <MessageScrollerDemoReact client:only="react" />
   </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <MessageScrollerDemoLit />
+  </div>
 </div>
 
 ```tsx
-import { MessageScroller } from '@ghds/react/message-scroller';
+// React Native
+import { MessageScroller } from '@ghds/react-native/message-scroller';
 
 <MessageScroller style={{ maxHeight: 320 }}>
   {messages.map((m) => (

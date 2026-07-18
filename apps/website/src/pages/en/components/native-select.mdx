@@ -8,10 +8,8 @@ import PropsTable from '../../../components/PropsTable.astro';
 import StateList from '../../../components/StateList.astro';
 import DoDont from '../../../components/DoDont.astro';
 import NativeSelectDemoReact from '../../../components/demos/NativeSelectDemo.tsx';
+import NativeSelectDemoLit from '../../../components/demos/NativeSelectDemo.astro';
 import { withBase } from '../../../lib/withBase';
-
-`NativeSelect` is currently a **React-only** component (`@ghds/react`). There is no Web Components or
-React Native counterpart yet.
 
 ## Overview
 
@@ -86,18 +84,33 @@ fruit…") only when no default is appropriate; otherwise pre-select the most co
         { name: '...rest', type: "SelectHTMLAttributes (minus 'size')", description: 'All other native <select> attributes (value, defaultValue, onChange, name, …) pass through.' },
       ],
     },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'label', type: 'string', description: 'Optional visible label; also the accessible name of the slotted <select>.' },
+        { name: 'invalid', type: 'boolean', default: 'false', description: 'Reflected attribute; paints the danger stroke and sets aria-invalid on the <select>.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute; disables and mutes the control (propagated to the slotted <select>).' },
+        { name: '(default slot)', type: 'slot', description: 'A native <select> (with its <option>s).' },
+      ],
+    },
   ]}
 />
 
 ## Live Demo
 
-React renders a labeled select and one with an error below — open either to see the native OS
-picker; toggle dark mode in the header to see the box and chevron respond.
+React and Web Components render live below, driven by the same tokens — open either to see the
+native OS picker, and toggle dark mode in the header to see both respond identically. React exposes
+the message as an `error` string; Web Components expose the boolean `invalid` state.
 
 <div class="demo-columns">
   <div class="demo-column">
     <h3>React <span class="demo-tag">@ghds/react</span></h3>
     <NativeSelectDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <NativeSelectDemoLit />
   </div>
 </div>
 
