@@ -14,6 +14,7 @@ export default defineConfig({
     'button-group': 'src/components/ButtonGroup.tsx',
     calendar: 'src/components/Calendar.tsx',
     card: 'src/components/Card.tsx',
+    carousel: 'src/components/Carousel.tsx',
     chart: 'src/components/Chart.tsx',
     checkbox: 'src/components/Checkbox.tsx',
     'checkbox-group': 'src/components/CheckboxGroup.tsx',

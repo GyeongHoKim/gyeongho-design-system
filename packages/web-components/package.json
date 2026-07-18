@@ -83,6 +83,16 @@
       "import": "./dist/card.mjs",
       "require": "./dist/card.cjs"
     },
+    "./carousel-item": {
+      "types": "./dist/components/carousel-item.d.ts",
+      "import": "./dist/carousel-item.mjs",
+      "require": "./dist/carousel-item.cjs"
+    },
+    "./carousel": {
+      "types": "./dist/components/carousel.d.ts",
+      "import": "./dist/carousel.mjs",
+      "require": "./dist/carousel.cjs"
+    },
     "./chart": {
       "types": "./dist/components/chart.d.ts",
       "import": "./dist/chart.mjs",
@@ -237,6 +247,21 @@
       "types": "./dist/components/radio.d.ts",
       "import": "./dist/radio.mjs",
       "require": "./dist/radio.cjs"
+    },
+    "./resizable-group": {
+      "types": "./dist/components/resizable-group.d.ts",
+      "import": "./dist/resizable-group.mjs",
+      "require": "./dist/resizable-group.cjs"
+    },
+    "./resizable-handle": {
+      "types": "./dist/components/resizable-handle.d.ts",
+      "import": "./dist/resizable-handle.mjs",
+      "require": "./dist/resizable-handle.cjs"
+    },
+    "./resizable-panel": {
+      "types": "./dist/components/resizable-panel.d.ts",
+      "import": "./dist/resizable-panel.mjs",
+      "require": "./dist/resizable-panel.cjs"
     },
     "./scroll-area": {
       "types": "./dist/components/scroll-area.d.ts",

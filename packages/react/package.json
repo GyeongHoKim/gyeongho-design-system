@@ -78,6 +78,11 @@
       "import": "./dist/card.mjs",
       "require": "./dist/card.cjs"
     },
+    "./carousel": {
+      "types": "./dist/components/Carousel.d.ts",
+      "import": "./dist/carousel.mjs",
+      "require": "./dist/carousel.cjs"
+    },
     "./chart": {
       "types": "./dist/components/Chart.d.ts",
       "import": "./dist/chart.mjs",
@@ -227,6 +232,11 @@
       "types": "./dist/components/RadioGroup.d.ts",
       "import": "./dist/radio-group.mjs",
       "require": "./dist/radio-group.cjs"
+    },
+    "./resizable": {
+      "types": "./dist/components/Resizable.d.ts",
+      "import": "./dist/resizable.mjs",
+      "require": "./dist/resizable.cjs"
     },
     "./scroll-area": {
       "types": "./dist/components/ScrollArea.d.ts",

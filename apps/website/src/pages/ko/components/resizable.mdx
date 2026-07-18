@@ -1,0 +1,102 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Resizable
+description: 구분선을 드래그하거나 화살표 키로 조작해 패널 크기를 조정하는 손그림 분할 뷰입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import ResizableDemoReact from '../../../components/demos/ResizableDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`은 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`Resizable`은 사용자가 패널 크기를 조정할 수 있는 분할 뷰예요 — 포인터 이벤트로 만들어졌고 서드파티 엔진이 없어요. 조정 가능한 레이아웃에 사용하세요: 내비 / 에디터 / 인스펙터 3분할, 목록-상세 분할, 미리보기 패널. `ResizablePanelGroup` 안에 `ResizableHandle`로 구분된 `ResizablePanel`을 배치하세요; 크기는 그룹의 백분율이에요.
+
+## 구조
+
+`direction`을 따라 배치된 flex `ResizablePanelGroup`이 `ResizableHandle`로 나뉜 `ResizablePanel`을 담아요. 각 핸들은 손그림 구분선(`@ghds/sketch-core` line)으로, `aria-valuenow` / `aria-valuemin` / `aria-valuemax`를 갖춘 포커스 가능한 `role="separator"`예요. 핸들을 드래그하거나 — 포커스한 뒤 화살표 키를 누르면 — 인접한 두 패널 사이에서 공간이 재분배돼요.
+
+## 변형 및 상태
+
+그룹의 `direction`(`'horizontal'` 또는 `'vertical'`)이 주축이고, 핸들은 `withHandle`로 그립을 보여줄 수 있어요.
+
+<StateList
+  states={[
+    { name: 'Dragging', present: true, note: '핸들의 포인터 드래그가 인접한 패널의 크기를 조정해요.' },
+    { name: 'Focus', present: true, note: '핸들은 포커스 가능한 separator예요; 화살표 키가 5% 단위로 크기를 조정해요.' },
+    { name: 'With grip', present: true, note: 'withHandle이 핸들 가운데에 보이는 그립을 렌더해요.' },
+    { name: '비활성화', present: false },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    'ResizablePanelGroup(또는 래퍼)에 명시적인 너비와 높이를 지정하세요 — 컨테이너를 채워요.',
+    '무너지거나 지배해서는 안 되는 패널에 minSize / maxSize를 설정하세요.',
+    '드래그 어포던스가 보이도록, 특히 터치에서, 구분선에 withHandle을 사용하세요.',
+  ]}
+  dont={[
+    "드래그에만 의존하지 마세요 — 화살표 키 경로가 키보드 접근성을 만들어요; 핸들을 포커스 가능하게 유지하세요.",
+    "필요 없이 리사이즈 그룹을 깊게 중첩하지 마세요; 리사이즈 모델은 인접 쌍 단위예요.",
+  ]}
+/>
+
+## 접근성
+
+- 각 핸들은 `tabIndex={0}`, `aria-valuenow`(선행 패널의 백분율), `aria-valuemin={0}`, `aria-valuemax={100}`, 그리고 분할에 맞는 `aria-orientation`을 갖춘 `role="separator"`예요 — 그래서 스크린 리더가 라이브 값을 가진 조작 가능한 분할선으로 알려요.
+- 키보드 리사이즈가 기본 제공돼요: 핸들이 포커스된 상태에서 Left/Right(가로) 또는 Up/Down(세로)이 5% 단위로 이동하고, `aria-valuenow`가 갱신돼요.
+- 크기는 각 패널의 `minSize` / `maxSize`로 제한되므로, 키보드와 포인터 리사이즈가 패널을 경계 너머로 밀 수 없어요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+각 패널 안에 스크롤 가능한 영역을 두세요 — 패널은 `overflow: auto`를 설정하므로, 줄어든 패널을 초과하는 콘텐츠는 잘리지 않고 스크롤돼요. 가장 중요한 패널은 `minSize` 위로 유지하세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'direction', type: "'horizontal' | 'vertical'", description: '패널이 배치되고 크기 조정되는 축(ResizablePanelGroup). 필수.' },
+        { name: 'defaultSize', type: 'number', description: '그룹의 백분율로 표현한 초기 패널 크기(ResizablePanel). 기본값은 균등 분할.' },
+        { name: 'minSize', type: 'number', default: '10', description: '패널이 줄어들 수 있는 최소 백분율(ResizablePanel).' },
+        { name: 'maxSize', type: 'number', default: '90', description: '패널이 커질 수 있는 최대 백분율(ResizablePanel).' },
+        { name: 'withHandle', type: 'boolean', default: 'false', description: '핸들 가운데에 보이는 그립을 표시해요(ResizableHandle).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성이 각 부분으로 전달돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 가로 2분할을 렌더해요 — 구분선을 드래그하거나, 포커스한 뒤 화살표 키로 크기를 조정하세요; 헤더에서 다크 모드를 토글하면 패널과 핸들이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <ResizableDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ghds/react/resizable';
+
+<div style={{ width: 480, height: 240 }}>
+  <ResizablePanelGroup direction="horizontal">
+    <ResizablePanel defaultSize={50}>{/* one */}</ResizablePanel>
+    <ResizableHandle withHandle />
+    <ResizablePanel defaultSize={50}>{/* two */}</ResizablePanel>
+  </ResizablePanelGroup>
+</div>;
+```

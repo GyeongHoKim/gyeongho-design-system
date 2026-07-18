@@ -78,6 +78,11 @@
       "import": "./dist/card.mjs",
       "require": "./dist/card.cjs"
     },
+    "./carousel": {
+      "types": "./dist/components/Carousel.d.ts",
+      "import": "./dist/carousel.mjs",
+      "require": "./dist/carousel.cjs"
+    },
     "./chart": {
       "types": "./dist/components/Chart.d.ts",
       "import": "./dist/chart.mjs",

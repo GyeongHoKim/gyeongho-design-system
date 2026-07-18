@@ -1,0 +1,102 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Carousel
+description: 네이티브 스크롤 기반으로 만든, 이전/다음 컨트롤을 갖춘 손그림 스크롤 스냅 캐러셀입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CarouselDemoReact from '../../../components/demos/CarouselDemo.tsx';
+import { withBase } from '../../../lib/withBase';
+
+`Carousel`과 그 하위 컴포넌트는 **React 전용**이에요(`@ghds/react`). 아직 Web Components나 React Native 대응물은 없어요.
+
+## 개요
+
+`Carousel`은 가로(또는 세로)로 스크롤되는 슬라이드의 슬라이드쇼예요. 서드파티 엔진 없이 네이티브 CSS 스크롤 스냅으로 만들어졌어요. 한 번에 한 뷰포트씩 동등한 항목 집합을 탐색할 때 사용하세요: 사진 갤러리, 기능 카드 세트, 온보딩 시퀀스. `CarouselContent`, `CarouselItem`, `CarouselPrevious`, `CarouselNext`로 조합하세요.
+
+## 구조
+
+캐러셀로 이름 지어진 `role="region"`이 슬라이드(`CarouselItem`, 각각 슬라이드로 설명된 `role="group"`)의 스크롤 스냅 트랙(`CarouselContent`)을 감싸요. `CarouselPrevious` / `CarouselNext`는 한 스텝에 한 뷰포트씩 이동하고 각각 시작 / 끝에서 비활성화되는 `Button`이에요. 화살표 키가 방향 축을 따라 스크롤하고, 스냅은 네이티브로 유지되면서 스크롤바는 시각적으로 숨겨져요.
+
+## 변형 및 상태
+
+유일한 변형 축은 `orientation`(`'horizontal'` 기본값, 또는 `'vertical'`)이에요. 컨트롤 상태는 스크롤 위치에서 나와요.
+
+<StateList
+  states={[
+    { name: 'At start', present: true, note: '뷰포트가 시작에 있으면 CarouselPrevious가 비활성화돼요.' },
+    { name: 'At end', present: true, note: '뷰포트가 끝에 있으면 CarouselNext가 비활성화돼요.' },
+    { name: 'Focus', present: true, note: '영역은 포커스되면 화살표 키로 스크롤 가능해요.' },
+    { name: '비활성화', present: false, note: '캐러셀 자체는 비활성화 상태가 없어요.' },
+    { name: '로딩', present: false },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '캐러셀(또는 래퍼)에 명시적인 너비를 지정하세요 — 세로 캐러셀의 경우 CarouselContent에 경계 높이도 지정하세요.',
+    '슬라이드 집합을 설명하는 aria-label을 제공하세요(예: "Photos").',
+    'CarouselItem의 flexBasis를 의도적으로 재정의하지 않는 한 뷰포트당 하나의 슬라이드를 유지하세요.',
+  ]}
+  dont={[
+    "필수적이고 시간에 민감한 콘텐츠를 캐러셀에 넣지 마세요 — 사용자가 첫 슬라이드를 지나 스크롤하지 않을 수 있어요.",
+    "일시정지 컨트롤 없이 자동 전환하지 마세요; 멈출 수 없는 모션은 접근성 문제예요.",
+  ]}
+/>
+
+## 접근성
+
+- 루트는 ARIA APG 캐러셀 패턴이에요: `role="region"` + `aria-roledescription="carousel"`, `aria-label`로 이름 지어져요. 각 슬라이드는 `aria-roledescription="slide"`가 있는 `role="group"`이에요.
+- 컨트롤은 "Previous slide" / "Next slide"로 라벨이 지정된 실제 `<button>`이며 각 끝에서 `disabled`가 되므로 상태가 알려져요.
+- 화살표 키(가로일 때 Left/Right, 세로일 때 Up/Down)가 영역을 스크롤하고, 네이티브 스크롤 컨테이너는 키보드와 터치로 조작 가능하게 유지돼요.
+- 공통 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+슬라이드는 대략 동등한 비중의 동료여야 해요. 각 슬라이드를 자족적으로 유지하고 — 사용자가 어느 것이든 먼저 볼 수 있어요 — 하나의 메시지를 여러 슬라이드에 나누지 마세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: '스크롤 축(Carousel).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(aria-label 등)이 영역으로 전달돼요.' },
+        { name: 'CarouselContent', type: 'HTMLAttributes<HTMLDivElement>', description: '스크롤 스냅 트랙; style로 maxHeight/maxWidth를 설정해 제한하세요.' },
+        { name: 'CarouselItem', type: 'HTMLAttributes<HTMLDivElement>', description: '단일 슬라이드; 뷰포트당 여러 개를 위해 style로 flexBasis를 재정의하세요.' },
+        { name: 'CarouselPrevious / CarouselNext', type: 'ButtonProps', description: '이전/다음 컨트롤(Button); 끝에서 자동 비활성화돼요.' },
+      ],
+    },
+  ]}
+/>
+
+## 라이브 데모
+
+아래에서 React가 가로 캐러셀을 렌더해요 — 이전/다음 컨트롤이나 화살표 키로 한 번에 한 슬라이드씩 이동하세요; 헤더에서 다크 모드를 토글하면 슬라이드와 컨트롤이 반응해요.
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CarouselDemoReact client:only="react" />
+  </div>
+</div>
+
+```tsx
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@ghds/react/carousel';
+
+<Carousel aria-label="Photos">
+  <CarouselContent>
+    <CarouselItem>{/* slide 1 */}</CarouselItem>
+    <CarouselItem>{/* slide 2 */}</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>;
+```

@@ -1,0 +1,23 @@
+{
+  "comp": {
+    "resizable": {
+      "$description": "Tier 3 component tokens for the hand-drawn Resizable panel group. References sys only.",
+      "handle": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.border.default}" },
+        "hover": { "$value": "{sys.color.border.strong}" }
+      },
+      "grip": {
+        "$type": "color",
+        "default": { "$value": "{sys.color.bg.muted}" }
+      },
+      "size": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "radius": { "$type": "dimension", "$value": "{sys.radius.sm}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}

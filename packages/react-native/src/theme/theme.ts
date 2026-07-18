@@ -446,6 +446,10 @@ function buildTheme(t: Tokens) {
       inputOtpTextValue: t.comp.inputOtp.text.value,
       inputOtpTextDisabled: t.comp.inputOtp.text.disabled,
 
+      // comp.carousel colors
+      carouselIndicatorDefault: t.comp.carousel.indicator.default,
+      carouselIndicatorActive: t.comp.carousel.indicator.active,
+
       // toast system needs a canvas/overlay scrim reference
       toastScrim: t.sys.color.bg.overlay,
     },
@@ -470,6 +474,7 @@ function buildTheme(t: Tokens) {
       inputGroupVertical: t.comp.inputGroup.padding.vertical,
       inputGroupGap: t.comp.inputGroup.gap,
       inputOtpGap: t.comp.inputOtp.gap,
+      carouselGap: t.comp.carousel.gap,
     },
     borderRadii: {
       sm: t.sys.radius.sm,
@@ -706,6 +711,8 @@ function buildTheme(t: Tokens) {
     },
     // Square OTP cell edge length, read directly from `comp.inputOtp.size`.
     inputOtpSize: t.comp.inputOtp.size,
+    // Carousel dot-indicator diameter, read directly from `comp.carousel`.
+    carouselIndicatorSize: t.comp.carousel.indicatorSize,
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.
