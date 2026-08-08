@@ -8,7 +8,11 @@
     },
     "test": {
       "dependsOn": ["build"],
-      "inputs": ["src/**", "test/**", "**/*.test.*", "**/*.spec.*"]
+      "inputs": ["src/**", "test/**", "scripts/**", "**/*.test.*", "**/*.spec.*"]
+    },
+    "penpot:tokens": {
+      "inputs": ["src/**", "scripts/**"],
+      "outputs": ["dist/penpot/**"]
     },
     "test-storybook": {
       "dependsOn": ["build"],

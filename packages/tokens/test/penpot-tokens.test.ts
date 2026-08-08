@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest';
 // @ts-expect-error — plain-JS build script, no type declarations
-import { buildBundle, themes, tokenSetOrder } from '../scripts/build-penpot-tokens.mjs';
+import {
+  buildBundle,
+  sourceLeafPaths,
+  themes,
+  tokenSetOrder,
+} from '../scripts/build-penpot-tokens.mjs';
+// @ts-expect-error — plain-JS build script, no type declarations
+import { EXCLUDED_DTCG_TYPES, PENPOT_TOKEN_TYPES } from '../scripts/penpot-token-types.mjs';
 
 // Guards the GHD-42 acceptance criteria for the Penpot import bundle:
 // it parses, every `{alias}` reference is preserved (never resolved to a
 // literal), every leaf carries an explicit `$type`, and the ref→sys→comp
 // reference graph resolves within each theme.
+//
+// Plus the dialect contract: GHDS authors W3C DTCG types, Penpot accepts only
+// its own 17. Anything Penpot cannot store is dropped — with its aliases —
+// rather than emitted as a token Penpot will reject at import.
 
 interface Leaf {
   $type?: string;
@@ -92,6 +103,113 @@ describe('penpot token bundle: preservation', () => {
     const ref = leavesOf('ref');
     expect(ref.get('ref.sketch.roughness.none')?.$value).toBe(0);
     expect(ref.get('ref.sketch.roughness.none')?.$type).toBe('number');
+  });
+});
+
+describe('penpot token bundle: dialect', () => {
+  it('types every leaf with one of the types Penpot accepts', () => {
+    const foreign: string[] = [];
+    for (const setName of tokenSetOrder) {
+      for (const [path, leaf] of leavesOf(setName)) {
+        if (!PENPOT_TOKEN_TYPES.has(leaf.$type as string)) {
+          foreign.push(`${path} → ${leaf.$type}`);
+        }
+      }
+    }
+    expect(foreign).toEqual([]);
+  });
+
+  it('maps each DTCG dimension onto the Penpot type for its role', () => {
+    const ref = leavesOf('ref');
+    const sys = leavesOf('sys');
+    const comp = leavesOf('comp');
+    // Penpot gates which shape property a token may be applied to by its
+    // type, so a padding token typed `dimension` would be unusable in the UI.
+    expect(ref.get('ref.spacing.4')?.$type).toBe('spacing');
+    expect(ref.get('ref.radius.md')?.$type).toBe('borderRadius');
+    expect(ref.get('ref.borderWidth.thin')?.$type).toBe('borderWidth');
+    expect(ref.get('ref.fontSize.md')?.$type).toBe('fontSizes');
+    expect(ref.get('ref.iconSize.md')?.$type).toBe('sizing');
+    expect(ref.get('ref.letterSpacing.wide')?.$type).toBe('letterSpacing');
+    // `sys.border.width.*` is a border width, not a sizing token — the rule
+    // order in penpot-token-types.mjs is what makes this hold.
+    expect(sys.get('sys.border.width.default')?.$type).toBe('borderWidth');
+    expect(sys.get('sys.typography.tracking.wide')?.$type).toBe('letterSpacing');
+    expect(comp.get('comp.button.padding.horizontal')?.$type).toBe('spacing');
+    expect(comp.get('comp.checkbox.size')?.$type).toBe('sizing');
+    expect(comp.get('comp.separator.thickness')?.$type).toBe('borderWidth');
+  });
+
+  it('routes the DTCG types Penpot lacks to their nearest equivalent', () => {
+    const ref = leavesOf('ref');
+    // No duration type in Penpot; milliseconds survive as a bare number.
+    expect(ref.get('ref.duration.fast')).toEqual({ $type: 'number', $value: 120 });
+    expect(ref.get('ref.opacity.disabled')?.$type).toBe('opacity');
+    expect(ref.get('ref.fontFamily.sans')?.$type).toBe('fontFamilies');
+    expect(ref.get('ref.fontWeight.regular')).toEqual({ $type: 'fontWeights', $value: '400' });
+  });
+
+  it('keeps font stacks quoted so Penpot splits them on commas, not spaces', () => {
+    const sans = leavesOf('ref').get('ref.fontFamily.sans')?.$value as string;
+    // Unquoted, Penpot resolves "Nunito Sans Variable" to three families.
+    expect(sans).toContain("'Nunito Sans Variable'");
+    expect(sans.split(',').length).toBeGreaterThan(1);
+  });
+
+  it('expands shadows into the array-of-strings composite Penpot stores', () => {
+    const md = leavesOf('ref').get('ref.shadow.md');
+    expect(md?.$type).toBe('shadow');
+    expect(md?.$value).toEqual([
+      {
+        color: 'rgba(28, 25, 22, 0.12)',
+        inset: 'false',
+        offsetX: '0px',
+        offsetY: '2px',
+        blur: '6px',
+        spread: '0px',
+      },
+    ]);
+    // Downstream tiers still alias rather than re-expand.
+    expect(leavesOf('sys').get('sys.shadow.md')?.$value).toBe('{ref.shadow.md}');
+  });
+});
+
+describe('penpot token bundle: exclusions', () => {
+  const emitted = new Set<string>();
+  for (const setName of tokenSetOrder) {
+    for (const path of leavesOf(setName).keys()) {
+      emitted.add(path);
+    }
+  }
+
+  it('drops cubicBezier tokens and everything that aliases them', () => {
+    // Penpot rejects a token whose alias does not resolve, so dropping
+    // ref.easing.* without dropping sys.animation.easing.* would fail the
+    // entire import — not just the easing tokens.
+    expect(EXCLUDED_DTCG_TYPES.has('cubicBezier')).toBe(true);
+    expect(stats.dropped).toEqual([
+      'ref.easing.accelerate',
+      'ref.easing.decelerate',
+      'ref.easing.emphasized',
+      'ref.easing.standard',
+      'sys.animation.easing.emphasized',
+      'sys.animation.easing.enter',
+      'sys.animation.easing.exit',
+      'sys.animation.easing.standard',
+    ]);
+    for (const path of stats.dropped) {
+      expect(emitted.has(path)).toBe(false);
+    }
+  });
+
+  it('emits every source token that was not explicitly dropped', () => {
+    // Drift guard: a token may only leave the bundle through the reported
+    // exclusion list, never by falling through a mapping gap.
+    const expected = new Set<string>(sourceLeafPaths());
+    for (const path of stats.dropped) {
+      expected.delete(path);
+    }
+    expect([...emitted].sort()).toEqual([...expected].sort());
   });
 });
 

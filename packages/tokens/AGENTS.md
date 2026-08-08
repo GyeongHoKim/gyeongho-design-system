@@ -8,6 +8,8 @@
 - Source files in `src/`, organized by tier: `ref/`, `sys/`, `comp/`.
 - Build output goes to `dist/` in a platform-agnostic JSON format.
 - Token files use the W3C DTCG format (`$value`, `$type`, `$description`).
+- These tokens are also mirrored into Penpot for designers (see **Penpot export** below).
+  The mirror is generated **from** this package; never edit tokens in Penpot.
 
 ---
 
@@ -21,6 +23,9 @@ cd packages/tokens && pnpm build
 
 # Run the token validation suite
 pnpm test --filter @ghds/tokens
+
+# Regenerate the Penpot export (see "Penpot export" below)
+pnpm --filter @ghds/tokens penpot:tokens
 
 # Lint
 pnpm lint --filter @ghds/tokens
@@ -102,7 +107,8 @@ comp.input.border.focus
 
 ### Adding a Reference Token (Tier 1)
 
-1. Open `src/ref/` and locate the appropriate category file (e.g., `palette.json`, `spacing.json`).
+1. Open `src/ref/` and locate the appropriate category file (`color.json`, `dimension.json`,
+   `typography.json`, `layout.json`, `effect.json`).
 2. Add the new value following the existing naming convention.
 3. Run `pnpm build --filter @ghds/tokens` to verify the build succeeds.
 
@@ -185,6 +191,49 @@ Font choices are design decisions made at the `ref` tier only. To change a font:
 > app is the consumer's responsibility — see `packages/react-native/AGENTS.md`.
 
 ---
+
+## Penpot export
+
+`pnpm --filter @ghds/tokens penpot:tokens` writes the token bundle Penpot
+imports. It reads `src/**` (not `dist/json`) so every `{alias}` survives and
+Penpot holds the same comp → sys → ref graph the CSS variables do.
+
+**The translation is not optional.** GHDS authors W3C DTCG types; Penpot accepts
+only the Tokens Studio vocabulary, and it *gates which shape property a token
+may be applied to by its type*. A padding token exported as plain `dimension`
+cannot be dropped onto a padding field in the Penpot UI. So
+[`scripts/penpot-token-types.mjs`](scripts/penpot-token-types.mjs) resolves each
+`dimension` to the type its path implies — `spacing`, `sizing`, `borderRadius`,
+`borderWidth`, `fontSizes`, `letterSpacing` — and maps the rest:
+
+| DTCG `$type` | Penpot type |
+| --- | --- |
+| `color`, `shadow` | unchanged (shadow becomes an array of all-string parts) |
+| `number` | `number`, or `opacity` under an `opacity` path |
+| `duration` | `number` (`"200ms"` → `200`) |
+| `fontFamily` / `fontWeight` | `fontFamilies` / `fontWeights` |
+| `cubicBezier` | **dropped** — see below |
+
+### Three things do not survive
+
+1. **Easing is dropped.** Penpot has no `cubicBezier` type. It also *rejects a
+   token whose alias does not resolve*, so `ref.easing.*` and the
+   `sys.animation.easing.*` tokens that alias them are dropped together —
+   8 tokens, printed by name on every run. Durations still export, as numbers.
+2. **Shadow alpha is lost.** Penpot's shadow token stores one opaque colour, so
+   `rgba(28, 25, 22, 0.12)` resolves to `#1c1916` and reads heavier than in a
+   browser.
+3. **`em` letter-spacing is read as px.** `ref.letterSpacing.wide` is `0.08em`;
+   Penpot resolves it to `0.08`. Converting would need a font size, which a
+   token does not have, so the source value is kept verbatim.
+
+One transformation exists purely to satisfy Penpot: a font family whose name
+starts with a hyphen (`-apple-system`) is rejected unquoted, so the exporter
+quotes it — a no-op for CSS and for Penpot's own resolution.
+
+`test/penpot-tokens.test.ts` guards all of this: every leaf must carry one of
+Penpot's 17 types, aliases must stay unresolved, and the emitted token set must
+equal the source set minus the reported exclusions.
 
 ## Validation Requirements
 
