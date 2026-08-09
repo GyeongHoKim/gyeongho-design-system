@@ -33,7 +33,7 @@ Each package has its own `AGENTS.md` with the conventions, commands, and pattern
 
 | Package | Guide | What it covers |
 | --- | --- | --- |
-| `@ghds/tokens` | [`packages/tokens/AGENTS.md`](packages/tokens/AGENTS.md) | 3-tier token architecture, naming, adding tokens, validation |
+| `@ghds/tokens` | [`packages/tokens/AGENTS.md`](packages/tokens/AGENTS.md) | 3-tier token architecture, naming, adding tokens, validation, Penpot export |
 | `@ghds/react` | [`packages/react/AGENTS.md`](packages/react/AGENTS.md) | React component authoring, testing, Storybook |
 | `@ghds/web-components` | [`packages/web-components/AGENTS.md`](packages/web-components/AGENTS.md) | Lit components, custom element conventions |
 | `@ghds/react-native` | [`packages/react-native/AGENTS.md`](packages/react-native/AGENTS.md) | RN component authoring, Metro/pnpm setup |

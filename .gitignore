@@ -41,3 +41,6 @@ storybook-static
 
 # Codewhale local state
 .codewhale/state
+
+# Local MCP server config (contains user tokens)
+.mcp.json
