@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error — plain-JS build script, no type declarations
 import {
   buildBundle,
   sourceLeafPaths,
   themes,
   tokenSetOrder,
 } from '../scripts/build-penpot-tokens.mjs';
-// @ts-expect-error — plain-JS build script, no type declarations
 import { EXCLUDED_DTCG_TYPES, PENPOT_TOKEN_TYPES } from '../scripts/penpot-token-types.mjs';
 
 // Guards the GHD-42 acceptance criteria for the Penpot import bundle:
@@ -234,9 +232,9 @@ describe('penpot token bundle: reference integrity', () => {
           if (typeof leaf.$value !== 'string') {
             continue;
           }
-          const match = leaf.$value.match(WHOLE_ALIAS);
-          if (match && !all.has(match[1])) {
-            dangling.push(`${path} → {${match[1]}}`);
+          const target = leaf.$value.match(WHOLE_ALIAS)?.[1];
+          if (target !== undefined && !all.has(target)) {
+            dangling.push(`${path} → {${target}}`);
           }
         }
       }
@@ -248,18 +246,18 @@ describe('penpot token bundle: reference integrity', () => {
     const violations: string[] = [];
     for (const [path, leaf] of leavesOf('comp')) {
       if (typeof leaf.$value === 'string') {
-        const match = leaf.$value.match(WHOLE_ALIAS);
-        if (match && !match[1].startsWith('sys.')) {
-          violations.push(`comp ${path} → ${match[1]}`);
+        const target = leaf.$value.match(WHOLE_ALIAS)?.[1];
+        if (target !== undefined && !target.startsWith('sys.')) {
+          violations.push(`comp ${path} → ${target}`);
         }
       }
     }
     for (const setName of ['sys', 'sys.color.light', 'sys.color.dark']) {
       for (const [path, leaf] of leavesOf(setName)) {
         if (typeof leaf.$value === 'string') {
-          const match = leaf.$value.match(WHOLE_ALIAS);
-          if (match && !match[1].startsWith('ref.')) {
-            violations.push(`${setName} ${path} → ${match[1]}`);
+          const target = leaf.$value.match(WHOLE_ALIAS)?.[1];
+          if (target !== undefined && !target.startsWith('ref.')) {
+            violations.push(`${setName} ${path} → ${target}`);
           }
         }
       }
