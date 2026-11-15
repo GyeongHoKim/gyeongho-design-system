@@ -29,7 +29,7 @@ An item with an `href` renders as a real link — a `role="none"` wrapper around
 `<a role="menuitem" href>` — so an action that links out (e.g. "View source on GitHub") keeps native
 link behaviour: open in new tab, copy link address, crawlability. Activating it navigates natively and
 closes the menu; `onSelect` / `select` is not fired for href items. A `disabled` href item drops its
-`href`. Menu stays an **action** menu — for site navigation use
+`href`; an empty `href` (`''`) counts as no `href`, so the item stays a plain action. Menu stays an **action** menu — for site navigation use
 `NavigationMenu` / `gh-navigation-menu`.
 
 ## Variants & States
