@@ -1,5 +1,18 @@
 # @ghds/web-components
 
+## 0.12.0
+
+### Minor Changes
+
+- cb3aa2d: Add paper variants to Card: `variant` (`plain`, `sticky`, `lined`), `tone`, `fastener` (`none`, `tape`, `pin`) and `tilt`. React and Web Components also get `interactive`, which lifts the card on hover and focus.
+
+### Patch Changes
+
+- Updated dependencies [01568b1]
+- Updated dependencies [857d720]
+- Updated dependencies [d5d6b04]
+  - @ghds/tokens@0.13.0
+
 ## 0.11.2
 
 ### Patch Changes
