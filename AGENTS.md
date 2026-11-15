@@ -58,6 +58,9 @@ pnpm lint
 # Run lint + formatting checks across all packages (what the Code Quality Gate requires)
 pnpm check
 
+# Type-check source and test files in every package (CI gate; run `pnpm build` first)
+pnpm check-types
+
 # Create a changeset (versioning)
 pnpm changeset
 ```
@@ -99,9 +102,9 @@ The full tier model is documented in [`packages/tokens/AGENTS.md`](packages/toke
 
 TypeScript strict mode is enforced across all packages. Never use `any` as a shortcut. All public props and APIs must have explicit types.
 
-### 4. Tests, lint, and formatting must pass
+### 4. Tests, lint, formatting, and type checks must pass
 
-`pnpm test` and `pnpm check` must pass before a change is ready. `pnpm check` (Biome) covers both lint rules and formatting in one command — running `pnpm lint` alone is not sufficient, since it skips the formatting check. Components must have the test coverage required by their package guide (unit + visual regression where applicable).
+`pnpm test`, `pnpm check`, and `pnpm check-types` must pass before a change is ready. `pnpm check-types` type-checks test files as well as source, so a test-only type error still fails CI. `pnpm check` (Biome) covers both lint rules and formatting in one command — running `pnpm lint` alone is not sufficient, since it skips the formatting check. Components must have the test coverage required by their package guide (unit + visual regression where applicable).
 
 ### 5. Accessibility
 

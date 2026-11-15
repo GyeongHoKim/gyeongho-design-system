@@ -398,7 +398,7 @@
     "format": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "check-types": "tsc --noEmit -p tsconfig.build.json",
+    "check-types": "tsc --noEmit -p tsconfig.build.json && tsc --noEmit -p tsconfig.json",
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
