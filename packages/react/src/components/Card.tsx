@@ -1,20 +1,31 @@
 import { tokens } from '@ghds/tokens';
-import { type CSSProperties, forwardRef, type HTMLAttributes } from 'react';
+import {
+  type CSSProperties,
+  type FocusEvent,
+  forwardRef,
+  type HTMLAttributes,
+  type PointerEvent,
+  useState,
+} from 'react';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
 import { toPx } from '../lib/units.js';
+import { CardFastenerMark } from './CardFastener.js';
 import {
+  type CardFastener,
   type CardTilt,
   type CardTone,
   type CardVariant,
   cardBodyStyle,
   linedMarginStyle,
   paperStyle,
+  tiltAngle,
 } from './cardPaper.js';
 import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
 
-export type { CardTilt, CardTone, CardVariant };
+export type { CardFastener, CardTilt, CardTone, CardVariant };
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /**
@@ -29,10 +40,21 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
    * notebook paper. Paper variants render a plain `div` with no sketch outline.
    */
   variant?: CardVariant;
-  /** Paper colour of a `sticky` card. Default `'neutral'`. */
+  /**
+   * Colour tone. Sets the paper colour of a `sticky` card and the pin head
+   * colour on every variant. Default `'neutral'`.
+   */
   tone?: CardTone;
+  /** Tape or pin mark at the top edge; renders on every variant. Default `'none'`. */
+  fastener?: CardFastener;
   /** Leans a paper card by a token angle; no effect on `plain`. Default `'none'`. */
   tilt?: CardTilt;
+  /**
+   * Lifts the card on mouse hover and while focus is inside. Paper variants
+   * also gain a raised shadow; a `plain` card only moves (no shadow change).
+   * Default `false`.
+   */
+  interactive?: boolean;
   /**
    * Inline style. Merged last on every variant, so it overrides the card's own
    * styles (for example `margin` or `transform`).
@@ -52,9 +74,20 @@ const INSET = STROKE_WIDTH;
  * Renders a plain `<div>`, so any ARIA role/landmark is the caller's to set.
  */
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { fill = 'solid', variant = 'plain', tone = 'neutral', tilt = 'none', children, style, ...rest },
+  {
+    fill = 'solid',
+    variant = 'plain',
+    tone = 'neutral',
+    fastener = 'none',
+    tilt = 'none',
+    interactive = false,
+    children,
+    style,
+    ...rest
+  },
   forwardedRef,
 ) {
+  const { onPointerEnter, onPointerLeave, onFocus, onBlur } = rest;
   const {
     ref: sketchRef,
     drawable,
@@ -70,24 +103,82 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   const ref = mergeRefs(sketchRef, forwardedRef);
 
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
+
+  // Leave handlers are only attached while interactive, so drop any stale state
+  // when it turns off; otherwise turning it back on would lift a card that isn't hovered.
+  if (!interactive && (hovered || focused)) {
+    setHovered(false);
+    setFocused(false);
+  }
+
   // Anything other than a known paper variant renders as plain.
   const paper = variant === 'sticky' || variant === 'lined' ? variant : null;
+  const cardAngle = paper ? tiltAngle(paper, tilt) : '0deg';
+  const mark =
+    fastener === 'none' ? null : (
+      <CardFastenerMark kind={fastener} tone={tone} cardAngle={cardAngle} />
+    );
+
+  const lifted = interactive && (hovered || focused);
+  const interactiveStyle: CSSProperties = interactive
+    ? {
+        transition: reducedMotion
+          ? 'none'
+          : `transform ${c.hover.duration} ${c.hover.easing}, box-shadow ${c.hover.duration} ${c.hover.easing}`,
+        ...(lifted
+          ? {
+              transform: `translateY(calc(${c.hover.lift} * -1)) rotate(calc(${cardAngle} - ${c.hover.rotate} * 1deg))`,
+              // A plain card's surface is the sketch SVG; a box shadow would be rectangular.
+              ...(paper ? { boxShadow: c.hover.shadow } : {}),
+            }
+          : {}),
+      }
+    : {};
+  // Consumer handlers stay in `rest`; when interactive they are wrapped here.
+  const handlers = interactive
+    ? {
+        onPointerEnter: (event: PointerEvent<HTMLDivElement>) => {
+          if (event.pointerType === 'mouse') setHovered(true);
+          onPointerEnter?.(event);
+        },
+        onPointerLeave: (event: PointerEvent<HTMLDivElement>) => {
+          setHovered(false);
+          onPointerLeave?.(event);
+        },
+        onFocus: (event: FocusEvent<HTMLDivElement>) => {
+          setFocused(true);
+          onFocus?.(event);
+        },
+        onBlur: (event: FocusEvent<HTMLDivElement>) => {
+          const next = event.relatedTarget;
+          if (!(next instanceof Node && event.currentTarget.contains(next))) setFocused(false);
+          onBlur?.(event);
+        },
+      }
+    : {};
 
   const rootStyle: CSSProperties = paper
-    ? { ...paperStyle({ variant: paper, tone, tilt }), ...style }
+    ? { ...paperStyle({ variant: paper, tone, tilt, fastener }), ...interactiveStyle, ...style }
     : {
         // Scopes the `SketchSurface` (`z-index: -1`) to this card so an opaque
         // ancestor can't paint over it (see `sketchHostStyle`).
         ...sketchHostStyle,
         ...cardBodyStyle,
         padding: card.padding,
+        // Pivot from the top edge like paper cards, so a lift swings from the fastener.
+        ...(fastener !== 'none' ? { transformOrigin: '50% 0' } : {}),
+        ...interactiveStyle,
         ...style,
       };
 
   // One element tree for every variant: decorative layers sit in fixed slots, so
   // switching `variant` never remounts the children (their state and focus survive).
   return (
-    <div ref={paper ? forwardedRef : ref} style={rootStyle} {...rest}>
+    <div ref={paper ? forwardedRef : ref} style={rootStyle} {...rest} {...handlers}>
+      {mark}
       {paper ? null : (
         <SketchSurface
           drawable={drawable}
