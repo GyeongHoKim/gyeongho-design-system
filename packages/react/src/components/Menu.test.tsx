@@ -161,5 +161,27 @@ describe('Menu', () => {
       expect(nav.navigations).toEqual([{ href: 'https://example.com/source', prevented: false }]);
       expect(trigger).toHaveAttribute('aria-expanded', 'false');
     });
+
+    it('an item with an empty href is a plain action item', async () => {
+      const onSelect = vi.fn();
+      const nav = trackNavigation();
+      render(
+        <Menu
+          label="Actions"
+          items={[{ value: 'reload', label: 'Reload', href: '' }]}
+          onSelect={onSelect}
+        />,
+      );
+      const trigger = screen.getByRole('button', { name: 'Actions' });
+      await userEvent.click(trigger);
+      const item = screen.getByRole('menuitem', { name: 'Reload' });
+      expect(item.tagName).toBe('DIV');
+      expect(item).not.toHaveAttribute('href');
+      await userEvent.keyboard('{Enter}');
+      nav.stop();
+      expect(onSelect).toHaveBeenCalledWith('reload');
+      expect(nav.navigations).toEqual([]);
+      expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    });
   });
 });

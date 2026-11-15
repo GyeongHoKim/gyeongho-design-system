@@ -33,6 +33,14 @@ export interface MenuItem {
   href?: string;
 }
 
+/**
+ * Whether an item is a link item. An empty `href` counts as no link, so every
+ * item is exactly one of link or action — never both.
+ */
+function isLinkItem(item: MenuItem): boolean {
+  return item.href !== undefined && item.href !== '';
+}
+
 export interface MenuProps {
   /** Trigger button label. */
   label: string;
@@ -143,7 +151,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     if (item.disabled) {
       return;
     }
-    if (item.href) {
+    if (isLinkItem(item)) {
       // Link items navigate natively (the anchor's own activation behaviour);
       // they only close the menu and never call onSelect.
       closeMenu();
@@ -194,7 +202,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
       case 'Enter':
       case ' ': {
         const item = items[activeIndex];
-        if (item?.href && !item.disabled) {
+        if (item && isLinkItem(item) && !item.disabled) {
           // Enter on a focused anchor natively fires its click (→ navigation),
           // so leave it alone. Space has no native link activation, so trigger
           // the anchor's click ourselves (only suppressing the page scroll).
@@ -299,7 +307,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
             itemsRef.current[index] = el;
           };
           const onMouseEnter = () => !item.disabled && setActiveIndex(index);
-          if (item.href !== undefined) {
+          if (isLinkItem(item)) {
             return (
               <div
                 key={item.value}
