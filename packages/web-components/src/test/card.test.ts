@@ -17,6 +17,45 @@ describe('gh-card', () => {
     expect(el.textContent).toContain('Body');
   });
 
+  it('renders a named title slot before the default slot', async () => {
+    const el = await mount(new GhCard());
+    el.innerHTML = '<h3 slot="title">Heading</h3><p>Body</p>';
+    await el.updateComplete;
+    const titleSlot = el.shadowRoot?.querySelector<HTMLSlotElement>('.body slot[name="title"]');
+    const defaultSlot = el.shadowRoot?.querySelector<HTMLSlotElement>('.body slot:not([name])');
+    expect(titleSlot).not.toBeNull();
+    expect(defaultSlot).not.toBeNull();
+    expect(titleSlot?.assignedElements().map((n) => n.textContent)).toEqual(['Heading']);
+    expect(defaultSlot?.assignedElements().map((n) => n.textContent)).toEqual(['Body']);
+    if (titleSlot && defaultSlot) {
+      expect(
+        titleSlot.compareDocumentPosition(defaultSlot) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    }
+  });
+
+  it.each([
+    'sticky',
+    'lined',
+  ] as const)('keeps the title slot on the %s variant with a fastener', async (variant) => {
+    const el = await mount(new GhCard());
+    el.variant = variant;
+    el.fastener = 'pin';
+    el.innerHTML = '<span slot="title">Heading</span>';
+    await el.updateComplete;
+    const titleSlot = el.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="title"]');
+    expect(titleSlot?.assignedElements()).toHaveLength(1);
+    expect(el.shadowRoot?.querySelector('.fastener-pin')).not.toBeNull();
+  });
+
+  it('styles title-slotted content like a heading', () => {
+    const css = [GhCard.styles]
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(css).toMatch(/::slotted\(\[slot='title'\]\)/);
+  });
+
   it('draws only an outline when flat (no shadow paths)', async () => {
     const el = await mount(new GhCard());
     await setSize(el, 240, 160);
