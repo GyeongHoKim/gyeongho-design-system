@@ -77,7 +77,7 @@ System event, informational only              → Toast (auto-dismiss)
 
 ## Component Selection
 
-All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`) unless the **Notes** column says otherwise (e.g. `NavMenu` is React / WC only). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
+All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`) unless the **Notes** column says otherwise (e.g. `NavMenu` and `Callout` are React / WC only). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
 
 ### Forms & inputs
 
