@@ -70,10 +70,12 @@ select-all header) drives selection. This is the data foundation for the M12 dat
 Concise column headers and cell values. Represent booleans/status with a <a href={withBase('/components/badge/')}>Badge</a>
 inside a cell.
 
-Cells can hold rich content — a `<code>` key name, a colour swatch, a size preview. In **React** and
-**React Native**, cell values are already `ReactNode`, so pass the element directly. In **Web
-Components**, row values stay `string | number`; give the column a `render(value, row)` function that
-returns a Lit `TemplateResult` (import `html` from `lit`). Columns without `render` show the raw value.
+Cells can hold rich content — a `<code>` key name, a colour swatch, a size preview. In **React**,
+cell values are already `ReactNode`, so pass the element directly. In **Web Components**, row values
+stay `string | number`; give the column a `render(value, row)` function that returns a Lit
+`TemplateResult` (import `html` from `lit`). Columns without `render` show the raw value. In **React
+Native**, cell values are `string | number` and are shown as text — rich cell content is not supported
+yet.
 
 ## Props API
 
@@ -106,7 +108,7 @@ returns a Lit `TemplateResult` (import `html` from `lit`). Columns without `rend
       platform: 'React Native',
       packageName: '@ghds/react-native',
       rows: [
-        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'Same shape as React.' },
+        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'Same shape as React, but cell values are string | number (rendered as text).' },
         { name: 'caption', type: 'string', description: 'Accessible name.' },
         { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: 'Controlled sort + intent callback.' },
         { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: 'Controlled selection.' },

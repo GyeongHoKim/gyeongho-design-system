@@ -69,10 +69,11 @@ import { withBase } from '../../../lib/withBase';
 
 간결한 열 헤더와 셀 값. 불린/상태는 셀 안에 <a href={withBase('/components/badge/')}>Badge</a>로 표현해요.
 
-셀에는 `<code>` 키 이름, 색상 견본, 크기 미리보기 같은 풍부한 콘텐츠를 넣을 수 있어요. **React**와
-**React Native**는 셀 값이 이미 `ReactNode`라서 요소를 그대로 넘기면 돼요. **Web Components**는 행 값이
+셀에는 `<code>` 키 이름, 색상 견본, 크기 미리보기 같은 풍부한 콘텐츠를 넣을 수 있어요. **React**는
+셀 값이 이미 `ReactNode`라서 요소를 그대로 넘기면 돼요. **Web Components**는 행 값이
 `string | number`로 유지돼요. 대신 열에 `render(value, row)` 함수를 지정하고 Lit `TemplateResult`를
 반환하세요(`lit`에서 `html`을 가져와요). `render`가 없는 열은 원래 값을 그대로 보여 줘요.
+**React Native**는 셀 값이 `string | number`이고 텍스트로 표시돼요. 아직 풍부한 셀 콘텐츠는 지원하지 않아요.
 
 ## Props API
 
@@ -105,7 +106,7 @@ import { withBase } from '../../../lib/withBase';
       platform: 'React Native',
       packageName: '@ghds/react-native',
       rows: [
-        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'React와 동일한 형태.' },
+        { name: 'columns / rows', type: 'TableColumn[] / TableRow[]', description: 'React와 같은 형태지만, 셀 값은 string | number예요(텍스트로 표시).' },
         { name: 'caption', type: 'string', description: '접근성 이름.' },
         { name: 'sort / onSortChange', type: 'TableSort / (sort) => void', description: '제어되는 정렬 + 의도 콜백.' },
         { name: 'selectedIds / onSelectionChange', type: 'string[] / (ids) => void', description: '제어되는 선택.' },
@@ -127,6 +128,19 @@ import { withBase } from '../../../lib/withBase';
     <TableDemoLit />
   </div>
 </div>
+
+```js
+// Web Components — 열 `render` 함수로 풍부한 셀 콘텐츠 넣기
+import { html } from 'lit';
+import '@ghds/web-components/table';
+
+const el = document.querySelector('gh-table');
+el.columns = [
+  { key: 'token', header: 'Token', render: (value) => html`<code>${value}</code>` },
+  { key: 'description', header: 'Description' },
+];
+el.rows = [{ id: 'bg', token: 'sys.color.bg.primary', description: 'Page background' }];
+```
 
 ```tsx
 // React Native
