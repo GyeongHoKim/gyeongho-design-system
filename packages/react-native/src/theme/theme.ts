@@ -741,6 +741,18 @@ function buildTheme(t: Tokens) {
       bowing: t.comp.pagination.sketch.bowing,
     },
     paginationSize: t.comp.pagination.size,
+    // Minimum widths of the floating overlay panels. Menu and Popover read
+    // their comp tokens (same values as React / Web Components). ContextMenu,
+    // NavigationMenu and HoverCard have always rendered wider on native than on
+    // the web, so they keep their native widths on the matching
+    // `sys.overlay.minWidth` step instead of their (web-sized) comp tokens.
+    overlayMinWidths: {
+      menu: t.comp.menu.panel.minWidth,
+      popover: t.comp.popover.minWidth,
+      contextMenu: t.sys.overlay.minWidth.md,
+      navigationMenu: t.sys.overlay.minWidth.xl,
+      hoverCard: t.sys.overlay.minWidth.xl,
+    },
     skeletonRadius: t.comp.skeleton.radius,
     skeletonDuration: t.comp.skeleton.duration,
     // Dimmed opacity the pulse animates toward (sys.opacity.disabled).
