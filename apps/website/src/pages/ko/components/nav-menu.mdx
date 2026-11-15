@@ -37,6 +37,7 @@ Edit / Delete 같은 명령)이고, NavMenu는 링크를 펼쳐 보여 주는 **
     { name: '닫힘', present: true, note: '기본값; aria-expanded=false, 링크가 숨겨져요.' },
     { name: '열림', present: true, note: '패널 표시; 화살표 키로 연 경우가 아니면 포커스는 트리거에 남아요.' },
     { name: '강조된 링크', present: true, note: '마우스를 올리거나 포커스된 링크가 강조돼요.' },
+    { name: '현재 페이지', present: true, note: 'current를 지정하면 일치하는 링크에 aria-current="page"가 붙고 트리거에 밑줄이 그어져요.' },
     { name: '비활성화', present: false, note: '지원하지 않아요. 쓸 수 없는 링크는 목록에서 빼세요.' },
   ]}
 />
@@ -62,6 +63,8 @@ Edit / Delete 같은 명령)이고, NavMenu는 링크를 펼쳐 보여 주는 **
   있어요. 링크는 자연스러운 Tab 순서에 있어요(로빙 `tabindex` 없음). 화살표 키는 Tab에 더해 쓸 수 있는 보조
   단축키예요. Escape를 누르면 닫히고 포커스가 트리거로 돌아가요. 바깥을 클릭하거나 Tab으로 컴포넌트를 벗어나도
   닫혀요. 링크를 활성화하면 브라우저가 직접 이동해요.
+- **현재 페이지**: `current`에 페이지 경로를 넘기면 일치하는 링크에 `aria-current="page"`가 붙어서 스크린 리더가
+  현재 페이지라고 알려 줘요.
 - **React Native**: NavMenu가 없어요 — `@ghds/react-native`의 `NavigationMenu`를 사용하세요.
 - <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
 
@@ -91,6 +94,7 @@ Edit / Delete 같은 명령)이고, NavMenu는 링크를 펼쳐 보여 주는 **
       rows: [
         { name: 'label', type: 'string', description: '트리거 버튼 텍스트.' },
         { name: 'items', type: 'NavMenuItem[]', description: '링크마다 { href, label }. 각각 실제 <a href>로 렌더링돼요.' },
+        { name: 'current', type: 'string', description: '현재 페이지 경로. 정확히 일치하는 링크에 aria-current="page"가 붙고, 링크가 현재 경로이거나 그 상위 경로이면 트리거에 밑줄이 그어져요. 쿼리, 해시, 끝 슬래시는 비교에서 빠져요.' },
         { name: 'id', type: 'string', description: '트리거 id. 패널 id는 여기서 만들어져요.' },
       ],
     },
@@ -100,6 +104,7 @@ Edit / Delete 같은 명령)이고, NavMenu는 링크를 펼쳐 보여 주는 **
       rows: [
         { name: 'label', type: 'string', description: '트리거 텍스트(또는 슬롯으로 트리거 내용 지정).' },
         { name: 'items', type: 'GhNavMenuItem[]', description: '링크마다 { href, label } (속성이 아닌 프로퍼티).' },
+        { name: 'current', type: 'string', description: '현재 페이지 경로. React prop과 같은 방식으로 비교해요.' },
       ],
     },
   ]}

@@ -129,7 +129,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 | Page/section location trail | `Breadcrumb` | — |
 | Paged navigation control | `Pagination` | — |
 | Top-level nav with dropdown links | `NavigationMenu` | React/WC are href-based (`<a>`); RN is selection-callback (`value`+`onSelect`, no `href`) |
-| Single header dropdown of page links | `NavMenu` | React/WC only; disclosure (`aria-expanded`) of real `<a href>` links, **no** `role="menu"` — never use `Menu` for navigation; `items: { href, label }[]` (WC `items` is a property) |
+| Single header dropdown of page links | `NavMenu` | React/WC only; disclosure (`aria-expanded`) of real `<a href>` links, **no** `role="menu"` — never use `Menu` for navigation; `items: { href, label }[]` (WC `items` is a property); `current?: string` page path gives the matching link `aria-current="page"` |
 | App navigation sidebar | `Sidebar` | React/RN data-driven (`sections`); WC slot-based; RN has no collapse; section heading prop React `.heading` vs RN `.title` |
 
 ### Feedback & status

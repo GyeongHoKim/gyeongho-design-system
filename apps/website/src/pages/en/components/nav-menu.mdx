@@ -37,6 +37,7 @@ list — `<ul>` / `<li>` — of `<a href>` links. There is no `role="menu"`, `ro
     { name: 'Closed', present: true, note: 'Default; aria-expanded=false, links hidden.' },
     { name: 'Open', present: true, note: 'Panel shown; focus stays on the trigger unless opened with an Arrow key.' },
     { name: 'Highlighted link', present: true, note: 'The hovered or focused link is highlighted.' },
+    { name: 'Current page', present: true, note: 'With current set, the matching link gets aria-current="page" and the trigger is underlined.' },
     { name: 'Disabled', present: false, note: 'Not supported; omit links that are unavailable.' },
   ]}
 />
@@ -62,6 +63,8 @@ list — `<ul>` / `<li>` — of `<a href>` links. There is no `role="menu"`, `ro
   pointing at the panel. Links are in the natural Tab order (no roving `tabindex`). Arrow keys are an
   optional shortcut on top of Tab. Escape closes and returns focus to the trigger; clicking outside or
   tabbing out of the component closes it. Activating a link navigates natively.
+- **Current page**: pass `current` (the page path) so the matching link carries `aria-current="page"` and
+  screen readers announce it as the current page.
 - **React Native**: no NavMenu — use `NavigationMenu` from `@ghds/react-native`.
 - See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
 
@@ -91,6 +94,7 @@ The trigger names the group ("Design", "Components"); links use page titles.
       rows: [
         { name: 'label', type: 'string', description: 'Trigger button text.' },
         { name: 'items', type: 'NavMenuItem[]', description: '{ href, label } per link. Each renders a real <a href>.' },
+        { name: 'current', type: 'string', description: 'Active page path. The exact-match link gets aria-current="page"; the trigger is underlined when a link is the current path or its ancestor. Query, hash and trailing slash are ignored.' },
         { name: 'id', type: 'string', description: 'Trigger id; the panel id is derived from it.' },
       ],
     },
@@ -100,6 +104,7 @@ The trigger names the group ("Design", "Components"); links use page titles.
       rows: [
         { name: 'label', type: 'string', description: 'Trigger text (or slot custom trigger content).' },
         { name: 'items', type: 'GhNavMenuItem[]', description: '{ href, label } per link (property, not attribute).' },
+        { name: 'current', type: 'string', description: 'Active page path; same matching as the React prop.' },
       ],
     },
   ]}
