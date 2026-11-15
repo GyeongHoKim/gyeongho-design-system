@@ -67,7 +67,8 @@
         "info": { "$value": "{ref.palette.info.800}" },
         "lined": { "$value": "{ref.palette.gray.800}" },
         "rule": { "$value": "{ref.palette.info.800}" },
-        "margin": { "$value": "{ref.palette.danger.700}" }
+        "margin": { "$value": "{ref.palette.danger.700}" },
+        "tape": { "$value": "{ref.palette.warning.500}" }
       },
       "chart": {
         "$description": "Categorical chart series colors. Decorative (not text pairings), exempt from contrast validation.",
