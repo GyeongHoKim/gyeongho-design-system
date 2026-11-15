@@ -24,6 +24,15 @@ describe('@ghds/icons', () => {
     expect(getIconPath('close')).toBe(iconPaths.close);
   });
 
+  it('ships sun and moon icons for light/dark theme toggles', () => {
+    expect(isIconName('sun')).toBe(true);
+    expect(isIconName('moon')).toBe(true);
+    expect(getIconPath('sun')).toBe(iconPaths.sun);
+    expect(getIconPath('moon')).toBe(iconPaths.moon);
+    expect(iconNames).toContain('sun');
+    expect(iconNames).toContain('moon');
+  });
+
   it('exposes the 24×24 authoring grid', () => {
     expect(ICON_VIEWBOX).toBe(24);
   });
