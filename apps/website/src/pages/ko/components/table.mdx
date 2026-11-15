@@ -69,6 +69,11 @@ import { withBase } from '../../../lib/withBase';
 
 간결한 열 헤더와 셀 값. 불린/상태는 셀 안에 <a href={withBase('/components/badge/')}>Badge</a>로 표현해요.
 
+셀에는 `<code>` 키 이름, 색상 견본, 크기 미리보기 같은 풍부한 콘텐츠를 넣을 수 있어요. **React**와
+**React Native**는 셀 값이 이미 `ReactNode`라서 요소를 그대로 넘기면 돼요. **Web Components**는 행 값이
+`string | number`로 유지돼요. 대신 열에 `render(value, row)` 함수를 지정하고 Lit `TemplateResult`를
+반환하세요(`lit`에서 `html`을 가져와요). `render`가 없는 열은 원래 값을 그대로 보여 줘요.
+
 ## Props API
 
 <PropsTable
@@ -88,7 +93,8 @@ import { withBase } from '../../../lib/withBase';
       platform: 'Web Components',
       packageName: '@ghds/web-components',
       rows: [
-        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: '속성으로 설정돼요.' },
+        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: '속성으로 설정돼요. 행 값은 string | number예요.' },
+        { name: 'columns[].render', type: '(value, row) => unknown', description: '선택적인 열별 셀 렌더러. 풍부한 콘텐츠는 Lit TemplateResult로 반환해요.' },
         { name: 'caption', type: 'string', description: '접근성 캡션.' },
         { name: 'sort', type: 'GhTableSort', description: '현재 정렬 (속성).' },
         { name: 'selectedIds', type: 'string[]', description: '선택된 id (속성); 체크박스를 활성화해요.' },

@@ -70,6 +70,11 @@ select-all header) drives selection. This is the data foundation for the M12 dat
 Concise column headers and cell values. Represent booleans/status with a <a href={withBase('/components/badge/')}>Badge</a>
 inside a cell.
 
+Cells can hold rich content — a `<code>` key name, a colour swatch, a size preview. In **React** and
+**React Native**, cell values are already `ReactNode`, so pass the element directly. In **Web
+Components**, row values stay `string | number`; give the column a `render(value, row)` function that
+returns a Lit `TemplateResult` (import `html` from `lit`). Columns without `render` show the raw value.
+
 ## Props API
 
 <PropsTable
@@ -89,7 +94,8 @@ inside a cell.
       platform: 'Web Components',
       packageName: '@ghds/web-components',
       rows: [
-        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: 'Set as properties.' },
+        { name: 'columns / rows', type: 'GhTableColumn[] / GhTableRow[]', description: 'Set as properties. Row values are string | number.' },
+        { name: 'columns[].render', type: '(value, row) => unknown', description: 'Optional per-column cell renderer; return a Lit TemplateResult for rich content.' },
         { name: 'caption', type: 'string', description: 'Accessible caption.' },
         { name: 'sort', type: 'GhTableSort', description: 'Current sort (property).' },
         { name: 'selectedIds', type: 'string[]', description: 'Selected ids (property); enables checkboxes.' },
@@ -147,6 +153,19 @@ import { Table, type TableSort } from '@ghds/react/table';
   el.addEventListener('sort-change', (e) => { el.sort = e.detail; });
   el.addEventListener('selection-change', (e) => { el.selectedIds = e.detail; });
 </script>
+```
+
+```js
+// Web Components — rich cell content via a column `render` function
+import { html } from 'lit';
+import '@ghds/web-components/table';
+
+const el = document.querySelector('gh-table');
+el.columns = [
+  { key: 'token', header: 'Token', render: (value) => html`<code>${value}</code>` },
+  { key: 'description', header: 'Description' },
+];
+el.rows = [{ id: 'bg', token: 'sys.color.bg.primary', description: 'Page background' }];
 ```
 
 ```tsx
