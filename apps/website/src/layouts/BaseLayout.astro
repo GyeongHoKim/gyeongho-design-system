@@ -144,7 +144,11 @@ function switchLocaleHref(target: Locale): string {
           {locale === 'en' ? '한국어' : 'EN'}
         </gh-button>
         <gh-button id="theme-toggle" variant="neutral" aria-live="polite">
-          <span data-theme-icon aria-hidden="true">🌗</span>
+          {/* Decorative: no `label`, so gh-icon hides its SVG from assistive tech;
+              the button's aria-label (set by the script below) carries the name.
+              Shows the theme the click switches TO — moon while light, sun while
+              dark. "moon" is the server default; paint() corrects it on load. */}
+          <gh-icon data-theme-icon name="moon" size="sm" aria-hidden="true"></gh-icon>
           <span data-theme-label>{ui.theme}</span>
         </gh-button>
       </div>
@@ -160,6 +164,7 @@ function switchLocaleHref(target: Locale): string {
 
     <script>
       import '@ghds/web-components/button';
+      import '@ghds/web-components/icon';
       import '@ghds/web-components/nav-menu';
     </script>
 
@@ -202,7 +207,8 @@ function switchLocaleHref(target: Locale): string {
           label.textContent = current === 'dark' ? dict.lightMode : dict.darkMode;
         }
         if (icon) {
-          icon.textContent = current === 'dark' ? '☀️' : '🌙';
+          // Show the target theme, matching the label/aria-label wording.
+          icon.setAttribute('name', current === 'dark' ? 'sun' : 'moon');
         }
         toggle?.setAttribute(
           'aria-label',
