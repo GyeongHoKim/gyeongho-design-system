@@ -41,6 +41,6 @@ describe('gh-breadcrumb', () => {
     el.addEventListener('select', handler);
     el.shadowRoot?.querySelectorAll('a')[1]?.click();
     expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler.mock.calls[0][0].detail).toEqual({ item: ITEMS[1], index: 1 });
+    expect(handler.mock.calls[0]?.[0].detail).toEqual({ item: ITEMS[1], index: 1 });
   });
 });

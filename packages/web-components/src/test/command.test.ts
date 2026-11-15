@@ -55,7 +55,7 @@ describe('gh-command', () => {
     dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await el.updateComplete;
-    expect((command.mock.calls[0][0] as CustomEvent<string>).detail).toBe('open');
+    expect((command.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('open');
     expect(close).toHaveBeenCalledTimes(1);
   });
 

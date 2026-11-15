@@ -1,6 +1,12 @@
+import type { CSSResultGroup, CSSResultOrNative } from 'lit';
 import { afterEach, describe, expect, it } from 'vitest';
 import { GhCard } from '../components/card.js';
 import { cleanup, mount, setSize } from './fixture.js';
+
+/** Flatten a (recursively nested) Lit styles group into its leaf sheets. */
+function flattenStyles(group: CSSResultGroup): CSSResultOrNative[] {
+  return Array.isArray(group) ? group.flatMap(flattenStyles) : [group];
+}
 
 describe('gh-card', () => {
   afterEach(cleanup);
@@ -48,9 +54,8 @@ describe('gh-card', () => {
 
   describe('paper variants', () => {
     const cssText = (): string =>
-      [GhCard.styles]
-        .flat(Infinity)
-        .map((r) => (r as { cssText: string }).cssText)
+      flattenStyles(GhCard.styles)
+        .map((r) => ('cssText' in r ? r.cssText : ''))
         .join('\n');
 
     it('defaults to plain/neutral/none/none and reflects attributes', async () => {

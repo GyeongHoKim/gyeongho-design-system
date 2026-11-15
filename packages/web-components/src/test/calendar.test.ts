@@ -39,7 +39,7 @@ describe('gh-calendar', () => {
     (el.shadowRoot?.querySelector('[data-date="2024-03-20"]') as HTMLElement).click();
     await el.updateComplete;
     expect(el.value).toBe('2024-03-20');
-    expect((handler.mock.calls[0][0] as CustomEvent<string>).detail).toBe('2024-03-20');
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('2024-03-20');
   });
 
   it('changes month with the nav buttons', async () => {

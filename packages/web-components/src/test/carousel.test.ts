@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GhCarousel } from '../components/carousel.js';
 import { GhCarouselItem } from '../components/carousel-item.js';
-import { cleanup, mount } from './fixture.js';
+import { cleanup, mount, nth } from './fixture.js';
 
 async function mountCarousel(slides = 3, props: Partial<GhCarousel> = {}): Promise<GhCarousel> {
   const el = new GhCarousel();
@@ -33,25 +33,25 @@ describe('gh-carousel', () => {
     expect(region?.getAttribute('aria-roledescription')).toBe('carousel');
     const controls = buttons(el);
     expect(controls).toHaveLength(2);
-    expect(controls[0].getAttribute('aria-label')).toBe('Previous slide');
-    expect(controls[1].getAttribute('aria-label')).toBe('Next slide');
+    expect(nth(controls, 0).getAttribute('aria-label')).toBe('Previous slide');
+    expect(nth(controls, 1).getAttribute('aria-label')).toBe('Next slide');
   });
 
   it('marks each slide as an APG slide group', async () => {
     const el = await mountCarousel(2);
     const items = el.querySelectorAll('gh-carousel-item');
     expect(items).toHaveLength(2);
-    expect(items[0].getAttribute('role')).toBe('group');
-    expect(items[0].getAttribute('aria-roledescription')).toBe('slide');
+    expect(nth(items, 0).getAttribute('role')).toBe('group');
+    expect(nth(items, 0).getAttribute('aria-roledescription')).toBe('slide');
   });
 
   it('reflects orientation and swaps the control icons', async () => {
     const el = await mountCarousel(3, { orientation: 'vertical' });
     await el.updateComplete;
     expect(el.getAttribute('orientation')).toBe('vertical');
-    const icons = el.shadowRoot?.querySelectorAll('gh-button.control gh-icon');
-    expect(icons?.[0].getAttribute('name')).toBe('chevron-up');
-    expect(icons?.[1].getAttribute('name')).toBe('chevron-down');
+    const icons = el.shadowRoot?.querySelectorAll('gh-button.control gh-icon') ?? [];
+    expect(nth(icons, 0).getAttribute('name')).toBe('chevron-up');
+    expect(nth(icons, 1).getAttribute('name')).toBe('chevron-down');
   });
 
   it('renders indicator dots (one per slide) when there is more than one slide', async () => {
@@ -69,7 +69,7 @@ describe('gh-carousel', () => {
     const scrollBy = vi.fn();
     viewport.scrollBy = scrollBy as unknown as HTMLElement['scrollBy'];
     Object.defineProperty(viewport, 'clientWidth', { value: 300, configurable: true });
-    buttons(el)[1].dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
+    nth(buttons(el), 1).dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
     expect(scrollBy).toHaveBeenCalledWith(
       expect.objectContaining({ left: 300, behavior: 'smooth' }),
     );

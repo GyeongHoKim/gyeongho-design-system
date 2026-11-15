@@ -44,7 +44,7 @@ describe('gh-context-menu', () => {
     el.addEventListener('select', handler);
     (el.shadowRoot?.querySelectorAll('[role="menuitem"]')[1] as HTMLElement).click();
     await el.updateComplete;
-    expect((handler.mock.calls[0][0] as CustomEvent<string>).detail).toBe('paste');
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('paste');
     expect(el.shadowRoot?.querySelector('.panel')?.classList.contains('open')).toBe(false);
   });
 });
