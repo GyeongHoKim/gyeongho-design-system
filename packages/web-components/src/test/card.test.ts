@@ -77,6 +77,139 @@ describe('gh-card', () => {
     expect(el.label).toBe('Profile');
   });
 
+  describe('link mode', () => {
+    const cssText = (): string =>
+      ([GhCard.styles] as unknown[])
+        .flat(Infinity)
+        .map((r) => (r as { cssText: string }).cssText)
+        .join('\n');
+
+    it('renders a div surface and no anchor by default', async () => {
+      const el = await mount(new GhCard());
+      expect(el.shadowRoot?.querySelector('div.content')).not.toBeNull();
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+    });
+
+    it('treats an empty href as no link', async () => {
+      const el = await mount(new GhCard());
+      el.href = '';
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+    });
+
+    it('renders the surface as a real anchor with href, target and rel', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/docs/card';
+      el.target = '_blank';
+      el.rel = 'noopener';
+      el.innerHTML = '<h3 slot="title">Docs</h3><p>Body</p>';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector<HTMLAnchorElement>('a.content');
+      expect(anchor).not.toBeNull();
+      expect(anchor?.getAttribute('part')).toBe('content');
+      expect(anchor?.getAttribute('href')).toBe('/docs/card');
+      expect(anchor?.getAttribute('target')).toBe('_blank');
+      expect(anchor?.getAttribute('rel')).toBe('noopener');
+      expect(el.shadowRoot?.querySelector('div.content')).toBeNull();
+      // Both slots live inside the anchor, so the whole surface is the link.
+      expect(anchor?.querySelector('slot[name="title"]')).not.toBeNull();
+      expect(anchor?.querySelector('slot:not([name])')).not.toBeNull();
+    });
+
+    it('omits target and rel when unset', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector('a.content');
+      expect(anchor?.hasAttribute('target')).toBe(false);
+      expect(anchor?.hasAttribute('rel')).toBe(false);
+    });
+
+    it('is keyboard-focusable', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector<HTMLAnchorElement>('a.content');
+      expect(anchor?.tabIndex).toBe(0);
+      anchor?.focus();
+      expect(el.shadowRoot?.activeElement).toBe(anchor);
+    });
+
+    it('forwards focus() and click() to the anchor', async () => {
+      const el = await mount(new GhCard());
+      el.href = '#card-target';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector<HTMLAnchorElement>('a.content');
+      el.focus();
+      expect(el.shadowRoot?.activeElement).toBe(anchor);
+      let clicked: EventTarget | null = null;
+      anchor?.addEventListener('click', (event) => {
+        clicked = event.target;
+        event.preventDefault();
+      });
+      el.click();
+      expect(clicked).toBe(anchor);
+    });
+
+    it('draws the sketch stroke inside the anchor, under the body', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      await el.updateComplete;
+      await setSize(el, 240, 160);
+      const anchor = el.shadowRoot?.querySelector('a.content');
+      expect(anchor?.querySelectorAll('svg.sketch path.sketch-stroke').length).toBeGreaterThan(0);
+      const sketch = anchor?.querySelector(':scope > svg.sketch');
+      expect(sketch?.getAttribute('aria-hidden')).toBe('true');
+      expect(cssText()).toMatch(/\.sketch\s*{[^}]*pointer-events: none/);
+    });
+
+    it('keeps fasteners and the lined margin inside the anchor', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      el.variant = 'lined';
+      el.fastener = 'pin';
+      await el.updateComplete;
+      const anchor = el.shadowRoot?.querySelector('a.content');
+      expect(anchor?.querySelector('svg.fastener-pin')).not.toBeNull();
+      expect(anchor?.querySelector('.margin-line')).not.toBeNull();
+    });
+
+    it('labels the anchor instead of the host', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      el.label = 'Card docs';
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a.content')?.getAttribute('aria-label')).toBe(
+        'Card docs',
+      );
+    });
+
+    it('switches back to a div when href is removed', async () => {
+      const el = await mount(new GhCard());
+      el.href = '/x';
+      await el.updateComplete;
+      el.href = undefined;
+      await el.updateComplete;
+      expect(el.shadowRoot?.querySelector('a')).toBeNull();
+      expect(el.shadowRoot?.querySelector('div.content')).not.toBeNull();
+    });
+
+    it('declares hover stroke, focus ring and lift rules from card tokens', () => {
+      const css = cssText();
+      expect(css).toMatch(/a\.content:hover > \.sketch\s*{[^}]*var\(--comp-card-stroke-hover\)/);
+      expect(css).toMatch(/a\.content:focus-visible\s*{[^}]*var\(--comp-card-focus-ring\)/);
+      expect(css).toMatch(/\.content > \.sketch\s*{[^}]*var\(--comp-card-stroke-default\)/);
+      expect(css).toMatch(/a\.content:hover\s*{[^}]*translateY/);
+      expect(css).toMatch(
+        /:host\(\[variant='sticky'\]\) a\.content:hover[^{]*{[^}]*--comp-card-hover-shadow/,
+      );
+      expect(css).toMatch(/a\.content:focus-visible\s*{[^}]*translateY/);
+      // Focus-within lift is scoped to the div surface: a mouse-focused link card stays flat.
+      expect(css).not.toMatch(/:host\(\[interactive\]\) \.content:focus-within/);
+      expect(css).not.toMatch(/:focus-within\) \.content/);
+    });
+  });
+
   describe('paper variants', () => {
     const cssText = (): string =>
       [GhCard.styles]
@@ -195,9 +328,9 @@ describe('gh-card', () => {
 
     it('lifts when the host itself is focused', async () => {
       const css = cssText();
-      expect(css).toContain(':host([interactive]:focus-within) .content');
+      expect(css).toContain(':host([interactive]:focus-within) div.content');
       expect(css).toMatch(
-        /:host\(\[interactive\]\[variant='sticky'\]:focus-within\) \.content,\s*:host\(\[interactive\]\[variant='lined'\]:focus-within\) \.content\s*{[^}]*box-shadow: var\(--comp-card-hover-shadow\)/,
+        /:host\(\[interactive\]\[variant='sticky'\]:focus-within\) div\.content,\s*:host\(\[interactive\]\[variant='lined'\]:focus-within\) div\.content\s*{[^}]*box-shadow: var\(--comp-card-hover-shadow\)/,
       );
       const el = await mount(new GhCard());
       el.interactive = true;
@@ -214,7 +347,7 @@ describe('gh-card', () => {
       const css = cssText();
       expect(css).toContain('@media (hover: hover)');
       expect(css).toContain(':host([interactive]) .content:hover');
-      expect(css).toContain(':host([interactive]) .content:focus-within');
+      expect(css).toContain(':host([interactive]) div.content:focus-within');
       expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*{[^}]*transition: none/);
     });
   });
