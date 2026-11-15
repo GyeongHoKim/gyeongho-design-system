@@ -9,7 +9,9 @@
       "sans": {
         "$value": "'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
       },
-      "mono": { "$value": "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace" }
+      "mono": {
+        "$value": "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR Variable', monospace"
+      }
     },
     "fontSize": {
       "$type": "dimension",
