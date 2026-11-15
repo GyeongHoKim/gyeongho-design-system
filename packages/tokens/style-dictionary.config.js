@@ -12,7 +12,7 @@
  * Every output PRESERVES the semantic token path: CSS uses `--{path-with-dashes}`,
  * the JS/JSON/RN objects keep the original nested keys (`tokens.sys.color.bg.primary.default`).
  */
-import { promises as fs } from 'node:fs';
+import { promises as fs, readFileSync } from 'node:fs';
 import path from 'node:path';
 import StyleDictionary from 'style-dictionary';
 
@@ -97,14 +97,38 @@ function rnShadow(value) {
  *            ships Latin only so cannot serve as the RN Korean face)
  *   mono   → Menlo  (iOS/Android system mono; Korean falls back to OS)
  *
- * If a stack is not in this map, the first quoted family name is extracted.
+ * The map is keyed by stack name and resolved against the source stacks in
+ * `src/ref/typography.json`, so editing a stack never silently breaks the RN
+ * mapping. If a resolved stack is not in this map, the first quoted family
+ * name is extracted.
  */
-const RN_FONT_FAMILY_MAP = {
-  "'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive": 'Gaegu',
-  "'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif":
-    'NotoSansKR',
-  "ui-monospace, 'SFMono-Regular', 'Menlo', 'Noto Sans KR', monospace": 'Menlo',
+const RN_FONT_FAMILY_BY_STACK = {
+  sketch: 'Gaegu',
+  sans: 'NotoSansKR',
+  mono: 'Menlo',
 };
+
+const SOURCE_FONT_STACKS = JSON.parse(
+  readFileSync(new URL('./src/ref/typography.json', import.meta.url), 'utf8'),
+).ref.fontFamily;
+
+const RN_FONT_FAMILY_MAP = {};
+for (const [stack, family] of Object.entries(RN_FONT_FAMILY_BY_STACK)) {
+  const value = SOURCE_FONT_STACKS[stack]?.$value;
+  if (typeof value !== 'string') {
+    throw new Error(`RN font map: ref.fontFamily.${stack} is missing from typography.json`);
+  }
+  // The transform only sees resolved values, so two stacks with the same value
+  // cannot map to different RN faces. Fail the build instead of letting one
+  // mapping silently overwrite the other.
+  const existing = RN_FONT_FAMILY_MAP[value];
+  if (existing !== undefined && existing !== family) {
+    throw new Error(
+      `RN font map: ref.fontFamily.${stack} has the same value as another stack but maps to '${family}' instead of '${existing}'`,
+    );
+  }
+  RN_FONT_FAMILY_MAP[value] = family;
+}
 
 /** Extract a single RN-compatible font family name from a CSS font stack. */
 function rnFontFamily(value) {
