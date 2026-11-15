@@ -1,6 +1,6 @@
 import { lightTokens } from '@ghds/tokens/rn';
 import { describe, expect, it } from 'vitest';
-import { darkTheme, lightTheme } from './theme.js';
+import { darkTheme, lightTheme, resolveFontFamily, toTextVariant } from './theme.js';
 
 describe('GHDS Restyle theme', () => {
   it('derives colors from sys/comp tokens (no hardcoded values)', () => {
@@ -17,12 +17,71 @@ describe('GHDS Restyle theme', () => {
     expect(lightTheme.borderWidths.default).toBe(lightTokens.sys.border.width.default);
   });
 
-  it('converts typography to absolute RN line-height and string weight', () => {
+  it('converts typography to absolute RN line-height', () => {
     const body = lightTokens.sys.typography.body;
     expect(lightTheme.textVariants.body.lineHeight).toBe(
       Math.round(body.fontSize * body.lineHeight),
     );
-    expect(lightTheme.textVariants.body.fontWeight).toBe(String(body.fontWeight));
+  });
+
+  it('picks a weight-specific family per variant on iOS, without fontWeight', () => {
+    const t = lightTokens.sys.typography;
+    const ios = {
+      heading: toTextVariant(t.heading, 'ios'),
+      title: toTextVariant(t.title, 'ios'),
+      body: toTextVariant(t.body, 'ios'),
+      label: toTextVariant(t.label, 'ios'),
+      caption: toTextVariant(t.caption, 'ios'),
+      code: toTextVariant(t.code, 'ios'),
+    };
+    expect(ios.heading).toEqual({
+      fontFamily: 'Gaegu-Bold',
+      fontSize: t.heading.fontSize,
+      lineHeight: Math.round(t.heading.fontSize * t.heading.lineHeight),
+    });
+    expect(ios.title.fontFamily).toBe('Gaegu-Bold');
+    expect(ios.body.fontFamily).toBe('NotoSansKR-Regular');
+    expect(ios.label.fontFamily).toBe('NotoSansKR-Medium');
+    expect(ios.caption.fontFamily).toBe('NotoSansKR-Regular');
+    expect(ios.code.fontFamily).toBe('Menlo-Regular');
+    for (const variant of Object.values(ios)) expect(variant).not.toHaveProperty('fontWeight');
+  });
+
+  it('uses the Android face names and monospace for code on Android, without fontWeight', () => {
+    const t = lightTokens.sys.typography;
+    expect(toTextVariant(t.label, 'android').fontFamily).toBe('NotoSansKR-Medium');
+    expect(toTextVariant(t.heading, 'android').fontFamily).toBe('Gaegu-Bold');
+    const code = toTextVariant(t.code, 'android');
+    expect(code.fontFamily).toBe('monospace');
+    expect(code).not.toHaveProperty('fontWeight');
+  });
+
+  it('uses the iOS face table on macOS, where Menlo exists', () => {
+    const t = lightTokens.sys.typography;
+    expect(toTextVariant(t.code, 'macos').fontFamily).toBe('Menlo-Regular');
+    expect(toTextVariant(t.label, 'macos').fontFamily).toBe('NotoSansKR-Medium');
+  });
+
+  it('exposes a code text variant built from sys.typography.code', () => {
+    const code = lightTokens.sys.typography.code;
+    // The test runner renders through react-native-web, so the Android table applies.
+    expect(lightTheme.textVariants.code).toEqual(toTextVariant(code, 'web'));
+    expect(lightTheme.textVariants.code.fontFamily).toBe('monospace');
+  });
+
+  it('keeps fontWeight on web, where the named faces fall back to the default face', () => {
+    const label = lightTokens.sys.typography.label;
+    const web = toTextVariant(label, 'web');
+    expect(web.fontFamily).toBe('NotoSansKR-Medium');
+    expect(web.fontWeight).toBe(String(label.fontWeight));
+    // The test runner renders through react-native-web, so the built theme is the web one.
+    expect(lightTheme.textVariants.label).toEqual(web);
+  });
+
+  it('resolveFontFamily throws for a weight the face table does not name', () => {
+    const face = lightTokens.sys.typography.body.fontFamily;
+    expect(resolveFontFamily(face, 400, 'ios')).toBe('NotoSansKR-Regular');
+    expect(() => resolveFontFamily(face, 300, 'android')).toThrow(/weight 300/);
   });
 
   it('carries sketch parameters from the sketch token group', () => {

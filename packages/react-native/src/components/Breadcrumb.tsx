@@ -48,11 +48,12 @@ export function Breadcrumb({ items, label = 'Breadcrumb', onSelect, testID }: Br
           // biome-ignore lint/suspicious/noArrayIndexKey: breadcrumb items are a positional, ordered trail
           <Box key={index} flexDirection="row" alignItems="center">
             {isLast ? (
-              // Current page: emphasised (label weight) + marked selected, matching
+              // Current page: emphasised (label face) + marked selected, matching
               // the aria-current="page" the web platforms set.
               <Text
                 variant="body"
                 color="breadcrumbTextCurrent"
+                fontFamily={theme.textVariants.label.fontFamily}
                 fontWeight={theme.textVariants.label.fontWeight}
                 accessibilityRole="text"
                 accessibilityState={{ selected: true }}

@@ -1,6 +1,6 @@
 import { darkTokens, lightTokens } from '@ghds/tokens/rn';
 import { createTheme } from '@shopify/restyle';
-import type { TextStyle } from 'react-native';
+import { Platform, type TextStyle } from 'react-native';
 
 /**
  * The shape of one tokens object. Widened to the union of the light and dark
@@ -9,34 +9,78 @@ import type { TextStyle } from 'react-native';
  */
 type Tokens = typeof lightTokens | typeof darkTokens;
 
-/** A single GHDS typography token (multiplier line-height, numeric weight). */
+/**
+ * An RN font-family token: per platform, a weight-specific family name for
+ * every `ref.fontWeight` (`"400"`, `"500"`, `"700"`), e.g. `NotoSansKR-Medium`.
+ */
+export interface FontFaceTable {
+  readonly ios: Readonly<Record<string, string>>;
+  readonly android: Readonly<Record<string, string>>;
+}
+
+/** A single GHDS typography token (face table, multiplier line-height, numeric weight). */
 interface TypographyToken {
-  fontFamily: string;
+  fontFamily: FontFaceTable;
   fontSize: number;
   lineHeight: number;
   fontWeight: number;
 }
 
-/**
- * Convert a GHDS typography token into a React Native text style.
- *
- * GHDS stores `lineHeight` as a unitless multiplier (web/CSS convention) and
- * `fontWeight` as a number. React Native expects an absolute pixel line-height
- * and a string font-weight, so we derive both here. No design value is
- * invented — only the unit representation changes.
- */
-function toTextVariant(token: TypographyToken): {
+/** A GHDS text variant as a React Native text style. */
+export interface TextVariant {
   fontFamily: string;
   fontSize: number;
   lineHeight: number;
-  fontWeight: TextStyle['fontWeight'];
-} {
-  return {
-    fontFamily: token.fontFamily,
+  /**
+   * Set only on web (`react-native-web`). On iOS and Android the weight is
+   * already in the family name, and Android looks up a different file
+   * (`<name>_bold.ttf`) when a custom font is asked for bold.
+   */
+  fontWeight?: TextStyle['fontWeight'];
+}
+
+/**
+ * Pick the family name for one weight on one platform. The iOS table serves
+ * Apple platforms (`ios`, `macos`), where Menlo is installed. Android's table
+ * serves web and every other platform: its `monospace` is a valid CSS generic,
+ * and a weight-specific name the browser does not know falls back to the
+ * default face, where the separate `fontWeight` still applies.
+ */
+export function resolveFontFamily(
+  face: FontFaceTable,
+  weight: number,
+  os: typeof Platform.OS,
+): string {
+  const table = os === 'ios' || os === 'macos' ? face.ios : face.android;
+  const family = table[String(weight)];
+  if (family === undefined) {
+    throw new Error(`GHDS theme: no font family for weight ${weight} on ${os}`);
+  }
+  return family;
+}
+
+/**
+ * Convert a GHDS typography token into a React Native text style.
+ *
+ * GHDS stores `lineHeight` as a unitless multiplier (web/CSS convention). React
+ * Native expects an absolute pixel line-height, so we derive it here. The face
+ * is chosen by weight from the token's face table (`NotoSansKR-Medium` for
+ * 500), so native platforms need no `fontWeight`. No design value is invented —
+ * only the representation changes.
+ */
+export function toTextVariant(
+  token: TypographyToken,
+  os: typeof Platform.OS = Platform.OS,
+): TextVariant {
+  const variant: TextVariant = {
+    fontFamily: resolveFontFamily(token.fontFamily, token.fontWeight, os),
     fontSize: token.fontSize,
     lineHeight: Math.round(token.fontSize * token.lineHeight),
-    fontWeight: String(token.fontWeight) as TextStyle['fontWeight'],
   };
+  if (os === 'web') {
+    variant.fontWeight = String(token.fontWeight) as TextStyle['fontWeight'];
+  }
+  return variant;
 }
 
 /** Colour per Card tone (`neutral`, `primary`, `success`, `warning`, `danger`, `info`). */
@@ -638,6 +682,7 @@ function buildTheme(t: Tokens) {
       body: toTextVariant(t.sys.typography.body),
       label: toTextVariant(t.sys.typography.label),
       caption: toTextVariant(t.sys.typography.caption),
+      code: toTextVariant(t.sys.typography.code),
     },
     // Sketch geometry parameters (design values from the `sketch` token group).
     // Consumed by the sketch adapter, not by Restyle's style resolvers.
