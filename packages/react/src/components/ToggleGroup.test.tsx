@@ -53,7 +53,7 @@ describe('ToggleGroup', () => {
     const [left, center] = screen.getAllByRole('button');
     expect(left).toHaveAttribute('tabindex', '0');
     expect(center).toHaveAttribute('tabindex', '-1');
-    left.focus();
+    left?.focus();
     await userEvent.keyboard('{ArrowRight}');
     expect(center).toHaveFocus();
   });

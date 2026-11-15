@@ -18,7 +18,7 @@ describe('DatePicker', () => {
   });
 
   it('opens the calendar and selects a date', async () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<(date: Date) => void>();
     render(
       <DatePicker label="Due date" defaultValue={new Date(2026, 5, 10)} onChange={onChange} />,
     );
@@ -27,6 +27,6 @@ describe('DatePicker', () => {
     expect(screen.getByRole('grid')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Mon Jun 15 2026' }));
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect((onChange.mock.calls[0][0] as Date).getDate()).toBe(15);
+    expect(onChange.mock.calls[0]?.[0].getDate()).toBe(15);
   });
 });
