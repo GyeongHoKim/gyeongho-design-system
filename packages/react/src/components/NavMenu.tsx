@@ -41,6 +41,21 @@ const STROKE_WIDTH = toPx(tokens.sys.border.width.default);
 const INSET = STROKE_WIDTH;
 
 /**
+ * Stable, unique React keys for the panel links. `href` alone is not unique —
+ * two `#` placeholders, or one page listed under two labels, would collide —
+ * so the key combines `href` and `label` and numbers any exact repeat.
+ */
+function itemKeys(items: readonly NavMenuItem[]): string[] {
+  const seen = new Map<string, number>();
+  return items.map(({ href, label }) => {
+    const base = `${href}\u0000${label}`;
+    const count = seen.get(base) ?? 0;
+    seen.set(base, count + 1);
+    return count === 0 ? base : `${base}\u0000${count}`;
+  });
+}
+
+/**
  * A hand-drawn site-navigation dropdown.
  *
  * A disclosure, not an action menu: a `<button aria-expanded aria-controls>`
@@ -71,6 +86,8 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
   const linksRef = useRef<(HTMLAnchorElement | null)[]>([]);
   // Link to focus once the panel has rendered open (set by Arrow keys on the trigger).
   const pendingFocus = useRef<'first' | 'last' | null>(null);
+
+  const keys = useMemo(() => itemKeys(items), [items]);
 
   const { refs, floatingStyles } = useMenuFloating(open);
 
@@ -199,7 +216,7 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
     ...floatingStyles,
     display: open ? 'block' : 'none',
     zIndex: menu.panel.zIndex,
-    minWidth: '10rem',
+    minWidth: menu.panel.minWidth,
     boxSizing: 'border-box',
     padding: menu.panel.padding,
     background: c.panel.bg,
@@ -253,7 +270,7 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
       >
         <ul style={listStyle}>
           {items.map((item, index) => (
-            <li key={item.href} style={{ display: 'flex', flexDirection: 'column' }}>
+            <li key={keys[index]} style={{ display: 'flex', flexDirection: 'column' }}>
               <a
                 ref={(el) => {
                   linksRef.current[index] = el;

@@ -1,6 +1,7 @@
+import { tokens } from '@ghds/tokens';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { NavMenu, type NavMenuItem } from './NavMenu.js';
 
 const ITEMS: NavMenuItem[] = [
@@ -151,6 +152,41 @@ describe('NavMenu', () => {
     expect(screen.getByRole('link', { name: 'Design Style' })).toHaveFocus();
   });
 
+  it('keeps entries that share an href (or href and label) distinct, with no duplicate keys', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      render(
+        <NavMenu
+          label="Design"
+          items={[
+            { href: '#', label: 'First' },
+            { href: '#', label: 'Second' },
+            { href: '#', label: 'Third' },
+            { href: '#', label: 'Third' },
+          ]}
+        />,
+      );
+      const trigger = screen.getByRole('button', { name: 'Design' });
+      act(() => trigger.focus());
+      await userEvent.keyboard('{ArrowDown}');
+      expect(screen.getByRole('link', { name: 'First' })).toHaveFocus();
+      await userEvent.keyboard('{ArrowDown}');
+      expect(screen.getByRole('link', { name: 'Second' })).toHaveFocus();
+      await userEvent.keyboard('{End}');
+      const thirds = screen.getAllByRole('link', { name: 'Third' });
+      expect(thirds).toHaveLength(2);
+      expect(thirds[1]).toHaveFocus();
+      await userEvent.keyboard('{ArrowUp}');
+      expect(thirds[0]).toHaveFocus();
+      const keyWarnings = errorSpy.mock.calls.filter((args) =>
+        args.some((arg) => typeof arg === 'string' && arg.includes('same key')),
+      );
+      expect(keyWarnings).toHaveLength(0);
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
   it('Tab moves through the links natively and closes once focus leaves', async () => {
     const { trigger } = renderNavMenu();
     await userEvent.click(trigger);
@@ -193,6 +229,12 @@ describe('NavMenu', () => {
     expect(link.style.background).toContain('--comp-menu-item-bg-highlighted');
     await userEvent.unhover(link);
     expect(link.style.background).toBe(before);
+  });
+
+  it('sizes the panel from the comp.menu.panel.minWidth token', () => {
+    const { trigger } = renderNavMenu();
+    const panel = document.getElementById(trigger.getAttribute('aria-controls') ?? '');
+    expect(panel?.style.minWidth).toBe(tokens.comp.menu.panel.minWidth);
   });
 
   it('forwards its ref to the trigger button', () => {

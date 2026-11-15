@@ -234,7 +234,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     flexDirection: 'column',
     gap: menu.panel.gap,
     zIndex: menu.panel.zIndex,
-    minWidth: '10rem',
+    minWidth: menu.panel.minWidth,
     boxSizing: 'border-box',
     padding: menu.panel.padding,
     background: c.panel.bg,
