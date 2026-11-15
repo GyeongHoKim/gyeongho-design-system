@@ -32,7 +32,7 @@ thin rather than force-fitting states that don't exist.
 <StateList
   states={[
     { name: 'Hover', present: true, note: 'With interactive or as a link card (React, Web Components): the card lifts, and a link card\'s plain stroke darkens. Not on React Native.' },
-    { name: 'Focus', present: true, note: 'A link card is focusable and shows a focus ring on keyboard focus. Otherwise the card itself is not focusable; with interactive it lifts while focus is inside (React, Web Components). An interactive card you make focusable with tabindex shows the same focus ring (comp.card.focus.ring) on its paper, following the folded corner and tilt, instead of the browser default.' },
+    { name: 'Focus', present: true, note: 'A link card, or a card you make focusable with tabindex (interactive or not), is focusable and shows the comp.card.focus.ring ring on its paper on keyboard focus, following the folded corner and tilt, instead of the browser default. With interactive, a card also lifts while focus is inside (React, Web Components).' },
     { name: 'Disabled', present: false },
     { name: 'Loading', present: false },
     { name: 'Error', present: false },
@@ -88,7 +88,7 @@ assistive technology.
 />
 
 - React Native has no `interactive` or link mode yet.
-- An `interactive` card with `tabindex="0"` (`tabIndex={0}` in React) shows the `comp.card.focus.ring` outline on keyboard focus. The ring is drawn on the card's paper, so it follows the folded corner and the tilt.
+- A card with `tabindex="0"` (`tabIndex={0}` in React) shows the `comp.card.focus.ring` outline on keyboard focus. The ring is drawn on the card's paper, so it follows the folded corner and the tilt. Without `interactive` it shows the ring but does not lift.
 - Tape is tinted with `sys.color.paper.tape` (amber masking tape) at `comp.card.fastener.tape.opacity`, so it stays visible on light and dark pages and on every paper colour.
 - React's `fill` and Web Components/React Native's `elevated` apply to `plain` only.
 - React Native reads the values from the Restyle theme (`theme.card.*`), so a custom theme overrides them.
