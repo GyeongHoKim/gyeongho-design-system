@@ -33,6 +33,8 @@ describe('DatePicker', () => {
 
   it('sizes the field from the comp.datePicker.field.minWidth token', () => {
     render(<DatePicker label="Due date" />);
-    expect(screen.getByRole('button').closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(tokens.comp.datePicker.field.minWidth);
+    expect(
+      screen.getByRole('button').closest<HTMLElement>('[style*="min-width"]')?.style.minWidth,
+    ).toBe(tokens.comp.datePicker.field.minWidth);
   });
 });

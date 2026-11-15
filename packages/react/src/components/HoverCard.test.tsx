@@ -38,6 +38,9 @@ describe('HoverCard', () => {
     const trigger = screen.getByRole('button', { name: '@ghds' });
     trigger.focus();
     await waitFor(() => expect(trigger).toHaveAttribute('aria-describedby'));
-    expect(screen.getByText('A design system.').closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(tokens.comp.hoverCard.minWidth);
+    expect(
+      screen.getByText('A design system.').closest<HTMLElement>('[style*="min-width"]')?.style
+        .minWidth,
+    ).toBe(tokens.comp.hoverCard.minWidth);
   });
 });

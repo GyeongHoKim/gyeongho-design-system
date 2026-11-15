@@ -56,8 +56,9 @@ describe('Combobox', () => {
 
   it('sizes the field from the comp.combobox.field.minWidth token', () => {
     render(<Combobox options={OPTIONS} label="Fruit" />);
-    expect(screen.getByRole('combobox', { name: 'Fruit' }).closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(
-      tokens.comp.combobox.field.minWidth,
-    );
+    expect(
+      screen.getByRole('combobox', { name: 'Fruit' }).closest<HTMLElement>('[style*="min-width"]')
+        ?.style.minWidth,
+    ).toBe(tokens.comp.combobox.field.minWidth);
   });
 });

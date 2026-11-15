@@ -47,8 +47,9 @@ describe('Popover', () => {
       </Popover>,
     );
     await userEvent.click(screen.getByRole('button', { name: 'Open' }));
-    expect(screen.getByRole('button', { name: 'Action' }).closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(
-      tokens.comp.popover.minWidth,
-    );
+    expect(
+      screen.getByRole('button', { name: 'Action' }).closest<HTMLElement>('[style*="min-width"]')
+        ?.style.minWidth,
+    ).toBe(tokens.comp.popover.minWidth);
   });
 });

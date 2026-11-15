@@ -59,8 +59,9 @@ describe('Menubar', () => {
   it('sizes the dropdown panel from the comp.menubar.panel.minWidth token', async () => {
     render(<Menubar menus={MENUS} aria-label="Main" />);
     await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
-    expect(screen.getByRole('menuitem', { name: 'Open' }).closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(
-      tokens.comp.menubar.panel.minWidth,
-    );
+    expect(
+      screen.getByRole('menuitem', { name: 'Open' }).closest<HTMLElement>('[style*="min-width"]')
+        ?.style.minWidth,
+    ).toBe(tokens.comp.menubar.panel.minWidth);
   });
 });
