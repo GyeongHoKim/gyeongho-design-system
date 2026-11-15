@@ -1,6 +1,25 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Card, type CardVariant } from './Card.js';
+
+// jsdom has no PointerEvent; a minimal one carries `pointerType` through.
+class TestPointerEvent extends MouseEvent {
+  pointerType: string;
+  constructor(type: string, init: MouseEventInit & { pointerType?: string } = {}) {
+    super(type, init);
+    this.pointerType = init.pointerType ?? '';
+  }
+}
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <button type="button" onClick={() => setCount((n) => n + 1)}>
+      count {count}
+    </button>
+  );
+}
 
 describe('Card', () => {
   it('renders its children', () => {
@@ -89,6 +108,285 @@ describe('Card', () => {
         </Card>,
       );
       expect(screen.getByTestId('c')).toHaveStyle({ marginTop: '8px' });
+    });
+
+    it('does not clip so fasteners can overhang', () => {
+      render(
+        <Card variant="lined" data-testid="c">
+          x
+        </Card>,
+      );
+      expect(screen.getByTestId('c').style.overflow).not.toBe('hidden');
+    });
+  });
+
+  describe('fasteners', () => {
+    it('renders an aria-hidden tape centred on the top edge', () => {
+      const { container } = render(
+        <Card variant="sticky" fastener="tape" tilt="left">
+          x
+        </Card>,
+      );
+      const tape = container.querySelector('span[aria-hidden="true"]') as HTMLElement;
+      expect(tape).not.toBeNull();
+      expect(tape.style.left).toBe('50%');
+      expect(tape.style.top).toContain('var(--comp-card-fastener-tape-height');
+      expect(tape.style.transform).toContain('calc(-1 * calc(');
+      expect(tape.style.transform).toContain('var(--comp-card-fastener-tape-tilt');
+      expect(tape.getAttribute('tabindex')).toBeNull();
+    });
+
+    it('renders an aria-hidden pin svg with the tone head colour', () => {
+      const { container } = render(
+        <Card variant="sticky" tone="danger" fastener="pin">
+          x
+        </Card>,
+      );
+      const svg = container.querySelector('svg') as SVGElement;
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+      expect(svg).toHaveAttribute('focusable', 'false');
+      expect(svg).toHaveAttribute('viewBox', '0 0 28 30');
+      const head = svg.querySelector('circle[r="10"]') as SVGElement;
+      expect(head.style.fill).toContain('var(--comp-card-fastener-pin-color-danger');
+      expect(svg.querySelector('[tabindex]')).toBeNull();
+    });
+
+    it('draws the pin highlight with its own opacity token', () => {
+      const { container } = render(<Card fastener="pin">x</Card>);
+      const highlight = container.querySelector('circle[r="3.5"]') as SVGElement;
+      expect(highlight.style.fill).toContain('var(--comp-card-fastener-pin-highlight,');
+      expect(highlight.style.fillOpacity).toContain(
+        'var(--comp-card-fastener-pin-highlightOpacity',
+      );
+    });
+
+    it('renders fasteners on the plain variant too', () => {
+      const { container } = render(<Card fastener="tape">x</Card>);
+      expect(container.querySelector('span[aria-hidden="true"]')).not.toBeNull();
+    });
+
+    it('pivots a plain card from the top edge only when a fastener is present', () => {
+      render(
+        <Card fastener="pin" data-testid="pinned">
+          x
+        </Card>,
+      );
+      render(<Card data-testid="bare">x</Card>);
+      expect(screen.getByTestId('pinned').style.transformOrigin).toBe('50% 0');
+      expect(screen.getByTestId('bare').style.transformOrigin).toBe('');
+    });
+
+    it('renders no mark by default', () => {
+      const { container } = render(<Card variant="sticky">x</Card>);
+      expect(container.querySelector('span[aria-hidden="true"]')).toBeNull();
+    });
+  });
+
+  describe('interactive', () => {
+    beforeEach(() => {
+      vi.stubGlobal('PointerEvent', TestPointerEvent);
+    });
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('lifts on mouse hover and drops on leave', () => {
+      render(
+        <Card variant="sticky" interactive data-testid="c">
+          x
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      expect(root.style.transform).toContain('translateY(calc(var(--comp-card-hover-lift');
+      expect(root.style.boxShadow).toContain('var(--comp-card-hover-shadow');
+      fireEvent.pointerLeave(root, { pointerType: 'mouse' });
+      expect(root.style.transform).not.toContain('translateY');
+    });
+
+    it('does not lift on touch', () => {
+      render(
+        <Card variant="sticky" interactive data-testid="c">
+          x
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'touch' });
+      expect(root.style.transform).not.toContain('translateY');
+    });
+
+    it('lifts while focus is inside and keeps it when focus moves between children', () => {
+      render(
+        <Card variant="lined" interactive data-testid="c">
+          <button type="button">a</button>
+          <button type="button">b</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      const [a, b] = screen.getAllByRole('button');
+      fireEvent.focus(a as HTMLElement);
+      expect(root.style.transform).toContain('translateY');
+      fireEvent.blur(a as HTMLElement, { relatedTarget: b });
+      expect(root.style.transform).toContain('translateY');
+      fireEvent.blur(b as HTMLElement, { relatedTarget: null });
+      expect(root.style.transform).not.toContain('translateY');
+    });
+
+    it('calls consumer handlers', () => {
+      const onPointerEnter = vi.fn();
+      const onFocus = vi.fn();
+      render(
+        <Card variant="sticky" interactive onPointerEnter={onPointerEnter} onFocus={onFocus}>
+          <button type="button">a</button>
+        </Card>,
+      );
+      fireEvent.pointerEnter(screen.getByRole('button').parentElement as HTMLElement, {
+        pointerType: 'mouse',
+      });
+      fireEvent.focus(screen.getByRole('button'));
+      expect(onPointerEnter).toHaveBeenCalled();
+      expect(onFocus).toHaveBeenCalled();
+    });
+
+    it('sets a transition, or none under reduced motion', () => {
+      const { unmount } = render(
+        <Card variant="sticky" interactive data-testid="c">
+          x
+        </Card>,
+      );
+      expect(screen.getByTestId('c').style.transition).toContain('var(--comp-card-hover-duration');
+      unmount();
+      vi.stubGlobal('matchMedia', (query: string) => ({
+        matches: query.includes('reduce'),
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      }));
+      render(
+        <Card variant="sticky" interactive data-testid="c">
+          x
+        </Card>,
+      );
+      expect(screen.getByTestId('c').style.transition).toBe('none');
+    });
+
+    it('drops hover and focus state while interactive is off', () => {
+      const ui = (interactive: boolean) => (
+        <Card interactive={interactive} data-testid="c">
+          <input aria-label="note" />
+        </Card>
+      );
+      const { rerender } = render(ui(true));
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      fireEvent.focus(screen.getByRole('textbox'));
+      expect(root.style.transform).toContain('translateY');
+      rerender(ui(false));
+      fireEvent.pointerLeave(root, { pointerType: 'mouse' });
+      fireEvent.blur(screen.getByRole('textbox'));
+      rerender(ui(true));
+      expect(root.style.transform).not.toContain('translateY');
+    });
+
+    it('lifts a plain card on mouse hover without changing its box shadow', () => {
+      render(
+        <Card interactive data-testid="c">
+          x
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      expect(root.style.transform).toContain('translateY(calc(var(--comp-card-hover-lift');
+      expect(root.style.boxShadow).toBe('');
+    });
+
+    it.each([
+      ['plain', false],
+      ['sticky', false],
+      ['plain', true],
+      ['sticky', true],
+    ] as const)('passes consumer handlers through (%s, interactive=%s)', (variant, interactive) => {
+      const onPointerEnter = vi.fn();
+      const onPointerLeave = vi.fn();
+      const onFocus = vi.fn();
+      const onBlur = vi.fn();
+      render(
+        <Card
+          variant={variant}
+          interactive={interactive}
+          data-testid="c"
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        >
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      fireEvent.pointerLeave(root, { pointerType: 'mouse' });
+      fireEvent.focus(screen.getByRole('button'));
+      fireEvent.blur(screen.getByRole('button'));
+      expect(onPointerEnter).toHaveBeenCalledTimes(1);
+      expect(onPointerLeave).toHaveBeenCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing without interactive', () => {
+      render(
+        <Card variant="sticky" data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      fireEvent.focus(screen.getByRole('button'));
+      expect(root.style.transform).toBe('');
+      expect(root.style.transition).toBe('');
+    });
+
+    it('gives an unknown variant the plain lift with no box shadow', () => {
+      render(
+        <Card variant={'foo' as CardVariant} interactive data-testid="c">
+          x
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      fireEvent.pointerEnter(root, { pointerType: 'mouse' });
+      expect(root.style.transform).toContain('translateY');
+      expect(root.style.boxShadow).toBe('');
+    });
+  });
+
+  describe('switching variant at runtime', () => {
+    it('keeps child state, DOM nodes and focus across variants', () => {
+      const ui = (variant: CardVariant, fastener: 'none' | 'pin' = 'none') => (
+        <Card variant={variant} fastener={fastener} data-testid="c">
+          <Counter />
+          <input aria-label="note" />
+        </Card>
+      );
+      const { rerender } = render(ui('plain'));
+      const root = screen.getByTestId('c');
+      fireEvent.click(screen.getByRole('button'));
+      const input = screen.getByRole('textbox') as HTMLInputElement;
+      input.value = 'draft';
+      input.focus();
+
+      for (const [variant, fastener] of [
+        ['sticky', 'pin'],
+        ['lined', 'none'],
+        ['plain', 'pin'],
+        ['plain', 'none'],
+      ] as const) {
+        rerender(ui(variant, fastener));
+        expect(screen.getByTestId('c')).toBe(root);
+        expect(screen.getByRole('button')).toHaveTextContent('count 1');
+        expect(screen.getByRole('textbox')).toBe(input);
+        expect(input.value).toBe('draft');
+        expect(document.activeElement).toBe(input);
+      }
     });
   });
 });

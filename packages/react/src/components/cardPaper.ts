@@ -4,6 +4,7 @@ import { cssVars } from '../lib/cssVars.js';
 
 export type CardVariant = 'plain' | 'sticky' | 'lined';
 export type CardTone = 'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info';
+export type CardFastener = 'none' | 'tape' | 'pin';
 export type CardTilt = 'none' | 'left' | 'right';
 
 const c = cssVars.comp.card;
@@ -53,6 +54,7 @@ export interface PaperStyleOptions {
   variant: 'sticky' | 'lined';
   tone: CardTone;
   tilt: CardTilt;
+  fastener: CardFastener;
 }
 
 /**
@@ -107,12 +109,16 @@ function stickyPaper(tone: CardTone): CSSProperties {
   };
 }
 
-/** Inline style for a `sticky` or `lined` paper card. */
-export function paperStyle({ variant, tone, tilt }: PaperStyleOptions): CSSProperties {
+/**
+ * Inline style for a `sticky` or `lined` paper card. Never sets `overflow`, so
+ * fasteners can overhang the top edge.
+ */
+export function paperStyle({ variant, tone, tilt, fastener }: PaperStyleOptions): CSSProperties {
   return {
     ...paperBodyStyle,
     position: 'relative',
     ...(variant === 'sticky' ? stickyPaper(tone) : linedPaper()),
     ...(tilt !== 'none' ? { transform: `rotate(${tiltAngle(variant, tilt)})` } : {}),
+    ...(fastener !== 'none' ? { transformOrigin: '50% 0' } : {}),
   };
 }

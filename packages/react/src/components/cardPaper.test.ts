@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { linedMarginStyle, paperStyle, tiltAngle } from './cardPaper.js';
 
-const base = { tone: 'neutral', tilt: 'none' } as const;
+const base = { tone: 'neutral', tilt: 'none', fastener: 'none' } as const;
 
 describe('paperStyle', () => {
   it('paints sticky paper with the tone background token', () => {
@@ -69,5 +69,16 @@ describe('paperStyle', () => {
   it('applies no rotation for tilt none', () => {
     expect(paperStyle({ ...base, variant: 'sticky' }).transform).toBeUndefined();
     expect(tiltAngle('sticky', 'none')).toBe('0deg');
+  });
+
+  it('pivots from the top edge only when a fastener is present', () => {
+    expect(paperStyle({ ...base, variant: 'sticky', fastener: 'tape' }).transformOrigin).toBe(
+      '50% 0',
+    );
+    expect(paperStyle({ ...base, variant: 'sticky' }).transformOrigin).toBeUndefined();
+  });
+
+  it('never clips overhanging fasteners', () => {
+    expect(paperStyle({ ...base, variant: 'sticky' }).overflow).toBeUndefined();
   });
 });
