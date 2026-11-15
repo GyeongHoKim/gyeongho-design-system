@@ -102,6 +102,38 @@ describe('Button', () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it("suppresses the child's own capture handlers when a disabled asChild link is clicked", () => {
+    const onClickCapture = vi.fn();
+    const onAuxClickCapture = vi.fn();
+    render(
+      <Button asChild disabled>
+        <a href="/next" onClickCapture={onClickCapture} onAuxClickCapture={onAuxClickCapture}>
+          Go to next page
+        </a>
+      </Button>,
+    );
+    const link = screen.getByRole('link', { name: 'Go to next page' });
+    expect(fireEvent.click(link)).toBe(false);
+    expect(fireEvent(link, new MouseEvent('auxclick', { bubbles: true, cancelable: true }))).toBe(
+      false,
+    );
+    expect(onClickCapture).not.toHaveBeenCalled();
+    expect(onAuxClickCapture).not.toHaveBeenCalled();
+  });
+
+  it("keeps the child's own capture handlers on an enabled asChild link", () => {
+    const onClickCapture = vi.fn((event: React.MouseEvent) => event.preventDefault());
+    render(
+      <Button asChild>
+        <a href="/next" onClickCapture={onClickCapture}>
+          Go to next page
+        </a>
+      </Button>,
+    );
+    fireEvent.click(screen.getByRole('link', { name: 'Go to next page' }));
+    expect(onClickCapture).toHaveBeenCalledTimes(1);
+  });
+
   it('lets an enabled asChild link activate normally', async () => {
     const onClick = vi.fn((event: React.MouseEvent) => event.preventDefault());
     render(

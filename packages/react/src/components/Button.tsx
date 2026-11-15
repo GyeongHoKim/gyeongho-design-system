@@ -1,7 +1,15 @@
 import { tokens } from '@ghds/tokens';
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import type React from 'react';
-import { type ButtonHTMLAttributes, type CSSProperties, forwardRef, useState } from 'react';
+import {
+  type ButtonHTMLAttributes,
+  type CSSProperties,
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type MouseEventHandler,
+  useState,
+} from 'react';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -25,11 +33,20 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
    * ```
    *
    * Combined with `disabled`, the slotted element gets `aria-disabled="true"`
-   * and every click (including middle-click / keyboard Enter on a link) is
-   * cancelled, so a disabled link never navigates. It stays focusable so
-   * assistive technology can still discover it.
+   * and clicks, middle-clicks and keyboard Enter are cancelled before any of
+   * the child's click handlers (capture or bubble phase) run. It stays
+   * focusable so assistive technology can still discover it. A link keeps its
+   * `href`, so it can still be opened from the context menu, dragged, or
+   * followed by crawlers; drop `href` from the child while disabled if it must
+   * not be followable at all.
    */
   asChild?: boolean;
+}
+
+/** Capture-phase click handlers a slotted child may carry. */
+interface CaptureHandlers {
+  onClickCapture?: MouseEventHandler<Element>;
+  onAuxClickCapture?: MouseEventHandler<Element>;
 }
 
 // Sketch numerics + dimensions (theme-independent) come from the raw token
@@ -212,11 +229,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   if (asChild) {
     // A slotted element (typically an `<a href>`) can't be natively disabled, so
-    // cancel activation in the capture phase — before the child's own handlers
-    // run — and stop the default action (navigation) when `disabled`.
+    // cancel activation in the capture phase and stop the default action
+    // (navigation) when `disabled`.
     const blockWhenDisabled =
-      (forward?: React.MouseEventHandler<HTMLButtonElement>) =>
-      (event: React.MouseEvent<HTMLButtonElement>) => {
+      <E extends Element>(forward?: MouseEventHandler<E>) =>
+      (event: React.MouseEvent<E>) => {
         if (disabled) {
           event.preventDefault();
           event.stopPropagation();
@@ -224,6 +241,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         }
         forward?.(event);
       };
+    // Radix `Slot` composes handlers child-first, so the child's own capture
+    // handlers would still run before ours. When disabled, replace them on the
+    // child so nothing on it sees the cancelled activation.
+    const slotted =
+      disabled && isValidElement<CaptureHandlers>(children)
+        ? cloneElement(children, {
+            onClickCapture: blockWhenDisabled<Element>(),
+            onAuxClickCapture: blockWhenDisabled<Element>(),
+          })
+        : children;
     return (
       <Slot
         ref={ref}
@@ -236,7 +263,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         onAuxClickCapture={blockWhenDisabled(onAuxClickCapture)}
       >
         {surface}
-        <Slottable>{children}</Slottable>
+        <Slottable>{slotted}</Slottable>
       </Slot>
     );
   }
