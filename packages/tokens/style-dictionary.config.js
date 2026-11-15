@@ -95,7 +95,7 @@ function rnShadow(value) {
  *   sketch → Gaegu  (hand-drawn Korean, also covers Latin)
  *   sans   → Noto Sans KR (Korean sans, also covers Latin; Pretendard fontsource
  *            ships Latin only so cannot serve as the RN Korean face)
- *   mono   → Menlo  (iOS/Android system mono; Korean falls back to OS)
+ *   mono   → Menlo  (iOS system mono; Android has no Menlo and uses its default face)
  *
  * The map is keyed by stack name and resolved against the source stacks in
  * `src/ref/typography.json`, so editing a stack never silently breaks the RN

@@ -151,62 +151,49 @@ RN이 사용할 수 있는 **단일 패밀리 이름**으로 자동 변환해요
 선택된 RN 서체는 라틴과 한국어 글리프를 모두 포함하고 있어서, RN이 할 수 없는 글리프별
 폴백 없이도 두 언어 모두 올바르게 렌더링돼요.
 
-### Expo 앱에 폰트 로드하기
+### 앱에 폰트 로드하기
 
-RN 토큰 값은 그냥 **이름**이에요 — 실제 `.ttf` 파일은 별도로 로드해야 해요.
-[`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/)를 사용해서 폰트를 임베드하세요.
+RN 토큰 값은 **이름**일 뿐이에요. GHDS는 폰트 파일을 포함하지 않으니 앱에서 직접 로드해야
+해요. 테마는 패밀리 이름과 `fontWeight`를 따로 넘기기 때문에, 모든 웨이트를 **같은 패밀리
+이름으로** 등록해야 해요:
 
-**옵션 A — config 플러그인 (권장, 빌드 시 임베드):**
+| 패밀리 이름 | GHDS가 쓰는 웨이트 | 폰트 파일 |
+| --- | --- | --- |
+| `NotoSansKR` | 400, 500 | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static `Regular`, `Medium` (700이 필요하면 `Bold` 추가) |
+| `Gaegu` | 700 (제목) | [Gaegu](https://fonts.google.com/specimen/Gaegu) `Bold` (400이 필요하면 `Regular` 추가) |
 
-[Google Fonts의 Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR)과
-[Google Fonts의 Gaegu](https://fonts.google.com/specimen/Gaegu)에서 `.ttf` 파일을 다운로드해서
-`assets/fonts/`에 넣은 뒤, `app.json`에 추가하세요:
-
-```json
-{
-  "plugins": [
-    [
-      "expo-font",
-      {
-        "fonts": [
-          "assets/fonts/NotoSansKR-Regular.ttf",
-          "assets/fonts/NotoSansKR-Medium.ttf",
-          "assets/fonts/NotoSansKR-Bold.ttf",
-          "assets/fonts/Gaegu-Regular.ttf"
-        ]
-      }
-    ]
-  ]
-}
-```
-
-**옵션 B — 런타임 로드:**
+**Expo SDK 58 이상**에서는 `useFonts`에 폰트 패밀리 정의 배열을 넘기세요:
 
 ```tsx
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
 
-SplashScreen.preventAutoHideAsync();
-
-export function App() {
-  const [loaded, error] = useFonts({
-    NotoSansKR: require('./assets/fonts/NotoSansKR-Regular.ttf'),
-    'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
-    'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
-    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded || error) SplashScreen.hideAsync();
-  }, [loaded, error]);
-
-  if (!loaded && !error) return null;
-  return /* 앱 */;
-}
+const [loaded, error] = useFonts([
+  {
+    fontFamily: 'NotoSansKR',
+    fontDefinitions: [
+      { path: require('./assets/fonts/NotoSansKR-Regular.ttf'), weight: 400 },
+      { path: require('./assets/fonts/NotoSansKR-Medium.ttf'), weight: 500 },
+      { path: require('./assets/fonts/NotoSansKR-Bold.ttf'), weight: 700 },
+    ],
+  },
+  {
+    fontFamily: 'Gaegu',
+    fontDefinitions: [
+      { path: require('./assets/fonts/Gaegu-Regular.ttf'), weight: 400 },
+      { path: require('./assets/fonts/Gaegu-Bold.ttf'), weight: 700 },
+    ],
+  },
+]);
 ```
 
-웨이트 매핑에 대한 자세한 내용은 `packages/react-native/AGENTS.md`를 참고하세요.
+이전 SDK에서는 맵 형태가 이름 하나에 파일 하나만 등록하기 때문에, 패밀리마다 웨이트 하나만
+로드돼요: `useFonts({ NotoSansKR: require('…/NotoSansKR-Regular.ttf'), Gaegu: require('…/Gaegu-Bold.ttf') })`.
+
+> **`expo-font` config 플러그인에 파일 목록만 넘기지 마세요.** Android는 파일 이름
+> (`NotoSansKR-Regular`)을, iOS는 파일 안에 적힌 이름(`Noto Sans KR`)을 패밀리 이름으로 써요.
+> 둘 다 `NotoSansKR`과 달라서 시스템 폰트로 대체돼요.
+
+전체 설정은 `packages/react-native/AGENTS.md`를 참고하세요.
 
 ## 요약
 

@@ -150,63 +150,49 @@ consume:
 The chosen RN face includes both Latin and Korean glyphs, so text renders correctly in
 both languages without per-glyph fallback (which RN cannot do).
 
-### Loading fonts in your Expo app
+### Loading fonts in your app
 
-The RN token value is just a **name** — you must still load the actual `.ttf` files.
-Use [`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/) to embed fonts.
+The RN token value is only a **name**. GHDS does not ship font files; your app loads
+them. The theme pairs each family name with a separate `fontWeight`, so register every
+weight **under the same family name**:
 
-**Option A — Config plugin (recommended, build-time):**
+| Family name | Weights GHDS uses | Font files |
+| --- | --- | --- |
+| `NotoSansKR` | 400, 500 | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static `Regular`, `Medium` (add `Bold` for 700) |
+| `Gaegu` | 700 (headings) | [Gaegu](https://fonts.google.com/specimen/Gaegu) `Bold` (add `Regular` for 400) |
 
-Download the `.ttf` files from
-[Noto Sans KR on Google Fonts](https://fonts.google.com/specimen/Noto+Sans+KR) and
-[Gaegu on Google Fonts](https://fonts.google.com/specimen/Gaegu), place them in
-`assets/fonts/`, then add to `app.json`:
-
-```json
-{
-  "plugins": [
-    [
-      "expo-font",
-      {
-        "fonts": [
-          "assets/fonts/NotoSansKR-Regular.ttf",
-          "assets/fonts/NotoSansKR-Medium.ttf",
-          "assets/fonts/NotoSansKR-Bold.ttf",
-          "assets/fonts/Gaegu-Regular.ttf"
-        ]
-      }
-    ]
-  ]
-}
-```
-
-**Option B — Runtime loading:**
+On **Expo SDK 58 and later**, pass `useFonts` an array of font family definitions:
 
 ```tsx
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
 
-SplashScreen.preventAutoHideAsync();
-
-export function App() {
-  const [loaded, error] = useFonts({
-    NotoSansKR: require('./assets/fonts/NotoSansKR-Regular.ttf'),
-    'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
-    'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
-    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded || error) SplashScreen.hideAsync();
-  }, [loaded, error]);
-
-  if (!loaded && !error) return null;
-  return /* your app */;
-}
+const [loaded, error] = useFonts([
+  {
+    fontFamily: 'NotoSansKR',
+    fontDefinitions: [
+      { path: require('./assets/fonts/NotoSansKR-Regular.ttf'), weight: 400 },
+      { path: require('./assets/fonts/NotoSansKR-Medium.ttf'), weight: 500 },
+      { path: require('./assets/fonts/NotoSansKR-Bold.ttf'), weight: 700 },
+    ],
+  },
+  {
+    fontFamily: 'Gaegu',
+    fontDefinitions: [
+      { path: require('./assets/fonts/Gaegu-Regular.ttf'), weight: 400 },
+      { path: require('./assets/fonts/Gaegu-Bold.ttf'), weight: 700 },
+    ],
+  },
+]);
 ```
 
-See `packages/react-native/AGENTS.md` for weight mapping details.
+On older SDKs, the map form registers one file per name, so only one weight per family
+loads: `useFonts({ NotoSansKR: require('…/NotoSansKR-Regular.ttf'), Gaegu: require('…/Gaegu-Bold.ttf') })`.
+
+> **Do not use the `expo-font` config plugin with a plain file list.** Android names each
+> family after its file (`NotoSansKR-Regular`) and iOS reads the name from inside the file
+> (`Noto Sans KR`). Neither matches `NotoSansKR`, so text falls back to the system font.
+
+See `packages/react-native/AGENTS.md` for the full setup.
 
 ## Summary
 

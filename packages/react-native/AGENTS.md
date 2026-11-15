@@ -53,60 +53,39 @@ Before starting work on a component, confirm the required tokens exist in `@ghds
 ## Fonts
 
 React Native does not support CSS comma-separated font stacks. The `@ghds/tokens/rn`
-build automatically converts each web font-family stack to a **single family name**
-that RN can consume:
+build converts each web font-family stack to a **single family name**:
 
 | Token | Web stack (CSS) | RN value |
 | --- | --- | --- |
 | `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
-| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', …` | `Pretendard` |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR` |
 | `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
 
-The chosen RN face includes both Latin and Korean glyphs, so text renders correctly
-in both languages without per-glyph fallback (which RN cannot do).
+`Gaegu` and `NotoSansKR` include both Latin and Korean glyphs, so text renders in both
+languages without per-glyph fallback (which RN cannot do).
 
-### Loading fonts in your Expo app
+### What the app must register
 
-The RN token value is just a **name** — you must still load the actual font files.
-Use [`expo-font`](https://docs.expo.dev/develop/user-interface/fonts/) to embed
-Pretendard and Gaegu `.ttf` files at build time or load them at runtime.
+The RN value is only a **name**. Neither `@ghds/tokens` nor `@ghds/react-native` ships
+font files; the consuming app loads them.
 
-#### Option A — Config plugin (recommended, build-time embedding)
+The theme (`src/theme/theme.ts`) passes the family name **and** a separate `fontWeight`
+to every text style. Each weight must therefore be registered **under the same family
+name**, so `fontWeight` can select it:
 
-```bash
-pnpm add expo-font
-```
+| Family name | Weights the tokens use | Font files |
+| --- | --- | --- |
+| `NotoSansKR` | 400 (body, caption), 500 (label) | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static `Regular`, `Medium`; add `Bold` for 700 |
+| `Gaegu` | 700 (heading, title) | [Gaegu](https://fonts.google.com/specimen/Gaegu) `Bold`; add `Regular` for 400 |
+| `Menlo` | 400 (code) | System font on iOS. Android has no `Menlo` and falls back to its default face. |
 
-Download the `.ttf` files and place them in `assets/fonts/`:
-- `Pretendard-Regular.ttf`, `Pretendard-Medium.ttf`, `Pretendard-Bold.ttf`
-- `Gaegu-Regular.ttf`
+A face registered under any other name (for example `NotoSansKR-Bold`) is never used:
+no GHDS style asks for it.
 
-Then add the plugin to `app.json` (or `app.config.js`):
+### Expo SDK 58 and later (recommended)
 
-```json
-{
-  "plugins": [
-    [
-      "expo-font",
-      {
-        "fonts": [
-          "node_modules/@ghds/tokens/dist/rn-assets/Pretendard-Regular.ttf",
-          "node_modules/@ghds/tokens/dist/rn-assets/Pretendard-Medium.ttf",
-          "node_modules/@ghds/tokens/dist/rn-assets/Pretendard-Bold.ttf",
-          "node_modules/@ghds/tokens/dist/rn-assets/Gaegu-Regular.ttf"
-        ]
-      }
-    ]
-  ]
-}
-```
-
-> Font file paths above are illustrative — download the `.ttf` files from the
-> [Pretendard GitHub releases](https://github.com/orioncactus/pretendard/releases)
-> and [Gaegu Google Fonts](https://fonts.google.com/specimen/Gaegu) and place
-> them in your app's `assets/fonts/` directory.
-
-#### Option B — Runtime loading with `useFonts`
+`useFonts` accepts an array of font family definitions, which registers several files
+under one family name:
 
 ```tsx
 import { useFonts } from 'expo-font';
@@ -116,12 +95,23 @@ import { useEffect } from 'react';
 SplashScreen.preventAutoHideAsync();
 
 export function App() {
-  const [loaded, error] = useFonts({
-    Pretendard: require('./assets/fonts/Pretendard-Regular.ttf'),
-    'Pretendard-Medium': require('./assets/fonts/Pretendard-Medium.ttf'),
-    'Pretendard-Bold': require('./assets/fonts/Pretendard-Bold.ttf'),
-    Gaegu: require('./assets/fonts/Gaegu-Regular.ttf'),
-  });
+  const [loaded, error] = useFonts([
+    {
+      fontFamily: 'NotoSansKR',
+      fontDefinitions: [
+        { path: require('./assets/fonts/NotoSansKR-Regular.ttf'), weight: 400 },
+        { path: require('./assets/fonts/NotoSansKR-Medium.ttf'), weight: 500 },
+        { path: require('./assets/fonts/NotoSansKR-Bold.ttf'), weight: 700 },
+      ],
+    },
+    {
+      fontFamily: 'Gaegu',
+      fontDefinitions: [
+        { path: require('./assets/fonts/Gaegu-Regular.ttf'), weight: 400 },
+        { path: require('./assets/fonts/Gaegu-Bold.ttf'), weight: 700 },
+      ],
+    },
+  ]);
 
   useEffect(() => {
     if (loaded || error) SplashScreen.hideAsync();
@@ -132,14 +122,28 @@ export function App() {
 }
 ```
 
-### Font weight mapping
+### Older Expo SDKs
 
-RN does not support CSS `font-weight` on a single family file. Each weight needs a
-separate `.ttf` with a distinct family name. The GHDS theme sets `fontWeight` as a
-string (`'400'`, `'500'`, `'700'`), which RN applies to whichever family is loaded.
-Register each weight as a separate entry in `useFonts` (or the config plugin) and,
-if you need weight-specific rendering, override `fontFamily` per variant in your
-theme.
+The map form of `useFonts` registers one file per name. Register the face that matches
+how each family is mostly used:
+
+```tsx
+const [loaded, error] = useFonts({
+  NotoSansKR: require('./assets/fonts/NotoSansKR-Regular.ttf'),
+  Gaegu: require('./assets/fonts/Gaegu-Bold.ttf'),
+});
+```
+
+Other weights of the same family are then not loaded. The platform renders them from
+the registered file and may synthesize the weight, so labels (500) will not match the
+design exactly. Upgrade to SDK 58 to load every weight.
+
+### Do not use the `expo-font` config plugin with a plain file list
+
+The config plugin does not register the names the tokens use. With a list of file paths,
+Android names each family after its file (`NotoSansKR-Regular`) and iOS reads the name
+from inside the file (`Noto Sans KR`). Neither matches `NotoSansKR`, so text falls back
+to the system font. Load fonts at runtime with `useFonts` instead.
 
 ---
 
