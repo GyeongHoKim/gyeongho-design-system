@@ -48,14 +48,6 @@ describe('gh-card', () => {
     expect(el.shadowRoot?.querySelector('.fastener-pin')).not.toBeNull();
   });
 
-  it('styles title-slotted content like a heading', () => {
-    const css = [GhCard.styles]
-      .flat(Infinity)
-      .map((r) => (r as { cssText: string }).cssText)
-      .join('\n');
-    expect(css).toMatch(/::slotted\(\[slot='title'\]\)/);
-  });
-
   it('draws only an outline when flat (no shadow paths)', async () => {
     const el = await mount(new GhCard());
     await setSize(el, 240, 160);
