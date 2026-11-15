@@ -421,6 +421,19 @@ describe('Card', () => {
       expect(link.style.outline).toBe('');
     });
 
+    it('does not lift on a mouse focus that is not focus-visible', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      vi.spyOn(link, 'matches').mockImplementation(() => false);
+      fireEvent.focus(link);
+      expect(link.style.transform).toBe('');
+      expect(link.style.outline).toBe('');
+    });
+
     it('darkens the plain stroke and lifts on mouse hover', () => {
       render(
         <Card asChild>

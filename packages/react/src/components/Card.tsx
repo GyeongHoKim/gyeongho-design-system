@@ -149,7 +149,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       <CardFastenerMark kind={fastener} tone={tone} cardAngle={cardAngle} />
     );
 
-  const lifted = interactive && (hovered || focused);
+  // An `asChild` link lifts only on keyboard focus, like the web component's
+  // `a.content:focus-visible`; a mouse-focused link stays flat. A plain
+  // interactive card keeps lifting on any focus within (`:focus-within`).
+  const lifted = interactive && (hovered || (asChild ? focusVisible : focused));
   const interactiveStyle: CSSProperties = interactive
     ? {
         transition: reducedMotion
