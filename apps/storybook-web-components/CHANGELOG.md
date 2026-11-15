@@ -1,5 +1,16 @@
 # @ghds/storybook-web-components
 
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies [01568b1]
+- Updated dependencies [cb3aa2d]
+- Updated dependencies [857d720]
+- Updated dependencies [d5d6b04]
+  - @ghds/tokens@0.13.0
+  - @ghds/web-components@0.12.0
+
 ## 0.0.16
 
 ### Patch Changes

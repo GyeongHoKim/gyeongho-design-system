@@ -1,5 +1,36 @@
 # @ghds/tokens
 
+## 0.13.0
+
+### Minor Changes
+
+- 01568b1: Add the paper tokens for the sticky and lined Card: `sys.color.paper.*` backgrounds in both themes, `ref`/`sys` rotation (degrees), `translucent` opacity, `xs`/`xl` radii and `3xl`/`4xl` spacing, plus `comp.card.sticky`, `lined`, `tilt`, `hover` and `fastener` (tape and pin) tokens.
+
+### Patch Changes
+
+- 857d720: `ref.fontFamily.mono` now names `'Noto Sans KR Variable'`, the family `@fontsource-variable/noto-sans-kr` registers. Hangul in code previously fell back to the generic `monospace` face. React Native output is unchanged (`Menlo`).
+- d5d6b04: Make the Penpot token export actually importable by Penpot.
+
+  `penpot:tokens` previously emitted the source DTCG `$type` verbatim, but Penpot
+  speaks the Tokens Studio vocabulary and accepts only its own 17 types — so
+  `fontFamily`, `fontWeight`, `duration` and `cubicBezier` had no valid mapping,
+  and the 239 `dimension` tokens all landed as generic `dimension`, which Penpot
+  refuses to apply to padding, radius or font-size properties.
+
+  The new `scripts/penpot-token-types.mjs` owns the dialect: it resolves each
+  `dimension` to the Penpot type its path implies (`spacing`, `sizing`,
+  `borderRadius`, `borderWidth`, `fontSizes`, `letterSpacing`), expands shadows
+  into the array-of-strings composite Penpot stores, converts durations to plain
+  numbers, and drops `cubicBezier` tokens together with everything that aliases
+  them — Penpot rejects a token whose alias does not resolve, so a partial drop
+  would fail the whole import. Aliases are still never resolved, so the
+  comp → sys → ref graph survives into Penpot.
+
+  `penpot:tokens` now also emits `dist/penpot/plugin-payload.json` for replaying
+  the tokens through the Penpot plugin API, is wired into `turbo.json`, and prints
+  the exclusion list on every run. The mapping and its three fidelity losses are
+  documented under "Penpot export" in `packages/tokens/AGENTS.md`.
+
 ## 0.12.1
 
 ### Patch Changes
