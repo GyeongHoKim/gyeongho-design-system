@@ -44,6 +44,35 @@ export const Elevated: Story = {
   },
 };
 
+/** A heading in the named `title` slot renders before the body with title styling. */
+export const TitleSlot: Story = {
+  render: () =>
+    html`<div style="padding-top: var(--sys-spacing-3xl); display: flex; flex-wrap: wrap; gap: var(--sys-spacing-xl);">
+      ${(['plain', 'sticky', 'lined'] as const).map(
+        (variant) =>
+          html`<gh-card
+            variant=${variant}
+            fastener="tape"
+            label=${`${variant} card`}
+            style="width: 220px; display: block;"
+          >
+            <p>Body text comes after the title.</p>
+            <h3 slot="title">${variant} title</h3>
+          </gh-card>`,
+      )}
+    </div>`,
+  play: async ({ canvasElement }) => {
+    const cards = Array.from(canvasElement.querySelectorAll('gh-card'));
+    await expect(cards.length).toBe(3);
+    for (const card of cards) {
+      const slot = card.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="title"]');
+      await expect(slot?.assignedElements().length).toBe(1);
+      const heading = card.querySelector('h3');
+      await expect(heading?.getBoundingClientRect().height ?? 0).toBeGreaterThan(0);
+    }
+  },
+};
+
 type Variant = 'plain' | 'sticky' | 'lined';
 type Fastener = 'none' | 'tape' | 'pin';
 

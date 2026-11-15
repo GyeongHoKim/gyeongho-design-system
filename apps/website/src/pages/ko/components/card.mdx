@@ -17,7 +17,7 @@ import { withBase } from '../../../lib/withBase';
 
 ## 구조
 
-일반 자식 요소 뒤에 그려진 손그림 사각형 외곽선이에요. Web Components에서는 `<h1>`/`<h2>`/`<h3>`/`[slot="title"]`로 슬롯된 콘텐츠가 특별한 제목 스타일(`::slotted` CSS)을 받아요; React와 React Native에는 동등한 제목 슬롯이 없어요 — 콘텐츠는 그냥 일반 자식 요소예요.
+일반 자식 요소 뒤에 그려진 손그림 사각형 외곽선이에요. Web Components의 `gh-card`에는 슬롯이 두 개 있어요. 먼저 렌더링되는 이름 있는 `title` 슬롯과 본문용 기본 슬롯이에요. `title` 슬롯의 콘텐츠와 기본 슬롯의 `<h1>`/`<h2>`/`<h3>`는 제목 스타일(`::slotted` CSS)을 받아요. React와 React Native에는 동등한 제목 슬롯이 없어요 — 콘텐츠는 그냥 일반 자식 요소예요.
 
 ## 변형 및 상태
 
