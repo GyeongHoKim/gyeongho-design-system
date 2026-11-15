@@ -158,6 +158,39 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
   ]}
 />
 
+## 코드 예시
+
+```tsx
+// React — @ghds/react (`fill`은 있고 `elevated`는 없어요)
+import { Card } from '@ghds/react/card';
+
+<Card fill="hachure">
+  <h3>Hachure</h3>
+  <p>Sketched, translucent fill.</p>
+</Card>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (`elevated`와 `label`은 있고 `fill`은 없어요) -->
+<script type="module">
+  import '@ghds/web-components/card';
+</script>
+<gh-card label="Elevated" elevated>
+  <h3 slot="title">Elevated</h3>
+  <p>Drop-shadow sketch outline suggests elevation.</p>
+</gh-card>
+```
+
+```tsx
+// React Native — @ghds/react-native (`elevated`는 있고 `fill`은 없어요)
+import { Card } from '@ghds/react-native/card';
+import { Text } from '@ghds/react-native/theme';
+
+<Card elevated accessibilityLabel="Summary">
+  <Text>Elevated card content</Text>
+</Card>;
+```
+
 ## 라이브 데모
 
 React는 `fill`을 사용하고; Web Components는 `elevated` + `label`을 사용해요 — 아래 데모는 통합된 예시가 아니라 각 플랫폼의 *실제* prop을 의도적으로 보여줘요.
@@ -172,12 +205,3 @@ React는 `fill`을 사용하고; Web Components는 `elevated` + `label`을 사�
     <CardDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Card } from '@ghds/react-native/card';
-
-<Card elevated accessibilityLabel="Summary">
-  <Text>Elevated card content</Text>
-</Card>;
-```
