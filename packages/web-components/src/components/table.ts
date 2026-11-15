@@ -13,6 +13,14 @@ export interface GhTableColumn {
   header: string;
   sortable?: boolean;
   align?: 'left' | 'right' | 'center';
+  /**
+   * Optional custom cell renderer. Receives the cell's primitive value and the
+   * whole row, and returns any Lit-renderable value — typically a
+   * `TemplateResult` built with `html` from `lit` (e.g. a `<code>` key name or a
+   * colour-swatch preview). A row missing the column's key passes `''`.
+   * Columns without `render` show the raw value.
+   */
+  render?: (value: string | number, row: GhTableRow) => unknown;
 }
 
 /** A row: a stable `id` plus a cell value per column key. */
@@ -211,7 +219,9 @@ export class GhTable extends SketchyBase {
               }
               ${this.columns.map(
                 (col) =>
-                  html`<td style=${`text-align:${col.align ?? 'left'}`}>${row[col.key]}</td>`,
+                  html`<td style=${`text-align:${col.align ?? 'left'}`}>${
+                    col.render ? col.render(row[col.key] ?? '', row) : row[col.key]
+                  }</td>`,
               )}
             </tr>`;
           })}

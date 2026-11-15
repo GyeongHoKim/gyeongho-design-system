@@ -1,5 +1,6 @@
+import { html } from 'lit';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { GhTable } from '../components/table.js';
+import { GhTable, type GhTableColumn } from '../components/table.js';
 import { cleanup, mount } from './fixture.js';
 
 const COLUMNS = [
@@ -65,5 +66,30 @@ describe('gh-table', () => {
       new Event('change', { bubbles: true, composed: true }),
     );
     expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual(['1']);
+  });
+
+  it('renders a column through its render function', async () => {
+    const render = vi.fn(
+      (value: string | number, row: { id: string }) =>
+        html`<code data-row=${row.id}>${value}</code>`,
+    );
+    const columns: GhTableColumn[] = [{ key: 'name', header: 'Name', render }, ...COLUMNS.slice(1)];
+    const el = await mountTable({ columns });
+    const cells = el.shadowRoot?.querySelectorAll('tbody tr:first-child td');
+    const code = cells?.[0]?.querySelector('code');
+    expect(code?.textContent).toBe('Ada');
+    expect(code?.dataset.row).toBe('1');
+    expect(render).toHaveBeenCalledWith('Ada', ROWS[0]);
+    expect(render).toHaveBeenCalledWith('Grace', ROWS[1]);
+    // Columns without `render` still show the raw value.
+    expect(cells?.[1]?.querySelector('code')).toBeNull();
+    expect(cells?.[1]?.textContent?.trim()).toBe('Engineer');
+  });
+
+  it('renders raw primitive values when no column has render', async () => {
+    const el = await mountTable();
+    const cells = [...(el.shadowRoot?.querySelectorAll('tbody tr:first-child td') ?? [])];
+    expect(cells.map((c) => c.textContent?.trim())).toEqual(['Ada', 'Engineer']);
+    expect(el.shadowRoot?.querySelector('tbody code')).toBeNull();
   });
 });
