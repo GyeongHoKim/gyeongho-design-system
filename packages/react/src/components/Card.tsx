@@ -1,4 +1,5 @@
 import { tokens } from '@ghds/tokens';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import {
   type CSSProperties,
   type FocusEvent,
@@ -56,6 +57,15 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
    */
   interactive?: boolean;
   /**
+   * Render as the single child element (Radix `Slot`) instead of a `<div>`,
+   * e.g. `<Card asChild><a href="/docs">…</a></Card>` to make the whole card a
+   * link. The child keeps its own semantics and receives the card's styles and
+   * decorations. An `asChild` card is treated as interactive: it lifts on hover
+   * and focus, a `plain` card's stroke darkens on hover, and keyboard focus
+   * shows a focus ring. Default `false`.
+   */
+  asChild?: boolean;
+  /**
    * Inline style. Merged last on every variant, so it overrides the card's own
    * styles (for example `margin` or `transform`).
    */
@@ -66,12 +76,23 @@ const card = tokens.comp.card;
 const c = cssVars.comp.card;
 const STROKE_WIDTH = toPx(tokens.sys.border.width.default);
 const INSET = STROKE_WIDTH;
+const FOCUS_RING_WIDTH = toPx(tokens.sys.border.width.thick);
+
+/** Whether `element` shows keyboard focus; true where `:focus-visible` is unsupported. */
+function isFocusVisible(element: Element): boolean {
+  try {
+    return element.matches(':focus-visible');
+  } catch {
+    return true;
+  }
+}
 
 /**
  * A hand-drawn surface container. The sketchy border + paper fill are generated
  * by `@ghds/sketch-core` (via {@link useSketch}); every color, padding, radius,
  * typography and sketch parameter comes from `@ghds/tokens` (`comp.card.*`).
- * Renders a plain `<div>`, so any ARIA role/landmark is the caller's to set.
+ * Renders a plain `<div>`, so any ARIA role/landmark is the caller's to set;
+ * with `asChild` it renders as its single child element instead (e.g. a link).
  */
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   {
@@ -80,7 +101,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     tone = 'neutral',
     fastener = 'none',
     tilt = 'none',
-    interactive = false,
+    interactive: interactiveProp = false,
+    asChild = false,
     children,
     style,
     ...rest
@@ -105,13 +127,18 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
+
+  // A slotted child (typically a link) is interactive by nature.
+  const interactive = interactiveProp || asChild;
 
   // Leave handlers are only attached while interactive, so drop any stale state
   // when it turns off; otherwise turning it back on would lift a card that isn't hovered.
-  if (!interactive && (hovered || focused)) {
+  if (!interactive && (hovered || focused || focusVisible)) {
     setHovered(false);
     setFocused(false);
+    setFocusVisible(false);
   }
 
   // Anything other than a known paper variant renders as plain.
@@ -150,18 +177,45 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
         },
         onFocus: (event: FocusEvent<HTMLDivElement>) => {
           setFocused(true);
+          // The ring marks the card itself (an `asChild` link), not a focused descendant.
+          setFocusVisible(
+            asChild && event.target === event.currentTarget && isFocusVisible(event.currentTarget),
+          );
           onFocus?.(event);
         },
         onBlur: (event: FocusEvent<HTMLDivElement>) => {
           const next = event.relatedTarget;
           if (!(next instanceof Node && event.currentTarget.contains(next))) setFocused(false);
+          setFocusVisible(false);
           onBlur?.(event);
         },
       }
     : {};
 
+  // A slotted link must not look like inline text. The outline is only set
+  // while keyboard-focused; otherwise it is left to the UA, so a link that
+  // becomes `:focus-visible` later (mouse focus, then a key press) still shows
+  // the browser's ring instead of none.
+  const linkStyle: CSSProperties = asChild
+    ? {
+        textDecoration: 'none',
+        cursor: 'pointer',
+        ...(focusVisible
+          ? {
+              outline: `${FOCUS_RING_WIDTH}px solid ${c.focus.ring}`,
+              outlineOffset: tokens.sys.spacing.xs,
+            }
+          : {}),
+      }
+    : {};
+
   const rootStyle: CSSProperties = paper
-    ? { ...paperStyle({ variant: paper, tone, tilt, fastener }), ...interactiveStyle, ...style }
+    ? {
+        ...paperStyle({ variant: paper, tone, tilt, fastener }),
+        ...linkStyle,
+        ...interactiveStyle,
+        ...style,
+      }
     : {
         // Scopes the `SketchSurface` (`z-index: -1`) to this card so an opaque
         // ancestor can't paint over it (see `sketchHostStyle`).
@@ -170,31 +224,47 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
         padding: card.padding,
         // Pivot from the top edge like paper cards, so a lift swings from the fastener.
         ...(fastener !== 'none' ? { transformOrigin: '50% 0' } : {}),
+        ...linkStyle,
         ...interactiveStyle,
         ...style,
       };
+
+  const surface = paper ? null : (
+    <SketchSurface
+      drawable={drawable}
+      width={size.width}
+      height={size.height}
+      strokeColor={asChild && hovered ? c.stroke.hover : c.stroke.default}
+      strokeWidth={STROKE_WIDTH}
+      fillColor={fill === 'solid' ? c.bg.default : c.bg.muted}
+      fillRendering={fill === 'solid' ? 'fill' : 'stroke'}
+      fillStrokeWidth={toPx(tokens.sys.border.width.thin)}
+    />
+  );
+  const marginLine =
+    paper === 'lined' ? (
+      <span aria-hidden="true" data-card-margin-line="" style={linedMarginStyle} />
+    ) : null;
+
+  if (asChild) {
+    return (
+      <Slot ref={paper ? forwardedRef : ref} style={rootStyle} {...rest} {...handlers}>
+        {mark}
+        {surface}
+        <Slottable>{children}</Slottable>
+        {marginLine}
+      </Slot>
+    );
+  }
 
   // One element tree for every variant: decorative layers sit in fixed slots, so
   // switching `variant` never remounts the children (their state and focus survive).
   return (
     <div ref={paper ? forwardedRef : ref} style={rootStyle} {...rest} {...handlers}>
       {mark}
-      {paper ? null : (
-        <SketchSurface
-          drawable={drawable}
-          width={size.width}
-          height={size.height}
-          strokeColor={c.stroke.default}
-          strokeWidth={STROKE_WIDTH}
-          fillColor={fill === 'solid' ? c.bg.default : c.bg.muted}
-          fillRendering={fill === 'solid' ? 'fill' : 'stroke'}
-          fillStrokeWidth={toPx(tokens.sys.border.width.thin)}
-        />
-      )}
+      {surface}
       {children}
-      {paper === 'lined' ? (
-        <span aria-hidden="true" data-card-margin-line="" style={linedMarginStyle} />
-      ) : null}
+      {marginLine}
     </div>
   );
 });
