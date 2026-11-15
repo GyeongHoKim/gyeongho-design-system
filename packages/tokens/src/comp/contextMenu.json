@@ -13,6 +13,7 @@
       },
       "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
       "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
+      "minWidth": { "$type": "dimension", "$value": "{sys.overlay.minWidth.sm}" },
       "zIndex": { "$type": "number", "$value": "{sys.zIndex.dropdown}" },
       "sketch": {
         "$type": "number",

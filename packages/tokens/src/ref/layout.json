@@ -34,9 +34,19 @@
       "rail": { "$value": "56px" }
     },
     "overlay": {
+      "minWidth": {
+        "$type": "dimension",
+        "$description": "Tier 1 floating overlay (menu, popover, dropdown panel) minimum widths.",
+        "sm": { "$value": "160px" },
+        "md": { "$value": "192px" },
+        "lg": { "$value": "224px" },
+        "xl": { "$value": "240px" }
+      }
+    },
+    "field": {
       "$type": "dimension",
-      "$description": "Tier 1 floating overlay sizes.",
-      "minWidth": { "$value": "160px" }
+      "$description": "Tier 1 form field sizes.",
+      "minWidth": { "$value": "224px" }
     }
   }
 }

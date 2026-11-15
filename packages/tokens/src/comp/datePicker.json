@@ -8,7 +8,8 @@
           "$type": "color",
           "default": { "$value": "{sys.color.border.default}" },
           "focus": { "$value": "{sys.color.border.focus}" }
-        }
+        },
+        "minWidth": { "$type": "dimension", "$value": "{sys.field.minWidth}" }
       },
       "text": { "$type": "color", "$value": "{sys.color.text.primary}" },
       "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
