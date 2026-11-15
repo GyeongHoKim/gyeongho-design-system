@@ -52,6 +52,28 @@ export const KeyboardOpen: Story = {
   },
 };
 
+/** `current` marks the active page: `aria-current="page"` link, underlined trigger. */
+export const Current: Story = {
+  // `current` compares paths (ignoring hashes), so this story uses page paths.
+  args: {
+    current: '/foundations/',
+    items: [
+      { href: '/design-style/', label: 'Design Style' },
+      { href: '/foundations/', label: 'Foundations' },
+      { href: '/principles/', label: 'Design Principles' },
+      { href: '/ux-writing/', label: 'UX Writing' },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Design' }));
+    await expect(canvas.getByRole('link', { name: 'Foundations' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  },
+};
+
 export const Dark: Story = {
   decorators: [
     (Story) => (

@@ -32,7 +32,43 @@ export interface NavMenuProps {
   label: string;
   /** Panel links. */
   items: NavMenuItem[];
+  /**
+   * The active page's path. The link whose `href` matches it exactly gets
+   * `aria-current="page"`; the trigger is underlined when any link is the
+   * current path or an ancestor of it. Query strings, hashes and trailing
+   * slashes are ignored when comparing.
+   */
+  current?: string;
   id?: string;
+}
+
+/**
+ * Strip query / hash and trailing slashes so paths compare cleanly. A hash- or
+ * query-only href (`#`, `#section`, `?tab=x`) has no path to compare and
+ * returns `null`, so it never matches the current page.
+ */
+function normalizePath(path: string): string | null {
+  const bare = path.replace(/[?#].*$/, '');
+  if (bare === '') {
+    return null;
+  }
+  return bare.replace(/\/+$/, '') || '/';
+}
+
+/** True when `current` is `href` itself or a page below it. */
+function containsPath(current: string, href: string): boolean {
+  const cur = normalizePath(current);
+  const base = normalizePath(href);
+  if (cur === null || base === null) {
+    return false;
+  }
+  return cur === base || cur.startsWith(`${base}/`);
+}
+
+/** True when `current` is exactly `href`. */
+function isSamePath(current: string, href: string): boolean {
+  const cur = normalizePath(current);
+  return cur !== null && cur === normalizePath(href);
 }
 
 const menu = tokens.comp.menu;
@@ -71,9 +107,10 @@ function itemKeys(items: readonly NavMenuItem[]): string[] {
  * them; Escape closes and returns focus to the trigger. Clicking outside or
  * tabbing out closes it. Positioned with `@floating-ui/react-dom`; colours and
  * sketch parameters come from `comp.menu.*` (the same visual family as `Menu`).
+ * Pass `current` to mark the active page (see the prop docs).
  */
 export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavMenu(
-  { label, items, id },
+  { label, items, current, id },
   forwardedRef,
 ) {
   const reactId = useId();
@@ -88,6 +125,16 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
   const pendingFocus = useRef<'first' | 'last' | null>(null);
 
   const keys = useMemo(() => itemKeys(items), [items]);
+  const isExactCurrent = (href: string): boolean =>
+    current !== undefined && current !== '' && isSamePath(current, href);
+  const groupCurrent =
+    current !== undefined &&
+    current !== '' &&
+    items.some((item) => containsPath(current, item.href));
+  const currentMark: CSSProperties = {
+    textDecoration: 'underline',
+    textUnderlineOffset: tokens.sys.spacing.xs,
+  };
 
   const { refs, floatingStyles } = useMenuFloating(open);
 
@@ -258,7 +305,7 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
           fillColor={c.trigger.bg.default}
           fillRendering="fill"
         />
-        <span style={{ position: 'relative' }}>{label}</span>
+        <span style={{ position: 'relative', ...(groupCurrent ? currentMark : {}) }}>{label}</span>
       </button>
       {/* biome-ignore lint/a11y/noStaticElementInteractions: the keydown only adds Arrow/Home/End/Escape shortcuts on top of the links' native Tab order */}
       <div
@@ -276,6 +323,7 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
                   linksRef.current[index] = el;
                 }}
                 href={item.href}
+                aria-current={isExactCurrent(item.href) ? 'page' : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -287,6 +335,9 @@ export const NavMenu = forwardRef<HTMLButtonElement, NavMenuProps>(function NavM
                   fontSize: tokens.sys.typography.body.fontSize,
                   textDecoration: 'none',
                   cursor: 'pointer',
+                  ...(isExactCurrent(item.href)
+                    ? { ...currentMark, fontWeight: tokens.sys.typography.label.fontWeight }
+                    : {}),
                 }}
                 onClick={() => close()}
                 onMouseEnter={() => setHighlighted(index)}

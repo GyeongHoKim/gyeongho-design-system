@@ -231,6 +231,50 @@ describe('NavMenu', () => {
     expect(link.style.background).toBe(before);
   });
 
+  it('marks the exact current link with aria-current="page" and underlines the trigger', async () => {
+    render(<NavMenu label="Design" items={ITEMS} current="/foundations" />);
+    const trigger = screen.getByRole('button', { name: 'Design' });
+    await userEvent.click(trigger);
+    expect(screen.getByRole('link', { name: 'Foundations' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(screen.getByRole('link', { name: 'Design Style' })).not.toHaveAttribute('aria-current');
+    expect(screen.getByText('Design')).toHaveStyle({ textDecoration: 'underline' });
+  });
+
+  it('marks only the trigger when the current path is below a link', async () => {
+    render(<NavMenu label="Design" items={ITEMS} current="/foundations/motion/?tab=1#top" />);
+    await userEvent.click(screen.getByRole('button', { name: 'Design' }));
+    for (const link of screen.getAllByRole('link')) {
+      expect(link).not.toHaveAttribute('aria-current');
+    }
+    expect(screen.getByText('Design')).toHaveStyle({ textDecoration: 'underline' });
+  });
+
+  it('marks nothing when current matches no link', async () => {
+    render(<NavMenu label="Design" items={ITEMS} current="/foundations-extra/" />);
+    await userEvent.click(screen.getByRole('button', { name: 'Design' }));
+    for (const link of screen.getAllByRole('link')) {
+      expect(link).not.toHaveAttribute('aria-current');
+    }
+    expect(screen.getByText('Design')).not.toHaveStyle({ textDecoration: 'underline' });
+  });
+
+  it('never marks hash- or query-only hrefs as current on the home page', async () => {
+    const items: NavMenuItem[] = [
+      { href: '#', label: 'Placeholder' },
+      { href: '#section', label: 'Section' },
+      { href: '?tab=x', label: 'Tab' },
+    ];
+    render(<NavMenu label="Design" items={items} current="/" />);
+    await userEvent.click(screen.getByRole('button', { name: 'Design' }));
+    for (const link of screen.getAllByRole('link')) {
+      expect(link).not.toHaveAttribute('aria-current');
+    }
+    expect(screen.getByText('Design')).not.toHaveStyle({ textDecoration: 'underline' });
+  });
+
   it('sizes the panel from the comp.menu.panel.minWidth token', () => {
     const { trigger } = renderNavMenu();
     const panel = document.getElementById(trigger.getAttribute('aria-controls') ?? '');
