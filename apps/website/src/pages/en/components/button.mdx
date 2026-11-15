@@ -18,15 +18,17 @@ the same order.
 ## Overview
 
 A `Button` triggers a single, immediate, user-initiated action — submitting a form, confirming a
-choice, opening something. Use a link (or `asChild` with an `<a>`) instead when the destination is
-navigation, not an action.
+choice, opening something. Use a link instead when the destination is navigation, not an action —
+in React wrap an `<a>` with `asChild`; on Web Components set `href` on `<gh-button>` to render a
+real `<a href>` with the same button styling.
 
 ## Anatomy
 
-A real `<button>` (or a Radix `Slot`-rendered element via `asChild`) carries all native keyboard
-and click semantics. A hand-drawn `SketchSurface` outline sits behind the label, purely decorative
-(`aria-hidden="true"`, `focusable="false"`, with an SVG `<title>` for tooling) — it never carries
-meaning, so removing it never changes what the button does or how it's announced.
+A real `<button>` (or a Radix `Slot`-rendered element via `asChild` in React, or a real `<a href>`
+when `href` is set on `<gh-button>`) carries all native keyboard and click semantics. A hand-drawn
+`SketchSurface` outline sits behind the label, purely decorative (`aria-hidden="true"`,
+`focusable="false"`, with an SVG `<title>` for tooling) — it never carries meaning, so removing it
+never changes what the button does or how it's announced.
 
 ## Variants & States
 
@@ -54,13 +56,13 @@ Exactly three variants exist: `primary`, `danger`, `neutral` — there is no `se
 <DoDont
   do={[
     'Use danger only for destructive or irreversible actions.',
-    'Use asChild to keep link semantics when a button needs to look and behave like a link.',
+    'Use asChild (React) or href (Web Components) to keep link semantics when a button needs to look like a button but navigate.',
     'Keep one primary button per view — it should be obvious what the main action is.',
   ]}
   dont={[
     "Don't rely on color alone to convey a danger action — the label should say what happens.",
     "Don't disable a button without explaining why somewhere else on screen.",
-    "Don't nest an <a> inside a native <button> — use asChild instead.",
+    "Don't nest an <a> inside a native <button> — use asChild (React) or href (Web Components) instead.",
   ]}
 />
 
@@ -68,10 +70,15 @@ Exactly three variants exist: `primary`, `danger`, `neutral` — there is no `se
 
 - Native `<button>` keyboard behavior (Space/Enter activates, native tab order) comes for free —
   no custom `onKeyDown` or `tabIndex` exists in the implementation.
-- Disabling is **not** uniform across the two render paths: the native `<button disabled>` path
+- Disabling is **not** uniform across the render paths: the native `<button disabled>` path
   removes the element from the tab order entirely (the browser's native behavior), while the
-  `asChild` path only sets `aria-disabled` — which does *not* remove the element from the tab
-  order. If you disable an `asChild` button, you're responsible for also preventing activation.
+  `asChild` path sets `aria-disabled="true"` and cancels every click (mouse, middle-click, and
+  keyboard Enter on a link) so a disabled link never navigates — but it stays in the tab order so
+  assistive technology can still discover it.
+- On Web Components, `disabled` always wins over `href`: a disabled `<gh-button href>` renders a
+  disabled `<button>`, never a navigable `<a>`. An enabled `<gh-button href>` takes its link role
+  from the inner `<a>` (no host `role="button"`), so it is announced as a link, can be opened in a
+  new tab, and is followed with Enter (not Space).
 - See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for the general keyboard
   and ARIA conventions shared across all components.
 
@@ -101,7 +108,10 @@ trailing punctuation.
       rows: [
         { name: 'variant', type: "'primary' | 'danger' | 'neutral'", default: "'primary'", description: 'Reflected attribute.' },
         { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: 'Drives form association (formAssociated = true).' },
-        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute.' },
+        { name: 'disabled', type: 'boolean', default: 'false', description: 'Reflected attribute. Wins over href — a disabled button never renders a link.' },
+        { name: 'href', type: 'string', description: 'When set (and not disabled), renders a real <a href> instead of a <button>, keeping variant/focus styling.' },
+        { name: 'target', type: 'string', description: 'Forwarded to the inner <a> when href is set.' },
+        { name: 'rel', type: 'string', description: "Forwarded to the inner <a> when href is set (e.g. 'noopener noreferrer' with target='_blank')." },
       ],
     },
     {
@@ -128,6 +138,11 @@ import { Button } from '@ghds/react/button';
 <Button variant="primary">Primary</Button>;
 <Button variant="danger">Delete</Button>;
 <Button variant="neutral">Cancel</Button>;
+
+// As a link — keeps <a> semantics, gets button styling
+<Button asChild variant="primary">
+  <a href="/getting-started/">Get Started →</a>
+</Button>;
 ```
 
 ```html
@@ -138,6 +153,12 @@ import { Button } from '@ghds/react/button';
 <gh-button variant="primary">Primary</gh-button>
 <gh-button variant="danger">Delete</gh-button>
 <gh-button variant="neutral">Cancel</gh-button>
+
+<!-- As a link — renders a real <a href> inside the shadow root -->
+<gh-button variant="primary" href="/getting-started/">Get Started →</gh-button>
+<gh-button variant="neutral" href="https://example.com/" target="_blank" rel="noopener noreferrer">
+  External
+</gh-button>
 ```
 
 ```tsx
