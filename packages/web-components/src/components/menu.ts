@@ -1,10 +1,10 @@
-import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import type { SketchDrawable, SketchOptions } from '@ghds/sketch-core';
 import { rectangle } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { anchorMenuPanel } from '../floating.js';
 import { type SketchParams, SketchyBase } from '../sketchy-base.js';
 
 /** One menu entry. */
@@ -176,20 +176,7 @@ export class GhMenu extends SketchyBase {
     const trigger = this.triggerEl;
     const panel = this.panelEl;
     if (trigger && panel) {
-      this.cleanupAutoUpdate = autoUpdate(trigger, panel, () => {
-        computePosition(trigger, panel, {
-          strategy: 'fixed',
-          placement: 'bottom-start',
-          middleware: [
-            offset(Number.parseFloat(tokens.comp.menu.panel.offset)),
-            flip(),
-            shift({ padding: Number.parseFloat(tokens.sys.spacing.sm) }),
-          ],
-        }).then(({ x, y }) => {
-          panel.style.left = `${x}px`;
-          panel.style.top = `${y}px`;
-        });
-      });
+      this.cleanupAutoUpdate = anchorMenuPanel(trigger, panel);
     }
     this.focusActive();
   }
