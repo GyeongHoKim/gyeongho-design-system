@@ -39,6 +39,67 @@ function toTextVariant(token: TypographyToken): {
   };
 }
 
+/** Colour per Card tone (`neutral`, `primary`, `success`, `warning`, `danger`, `info`). */
+interface CardToneColors {
+  neutral: string;
+  primary: string;
+  success: string;
+  warning: string;
+  danger: string;
+  info: string;
+}
+
+/** A React Native shadow style (iOS `shadow*` props plus Android `elevation`). */
+interface CardShadow {
+  shadowColor: string;
+  shadowOffset: { width: number; height: number };
+  shadowOpacity: number;
+  shadowRadius: number;
+  elevation: number;
+}
+
+/**
+ * Card paper, fastener and tilt values in the theme. Leaves are widened
+ * (`string` colours, `number` dimensions and degrees) so a custom theme can
+ * set any value, not only the shipped token literals.
+ */
+export interface CardTheme {
+  sticky: {
+    bg: CardToneColors;
+    radius: { small: number; fold: number };
+    padding: { top: number; inline: number; bottom: number };
+    shadow: CardShadow;
+  };
+  lined: {
+    bg: string;
+    rule: { color: string; width: number; gap: number };
+    margin: { color: string; width: number; offset: number };
+    padding: { top: number; inline: number; bottom: number; start: number };
+    radius: number;
+    shadow: CardShadow;
+  };
+  tilt: { sticky: number; lined: number };
+  fastener: {
+    tape: {
+      width: number;
+      height: number;
+      bg: string;
+      border: { color: string; width: number };
+      opacity: number;
+      tilt: number;
+    };
+    pin: {
+      size: number;
+      color: CardToneColors;
+      needle: string;
+      shadow: string;
+      shadowOpacity: number;
+      highlight: string;
+      highlightOpacity: number;
+    };
+  };
+}
+
 /**
  * Build a Restyle theme from a GHDS tokens object. Every value originates in
  * `@ghds/tokens` (`sys` + `comp` tiers only); nothing is hardcoded. Running
@@ -817,6 +878,14 @@ function buildTheme(t: Tokens) {
     // Resizable handle thickness (px) — the sketch line stroke width + the
     // handle's flex-basis along the split axis.
     resizableSize: t.comp.resizable.size,
+    // Card paper variants, fasteners and tilt. Read as a whole group so a
+    // custom theme can override any value (React Native has no CSS variables).
+    card: {
+      sticky: t.comp.card.sticky,
+      lined: t.comp.card.lined,
+      tilt: t.comp.card.tilt,
+      fastener: t.comp.card.fastener,
+    } satisfies CardTheme as CardTheme,
     // Motion durations (ms) from `sys.animation.duration`. Consumed by the
     // ad-hoc `Animated.timing` transitions (Toast entrance, Collapsible expand)
     // so those durations stay token-driven rather than hardcoded.
