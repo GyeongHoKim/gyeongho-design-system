@@ -156,6 +156,10 @@ GHDS가 정의한 웨이트마다 웨이트 전용 패밀리 이름이 하나씩
 `heading`과 `title`은 `Gaegu-Bold`, `body`와 `caption`은 `NotoSansKR-Regular`, `label`은
 `NotoSansKR-Medium`을 쓰고, 코드는 iOS에서 `Menlo-Regular`, Android에서 `monospace`를 써요.
 웨이트가 이미 패밀리 이름에 들어 있으므로 iOS와 Android에서는 `fontWeight`를 지정하지 않아요.
+웹(`react-native-web`)에서는 변형이 `fontWeight`를 유지해요. 그래서 웹 빌드에서 이 서체를
+등록한다면 각 `@font-face`를 PostScript 이름으로 선언하고 서체에 맞는 `font-weight` 디스크립터를
+함께 지정하세요(예: `Gaegu-Bold`에는 `font-weight: 700`). 지정하지 않으면 디스크립터가 기본값
+400이 되어, 이미 굵은 서체에 브라우저가 가짜 굵게(synthetic bold)를 한 번 더 적용해요.
 
 ### 앱에 폰트 로드하기
 

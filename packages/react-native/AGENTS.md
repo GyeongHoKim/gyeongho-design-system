@@ -89,7 +89,10 @@ On iOS and Android the variants carry **no `fontWeight`**: the weight is already
 family name, and Android looks up a different asset (`<name>_bold.ttf`) when a custom font
 is asked for bold. On web (`react-native-web`, used by Storybook and the tests) the variants
 keep `fontWeight`, because the browser does not know these names and falls back to its
-default face.
+default face. A `react-native-web` app that does register the faces must declare each
+`@font-face` under its PostScript name with a `font-weight` descriptor that matches the
+face (for example `font-weight: 700` for `Gaegu-Bold`); without it the descriptor defaults
+to 400 and the browser adds synthetic bold on top of a face that is already bold.
 
 When a component needs another weight of the same text, switch the **family**, not the
 weight. Breadcrumb's current page and the selected Tab use the `label` face:

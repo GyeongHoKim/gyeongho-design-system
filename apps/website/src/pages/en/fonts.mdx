@@ -154,7 +154,11 @@ The `@ghds/react-native` theme picks the family for each text variant's weight o
 current platform: `heading` and `title` use `Gaegu-Bold`, `body` and `caption` use
 `NotoSansKR-Regular`, `label` uses `NotoSansKR-Medium`, and code uses `Menlo-Regular` on
 iOS and `monospace` on Android. On iOS and Android the variants set no `fontWeight`,
-because the weight is already in the family name.
+because the weight is already in the family name. On web (`react-native-web`) the variants
+keep `fontWeight`, so if your web build registers these faces, declare each `@font-face`
+under its PostScript name with a matching `font-weight` descriptor (for example
+`font-weight: 700` for `Gaegu-Bold`). Otherwise the descriptor defaults to 400 and the
+browser adds synthetic bold on top of a face that is already bold.
 
 ### Loading fonts in your app
 

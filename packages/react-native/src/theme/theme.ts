@@ -65,8 +65,12 @@ export function resolveFontFamily(
  * GHDS stores `lineHeight` as a unitless multiplier (web/CSS convention). React
  * Native expects an absolute pixel line-height, so we derive it here. The face
  * is chosen by weight from the token's face table (`NotoSansKR-Medium` for
- * 500), so native platforms need no `fontWeight`. No design value is invented —
- * only the representation changes.
+ * 500), so native platforms need no `fontWeight`. Web keeps `fontWeight` so an
+ * unregistered name falls back to the default face at the right weight; a
+ * react-native-web app that registers the faces must give each `@font-face` a
+ * matching `font-weight` descriptor (e.g. 700 for `Gaegu-Bold`), or the browser
+ * synthesises bold on an already bold face. No design value is invented — only
+ * the representation changes.
  */
 export function toTextVariant(
   token: TypographyToken,
