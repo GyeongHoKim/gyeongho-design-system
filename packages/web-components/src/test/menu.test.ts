@@ -172,5 +172,48 @@ describe('gh-menu', () => {
       expect(nav.navigations).toEqual([{ href: 'https://example.com/source', prevented: false }]);
       expect(el.shadowRoot?.querySelector('.trigger')?.getAttribute('aria-expanded')).toBe('false');
     });
+
+    it('hovering an item moves focus to it, so keyboard activation targets the focused item', async () => {
+      const el = await mountOpenMixed();
+      const handler = vi.fn();
+      el.addEventListener('select', handler);
+      await el.updateComplete;
+      const [edit, source] = menuitems(el);
+      // Keyboard focus starts on the first item ("Edit")…
+      expect(el.shadowRoot?.activeElement).toBe(edit);
+      // …then the mouse moves over the link item.
+      source?.dispatchEvent(new MouseEvent('mouseenter'));
+      await el.updateComplete;
+      await el.updateComplete;
+      expect(el.shadowRoot?.activeElement).toBe(source);
+      // Reverse: hovering an action item moves focus back off the link, so
+      // Enter runs the action rather than suppressing the link's native Enter.
+      edit?.dispatchEvent(new MouseEvent('mouseenter'));
+      await el.updateComplete;
+      await el.updateComplete;
+      expect(el.shadowRoot?.activeElement).toBe(edit);
+      const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      edit?.dispatchEvent(enter);
+      expect(enter.defaultPrevented).toBe(true);
+      expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('edit');
+    });
+
+    it('an item with an empty href is a plain action item', async () => {
+      const el = await mount(new GhMenu());
+      el.items = [{ value: 'reload', label: 'Reload', href: '' }];
+      el.label = 'Actions';
+      await el.updateComplete;
+      (el.shadowRoot?.querySelector('.trigger') as HTMLButtonElement).click();
+      await el.updateComplete;
+      const handler = vi.fn();
+      el.addEventListener('select', handler);
+      const [item] = menuitems(el);
+      expect(item?.tagName).toBe('DIV');
+      expect(item?.hasAttribute('href')).toBe(false);
+      const enter = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+      item?.dispatchEvent(enter);
+      expect(enter.defaultPrevented).toBe(true);
+      expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('reload');
+    });
   });
 });

@@ -22,6 +22,14 @@ export interface GhMenuItem {
   href?: string;
 }
 
+/**
+ * Whether an item is a link item. An empty `href` counts as no link, so every
+ * item is exactly one of link or action — never both.
+ */
+function isLinkItem(item: GhMenuItem): boolean {
+  return item.href !== undefined && item.href !== '';
+}
+
 let menuUid = 0;
 
 /**
@@ -222,7 +230,7 @@ export class GhMenu extends SketchyBase {
     if (item.disabled) {
       return;
     }
-    if (item.href) {
+    if (isLinkItem(item)) {
       // Link items navigate natively (the anchor's own activation behaviour);
       // they only close the menu and never fire `select`.
       this.close();
@@ -281,7 +289,7 @@ export class GhMenu extends SketchyBase {
       case 'Enter':
       case ' ': {
         const item = this.items[this.activeIndex];
-        if (item?.href && !item.disabled) {
+        if (item && isLinkItem(item) && !item.disabled) {
           // Enter on a focused anchor natively fires its click (→ navigation),
           // so leave it alone. Space has no native link activation, so trigger
           // the anchor's click ourselves (only suppressing the page scroll).
@@ -316,10 +324,14 @@ export class GhMenu extends SketchyBase {
     const className = index === this.activeIndex ? 'item highlighted' : 'item';
     const onMouseEnter = (): void => {
       if (!item.disabled) {
+        // Move focus along with the highlight (like React's Menu) so the
+        // focused element always matches activeIndex; otherwise Enter/Space
+        // would pick a path for the hovered item while another one has focus.
         this.activeIndex = index;
+        this.focusActive();
       }
     };
-    if (item.href !== undefined) {
+    if (isLinkItem(item)) {
       // A disabled link drops its href so it cannot navigate.
       return html`<div class="item-wrapper" role="none">
         <a
