@@ -3,6 +3,7 @@ import { rectangle } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { anchorMenuPanel } from '../floating.js';
 import { type SketchParams, SketchyBase } from '../sketchy-base.js';
 
@@ -15,6 +16,19 @@ export interface GhNavMenuItem {
 }
 
 let navMenuUid = 0;
+
+/**
+ * Strip query / hash and trailing slashes so paths compare cleanly. A hash- or
+ * query-only href (`#`, `#section`, `?tab=x`) has no path to compare and
+ * returns `null`, so it never matches the current page.
+ */
+function normalizePath(path: string): string | null {
+  const bare = path.replace(/[?#].*$/, '');
+  if (bare === '') {
+    return null;
+  }
+  return bare.replace(/\/+$/, '') || '/';
+}
 
 /**
  * `<gh-nav-menu>` — a hand-drawn site-navigation dropdown.
@@ -30,7 +44,13 @@ let navMenuUid = 0;
  * on the trigger open it and focus the first / last link; Tab moves through
  * the links natively, and ArrowDown / ArrowUp / Home / End also move between
  * them; Escape closes and returns focus to the trigger. Clicking outside or
- * tabbing out of the component closes it. Positioned with `@floating-ui/dom`;
+ * tabbing out of the component closes it.
+ *
+ * Set `current` to the active page's path to mark it: the link whose `href`
+ * matches exactly gets `aria-current="page"`, and the trigger is underlined
+ * when any link is the current path or an ancestor of it (`/components/` on
+ * `/components/button/`). Query strings, hashes and trailing slashes are
+ * ignored when comparing. Positioned with `@floating-ui/dom`;
  * colours and sketch parameters come from `comp.menu.*` (the same visual
  * family as `gh-menu`).
  */
@@ -69,6 +89,11 @@ export class GhNavMenu extends SketchyBase {
 
       .label {
         position: relative;
+      }
+
+      .trigger.current .label {
+        text-decoration: underline;
+        text-underline-offset: var(--sys-spacing-xs);
       }
 
       .panel {
@@ -126,6 +151,12 @@ export class GhNavMenu extends SketchyBase {
         outline: var(--sys-border-width-thick) solid var(--comp-menu-trigger-stroke-focus);
         outline-offset: 0;
       }
+
+      .link[aria-current='page'] {
+        font-weight: var(--sys-typography-label-fontWeight);
+        text-decoration: underline;
+        text-underline-offset: var(--sys-spacing-xs);
+      }
     `,
   ];
 
@@ -133,6 +164,8 @@ export class GhNavMenu extends SketchyBase {
   @property({ attribute: false }) items: GhNavMenuItem[] = [];
   /** Trigger text. Slotted content, when given, replaces it visually. */
   @property({ type: String }) label = '';
+  /** The active page's path; marks the matching link (see class docs). */
+  @property({ type: String }) current = '';
 
   @state() private open = false;
 
@@ -152,6 +185,28 @@ export class GhNavMenu extends SketchyBase {
     this.open = false;
     this.stopListening();
     super.disconnectedCallback();
+  }
+
+  /** True when `href` is exactly the current path. */
+  private isExactCurrent(href: string): boolean {
+    if (this.current === '') {
+      return false;
+    }
+    const cur = normalizePath(this.current);
+    return cur !== null && cur === normalizePath(href);
+  }
+
+  /** True when the current path is `href` or a descendant of it. */
+  private containsCurrent(href: string): boolean {
+    if (this.current === '') {
+      return false;
+    }
+    const cur = normalizePath(this.current);
+    const base = normalizePath(href);
+    if (cur === null || base === null) {
+      return false;
+    }
+    return cur === base || cur.startsWith(`${base}/`);
   }
 
   private links(): HTMLAnchorElement[] {
@@ -278,8 +333,9 @@ export class GhNavMenu extends SketchyBase {
 
   protected override render(): unknown {
     const panelId = `${this.uid}-panel`;
+    const groupCurrent = this.items.some((item) => this.containsCurrent(item.href));
     return html`<button
-        class="trigger"
+        class=${groupCurrent ? 'trigger current' : 'trigger'}
         id=${this.uid}
         type="button"
         aria-expanded=${this.open ? 'true' : 'false'}
@@ -299,7 +355,11 @@ export class GhNavMenu extends SketchyBase {
           ${this.items.map(
             (item) =>
               html`<li class="list-item">
-                <a class="link" href=${item.href} @click=${() => this.close(false)}
+                <a
+                  class="link"
+                  href=${item.href}
+                  aria-current=${ifDefined(this.isExactCurrent(item.href) ? 'page' : undefined)}
+                  @click=${() => this.close(false)}
                   >${item.label}</a
                 >
               </li>`,

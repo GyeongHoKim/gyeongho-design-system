@@ -284,6 +284,46 @@ describe('gh-nav-menu', () => {
     add.mockRestore();
   });
 
+  it('marks the exact current link with aria-current="page" and the trigger as current', async () => {
+    const el = await mountNavMenu();
+    el.current = '/foundations';
+    await el.updateComplete;
+    const marked = links(el).filter((a) => a.getAttribute('aria-current') === 'page');
+    expect(marked.map((a) => a.getAttribute('href'))).toEqual(['/foundations/']);
+    expect(trigger(el).classList.contains('current')).toBe(true);
+  });
+
+  it('marks only the trigger when the current path is below a link', async () => {
+    const el = await mountNavMenu();
+    el.current = '/foundations/motion/?tab=1#top';
+    await el.updateComplete;
+    expect(links(el).some((a) => a.hasAttribute('aria-current'))).toBe(false);
+    expect(trigger(el).classList.contains('current')).toBe(true);
+  });
+
+  it('marks nothing when current matches no link or is empty', async () => {
+    const el = await mountNavMenu();
+    expect(trigger(el).classList.contains('current')).toBe(false);
+    el.current = '/foundations-extra/';
+    await el.updateComplete;
+    expect(links(el).some((a) => a.hasAttribute('aria-current'))).toBe(false);
+    expect(trigger(el).classList.contains('current')).toBe(false);
+  });
+
+  it('never marks hash- or query-only hrefs as current on the home page', async () => {
+    const el = await mount(new GhNavMenu());
+    el.items = [
+      { href: '#', label: 'Placeholder' },
+      { href: '#section', label: 'Section' },
+      { href: '?tab=x', label: 'Tab' },
+    ];
+    el.label = 'Design';
+    el.current = '/';
+    await el.updateComplete;
+    expect(links(el).some((a) => a.hasAttribute('aria-current'))).toBe(false);
+    expect(trigger(el).classList.contains('current')).toBe(false);
+  });
+
   it('sizes the panel from the comp.menu.panel.minWidth token', () => {
     const cssText = ([GhNavMenu.styles] as unknown[])
       .flat(Infinity)

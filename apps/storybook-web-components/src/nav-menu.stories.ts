@@ -9,11 +9,22 @@ const ITEMS: GhNavMenuItem[] = [
   { href: '#ux-writing', label: 'UX Writing' },
 ];
 
-function renderNavMenu(theme?: 'dark'): HTMLElement {
+// Path hrefs for the `current` story: `current` compares paths, ignoring hashes.
+const PAGE_ITEMS: GhNavMenuItem[] = [
+  { href: '/design-style/', label: 'Design Style' },
+  { href: '/foundations/', label: 'Foundations' },
+  { href: '/principles/', label: 'Design Principles' },
+  { href: '/ux-writing/', label: 'UX Writing' },
+];
+
+function renderNavMenu(theme?: 'dark', current?: string): HTMLElement {
   const el = document.createElement('gh-nav-menu');
-  const navMenu = el as HTMLElement & { items: GhNavMenuItem[]; label: string };
-  navMenu.items = ITEMS;
+  const navMenu = el as HTMLElement & { items: GhNavMenuItem[]; label: string; current: string };
+  navMenu.items = current ? PAGE_ITEMS : ITEMS;
   navMenu.label = 'Design';
+  if (current) {
+    navMenu.current = current;
+  }
   // In a real header, wrap the triggers in a <nav> landmark.
   const nav = document.createElement('nav');
   nav.setAttribute('aria-label', 'Main');
@@ -46,6 +57,12 @@ export const Default: Story = {};
 
 /** The panel open: a plain list of real `<a href>` links (no menu roles). */
 export const Open: Story = {
+  play: async ({ canvasElement }) => openPanel(canvasElement),
+};
+
+/** `current` marks the active page: `aria-current="page"` link, underlined trigger. */
+export const Current: Story = {
+  render: () => renderNavMenu(undefined, '/foundations/'),
   play: async ({ canvasElement }) => openPanel(canvasElement),
 };
 
