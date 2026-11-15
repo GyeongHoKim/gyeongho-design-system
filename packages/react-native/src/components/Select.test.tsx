@@ -12,8 +12,8 @@ const FRUIT_OPTIONS: SelectOption[] = [
 // `measureInWindow` (react-native-web) resolves via a macrotask (`setTimeout`),
 // not synchronously — poll for the resulting state update instead of racing a
 // single fixed-delay timer against it.
-function waitForOpen(trigger: HTMLElement): Promise<void> {
-  return waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'));
+async function waitForOpen(trigger: HTMLElement): Promise<void> {
+  await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'));
 }
 
 describe('Select', () => {
