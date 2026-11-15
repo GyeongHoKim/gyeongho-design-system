@@ -138,6 +138,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 |---|---|---|
 | Transient, non-blocking notification | `Toast` | Auto-dismiss ~5s |
 | Persistent inline status message | `Alert` | `role="status"` default, `role="alert"` for `danger` |
+| Static aside in doc/long-form content (note, tip, caveat) | `Callout` | `info`/`tip`/`warning`; `role="note"`, never dismissible; React + WC only (no RN) |
 | Sequential step progress | `Progress` | Combine with `Tabs` for multi-step forms |
 | First-paint loading placeholder | `Skeleton` | Use when nothing is on screen yet |
 | Subsequent/inline loading indicator | `Spinner` | Use when existing content stays visible |
