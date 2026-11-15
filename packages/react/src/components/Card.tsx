@@ -4,14 +4,40 @@ import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
 import { toPx } from '../lib/units.js';
+import {
+  type CardTilt,
+  type CardTone,
+  type CardVariant,
+  cardBodyStyle,
+  linedMarginStyle,
+  paperStyle,
+} from './cardPaper.js';
 import { SketchSurface, sketchHostStyle } from './SketchSurface.js';
+
+export type { CardTilt, CardTone, CardVariant };
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Fill style of the card body. `'solid'` (default) paints a hand-cut paper
-   * surface; `'hachure'` gives a sketched, translucent fill.
+   * surface; `'hachure'` gives a sketched, translucent fill. Applies to the
+   * `plain` variant only.
    */
   fill?: 'solid' | 'hachure';
+  /**
+   * Surface treatment. `'plain'` (default) is the sketch-outlined card;
+   * `'sticky'` is a coloured note with a folded corner; `'lined'` is ruled
+   * notebook paper. Paper variants render a plain `div` with no sketch outline.
+   */
+  variant?: CardVariant;
+  /** Paper colour of a `sticky` card. Default `'neutral'`. */
+  tone?: CardTone;
+  /** Leans a paper card by a token angle; no effect on `plain`. Default `'none'`. */
+  tilt?: CardTilt;
+  /**
+   * Inline style. Merged last on every variant, so it overrides the card's own
+   * styles (for example `margin` or `transform`).
+   */
+  style?: CSSProperties;
 }
 
 const card = tokens.comp.card;
@@ -26,7 +52,7 @@ const INSET = STROKE_WIDTH;
  * Renders a plain `<div>`, so any ARIA role/landmark is the caller's to set.
  */
 export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  { fill = 'solid', children, style, ...rest },
+  { fill = 'solid', variant = 'plain', tone = 'neutral', tilt = 'none', children, style, ...rest },
   forwardedRef,
 ) {
   const {
@@ -44,36 +70,40 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   const ref = mergeRefs(sketchRef, forwardedRef);
 
-  const rootStyle: CSSProperties = {
-    // Scopes the `SketchSurface` (`z-index: -1`) to this card so an opaque
-    // ancestor can't paint over it (see `sketchHostStyle`).
-    ...sketchHostStyle,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: card.gap,
-    boxSizing: 'border-box',
-    padding: card.padding,
-    color: c.text.body,
-    fontFamily: tokens.sys.typography.body.fontFamily,
-    fontSize: tokens.sys.typography.body.fontSize,
-    fontWeight: tokens.sys.typography.body.fontWeight,
-    lineHeight: String(tokens.sys.typography.body.lineHeight),
-    ...style,
-  };
+  // Anything other than a known paper variant renders as plain.
+  const paper = variant === 'sticky' || variant === 'lined' ? variant : null;
 
+  const rootStyle: CSSProperties = paper
+    ? { ...paperStyle({ variant: paper, tone, tilt }), ...style }
+    : {
+        // Scopes the `SketchSurface` (`z-index: -1`) to this card so an opaque
+        // ancestor can't paint over it (see `sketchHostStyle`).
+        ...sketchHostStyle,
+        ...cardBodyStyle,
+        padding: card.padding,
+        ...style,
+      };
+
+  // One element tree for every variant: decorative layers sit in fixed slots, so
+  // switching `variant` never remounts the children (their state and focus survive).
   return (
-    <div ref={ref} style={rootStyle} {...rest}>
-      <SketchSurface
-        drawable={drawable}
-        width={size.width}
-        height={size.height}
-        strokeColor={c.stroke.default}
-        strokeWidth={STROKE_WIDTH}
-        fillColor={fill === 'solid' ? c.bg.default : c.bg.muted}
-        fillRendering={fill === 'solid' ? 'fill' : 'stroke'}
-        fillStrokeWidth={toPx(tokens.sys.border.width.thin)}
-      />
+    <div ref={paper ? forwardedRef : ref} style={rootStyle} {...rest}>
+      {paper ? null : (
+        <SketchSurface
+          drawable={drawable}
+          width={size.width}
+          height={size.height}
+          strokeColor={c.stroke.default}
+          strokeWidth={STROKE_WIDTH}
+          fillColor={fill === 'solid' ? c.bg.default : c.bg.muted}
+          fillRendering={fill === 'solid' ? 'fill' : 'stroke'}
+          fillStrokeWidth={toPx(tokens.sys.border.width.thin)}
+        />
+      )}
       {children}
+      {paper === 'lined' ? (
+        <span aria-hidden="true" data-card-margin-line="" style={linedMarginStyle} />
+      ) : null}
     </div>
   );
 });
