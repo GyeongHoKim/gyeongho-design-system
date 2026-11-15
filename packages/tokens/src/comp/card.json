@@ -23,6 +23,222 @@
         "$type": "number",
         "roughness": { "$value": "{sys.sketch.roughness}" },
         "bowing": { "$value": "{sys.sketch.bowing}" }
+      },
+      "sticky": {
+        "$description": "Sticky-note card: tinted paper, tiny corner radius, large radius on the folded corner.",
+        "bg": {
+          "$type": "color",
+          "$description": "Paper colour per tone.",
+          "neutral": { "$value": "{sys.color.paper.neutral}" },
+          "primary": { "$value": "{sys.color.paper.primary}" },
+          "success": { "$value": "{sys.color.paper.success}" },
+          "warning": { "$value": "{sys.color.paper.warning}" },
+          "danger": { "$value": "{sys.color.paper.danger}" },
+          "info": { "$value": "{sys.color.paper.info}" }
+        },
+        "radius": {
+          "$type": "dimension",
+          "small": {
+            "$value": "{sys.radius.xs}",
+            "$description": "Three small corners."
+          },
+          "fold": {
+            "$value": "{sys.radius.xl}",
+            "$description": "The folded corner."
+          }
+        },
+        "padding": {
+          "$type": "dimension",
+          "$description": "Sticky padding; top is larger to clear the fastener.",
+          "top": { "$value": "{sys.spacing.xl}" },
+          "inline": { "$value": "{sys.spacing.lg}" },
+          "bottom": { "$value": "{sys.spacing.md}" }
+        },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "{sys.shadow.lg}",
+          "$description": "Resting shadow of the sticky note."
+        }
+      },
+      "lined": {
+        "$description": "Lined-note card: ruled paper with a margin line.",
+        "bg": {
+          "$type": "color",
+          "$value": "{sys.color.paper.lined}",
+          "$description": "Lined paper colour."
+        },
+        "rule": {
+          "color": {
+            "$type": "color",
+            "$value": "{sys.color.paper.rule}",
+            "$description": "Ruled line colour."
+          },
+          "width": {
+            "$type": "dimension",
+            "$value": "{sys.border.width.thin}",
+            "$description": "Ruled line thickness."
+          },
+          "gap": {
+            "$type": "dimension",
+            "$value": "{sys.spacing.lg}",
+            "$description": "Distance between ruled lines."
+          }
+        },
+        "margin": {
+          "color": {
+            "$type": "color",
+            "$value": "{sys.color.paper.margin}",
+            "$description": "Margin line colour."
+          },
+          "width": {
+            "$type": "dimension",
+            "$value": "{sys.border.width.default}",
+            "$description": "Margin line thickness."
+          },
+          "offset": {
+            "$type": "dimension",
+            "$value": "{sys.spacing.xl}",
+            "$description": "Margin line distance from the start edge."
+          }
+        },
+        "padding": {
+          "$type": "dimension",
+          "$description": "Lined padding; start clears the margin line.",
+          "top": { "$value": "{sys.spacing.xl}" },
+          "inline": { "$value": "{sys.spacing.lg}" },
+          "bottom": { "$value": "{sys.spacing.lg}" },
+          "start": { "$value": "{sys.spacing.2xl}" }
+        },
+        "radius": {
+          "$type": "dimension",
+          "$value": "{sys.radius.xs}",
+          "$description": "Lined card corner radius."
+        },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "{sys.shadow.lg}",
+          "$description": "Resting shadow of the lined note."
+        }
+      },
+      "tilt": {
+        "$type": "number",
+        "$description": "Resting lean in degrees.",
+        "sticky": { "$value": "{sys.rotation.md}" },
+        "lined": { "$value": "{sys.rotation.sm}" }
+      },
+      "hover": {
+        "$description": "Hover lift for paper cards.",
+        "lift": {
+          "$type": "dimension",
+          "$value": "{sys.spacing.sm}",
+          "$description": "Upward travel on hover."
+        },
+        "rotate": {
+          "$type": "number",
+          "$value": "{sys.rotation.sm}",
+          "$description": "Extra rotation in degrees on hover."
+        },
+        "shadow": {
+          "$type": "shadow",
+          "$value": "{sys.shadow.xl}",
+          "$description": "Shadow while hovered."
+        },
+        "duration": {
+          "$type": "duration",
+          "$value": "{sys.animation.duration.normal}",
+          "$description": "Hover transition duration."
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{sys.animation.easing.emphasized}",
+          "$description": "Hover transition easing."
+        }
+      },
+      "fastener": {
+        "$description": "Tape and pin fasteners for paper cards.",
+        "tape": {
+          "$description": "Tape fastener.",
+          "width": {
+            "$type": "dimension",
+            "$value": "{sys.spacing.4xl}",
+            "$description": "Tape length."
+          },
+          "height": {
+            "$type": "dimension",
+            "$value": "{sys.spacing.lg}",
+            "$description": "Tape thickness."
+          },
+          "bg": {
+            "$type": "color",
+            "$value": "{sys.color.bg.canvas}",
+            "$description": "Tape fill."
+          },
+          "border": {
+            "color": {
+              "$type": "color",
+              "$value": "{sys.color.border.strong}",
+              "$description": "Tape edge colour."
+            },
+            "width": {
+              "$type": "dimension",
+              "$value": "{sys.border.width.default}",
+              "$description": "Tape edge width."
+            }
+          },
+          "opacity": {
+            "$type": "number",
+            "$value": "{sys.opacity.translucent}",
+            "$description": "Tape translucency."
+          },
+          "tilt": {
+            "$type": "number",
+            "$value": "{sys.rotation.lg}",
+            "$description": "Tape rotation in degrees."
+          }
+        },
+        "pin": {
+          "$description": "Pin fastener.",
+          "size": {
+            "$type": "dimension",
+            "$value": "{sys.icon.size.md}",
+            "$description": "Width of the whole pin drawing (head and needle)."
+          },
+          "color": {
+            "$type": "color",
+            "$description": "Pin head colour per tone.",
+            "neutral": { "$value": "{sys.color.bg.primary.default}" },
+            "primary": { "$value": "{sys.color.bg.primary.default}" },
+            "success": { "$value": "{sys.color.bg.success.default}" },
+            "warning": { "$value": "{sys.color.bg.warning.default}" },
+            "danger": { "$value": "{sys.color.bg.danger.default}" },
+            "info": { "$value": "{sys.color.bg.info.default}" }
+          },
+          "needle": {
+            "$type": "color",
+            "$value": "{sys.color.icon.muted}",
+            "$description": "Pin needle colour."
+          },
+          "highlight": {
+            "$type": "color",
+            "$value": "{sys.color.icon.onPrimary}",
+            "$description": "Specular highlight on the pin head; light in both themes."
+          },
+          "shadow": {
+            "$type": "color",
+            "$value": "{sys.color.bg.overlay}",
+            "$description": "Pin shadow colour."
+          },
+          "shadowOpacity": {
+            "$type": "number",
+            "$value": "{sys.opacity.scrim}",
+            "$description": "Pin shadow opacity."
+          },
+          "highlightOpacity": {
+            "$type": "number",
+            "$value": "{sys.opacity.scrim}",
+            "$description": "Pin highlight opacity."
+          }
+        }
       }
     }
   }

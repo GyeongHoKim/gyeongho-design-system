@@ -188,6 +188,7 @@ describe('penpot token bundle: exclusions', () => {
     // entire import — not just the easing tokens.
     expect(EXCLUDED_DTCG_TYPES.has('cubicBezier')).toBe(true);
     expect(stats.dropped).toEqual([
+      'comp.card.hover.easing',
       'ref.easing.accelerate',
       'ref.easing.decelerate',
       'ref.easing.emphasized',

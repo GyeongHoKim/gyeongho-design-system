@@ -58,6 +58,13 @@
         "raised": { "$value": 4 }
       }
     },
+    "rotation": {
+      "$type": "number",
+      "$description": "Tier 1 rotation steps. Unitless numbers, in degrees (like ref.sketch.hachureAngle).",
+      "sm": { "$value": 1 },
+      "md": { "$value": 2 },
+      "lg": { "$value": 3 }
+    },
     "zIndex": {
       "$type": "number",
       "$description": "Tier 1 stacking layers. Spaced by 100 to leave room for future insertions.",
@@ -74,7 +81,8 @@
       "$description": "Tier 1 opacity scale. Unitless 0-1, matching the ref.sketch precedent for unitless number scales.",
       "disabled": { "$value": 0.4 },
       "hover": { "$value": 0.08 },
-      "scrim": { "$value": 0.5 }
+      "scrim": { "$value": 0.5 },
+      "translucent": { "$value": 0.7 }
     }
   }
 }

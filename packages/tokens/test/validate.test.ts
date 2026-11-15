@@ -136,6 +136,16 @@ function contrast(a: string, b: string): number {
 const BG_SURFACES = ['bg.canvas', 'bg.surface', 'bg.muted', 'bg.subtle'] as const;
 const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link', 'text.danger'] as const;
 const ICON_ROLES = ['icon.default', 'icon.muted'] as const;
+const PAPER_BACKGROUNDS = [
+  'neutral',
+  'primary',
+  'success',
+  'warning',
+  'danger',
+  'info',
+  'lined',
+].map((tone) => `paper.${tone}`);
+const PAPER_TEXT_ROLES = ['text.primary', 'text.secondary'] as const;
 const BORDER_INFO_ROLES = ['border.focus', 'border.danger'] as const;
 
 // Text drawn on filled semantic backgrounds (its own foreground/background pair).
@@ -179,6 +189,11 @@ function contrastMatrix(): Pair[] {
   }
   for (const [fg, bg] of ON_PAIRS) {
     pairs.push({ fg, bg, min: 4.5 });
+  }
+  for (const text of PAPER_TEXT_ROLES) {
+    for (const bg of PAPER_BACKGROUNDS) {
+      pairs.push({ fg: text, bg, min: 4.5 });
+    }
   }
   return pairs;
 }

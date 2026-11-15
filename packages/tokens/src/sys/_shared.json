@@ -9,14 +9,18 @@
       "md": { "$value": "{ref.spacing.4}" },
       "lg": { "$value": "{ref.spacing.6}" },
       "xl": { "$value": "{ref.spacing.8}" },
-      "2xl": { "$value": "{ref.spacing.12}" }
+      "2xl": { "$value": "{ref.spacing.12}" },
+      "3xl": { "$value": "{ref.spacing.16}" },
+      "4xl": { "$value": "{ref.spacing.24}" }
     },
     "radius": {
       "$type": "dimension",
       "$description": "Tier 2 semantic radius roles. Theme-invariant.",
+      "xs": { "$value": "{ref.radius.xs}" },
       "sm": { "$value": "{ref.radius.sm}" },
       "md": { "$value": "{ref.radius.md}" },
       "lg": { "$value": "{ref.radius.lg}" },
+      "xl": { "$value": "{ref.radius.xl}" },
       "pill": { "$value": "{ref.radius.full}" }
     },
     "border": {
@@ -173,7 +177,15 @@
       "$description": "Tier 2 semantic opacity roles. Theme-invariant.",
       "disabled": { "$value": "{ref.opacity.disabled}" },
       "hover": { "$value": "{ref.opacity.hover}" },
-      "scrim": { "$value": "{ref.opacity.scrim}" }
+      "scrim": { "$value": "{ref.opacity.scrim}" },
+      "translucent": { "$value": "{ref.opacity.translucent}" }
+    },
+    "rotation": {
+      "$type": "number",
+      "$description": "Tier 2 semantic rotation roles, in degrees. Theme-invariant.",
+      "sm": { "$value": "{ref.rotation.sm}" },
+      "md": { "$value": "{ref.rotation.md}" },
+      "lg": { "$value": "{ref.rotation.lg}" }
     }
   }
 }
