@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -28,5 +29,10 @@ describe('DatePicker', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Mon Jun 15 2026' }));
     expect(onChange).toHaveBeenCalledTimes(1);
     expect((onChange.mock.calls[0][0] as Date).getDate()).toBe(15);
+  });
+
+  it('sizes the field from the comp.datePicker.field.minWidth token', () => {
+    render(<DatePicker label="Due date" />);
+    expect(screen.getByRole('button').closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(tokens.comp.datePicker.field.minWidth);
   });
 });

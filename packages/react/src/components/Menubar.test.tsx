@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -53,5 +54,13 @@ describe('Menubar', () => {
     expect(screen.getByRole('menuitem', { name: 'New' })).toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('menuitem', { name: 'New' })).toBeNull();
+  });
+
+  it('sizes the dropdown panel from the comp.menubar.panel.minWidth token', async () => {
+    render(<Menubar menus={MENUS} aria-label="Main" />);
+    await userEvent.click(screen.getByRole('menuitem', { name: 'File' }));
+    expect(screen.getByRole('menuitem', { name: 'Open' }).closest<HTMLElement>('[style*="min-width"]')?.style.minWidth).toBe(
+      tokens.comp.menubar.panel.minWidth,
+    );
   });
 });
