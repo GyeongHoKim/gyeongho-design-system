@@ -64,7 +64,17 @@ export class GhCard extends SketchyBase {
         cursor: pointer;
       }
 
-      a.content:focus-visible {
+      /*
+       * A focusable host (tabindex on gh-card) moves its ring onto the paper:
+       * an outline on .content follows the folded corner radius and the tilt,
+       * where the browser's default host outline is an upright rectangle.
+       */
+      :host(:focus-visible) {
+        outline: none;
+      }
+
+      a.content:focus-visible,
+      :host(:focus-visible) .content {
         outline: var(--sys-border-width-thick) solid var(--comp-card-focus-ring);
         outline-offset: var(--sys-spacing-xs);
       }

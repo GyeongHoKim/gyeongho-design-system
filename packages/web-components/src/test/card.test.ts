@@ -197,7 +197,7 @@ describe('gh-card', () => {
     it('declares hover stroke, focus ring and lift rules from card tokens', () => {
       const css = cssText();
       expect(css).toMatch(/a\.content:hover > \.sketch\s*{[^}]*var\(--comp-card-stroke-hover\)/);
-      expect(css).toMatch(/a\.content:focus-visible\s*{[^}]*var\(--comp-card-focus-ring\)/);
+      expect(css).toMatch(/a\.content:focus-visible[^{]*{[^}]*var\(--comp-card-focus-ring\)/);
       expect(css).toMatch(/\.content > \.sketch\s*{[^}]*var\(--comp-card-stroke-default\)/);
       expect(css).toMatch(/a\.content:hover\s*{[^}]*translateY/);
       expect(css).toMatch(
@@ -341,6 +341,22 @@ describe('gh-card', () => {
       expect(el.matches(':focus-within')).toBe(true);
       // The rule above is what lifts it: the inner `.content` does not match on host focus.
       expect(el.shadowRoot?.querySelector('.content')?.matches(':focus-within')).toBe(false);
+    });
+
+    // jsdom has no :focus-visible styling, so this checks the stylesheet text;
+    // the rendered ring is asserted in the InteractiveFocused story.
+    it('declares the focus-visible host rules that move the ring onto the paper', () => {
+      const css = cssText();
+      // The default outline is suppressed only on :focus-visible, where the ring replaces it.
+      expect(css).toMatch(/:host\(:focus-visible\)\s*{\s*outline: none;?\s*}/);
+      expect(css).toMatch(
+        /:host\(:focus-visible\) \.content\s*{[^}]*outline: var\(--sys-border-width-thick\) solid var\(--comp-card-focus-ring\)/,
+      );
+      expect(css).toMatch(
+        /:host\(:focus-visible\) \.content\s*{[^}]*outline-offset: var\(--sys-spacing-xs\)/,
+      );
+      // Same ring as link mode: one rule serves both selectors.
+      expect(css).toMatch(/a\.content:focus-visible,\s*:host\(:focus-visible\) \.content\s*{/);
     });
 
     it('declares interactive lift rules', () => {
