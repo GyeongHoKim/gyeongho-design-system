@@ -153,7 +153,7 @@ needed.
 
 - **`ref.fontFamily.sketch`** (headings/titles): `'Gochi Hand', 'Gaegu', 'Comic Sans MS', cursive`
 - **`ref.fontFamily.sans`** (body/label/caption): `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', system-ui, …, sans-serif`
-- **`ref.fontFamily.mono`** (code): `ui-monospace, …, 'Noto Sans KR', monospace`
+- **`ref.fontFamily.mono`** (code): `ui-monospace, …, 'Noto Sans KR Variable', monospace`
 
 > **Note:** `@fontsource/pretendard` ships Latin glyphs only (no Korean subset on Fontsource).
 > Noto Sans KR Variable (`@fontsource-variable/noto-sans-kr`) is the Korean body face. Pretendard
