@@ -16,7 +16,18 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   variant?: ButtonVariant;
   /**
    * Render as the single child element (Radix `Slot`) instead of a `<button>`,
-   * e.g. to make a link look like a button while keeping its semantics.
+   * e.g. to make a link look like a button while keeping its semantics:
+   *
+   * ```tsx
+   * <Button asChild variant="primary">
+   *   <a href="/docs/">Get started</a>
+   * </Button>
+   * ```
+   *
+   * Combined with `disabled`, the slotted element gets `aria-disabled="true"`
+   * and every click (including middle-click / keyboard Enter on a link) is
+   * cancelled, so a disabled link never navigates. It stays focusable so
+   * assistive technology can still discover it.
    */
   asChild?: boolean;
 }
@@ -111,6 +122,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     onMouseUp,
     onBlur,
     onFocus,
+    onClickCapture,
+    onAuxClickCapture,
     type,
     ...rest
   },
@@ -198,6 +211,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   const ref = mergeRefs(sketchRef, forwardedRef);
 
   if (asChild) {
+    // A slotted element (typically an `<a href>`) can't be natively disabled, so
+    // cancel activation in the capture phase — before the child's own handlers
+    // run — and stop the default action (navigation) when `disabled`.
+    const blockWhenDisabled =
+      (forward?: React.MouseEventHandler<HTMLButtonElement>) =>
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (disabled) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        forward?.(event);
+      };
     return (
       <Slot
         ref={ref}
@@ -206,6 +232,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         aria-disabled={disabled || undefined}
         {...handlers}
         {...rest}
+        onClickCapture={blockWhenDisabled(onClickCapture)}
+        onAuxClickCapture={blockWhenDisabled(onAuxClickCapture)}
       >
         {surface}
         <Slottable>{children}</Slottable>
@@ -222,6 +250,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled}
       {...handlers}
       {...rest}
+      onClickCapture={onClickCapture}
+      onAuxClickCapture={onAuxClickCapture}
     >
       {surface}
       <span style={{ position: 'relative' }}>{children}</span>

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { Button } from './Button.js';
@@ -77,5 +77,43 @@ describe('Button', () => {
     const link = screen.getByRole('link', { name: 'Go to next page' });
     expect(link).toHaveAttribute('href', '/next');
     expect(link.querySelector('svg')).not.toBeNull();
+  });
+
+  it('marks a disabled asChild link aria-disabled and blocks navigation', async () => {
+    const onClick = vi.fn();
+    render(
+      <Button asChild disabled>
+        <a href="/next" onClick={onClick}>
+          Go to next page
+        </a>
+      </Button>,
+    );
+    const link = screen.getByRole('link', { name: 'Go to next page' });
+    expect(link).toHaveAttribute('aria-disabled', 'true');
+    // `fireEvent` returns false when the default action (navigation) was prevented.
+    expect(fireEvent.click(link)).toBe(false);
+    expect(fireEvent(link, new MouseEvent('auxclick', { bubbles: true, cancelable: true }))).toBe(
+      false,
+    );
+    await userEvent.click(link);
+    expect(onClick).not.toHaveBeenCalled();
+    link.focus();
+    await userEvent.keyboard('{Enter}');
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('lets an enabled asChild link activate normally', async () => {
+    const onClick = vi.fn((event: React.MouseEvent) => event.preventDefault());
+    render(
+      <Button asChild>
+        <a href="/next" onClick={onClick}>
+          Go to next page
+        </a>
+      </Button>,
+    );
+    const link = screen.getByRole('link', { name: 'Go to next page' });
+    expect(link).not.toHaveAttribute('aria-disabled');
+    await userEvent.click(link);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
