@@ -216,4 +216,13 @@ describe('gh-menu', () => {
       expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('reload');
     });
   });
+
+  it('sizes the panel from the comp.menu.panel.minWidth token', () => {
+    const cssText = ([GhMenu.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--comp-menu-panel-minWidth)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });

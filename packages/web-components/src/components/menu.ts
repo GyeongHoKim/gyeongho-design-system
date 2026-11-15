@@ -91,7 +91,7 @@ export class GhMenu extends SketchyBase {
         display: none;
         flex-direction: column;
         gap: var(--comp-menu-panel-gap);
-        min-width: 10rem;
+        min-width: var(--comp-menu-panel-minWidth);
         box-sizing: border-box;
         padding: var(--comp-menu-panel-padding);
         background: var(--comp-menu-panel-bg);

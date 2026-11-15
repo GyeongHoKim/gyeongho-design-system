@@ -283,4 +283,13 @@ describe('gh-nav-menu', () => {
     expect(add.mock.calls.some(([type]) => type === 'resize' || type === 'scroll')).toBe(false);
     add.mockRestore();
   });
+
+  it('sizes the panel from the comp.menu.panel.minWidth token', () => {
+    const cssText = ([GhNavMenu.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--comp-menu-panel-minWidth)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });

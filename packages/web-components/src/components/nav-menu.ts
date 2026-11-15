@@ -77,7 +77,7 @@ export class GhNavMenu extends SketchyBase {
         top: 0;
         z-index: var(--comp-menu-panel-zIndex);
         display: none;
-        min-width: 10rem;
+        min-width: var(--comp-menu-panel-minWidth);
         box-sizing: border-box;
         padding: var(--comp-menu-panel-padding);
         background: var(--comp-menu-panel-bg);
