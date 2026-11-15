@@ -1,0 +1,32 @@
+{
+  "comp": {
+    "callout": {
+      "$description": "Tier 3 component tokens for the hand-drawn Callout (static doc-content aside). References sys only.",
+      "bg": { "$type": "color", "$value": "{sys.color.bg.surface}" },
+      "stroke": {
+        "$type": "color",
+        "info": { "$value": "{sys.color.border.info}" },
+        "tip": { "$value": "{sys.color.border.tip}" },
+        "warning": { "$value": "{sys.color.border.warning}" }
+      },
+      "icon": {
+        "$type": "color",
+        "info": { "$value": "{sys.color.icon.info}" },
+        "tip": { "$value": "{sys.color.icon.tip}" },
+        "warning": { "$value": "{sys.color.icon.warning}" }
+      },
+      "text": {
+        "$type": "color",
+        "heading": { "$value": "{sys.color.text.primary}" },
+        "body": { "$value": "{sys.color.text.secondary}" }
+      },
+      "padding": { "$type": "dimension", "$value": "{sys.spacing.md}" },
+      "gap": { "$type": "dimension", "$value": "{sys.spacing.sm}" },
+      "sketch": {
+        "$type": "number",
+        "roughness": { "$value": "{sys.sketch.roughness}" },
+        "bowing": { "$value": "{sys.sketch.bowing}" }
+      }
+    }
+  }
+}
