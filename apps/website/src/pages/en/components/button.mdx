@@ -72,9 +72,11 @@ Exactly three variants exist: `primary`, `danger`, `neutral` — there is no `se
   no custom `onKeyDown` or `tabIndex` exists in the implementation.
 - Disabling is **not** uniform across the render paths: the native `<button disabled>` path
   removes the element from the tab order entirely (the browser's native behavior), while the
-  `asChild` path sets `aria-disabled="true"` and cancels every click (mouse, middle-click, and
-  keyboard Enter on a link) so a disabled link never navigates — but it stays in the tab order so
-  assistive technology can still discover it.
+  `asChild` path sets `aria-disabled="true"` and cancels clicks, middle-clicks, and keyboard Enter
+  before any of the child's click handlers run — but it stays in the tab order so assistive
+  technology can still discover it. The link keeps its `href`, so it can still be opened from the
+  context menu, dragged, or followed by crawlers; drop `href` from the child while disabled if it
+  must not be followable at all.
 - On Web Components, `disabled` always wins over `href`: a disabled `<gh-button href>` renders a
   disabled `<button>`, never a navigable `<a>`. An enabled `<gh-button href>` takes its link role
   from the inner `<a>` (no host `role="button"`), so it is announced as a link, can be opened in a
