@@ -177,7 +177,10 @@ export const InteractiveHovered: Story = {
   },
 };
 
-/** Keyboard-focused state, for visual regression. */
+/**
+ * Keyboard-focused state, for visual regression. A `tabIndex` card draws the
+ * `comp.card.focus.ring` outline on itself, following the folded corner.
+ */
 export const InteractiveFocused: Story = {
   ...Interactive,
   play: async ({ canvasElement }) => {
@@ -186,6 +189,8 @@ export const InteractiveFocused: Story = {
     await userEvent.tab();
     await expect(card).toHaveFocus();
     await expect(card.style.transform).toContain('translateY');
+    await expect(card.style.outline).toContain('--comp-card-focus-ring');
+    await expect(getComputedStyle(card).outlineStyle).toBe('solid');
   },
 };
 

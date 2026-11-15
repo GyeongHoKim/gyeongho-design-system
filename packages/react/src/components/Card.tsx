@@ -53,6 +53,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Lifts the card on mouse hover and while focus is inside. Paper variants
    * also gain a raised shadow; a `plain` card only moves (no shadow change).
+   * When the card itself is focusable (`tabIndex`), keyboard focus shows the
+   * `comp.card.focus.ring` outline instead of the browser default.
    * Default `false`.
    */
   interactive?: boolean;
@@ -180,9 +182,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
         },
         onFocus: (event: FocusEvent<HTMLDivElement>) => {
           setFocused(true);
-          // The ring marks the card itself (an `asChild` link), not a focused descendant.
+          // The ring marks the card itself (an `asChild` link or a `tabIndex` card),
+          // not a focused descendant.
           setFocusVisible(
-            asChild && event.target === event.currentTarget && isFocusVisible(event.currentTarget),
+            event.target === event.currentTarget && isFocusVisible(event.currentTarget),
           );
           onFocus?.(event);
         },
@@ -195,22 +198,23 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       }
     : {};
 
-  // A slotted link must not look like inline text. The outline is only set
-  // while keyboard-focused; otherwise it is left to the UA, so a link that
-  // becomes `:focus-visible` later (mouse focus, then a key press) still shows
-  // the browser's ring instead of none.
+  // A focusable interactive card (an `asChild` link or a `tabIndex` card) draws
+  // the token focus ring instead of the browser default; on the card itself it
+  // follows the folded corner and the tilt. The outline is only set while
+  // keyboard-focused; otherwise it is left to the UA (and the consumer's own
+  // styles), so a card that becomes `:focus-visible` later (mouse focus, then a
+  // key press) still shows the browser's ring instead of none.
+  const focusStyle: CSSProperties =
+    interactive && focusVisible
+      ? {
+          outline: `${FOCUS_RING_WIDTH}px solid ${c.focus.ring}`,
+          outlineOffset: tokens.sys.spacing.xs,
+        }
+      : {};
+  // A slotted link must not look like inline text.
   const linkStyle: CSSProperties = asChild
-    ? {
-        textDecoration: 'none',
-        cursor: 'pointer',
-        ...(focusVisible
-          ? {
-              outline: `${FOCUS_RING_WIDTH}px solid ${c.focus.ring}`,
-              outlineOffset: tokens.sys.spacing.xs,
-            }
-          : {}),
-      }
-    : {};
+    ? { textDecoration: 'none', cursor: 'pointer', ...focusStyle }
+    : focusStyle;
 
   const rootStyle: CSSProperties = paper
     ? {

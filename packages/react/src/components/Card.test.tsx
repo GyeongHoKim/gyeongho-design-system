@@ -287,6 +287,50 @@ describe('Card', () => {
       expect(root.style.transform).not.toContain('translateY');
     });
 
+    it('shows the token focus ring when a tabIndex card itself is focus-visible', () => {
+      render(
+        <Card variant="sticky" interactive tabIndex={0} data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      expect(root.style.outline).toBe('');
+      const matches = vi.spyOn(root, 'matches').mockImplementation(() => true);
+      fireEvent.focus(root);
+      expect(root.style.outline).toContain('var(--comp-card-focus-ring');
+      expect(root.style.outlineOffset).not.toBe('');
+      expect(root.style.transform).toContain('translateY');
+      fireEvent.blur(root);
+      expect(root.style.outline).toBe('');
+      // A mouse focus that is not focus-visible still lifts but draws no ring.
+      matches.mockImplementation(() => false);
+      fireEvent.focus(root);
+      expect(root.style.outline).toBe('');
+      expect(root.style.transform).toContain('translateY');
+    });
+
+    it('draws no ring on the card when a descendant has focus', () => {
+      render(
+        <Card variant="lined" interactive tabIndex={0} data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      vi.spyOn(root, 'matches').mockImplementation(() => true);
+      fireEvent.focus(screen.getByRole('button'));
+      expect(root.style.outline).toBe('');
+      expect(root.style.transform).toContain('translateY');
+    });
+
+    it('leaves the outline alone on a card that is not interactive', () => {
+      render(
+        <Card tabIndex={0} data-testid="c">
+          x
+        </Card>,
+      );
+      expect(screen.getByTestId('c').style.outline).toBe('');
+    });
+
     it('lifts a plain card on mouse hover without changing its box shadow', () => {
       render(
         <Card interactive data-testid="c">
