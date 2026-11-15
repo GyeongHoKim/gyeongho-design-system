@@ -17,6 +17,14 @@ export default function CardDemo(): React.JSX.Element {
         <h3>Hachure</h3>
         <p>Sketched, translucent fill.</p>
       </Card>
+      <Card variant="sticky" fastener="tape">
+        <h3>Sticky</h3>
+        <p>Sticky note with tape.</p>
+      </Card>
+      <Card variant="lined" fastener="pin">
+        <h3>Lined</h3>
+        <p>Ruled paper with a pin.</p>
+      </Card>
     </div>
   );
 }

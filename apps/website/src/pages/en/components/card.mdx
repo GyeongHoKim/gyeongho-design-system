@@ -29,8 +29,8 @@ thin rather than force-fitting states that don't exist.
 
 <StateList
   states={[
-    { name: 'Hover', present: false, note: 'Card is not interactive.' },
-    { name: 'Focus', present: false, note: 'Card is not focusable.' },
+    { name: 'Hover', present: true, note: 'Only with the interactive prop (React, Web Components): the card lifts. Not on React Native.' },
+    { name: 'Focus', present: true, note: 'The card itself is not focusable; with interactive it lifts while focus is inside (React, Web Components).' },
     { name: 'Disabled', present: false },
     { name: 'Loading', present: false },
     { name: 'Error', present: false },
@@ -40,6 +40,83 @@ thin rather than force-fitting states that don't exist.
 The one real variation is a **different prop per platform**, not a shared state: React's `fill`
 (`'solid' | 'hachure'`) controls the fill pattern; Web Components and React Native instead expose
 `elevated` (a boolean drop-shadow effect) — a genuinely different API, not a superset of React's.
+
+## Paper variants
+
+`variant` switches the surface to a paper look. `plain` is the default sketch outline; `sticky` is a
+sticky note and `lined` is ruled paper. `tone` picks the paper colour, `fastener` adds a piece of
+tape or a pin, and `tilt` rotates the card slightly. Tape and pin are decorative and hidden from
+assistive technology.
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: 'Surface style.' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Paper colour of sticky, and the pin colour on every variant.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: 'Decorative tape or pin. Renders on every variant.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: 'Rotates the card. No effect on plain.' },
+        { name: 'interactive', type: 'boolean', default: 'false', description: 'Lifts on hover and on focus within. Plain cards lift with transform only. No animation under reduced motion.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: 'Surface style (reflected attribute).' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Paper colour of sticky, and the pin colour on every variant.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: 'Decorative tape or pin. Renders on every variant.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: 'Rotates the card. No effect on plain.' },
+        { name: 'interactive', type: 'boolean', default: 'false', description: 'Lifts on hover and on focus within. Plain cards lift with transform only. No animation under reduced motion.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: 'Surface style.' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'Paper colour of sticky, and the pin colour on every variant.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: 'Decorative tape or pin. Renders on every variant.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: 'Rotates the card. No effect on plain.' },
+      ],
+    },
+  ]}
+/>
+
+- React Native has no `interactive` yet; it arrives with Card link mode.
+- React's `fill` and Web Components/React Native's `elevated` apply to `plain` only.
+- React Native reads the values from the Restyle theme (`theme.card.*`), so a custom theme overrides them.
+
+```tsx
+// React
+<Card variant="sticky" tone="warning" fastener="tape" tilt="left">
+  <h3>Reminder</h3>
+  <p>Water the plants.</p>
+</Card>
+```
+
+### Customizing paper colours
+
+On the web every value is a CSS custom property. Set it on a container that wraps the cards to
+change the paper inside it. Don't set it on `:root`: the dark theme redeclares every
+`--comp-card-*` property (on `[data-theme]` and, in OS dark mode, on `:root:not([data-theme])`), so
+the override is lost there. For the same reason, keep the container inside any element that carries
+`data-theme`.
+
+```css
+.notes {
+  --comp-card-sticky-bg-warning: var(--sys-color-paper-info);
+}
+```
+
+### Lined cards
+
+The rule gap equals the body line box, so body text sits on the rules. This holds for body text
+only: headings and element margins (such as the default `<p>` margins) shift the lines below them
+off the rules. Fill a lined card with body text without extra margins, and don't change its
+`line-height`.
 
 ## Usage
 
