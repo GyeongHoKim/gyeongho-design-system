@@ -13,12 +13,14 @@
       "8": { "$value": "32px" },
       "10": { "$value": "40px" },
       "12": { "$value": "48px" },
-      "16": { "$value": "64px" }
+      "16": { "$value": "64px" },
+      "24": { "$value": "96px" }
     },
     "radius": {
       "$type": "dimension",
       "$description": "Tier 1 corner radius scale.",
       "none": { "$value": "0px" },
+      "xs": { "$value": "2px" },
       "sm": { "$value": "4px" },
       "md": { "$value": "8px" },
       "lg": { "$value": "12px" },

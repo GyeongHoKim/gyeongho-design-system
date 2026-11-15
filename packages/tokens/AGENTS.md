@@ -133,6 +133,17 @@ comp.input.border.focus
 
 ---
 
+## Rotation and paper tokens
+
+- `ref.rotation.*`, `sys.rotation.*` and `comp.card.tilt.*` / `comp.card.hover.rotate` are
+  `number` tokens whose unit is **degrees** (like `ref.sketch.hachureAngle`). Consumers append
+  `deg` (CSS) or use the number directly (React Native).
+- `sys.color.paper.*` (`neutral`, `primary`, `success`, `warning`, `danger`, `info`, `lined`,
+  `rule`, `margin`) is theme-specific paper colour for the sticky and lined Card. The tone and
+  `lined` backgrounds are contrast-checked against `text.primary` and `text.secondary` in both themes.
+
+---
+
 ## Typography & Font Stacks
 
 Font-family stacks live in `ref.fontFamily` (`src/ref/typography.json`) and are referenced by
@@ -218,8 +229,8 @@ cannot be dropped onto a padding field in the Penpot UI. So
 
 1. **Easing is dropped.** Penpot has no `cubicBezier` type. It also *rejects a
    token whose alias does not resolve*, so `ref.easing.*` and the
-   `sys.animation.easing.*` tokens that alias them are dropped together —
-   8 tokens, printed by name on every run. Durations still export, as numbers.
+   `sys.animation.easing.*` and `comp.*` tokens that alias them are dropped
+   together — 9 tokens, printed by name on every run. Durations still export, as numbers.
 2. **Shadow alpha is lost.** Penpot's shadow token stores one opaque colour, so
    `rgba(28, 25, 22, 0.12)` resolves to `#1c1916` and reads heavier than in a
    browser.

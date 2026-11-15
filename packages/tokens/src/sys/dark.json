@@ -57,6 +57,18 @@
         "muted": { "$value": "{ref.palette.gray.400}" },
         "onPrimary": { "$value": "{ref.palette.white}" }
       },
+      "paper": {
+        "$description": "Paper surfaces for sticky and lined cards. Text on them uses text.primary / text.secondary.",
+        "neutral": { "$value": "{ref.palette.gray.750}" },
+        "primary": { "$value": "{ref.palette.brand.800}" },
+        "success": { "$value": "{ref.palette.success.800}" },
+        "warning": { "$value": "{ref.palette.warning.800}" },
+        "danger": { "$value": "{ref.palette.danger.800}" },
+        "info": { "$value": "{ref.palette.info.800}" },
+        "lined": { "$value": "{ref.palette.gray.800}" },
+        "rule": { "$value": "{ref.palette.info.800}" },
+        "margin": { "$value": "{ref.palette.danger.700}" }
+      },
       "chart": {
         "$description": "Categorical chart series colors. Decorative (not text pairings), exempt from contrast validation.",
         "1": { "$value": "{ref.palette.brand.300}" },
