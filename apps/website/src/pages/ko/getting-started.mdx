@@ -29,11 +29,11 @@ import '@ghds/tokens/css';
 ## 폰트 로드하기
 
 GHDS의 font-family 스택은 영어와 한국어를 위해 셀프 호스팅 웹폰트(Gochi Hand, Gaegu,
-Nunito Sans Variable, Pretendard)를 참조해요. Fontsource 패키지를 설치하고 임포트하면
-스택의 이름이 실제 폰트 파일로 연결돼요. 그렇지 않으면 시스템 폰트로 조용히 대체됩니다.
+Nunito Sans Variable, Noto Sans KR Variable, Pretendard)를 참조해요. Fontsource 패키지를 설치하고
+임포트하면 스택의 이름이 실제 폰트 파일로 연결돼요. 그렇지 않으면 시스템 폰트로 조용히 대체됩니다.
 
 ```bash
-pnpm add @fontsource-variable/nunito-sans @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
+pnpm add @fontsource-variable/nunito-sans @fontsource-variable/noto-sans-kr @fontsource/pretendard @fontsource/gochi-hand @fontsource/gaegu
 ```
 
 ```ts
@@ -43,6 +43,7 @@ import '@fontsource/gochi-hand/400.css';
 import '@fontsource/gaegu/400.css';
 // 본문 / UI
 import '@fontsource-variable/nunito-sans/wght.css';
+import '@fontsource-variable/noto-sans-kr/wght.css';
 import '@fontsource/pretendard/400.css';
 import '@fontsource/pretendard/500.css';
 import '@fontsource/pretendard/700.css';

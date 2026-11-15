@@ -185,7 +185,7 @@ Font choices are design decisions made at the `ref` tier only. To change a font:
 4. Run `pnpm build --filter @ghds/tokens` and `pnpm test --filter @ghds/tokens`.
 
 > React Native does not support CSS comma-separated font stacks. The RN build
-> automatically converts each web stack to a single family name (e.g. `Pretendard`
+> automatically converts each web stack to a single family name (e.g. `NotoSansKR`
 > for `sans`, `Gaegu` for `sketch`) so RN's `fontFamily` accepts it. The chosen
 > face includes both Latin and Korean glyphs. Loading the `.ttf` files in the RN
 > app is the consumer's responsibility — see `packages/react-native/AGENTS.md`.
