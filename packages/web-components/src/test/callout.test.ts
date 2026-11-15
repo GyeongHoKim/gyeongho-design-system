@@ -32,15 +32,53 @@ describe('gh-callout', () => {
     expect(el.shadowRoot?.querySelector('gh-icon')?.getAttribute('name')).toBe(icon);
   });
 
-  it('colours the outline and icon from the variant comp tokens', () => {
+  it.each<GhCalloutVariant>(['info', 'tip', 'warning'])(
+    'resolves the %s variant to its own stroke and icon comp tokens',
+    async (variant) => {
+      const el = await mount(new GhCallout());
+      el.variant = variant;
+      await el.updateComplete;
+      const attr = el.getAttribute('variant');
+      expect(attr).toBe(variant);
+
+      // jsdom does not cascade `:host(...)` rules, so walk the parsed component
+      // stylesheet and apply the rules that match the reflected attribute in
+      // source order, the way the shadow-root cascade would.
+      const sheet = document.createElement('style');
+      sheet.textContent = GhCallout.styles
+        .flat()
+        .map((style) => String(style))
+        .join('\n');
+      document.head.append(sheet);
+      const declared: Record<string, string> = {};
+      try {
+        const rules = Array.from(sheet.sheet?.cssRules ?? []).filter(
+          (rule): rule is CSSStyleRule => rule instanceof CSSStyleRule,
+        );
+        for (const rule of rules) {
+          const selector = rule.selectorText.replace(/\s+/g, '').replace(/"/g, "'");
+          const matches = selector === ':host' || selector === `:host([variant='${attr}'])`;
+          if (!matches) continue;
+          for (const prop of ['--_callout-stroke', '--_callout-icon']) {
+            const value = rule.style.getPropertyValue(prop).trim();
+            if (value) declared[prop] = value;
+          }
+        }
+      } finally {
+        sheet.remove();
+      }
+
+      expect(declared['--_callout-stroke']).toBe(`var(--comp-callout-stroke-${variant})`);
+      expect(declared['--_callout-icon']).toBe(`var(--comp-callout-icon-${variant})`);
+    },
+  );
+
+  it('references the text and background comp tokens', () => {
+    // Per-variant stroke/icon tokens are covered by the cascade test above.
     const css = GhCallout.styles
       .flat()
       .map((style) => String(style))
       .join('\n');
-    for (const variant of ['info', 'tip', 'warning']) {
-      expect(css).toContain(`var(--comp-callout-stroke-${variant})`);
-      expect(css).toContain(`var(--comp-callout-icon-${variant})`);
-    }
     expect(css).toContain('var(--comp-callout-text-heading)');
     expect(css).toContain('var(--comp-callout-text-body)');
     expect(css).toContain('var(--comp-callout-bg)');
