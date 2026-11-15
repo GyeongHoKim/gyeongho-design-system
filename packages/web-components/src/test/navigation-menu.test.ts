@@ -106,4 +106,13 @@ describe('gh-navigation-menu', () => {
       expect(el.shadowRoot?.querySelector('button.top')?.classList.contains('current')).toBe(false);
     });
   });
+
+  it('sizes the panel from the --comp-navigationMenu-panel-minWidth token', () => {
+    const cssText = ([GhNavigationMenu.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--comp-navigationMenu-panel-minWidth)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });
