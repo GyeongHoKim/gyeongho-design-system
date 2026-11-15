@@ -14,7 +14,8 @@ import { withBase } from '../../../lib/withBase';
 ## Overview
 
 A `Card` is a generic surface for grouping related content — it isn't interactive by itself and
-carries no built-in meaning beyond "these things belong together."
+carries no built-in meaning beyond "these things belong together." On the web it can also be a
+single link: see [Link cards](#link-cards).
 
 ## Anatomy
 
@@ -30,8 +31,8 @@ thin rather than force-fitting states that don't exist.
 
 <StateList
   states={[
-    { name: 'Hover', present: true, note: 'Only with the interactive prop (React, Web Components): the card lifts. Not on React Native.' },
-    { name: 'Focus', present: true, note: 'The card itself is not focusable; with interactive it lifts while focus is inside (React, Web Components).' },
+    { name: 'Hover', present: true, note: 'With interactive or as a link card (React, Web Components): the card lifts, and a link card\'s plain stroke darkens. Not on React Native.' },
+    { name: 'Focus', present: true, note: 'A link card is focusable and shows a focus ring on keyboard focus. Otherwise the card itself is not focusable; with interactive it lifts while focus is inside (React, Web Components).' },
     { name: 'Disabled', present: false },
     { name: 'Loading', present: false },
     { name: 'Error', present: false },
@@ -86,7 +87,7 @@ assistive technology.
   ]}
 />
 
-- React Native has no `interactive` yet; it arrives with Card link mode.
+- React Native has no `interactive` or link mode yet.
 - React's `fill` and Web Components/React Native's `elevated` apply to `plain` only.
 - React Native reads the values from the Restyle theme (`theme.card.*`), so a custom theme overrides them.
 
@@ -119,6 +120,59 @@ only: headings and element margins (such as the default `<p>` margins) shift the
 off the rules. Fill a lined card with body text without extra margins, and don't change its
 `line-height`.
 
+## Link cards
+
+To make the whole card one link, use `href` on Web Components or `asChild` with an `<a>` child on
+React (the same pattern as Button's `asChild`). The link is the card surface itself, so there is no
+wrapper element.
+
+- On mouse hover the card lifts like `interactive`, and a `plain` card's sketch stroke darkens
+  (`comp.card.stroke.hover`).
+- On keyboard focus the card shows a focus ring (`comp.card.focus.ring`) and lifts.
+- Paper variants, `tone`, `fastener` and `tilt` work as usual.
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'asChild', type: 'boolean', default: 'false', description: 'Renders the single child element (for example an <a>) as the card root. The card is then interactive: hover and focus lift it, and keyboard focus shows a focus ring.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'href', type: 'string', description: 'When non-empty, the surface renders as <a class="content" part="content"> covering the whole card.' },
+        { name: 'target', type: 'string', description: 'Anchor target. Used only with href.' },
+        { name: 'rel', type: 'string', description: 'Anchor rel. Used only with href. Pair target="_blank" with rel="noopener".' },
+      ],
+    },
+  ]}
+/>
+
+```tsx
+// React
+<Card asChild variant="sticky" tone="info">
+  <a href="/docs/tokens">
+    <h3>Tokens</h3>
+    <p>Design values for every platform.</p>
+  </a>
+</Card>
+```
+
+```html
+<!-- Web Components -->
+<gh-card href="/docs/tokens" variant="sticky" tone="info">
+  <h3 slot="title">Tokens</h3>
+  <p>Design values for every platform.</p>
+</gh-card>
+```
+
+Don't put buttons, inputs or other links inside a link card: interactive elements can't be nested
+inside a link. The card's text content becomes the link's accessible name, so keep it short.
+
 ## Usage
 
 <DoDont
@@ -135,9 +189,12 @@ off the rules. Fill a lined card with body text without extra margins, and don't
 ## Accessibility
 
 - **React**: renders a plain `<div>`. No role or label is set automatically — "any ARIA role/
-  landmark is the caller's to set" (per the component's own doc comment).
+  landmark is the caller's to set" (per the component's own doc comment). With `asChild`, the
+  child keeps its own semantics (for example a link).
 - **Web Components**: when a `label` is supplied, `gh-card` automatically sets
   `internals.role = 'group'` and `internals.ariaLabel` — a real behavior React does *not* replicate.
+  With `href`, the host has no role: the inner `<a>` is the link, and `label` becomes its
+  `aria-label`, replacing the text content as the accessible name.
 - **React Native**: sets `accessibilityRole="summary"` only when `accessibilityLabel` is passed.
 - See the <a href={withBase('/accessibility/')}>Accessibility Guide</a> for general conventions.
 
@@ -155,6 +212,7 @@ or slots (Web Components).
       packageName: '@ghds/react',
       rows: [
         { name: 'fill', type: "'solid' | 'hachure'", default: "'solid'", description: 'Fill style of the card body.' },
+        { name: 'asChild', type: 'boolean', default: 'false', description: 'Renders the single child element as the card root. See Link cards.' },
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Native <div> attributes (e.g. role, aria-label) pass through.' },
       ],
     },
@@ -163,7 +221,9 @@ or slots (Web Components).
       packageName: '@ghds/web-components',
       rows: [
         { name: 'elevated', type: 'boolean', default: 'false', description: 'Renders a sketch drop-shadow outline. No fill prop exists.' },
-        { name: 'label', type: 'string', description: 'When set, exposes the card as an ARIA group with this label.' },
+        { name: 'label', type: 'string', description: 'When set, exposes the card as an ARIA group with this label. On a link card, it labels the link instead.' },
+        { name: 'href', type: 'string', description: 'Renders the whole card as a link. See Link cards.' },
+        { name: 'target / rel', type: 'string', description: 'Anchor target and rel, used only with href.' },
       ],
     },
     {
