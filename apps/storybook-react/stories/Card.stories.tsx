@@ -194,6 +194,28 @@ export const InteractiveFocused: Story = {
   },
 };
 
+/**
+ * A `tabIndex` card that is not `interactive` still draws the
+ * `comp.card.focus.ring` outline on keyboard focus, but does not lift.
+ */
+export const FocusableFocused: Story = {
+  args: {
+    variant: 'sticky',
+    tabIndex: 0,
+    style: { maxWidth: 320 },
+    children: <span>Focusable without interactive.</span>,
+  },
+  render: (args) => withOverhang(<Card {...args} />),
+  play: async ({ canvasElement }) => {
+    const card = within(canvasElement).getByText('Focusable without interactive.')
+      .parentElement as HTMLElement;
+    await userEvent.tab();
+    await expect(card).toHaveFocus();
+    await expect(card.style.outline).toContain('--comp-card-focus-ring');
+    await expect(card.style.transform).not.toContain('translateY');
+  },
+};
+
 /** `asChild` with an `<a>` child: the whole card is one link. */
 export const LinkCard: Story = {
   args: {
