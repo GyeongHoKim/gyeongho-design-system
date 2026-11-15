@@ -143,6 +143,11 @@
       "width": { "$value": "{ref.sidebar.width}" },
       "rail": { "$value": "{ref.sidebar.rail}" }
     },
+    "overlay": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic floating overlay sizes (menus, dropdown panels). Theme-invariant.",
+      "minWidth": { "$value": "{ref.overlay.minWidth}" }
+    },
     "grid": {
       "columns": {
         "$type": "number",

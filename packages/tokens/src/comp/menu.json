@@ -24,6 +24,7 @@
         "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
         "gap": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
         "offset": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+        "minWidth": { "$type": "dimension", "$value": "{sys.overlay.minWidth}" },
         "zIndex": { "$type": "number", "$value": "{sys.zIndex.dropdown}" }
       },
       "item": {

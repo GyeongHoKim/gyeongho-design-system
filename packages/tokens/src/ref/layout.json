@@ -32,6 +32,11 @@
       "$description": "Tier 1 sidebar navigation widths: full panel and collapsed rail.",
       "width": { "$value": "256px" },
       "rail": { "$value": "56px" }
+    },
+    "overlay": {
+      "$type": "dimension",
+      "$description": "Tier 1 floating overlay sizes.",
+      "minWidth": { "$value": "160px" }
     }
   }
 }
