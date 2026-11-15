@@ -77,7 +77,7 @@ System event, informational only              → Toast (auto-dismiss)
 
 ## Component Selection
 
-All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
+All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`) unless the **Notes** column says otherwise (e.g. `NavMenu` is React / WC only). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
 
 ### Forms & inputs
 
@@ -129,6 +129,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 | Page/section location trail | `Breadcrumb` | — |
 | Paged navigation control | `Pagination` | — |
 | Top-level nav with dropdown links | `NavigationMenu` | React/WC are href-based (`<a>`); RN is selection-callback (`value`+`onSelect`, no `href`) |
+| Single header dropdown of page links | `NavMenu` | React/WC only; disclosure (`aria-expanded`) of real `<a href>` links, **no** `role="menu"` — never use `Menu` for navigation; `items: { href, label }[]` (WC `items` is a property) |
 | App navigation sidebar | `Sidebar` | React/RN data-driven (`sections`); WC slot-based; RN has no collapse; section heading prop React `.heading` vs RN `.title` |
 
 ### Feedback & status

@@ -1,0 +1,153 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 내비게이션 드롭다운
+description: 버튼으로 여는 사이트 내비게이션 링크의 손그림 스타일 드롭다운입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import NavMenuDemoReact from '../../../components/demos/NavMenuDemo.tsx';
+import NavMenuDemoLit from '../../../components/demos/NavMenuDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`NavMenu`는 관련된 **페이지**를 헤더의 트리거 하나 아래에 묶어요 — 예: "Design"을 누르면 Design Style,
+Foundations, Design Principles, UX Writing이 나타나요. 모든 항목이 실제 링크라서 새 탭에서 열기, 링크 주소
+복사 같은 기본 링크 동작이 그대로 유지되고, 크롤러도 링크를 따라갈 수 있어요.
+
+<a href={withBase('/components/menu/')}>Menu</a>의 내비게이션 버전이에요. Menu는 **동작** 메뉴(`role="menu"`,
+Edit / Delete 같은 명령)이고, NavMenu는 링크를 펼쳐 보여 주는 **디스클로저**예요. ARIA Authoring Practices는
+메뉴 역할을 명령 모음에만 쓰도록 하므로, NavMenu는 메뉴 역할을 일부러 쓰지 않아요. 여러 그룹이 있는 내비게이션
+바 전체가 필요하면 `NavigationMenu` / `gh-navigation-menu`를 사용하세요.
+
+## 구조
+
+`<button aria-expanded aria-controls>` 트리거가 떠 있는 패널을 열고 닫아요. 패널에는 `<a href>` 링크로 이뤄진
+일반 목록(`<ul>` / `<li>`)이 들어 있어요. `role="menu"`, `role="menuitem"`, `aria-haspopup="menu"`는 어디에도
+없어요. 트리거는 손그림 박스(`@ghds/sketch-core`)이고, 패널은 `comp.menu.*` 토큰을 그대로 써서 Menu와 같은
+모양이에요. 데이터 기반 — `{ href, label }` 형태의 `items` 배열을 전달하세요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: '닫힘', present: true, note: '기본값; aria-expanded=false, 링크가 숨겨져요.' },
+    { name: '열림', present: true, note: '패널 표시; 화살표 키로 연 경우가 아니면 포커스는 트리거에 남아요.' },
+    { name: '강조된 링크', present: true, note: '마우스를 올리거나 포커스된 링크가 강조돼요.' },
+    { name: '비활성화', present: false, note: '지원하지 않아요. 쓸 수 없는 링크는 목록에서 빼세요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '사이트 헤더에서 관련 페이지를 트리거 하나로 묶을 때 사용하세요.',
+    '헤더 트리거들은 aria-label이 있는 <nav> 랜드마크로 감싸세요.',
+    '링크 라벨은 짧은 페이지 이름으로 쓰세요.',
+  ]}
+  dont={[
+    '동작(Edit, Delete)에는 쓰지 마세요 — Menu를 사용하세요.',
+    '패널 안에 그룹을 중첩하지 마세요. 한 단계만 지원해요.',
+    '중요한 페이지로 가는 유일한 경로를 드롭다운 안에만 두지 마세요.',
+  ]}
+/>
+
+## 접근성
+
+- **React / Web Components**: 디스클로저 패턴 — 트리거에 `aria-expanded`와 패널을 가리키는 `aria-controls`가
+  있어요. 링크는 자연스러운 Tab 순서에 있어요(로빙 `tabindex` 없음). 화살표 키는 Tab에 더해 쓸 수 있는 보조
+  단축키예요. Escape를 누르면 닫히고 포커스가 트리거로 돌아가요. 바깥을 클릭하거나 Tab으로 컴포넌트를 벗어나도
+  닫혀요. 링크를 활성화하면 브라우저가 직접 이동해요.
+- **React Native**: NavMenu가 없어요 — `@ghds/react-native`의 `NavigationMenu`를 사용하세요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Enter / Space', action: '트리거에서: 패널을 열거나 닫아요.' },
+    { keys: '↓ / ↑', action: '트리거에서: 패널을 열고 첫 번째 / 마지막 링크로 포커스를 옮겨요.' },
+    { keys: 'Tab / Shift+Tab', action: '링크 사이를 이동해요. 컴포넌트를 벗어나면 닫혀요.' },
+    { keys: 'Arrow Up / Down', action: '패널에서: 링크 사이를 이동해요(순환).' },
+    { keys: 'Home / End', action: '패널에서: 첫 번째 / 마지막 링크로 포커스를 옮겨요.' },
+    { keys: 'Enter', action: '링크에서: 링크로 이동해요.' },
+    { keys: 'Escape', action: '닫고 포커스를 트리거로 돌려요.' },
+  ]}
+/>
+
+## 콘텐츠
+
+트리거에는 그룹 이름("Design", "Components")을, 링크에는 페이지 제목을 쓰세요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: '트리거 버튼 텍스트.' },
+        { name: 'items', type: 'NavMenuItem[]', description: '링크마다 { href, label }. 각각 실제 <a href>로 렌더링돼요.' },
+        { name: 'id', type: 'string', description: '트리거 id. 패널 id는 여기서 만들어져요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'label', type: 'string', description: '트리거 텍스트(또는 슬롯으로 트리거 내용 지정).' },
+        { name: 'items', type: 'GhNavMenuItem[]', description: '링크마다 { href, label } (속성이 아닌 프로퍼티).' },
+      ],
+    },
+  ]}
+/>
+
+## 코드 예시
+
+```tsx
+// React — @ghds/react
+import { NavMenu } from '@ghds/react/nav-menu';
+
+<nav aria-label="Main">
+  <NavMenu
+    label="Design"
+    items={[
+      { href: '/design-style/', label: 'Design Style' },
+      { href: '/foundations/', label: 'Foundations' },
+      { href: '/principles/', label: 'Design Principles' },
+      { href: '/ux-writing/', label: 'UX Writing' },
+    ]}
+  />
+</nav>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/nav-menu';
+  // items는 속성(attribute)이 아니라 프로퍼티예요
+  document.getElementById('design').items = [
+    { href: '/design-style/', label: 'Design Style' },
+    { href: '/foundations/', label: 'Foundations' },
+  ];
+</script>
+<nav aria-label="Main">
+  <gh-nav-menu id="design" label="Design"></gh-nav-menu>
+</nav>
+```
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <NavMenuDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <NavMenuDemoLit />
+  </div>
+</div>

@@ -9,6 +9,7 @@ GHDS ships the same design as three separate implementations — `@ghds/react`, 
 - Button content: children vs `label`-only
 - Button `variant`: React Native has no `'neutral'`
 - React-Native-only props
+- Web-only components: `NavMenu` has no React Native version
 - Web-Components-only: native form participation
 - Selection groups: Web Components has no shared `value`
 - `orientation` union: React Native uses `'row' | 'column'`
@@ -106,6 +107,10 @@ React and Web Components support `'primary' | 'danger' | 'neutral'`. React Nativ
 ## React-Native-only props
 
 `testID` and `accessibilityHint` exist only on React Native — they have no equivalent prop on React or Web Components. When porting a component's usage from React/Web Components to React Native, add them where useful for testing/accessibility; when porting the other direction, drop them (they don't exist elsewhere and TypeScript will reject them on React/Web Components).
+
+## Web-only components: `NavMenu` has no React Native version
+
+`NavMenu` (`@ghds/react/nav-menu`) and `<gh-nav-menu>` (`@ghds/web-components/nav-menu`) exist only on the web: they are a disclosure of real `<a href>` links, and React Native has no links or URLs to navigate to. On React Native, use `NavigationMenu`, which is selection-callback based (`value` + `onSelect`, no `href`).
 
 ## Web-Components-only: native form participation
 
