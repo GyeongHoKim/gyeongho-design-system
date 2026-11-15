@@ -1,6 +1,6 @@
 import { Card } from '@ghds/react/card';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 const meta = {
   title: 'Components/Card',
@@ -84,4 +84,122 @@ export const AsRegion: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('region', { name: 'Summary' })).toBeInTheDocument();
   },
+};
+
+type Variant = 'plain' | 'sticky' | 'lined';
+type Fastener = 'none' | 'tape' | 'pin';
+
+/** Top padding keeps the tape/pin overhang inside the story frame. */
+const withOverhang = (node: React.ReactNode): React.JSX.Element => (
+  <div style={{ paddingTop: 'var(--sys-spacing-3xl)' }}>{node}</div>
+);
+
+const paper = (variant: Variant, fastener: Fastener): Story => ({
+  args: {
+    variant,
+    fastener,
+    style: { maxWidth: 320 },
+    children: (
+      <>
+        <strong>Paper card</strong>
+        <span>Short note on paper.</span>
+      </>
+    ),
+  },
+  render: (args) => withOverhang(<Card {...args} />),
+});
+
+export const PlainNone: Story = paper('plain', 'none');
+export const PlainTape: Story = paper('plain', 'tape');
+export const PlainPin: Story = paper('plain', 'pin');
+export const StickyNone: Story = paper('sticky', 'none');
+export const StickyTape: Story = paper('sticky', 'tape');
+export const StickyPin: Story = paper('sticky', 'pin');
+export const LinedNone: Story = paper('lined', 'none');
+export const LinedTape: Story = paper('lined', 'tape');
+export const LinedPin: Story = paper('lined', 'pin');
+
+const tones = ['neutral', 'primary', 'success', 'warning', 'danger', 'info'] as const;
+
+export const StickyTones: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 200px)',
+        gap: 'var(--sys-spacing-lg)',
+      }}
+    >
+      {tones.map((tone) => (
+        <Card key={tone} variant="sticky" tone={tone}>
+          <strong>{tone}</strong>
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+export const Tilt: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sys-spacing-xl)' }}>
+      {(['sticky', 'lined'] as const).flatMap((variant) =>
+        (['left', 'right'] as const).map((tilt) => (
+          <Card key={`${variant}-${tilt}`} variant={variant} tilt={tilt} style={{ width: 180 }}>
+            <strong>
+              {variant} {tilt}
+            </strong>
+          </Card>
+        )),
+      )}
+    </div>
+  ),
+};
+
+export const Interactive: Story = {
+  args: {
+    variant: 'sticky',
+    interactive: true,
+    tabIndex: 0,
+    style: { maxWidth: 320 },
+    children: <span>Lifts on hover and on focus within.</span>,
+  },
+  render: (args) => withOverhang(<Card {...args} />),
+};
+
+/** Hovered state, for visual regression (storycap runs with reduced motion, so no transition to wait on). */
+export const InteractiveHovered: Story = {
+  ...Interactive,
+  play: async ({ canvasElement }) => {
+    const card = within(canvasElement).getByText('Lifts on hover and on focus within.')
+      .parentElement as HTMLElement;
+    await userEvent.hover(card);
+    await expect(card.style.transform).toContain('translateY');
+  },
+};
+
+/** Keyboard-focused state, for visual regression. */
+export const InteractiveFocused: Story = {
+  ...Interactive,
+  play: async ({ canvasElement }) => {
+    const card = within(canvasElement).getByText('Lifts on hover and on focus within.')
+      .parentElement as HTMLElement;
+    await userEvent.tab();
+    await expect(card).toHaveFocus();
+    await expect(card.style.transform).toContain('translateY');
+  },
+};
+
+export const Korean: Story = {
+  args: {
+    variant: 'lined',
+    fastener: 'tape',
+    style: { maxWidth: 320 },
+    children: (
+      <>
+        <strong>오늘의 메모</strong>
+        <span>우유와 달걀을 사요.</span>
+      </>
+    ),
+  },
+  render: (args) => withOverhang(<Card {...args} />),
 };

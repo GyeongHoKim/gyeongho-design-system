@@ -25,8 +25,8 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
 
 <StateList
   states={[
-    { name: 'Hover', present: false, note: '카드는 인터랙티브하지 않아요.' },
-    { name: 'Focus', present: false, note: '카드는 포커스 가능하지 않아요.' },
+    { name: 'Hover', present: true, note: 'interactive prop을 쓸 때만 해당해요(React, Web Components). 카드가 떠올라요. React Native에는 없어요.' },
+    { name: 'Focus', present: true, note: '카드 자체는 포커스되지 않아요. interactive를 쓰면 내부에 포커스가 있는 동안 떠올라요(React, Web Components).' },
     { name: '비활성화', present: false },
     { name: '로딩', present: false },
     { name: '오류', present: false },
@@ -34,6 +34,73 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
 />
 
 유일한 실제 변형은 **플랫폼마다 다른 prop**이지 공통 상태가 아니에요: React의 `fill`(`'solid' | 'hachure'`)이 채우기 패턴을 제어하고; Web Components와 React Native는 대신 `elevated`(불리언 드롭 섀도우 효과)를 노출해요 — React의 상위 집합이 아니라 진짜로 다른 API예요.
+
+## 종이 변형
+
+`variant`로 표면을 종이 느낌으로 바꿀 수 있어요. `plain`은 기본 스케치 외곽선이고, `sticky`는 포스트잇, `lined`는 줄 있는 종이예요. `tone`은 종이 색을, `fastener`는 테이프나 핀을, `tilt`는 카드의 살짝 기울기를 정해요. 테이프와 핀은 장식이라 보조 기술에는 숨겨져요.
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: '표면 스타일.' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'sticky의 종이 색이에요. 모든 변형에서 핀 색도 정해요.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: '장식용 테이프 또는 핀. 모든 변형에 렌더돼요.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: '카드를 기울여요. plain에는 효과가 없어요.' },
+        { name: 'interactive', type: 'boolean', default: 'false', description: '마우스를 올리거나 내부에 포커스가 있으면 떠올라요. plain은 transform만 사용해요. 동작 줄이기 설정에서는 애니메이션이 없어요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: '표면 스타일(반영되는 attribute).' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'sticky의 종이 색이에요. 모든 변형에서 핀 색도 정해요.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: '장식용 테이프 또는 핀. 모든 변형에 렌더돼요.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: '카드를 기울여요. plain에는 효과가 없어요.' },
+        { name: 'interactive', type: 'boolean', default: 'false', description: '마우스를 올리거나 내부에 포커스가 있으면 떠올라요. plain은 transform만 사용해요. 동작 줄이기 설정에서는 애니메이션이 없어요.' },
+      ],
+    },
+    {
+      platform: 'React Native',
+      packageName: '@ghds/react-native',
+      rows: [
+        { name: 'variant', type: "'plain' | 'sticky' | 'lined'", default: "'plain'", description: '표면 스타일.' },
+        { name: 'tone', type: "'neutral' | 'primary' | 'success' | 'warning' | 'danger' | 'info'", default: "'neutral'", description: 'sticky의 종이 색이에요. 모든 변형에서 핀 색도 정해요.' },
+        { name: 'fastener', type: "'none' | 'tape' | 'pin'", default: "'none'", description: '장식용 테이프 또는 핀. 모든 변형에 렌더돼요.' },
+        { name: 'tilt', type: "'none' | 'left' | 'right'", default: "'none'", description: '카드를 기울여요. plain에는 효과가 없어요.' },
+      ],
+    },
+  ]}
+/>
+
+- React Native에는 아직 `interactive`가 없어요. 카드 링크 모드와 함께 추가될 예정이에요.
+- React의 `fill`과 Web Components/React Native의 `elevated`는 `plain`에만 적용돼요.
+- React Native는 값을 Restyle 테마(`theme.card.*`)에서 읽으므로 커스텀 테마로 덮어쓸 수 있어요.
+
+```tsx
+// React
+<Card variant="sticky" tone="warning" fastener="tape" tilt="left">
+  <h3>Reminder</h3>
+  <p>Water the plants.</p>
+</Card>
+```
+
+### 종이 색 바꾸기
+
+웹에서는 모든 값이 CSS 커스텀 프로퍼티예요. 카드를 감싸는 컨테이너에 설정하면 그 안의 종이 색이 바뀌어요. `:root`에는 설정하지 마세요. 다크 테마가 모든 `--comp-card-*` 프로퍼티를 다시 선언하기 때문에(`[data-theme]`, 그리고 OS 다크 모드에서는 `:root:not([data-theme])`) 그곳에서는 덮어쓴 값이 사라져요. 같은 이유로 컨테이너는 `data-theme`이 붙은 요소의 안쪽에 두세요.
+
+```css
+.notes {
+  --comp-card-sticky-bg-warning: var(--sys-color-paper-info);
+}
+```
+
+### 줄 있는 카드
+
+줄 간격이 본문 줄 높이와 같아서 본문 글자가 줄 위에 놓여요. 이건 본문 텍스트에만 해당해요. 제목이나 요소의 여백(예: `<p>`의 기본 여백)이 있으면 그 아래 줄이 괘선에서 어긋나요. 줄 있는 카드에는 여백 없이 본문 텍스트를 넣고, `line-height`는 바꾸지 마세요.
 
 ## 사용법
 
