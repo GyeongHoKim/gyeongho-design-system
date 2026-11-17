@@ -48,11 +48,18 @@ export interface NavMenuProps {
  * returns `null`, so it never matches the current page.
  */
 function normalizePath(path: string): string | null {
-  const bare = path.replace(/[?#].*$/, '');
+  // String scans instead of `/[?#].*$/` and `/\/+$/`, which backtrack
+  // polynomially on long runs of `#` or `/`.
+  const cut = path.search(/[?#]/);
+  const bare = cut === -1 ? path : path.slice(0, cut);
   if (bare === '') {
     return null;
   }
-  return bare.replace(/\/+$/, '') || '/';
+  let end = bare.length;
+  while (end > 0 && bare[end - 1] === '/') {
+    end--;
+  }
+  return bare.slice(0, end) || '/';
 }
 
 /** True when `current` is `href` itself or a page below it. */
