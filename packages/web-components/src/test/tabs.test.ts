@@ -51,7 +51,7 @@ describe('gh-tabs', () => {
     ).shadowRoot?.querySelector('button');
     secondBtn?.click();
     expect(handler).toHaveBeenCalledTimes(1);
-    expect((handler.mock.calls[0][0] as CustomEvent<string>).detail).toBe('b');
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('b');
   });
 
   it('moves selection with ArrowRight', async () => {

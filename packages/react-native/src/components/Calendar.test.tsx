@@ -19,13 +19,13 @@ describe('Calendar', () => {
   });
 
   it('fires onChange with the tapped date', () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<(date: Date) => void>();
     renderWithTheme(
       <Calendar defaultMonth={new Date(2026, 6, 1)} onChange={onChange} testID="cal" />,
     );
     fireEvent.click(screen.getByLabelText(new Date(2026, 6, 15).toDateString()));
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect((onChange.mock.calls[0][0] as Date).getDate()).toBe(15);
+    expect(onChange.mock.calls[0]?.[0].getDate()).toBe(15);
   });
 
   it('does not select a disabled out-of-range date (dark theme)', () => {

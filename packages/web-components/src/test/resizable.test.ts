@@ -19,8 +19,12 @@ async function mountGroup(props: Partial<GhResizableGroup> = {}): Promise<GhResi
   return el;
 }
 
-function panels(el: GhResizableGroup): GhResizablePanel[] {
-  return [...el.querySelectorAll<GhResizablePanel>('gh-resizable-panel')];
+function panels(el: GhResizableGroup): [GhResizablePanel, GhResizablePanel] {
+  const [a, b] = el.querySelectorAll<GhResizablePanel>('gh-resizable-panel');
+  if (!a || !b) {
+    throw new Error('missing panels');
+  }
+  return [a, b];
 }
 
 function handle(el: GhResizableGroup): GhResizableHandle {

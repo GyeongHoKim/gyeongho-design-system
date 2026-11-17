@@ -48,6 +48,6 @@ describe('gh-pagination', () => {
     const items = el.shadowRoot?.querySelectorAll('gh-pagination-item');
     (items?.[3] as HTMLElement | undefined)?.click();
     expect(handler).toHaveBeenCalledTimes(1);
-    expect((handler.mock.calls[0][0] as CustomEvent<number>).detail).toBe(3);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<number>).detail).toBe(3);
   });
 });

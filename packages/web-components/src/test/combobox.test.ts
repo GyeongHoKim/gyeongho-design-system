@@ -66,9 +66,9 @@ describe('gh-combobox', () => {
     const field = input(el);
     field.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
     await el.updateComplete;
-    expect(el.open).toBe(true);
+    expect(field.getAttribute('aria-expanded')).toBe('true');
     field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     await el.updateComplete;
-    expect(el.open).toBe(false);
+    expect(field.getAttribute('aria-expanded')).toBe('false');
   });
 });

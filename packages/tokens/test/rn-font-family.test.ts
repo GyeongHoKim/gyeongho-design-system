@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-// @ts-expect-error — generated build output, resolved after `pnpm build`
+// Generated build output: type-checks only after `pnpm build`. `pnpm check-types`
+// through turbo builds this package first; a direct script run needs `pnpm build`.
 import { darkTokens, lightTokens } from '../dist/rn/index.js';
 
 // React Native takes a single family name, not a CSS stack. The RN build maps

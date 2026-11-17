@@ -45,7 +45,7 @@ describe('gh-menubar', () => {
       new CustomEvent('select', { detail: 'open', bubbles: true, composed: true }),
     );
     await el.updateComplete;
-    const detail = (handler.mock.calls[0][0] as CustomEvent<GhMenubarSelectDetail>).detail;
+    const detail = (handler.mock.calls[0]?.[0] as CustomEvent<GhMenubarSelectDetail>).detail;
     expect(detail).toEqual({ menu: 'File', value: 'open' });
   });
 });

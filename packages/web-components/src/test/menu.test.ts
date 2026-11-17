@@ -46,7 +46,7 @@ describe('gh-menu', () => {
     el.addEventListener('select', handler);
     (el.shadowRoot?.querySelectorAll('[role="menuitem"]')[1] as HTMLElement).click();
     await el.updateComplete;
-    expect((handler.mock.calls[0][0] as CustomEvent<string>).detail).toBe('duplicate');
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('duplicate');
     expect(el.shadowRoot?.querySelector('.trigger')?.getAttribute('aria-expanded')).toBe('false');
   });
 

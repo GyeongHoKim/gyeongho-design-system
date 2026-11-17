@@ -44,7 +44,7 @@ describe('gh-table', () => {
     const nameTh = el.shadowRoot?.querySelector('th[aria-sort]');
     expect(nameTh?.getAttribute('aria-sort')).toBe('none');
     nameTh?.querySelector('button')?.click();
-    expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual({
+    expect((handler.mock.calls[0]?.[0] as CustomEvent).detail).toEqual({
       key: 'name',
       direction: 'asc',
     });
@@ -65,7 +65,7 @@ describe('gh-table', () => {
     (boxes?.[0] as HTMLElement).dispatchEvent(
       new Event('change', { bubbles: true, composed: true }),
     );
-    expect((handler.mock.calls[0][0] as CustomEvent).detail).toEqual(['1']);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent).detail).toEqual(['1']);
   });
 
   it('renders a column through its render function', async () => {

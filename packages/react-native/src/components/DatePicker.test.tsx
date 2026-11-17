@@ -11,7 +11,7 @@ describe('DatePicker', () => {
   });
 
   it('opens the calendar and selects a date', () => {
-    const onChange = vi.fn();
+    const onChange = vi.fn<(date: Date) => void>();
     renderWithTheme(
       <DatePicker label="Due" value={new Date(2026, 6, 1)} onChange={onChange} testID="dp" />,
     );
@@ -19,7 +19,7 @@ describe('DatePicker', () => {
     expect(screen.getByText('July 2026')).toBeInTheDocument();
     fireEvent.click(screen.getByLabelText(new Date(2026, 6, 20).toDateString()));
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect((onChange.mock.calls[0][0] as Date).getDate()).toBe(20);
+    expect(onChange.mock.calls[0]?.[0].getDate()).toBe(20);
   });
 
   it('does not open when disabled (dark theme)', () => {

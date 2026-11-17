@@ -30,6 +30,6 @@ describe('gh-sidebar', () => {
     expect(el.collapsed).toBe(true);
     expect(el.hasAttribute('collapsed')).toBe(true);
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
-    expect((handler.mock.calls[0][0] as CustomEvent<boolean>).detail).toBe(true);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<boolean>).detail).toBe(true);
   });
 });

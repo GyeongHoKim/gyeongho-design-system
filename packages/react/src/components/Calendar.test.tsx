@@ -14,12 +14,12 @@ describe('Calendar', () => {
   });
 
   it('selects a day on click', async () => {
-    const onSelect = vi.fn();
+    const onSelect = vi.fn<(date: Date) => void>();
     render(<Calendar defaultMonth={JUNE_2026} onSelect={onSelect} />);
     await userEvent.click(screen.getByRole('button', { name: 'Mon Jun 15 2026' }));
     expect(onSelect).toHaveBeenCalledTimes(1);
-    expect(onSelect.mock.calls[0][0]).toBeInstanceOf(Date);
-    expect((onSelect.mock.calls[0][0] as Date).getDate()).toBe(15);
+    expect(onSelect.mock.calls[0]?.[0]).toBeInstanceOf(Date);
+    expect(onSelect.mock.calls[0]?.[0].getDate()).toBe(15);
   });
 
   it('marks the selected day with aria-pressed', () => {

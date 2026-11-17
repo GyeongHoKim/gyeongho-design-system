@@ -15,9 +15,7 @@ describe('ContextMenu', () => {
   // trigger surface and its a11y wiring.
   it('renders the trigger closed', () => {
     renderWithTheme(
-      <ContextMenu triggerLabel="Row" trigger={<Text>Row</Text>} items={ACTIONS} testID="cm">
-        Row
-      </ContextMenu>,
+      <ContextMenu triggerLabel="Row" trigger={<Text>Row</Text>} items={ACTIONS} testID="cm" />,
     );
     const trigger = screen.getByTestId('cm');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');

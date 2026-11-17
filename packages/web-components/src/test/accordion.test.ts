@@ -51,7 +51,7 @@ describe('gh-accordion', () => {
     ).shadowRoot?.querySelector('button');
     firstHeader?.click();
     expect(handler).toHaveBeenCalledTimes(1);
-    expect((handler.mock.calls[0][0] as CustomEvent<string[]>).detail).toEqual(['a']);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string[]>).detail).toEqual(['a']);
   });
 
   it('keeps at most one open in single mode', async () => {
@@ -63,7 +63,7 @@ describe('gh-accordion', () => {
       el.shadowRoot?.querySelectorAll('gh-accordion-item')[1] as GhAccordionItem
     ).shadowRoot?.querySelector('button');
     secondHeader?.click();
-    expect((handler.mock.calls[0][0] as CustomEvent<string[]>).detail).toEqual(['b']);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string[]>).detail).toEqual(['b']);
   });
 
   it('adds to the open set in multiple mode', async () => {
@@ -74,6 +74,6 @@ describe('gh-accordion', () => {
       el.shadowRoot?.querySelectorAll('gh-accordion-item')[1] as GhAccordionItem
     ).shadowRoot?.querySelector('button');
     secondHeader?.click();
-    expect((handler.mock.calls[0][0] as CustomEvent<string[]>).detail).toEqual(['a', 'b']);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<string[]>).detail).toEqual(['a', 'b']);
   });
 });

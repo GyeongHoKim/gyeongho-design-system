@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GhInputOtp, GhInputOtpCell } from '../components/input-otp.js';
-import { cleanup, mount, setSize } from './fixture.js';
+import { cleanup, mount, nth, setSize } from './fixture.js';
 
 function inputs(el: GhInputOtp): HTMLInputElement[] {
   return [...(el.shadowRoot?.querySelectorAll<HTMLInputElement>('.cell input') ?? [])];
@@ -11,7 +11,7 @@ function cells(el: GhInputOtp): GhInputOtpCell[] {
 }
 
 async function type(el: GhInputOtp, index: number, char: string): Promise<void> {
-  const input = inputs(el)[index];
+  const input = nth(inputs(el), index);
   input.value = char;
   input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
   await el.updateComplete;
@@ -38,7 +38,7 @@ describe('gh-input-otp', () => {
     const el = await mount(new GhInputOtp());
     const group = el.shadowRoot?.querySelector('[role="group"]');
     expect(group?.getAttribute('aria-label')).toBe('One-time code');
-    expect(inputs(el)[0].getAttribute('aria-label')).toBe('Digit 1');
+    expect(nth(inputs(el), 0).getAttribute('aria-label')).toBe('Digit 1');
   });
 
   it('advances to the next cell as characters are typed and emits gh-change', async () => {
@@ -47,7 +47,7 @@ describe('gh-input-otp', () => {
     el.addEventListener('gh-change', changed);
     await type(el, 0, '1');
     expect(el.value).toBe('1');
-    expect((changed.mock.calls[0][0] as CustomEvent).detail).toEqual({ value: '1' });
+    expect((changed.mock.calls[0]?.[0] as CustomEvent).detail).toEqual({ value: '1' });
     await type(el, 1, '2');
     expect(el.value).toBe('12');
   });
@@ -68,7 +68,7 @@ describe('gh-input-otp', () => {
     const el = await mount(new GhInputOtp());
     el.value = '123';
     await el.updateComplete;
-    inputs(el)[2].dispatchEvent(
+    nth(inputs(el), 2).dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true, composed: true }),
     );
     await el.updateComplete;
@@ -85,10 +85,10 @@ describe('gh-input-otp', () => {
     Object.defineProperty(paste, 'clipboardData', {
       value: { getData: () => '4821' },
     });
-    inputs(el)[0].dispatchEvent(paste);
+    nth(inputs(el), 0).dispatchEvent(paste);
     await el.updateComplete;
     expect(el.value).toBe('4821');
-    expect((completed.mock.calls[0][0] as CustomEvent).detail).toEqual({ value: '4821' });
+    expect((completed.mock.calls[0]?.[0] as CustomEvent).detail).toEqual({ value: '4821' });
   });
 
   it('reflects disabled and invalid, and flags every cell danger when invalid', async () => {
@@ -107,12 +107,12 @@ describe('gh-input-otp', () => {
     await el.updateComplete;
     const all = cells(el);
     // Cell 0 is the focused (active) cell by default; cell 1 is filled, the rest default.
-    expect(all[0].getAttribute('state')).toBe('active');
-    expect(all[1].getAttribute('state')).toBe('filled');
-    expect(all[2].getAttribute('state')).toBe('default');
-    await setSize(all[1], 40, 40);
-    expect(all[1].shadowRoot?.querySelectorAll('path.sketch-stroke').length ?? 0).toBeGreaterThan(
-      0,
-    );
+    expect(nth(all, 0).getAttribute('state')).toBe('active');
+    expect(nth(all, 1).getAttribute('state')).toBe('filled');
+    expect(nth(all, 2).getAttribute('state')).toBe('default');
+    await setSize(nth(all, 1), 40, 40);
+    expect(
+      nth(all, 1).shadowRoot?.querySelectorAll('path.sketch-stroke').length ?? 0,
+    ).toBeGreaterThan(0);
   });
 });

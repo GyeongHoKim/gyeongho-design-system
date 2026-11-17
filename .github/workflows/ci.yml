@@ -30,6 +30,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # Runs after Build: the storybook/website apps type-check against the
+      # packages' emitted declarations. Every package's check-types also
+      # covers its test files (tsconfig.json), so test typing cannot drift.
+      - name: Type check
+        run: pnpm check-types
+
       - name: Test
         run: pnpm test
 

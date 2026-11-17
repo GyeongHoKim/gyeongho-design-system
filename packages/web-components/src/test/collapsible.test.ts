@@ -28,7 +28,7 @@ describe('gh-collapsible', () => {
     await el.updateComplete;
     expect(el.open).toBe(true);
     expect(el.shadowRoot?.querySelector('.region')?.hasAttribute('hidden')).toBe(false);
-    expect((handler.mock.calls[0][0] as CustomEvent<boolean>).detail).toBe(true);
+    expect((handler.mock.calls[0]?.[0] as CustomEvent<boolean>).detail).toBe(true);
   });
 
   it('does not toggle when disabled', async () => {
