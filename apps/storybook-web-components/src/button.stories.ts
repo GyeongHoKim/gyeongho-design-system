@@ -74,3 +74,44 @@ export const DisabledBlocksClick: Story = {
     await expect(args.onClick).not.toHaveBeenCalled();
   },
 };
+
+/**
+ * `href` renders a real `<a href>` (crawlable, right-clickable, keyboard-focusable)
+ * with the same sketch outline and variant colours. `target`/`rel` are forwarded.
+ */
+export const AsLink: Story = {
+  name: 'As link (href)',
+  // The render only reads `variant`; hide the meta's disabled/label/onClick controls.
+  parameters: { controls: { include: ['variant'] } },
+  render: (args) =>
+    html`<gh-button variant=${args.variant} href="#getting-started">Get Started →</gh-button>
+      <gh-button
+        variant="neutral"
+        href="https://example.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >External link</gh-button
+      >`,
+  play: async ({ canvasElement }) => {
+    const [internal, external] = Array.from(canvasElement.querySelectorAll('gh-button'));
+    const anchor = requireEl<HTMLAnchorElement>(internal?.shadowRoot ?? null, 'a');
+    await expect(anchor.getAttribute('href')).toBe('#getting-started');
+    await expect(internal?.shadowRoot?.querySelector('button')).toBeNull();
+    const externalAnchor = requireEl<HTMLAnchorElement>(external?.shadowRoot ?? null, 'a');
+    await expect(externalAnchor.getAttribute('target')).toBe('_blank');
+    await expect(externalAnchor.getAttribute('rel')).toBe('noopener noreferrer');
+  },
+};
+
+/** `disabled` wins over `href`: a disabled `<button>` renders, never a navigable link. */
+export const DisabledLink: Story = {
+  name: 'As link (href) — disabled',
+  parameters: { controls: { disable: true } },
+  render: () => html`<gh-button href="#getting-started" disabled>Get Started →</gh-button>`,
+  play: async ({ canvasElement }) => {
+    const host = requireEl(canvasElement, 'gh-button');
+    await expect(host.shadowRoot?.querySelector('a')).toBeNull();
+    const inner = requireEl<HTMLButtonElement>(host.shadowRoot, 'button');
+    await expect(inner.disabled).toBe(true);
+  },
+};

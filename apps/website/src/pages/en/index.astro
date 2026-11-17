@@ -1,5 +1,4 @@
 ---
-import CtaButton from '../../components/CtaButton.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { NAV } from '../../lib/nav';
 import { withBase } from '../../lib/withBase';
@@ -18,12 +17,8 @@ import { withBase } from '../../lib/withBase';
       React Native. Explore the tokens, components, and patterns in the docs below.
     </p>
     <div class="demo-row cta-row">
-      <CtaButton href={withBase('/getting-started/')} variant="primary" client:only="react">
-        Get Started →
-      </CtaButton>
-      <CtaButton href={withBase('/components/')} variant="neutral" client:only="react">
-        View Components
-      </CtaButton>
+      <gh-button href={withBase('/getting-started/')} variant="primary">Get Started →</gh-button>
+      <gh-button href={withBase('/components/')} variant="neutral">View Components</gh-button>
     </div>
   </section>
 
