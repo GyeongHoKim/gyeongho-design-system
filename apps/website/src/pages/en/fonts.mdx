@@ -137,60 +137,91 @@ to your self-hosted files. No per-component font configuration is needed.
 
 ## React Native
 
-React Native does not support CSS comma-separated font stacks. The `@ghds/tokens/rn`
-build automatically converts each web stack to a **single family name** that RN can
-consume:
+React Native does not support CSS comma-separated font stacks, and a custom font has one
+file per weight. The `@ghds/tokens/rn` build converts each web stack to a **face table**:
+per platform, one weight-specific family name for every weight GHDS defines.
 
-| Token | Web stack (CSS) | RN value |
-| --- | --- | --- |
-| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
-| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR` |
-| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
+| Token | Web stack (CSS) | iOS | Android |
+| --- | --- | --- | --- |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR-Regular` / `-Medium` / `-Bold` | same as iOS |
+| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu-Regular` (400, 500) / `Gaegu-Bold` (700) | same as iOS |
+| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo-Regular` / `Menlo-Bold` | `monospace` |
 
-The chosen RN face includes both Latin and Korean glyphs, so text renders correctly in
+The chosen faces include both Latin and Korean glyphs, so text renders correctly in
 both languages without per-glyph fallback (which RN cannot do).
+
+The `@ghds/react-native` theme picks the family for each text variant's weight on the
+current platform: `heading` and `title` use `Gaegu-Bold`, `body` and `caption` use
+`NotoSansKR-Regular`, `label` uses `NotoSansKR-Medium`, and code uses `Menlo-Regular` on
+iOS and `monospace` on Android. On iOS and Android the variants set no `fontWeight`,
+because the weight is already in the family name. On web (`react-native-web`) the variants
+keep `fontWeight`, so if your web build registers these faces, declare each `@font-face`
+under its PostScript name with a matching `font-weight` descriptor (for example
+`font-weight: 700` for `Gaegu-Bold`). Otherwise the descriptor defaults to 400 and the
+browser adds synthetic bold on top of a face that is already bold.
 
 ### Loading fonts in your app
 
-The RN token value is only a **name**. GHDS does not ship font files; your app loads
-them. The theme pairs each family name with a separate `fontWeight`, so register every
-weight **under the same family name**:
+GHDS does not ship font files; your app loads them. The family names are the fonts'
+**PostScript names**. Name each file after its PostScript name, as Expo recommends, and
+the same name resolves on both platforms:
 
-| Family name | Weights GHDS uses | Font files |
+| File | Used by | Source |
 | --- | --- | --- |
-| `NotoSansKR` | 400, 500 | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static `Regular`, `Medium` (add `Bold` for 700) |
-| `Gaegu` | 700 (headings) | [Gaegu](https://fonts.google.com/specimen/Gaegu) `Bold` (add `Regular` for 400) |
+| `NotoSansKR-Regular.ttf`, `NotoSansKR-Medium.ttf` | body, caption, label | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static files |
+| `NotoSansKR-Bold.ttf` | sans at 700 (optional) | same |
+| `Gaegu-Bold.ttf` | heading, title | [Gaegu](https://fonts.google.com/specimen/Gaegu) |
+| `Gaegu-Regular.ttf` | sketch at 400 (optional) | same |
 
-On **Expo SDK 58 and later**, pass `useFonts` an array of font family definitions:
+Code text needs no file: `Menlo` is an iOS system font and `monospace` is Android's
+system monospace face.
+
+**With the `expo-font` config plugin (recommended).** The plugin embeds the files at build
+time, so text renders on first frame. Android names each font after its file and iOS
+after its PostScript name; with the files named as above, both match the tokens.
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/NotoSansKR-Regular.ttf",
+            "./assets/fonts/NotoSansKR-Medium.ttf",
+            "./assets/fonts/NotoSansKR-Bold.ttf",
+            "./assets/fonts/Gaegu-Regular.ttf",
+            "./assets/fonts/Gaegu-Bold.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}
+```
+
+**At runtime with `useFonts` (any Expo SDK, Expo Go).** Register each file under its
+family name with the map form:
 
 ```tsx
 import { useFonts } from 'expo-font';
 
-const [loaded, error] = useFonts([
-  {
-    fontFamily: 'NotoSansKR',
-    fontDefinitions: [
-      { path: require('./assets/fonts/NotoSansKR-Regular.ttf'), weight: 400 },
-      { path: require('./assets/fonts/NotoSansKR-Medium.ttf'), weight: 500 },
-      { path: require('./assets/fonts/NotoSansKR-Bold.ttf'), weight: 700 },
-    ],
-  },
-  {
-    fontFamily: 'Gaegu',
-    fontDefinitions: [
-      { path: require('./assets/fonts/Gaegu-Regular.ttf'), weight: 400 },
-      { path: require('./assets/fonts/Gaegu-Bold.ttf'), weight: 700 },
-    ],
-  },
-]);
+const [loaded, error] = useFonts({
+  'NotoSansKR-Regular': require('./assets/fonts/NotoSansKR-Regular.ttf'),
+  'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
+  'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
+  'Gaegu-Regular': require('./assets/fonts/Gaegu-Regular.ttf'),
+  'Gaegu-Bold': require('./assets/fonts/Gaegu-Bold.ttf'),
+});
 ```
 
-On older SDKs, the map form registers one file per name, so only one weight per family
-loads: `useFonts({ NotoSansKR: require('…/NotoSansKR-Regular.ttf'), Gaegu: require('…/Gaegu-Bold.ttf') })`.
+**Bare React Native.** Add `module.exports = { assets: ['./assets/fonts'] };` to
+`react-native.config.js`, run `npx react-native-asset` and rebuild both apps.
 
-> **Do not use the `expo-font` config plugin with a plain file list.** Android names each
-> family after its file (`NotoSansKR-Regular`) and iOS reads the name from inside the file
-> (`Noto Sans KR`). Neither matches `NotoSansKR`, so text falls back to the system font.
+> **Check on a device.** A family name that does not resolve falls back to the system font
+> without an error. After setting up fonts, check headings, labels and code text on real
+> iOS and Android builds.
 
 See `packages/react-native/AGENTS.md` for the full setup.
 

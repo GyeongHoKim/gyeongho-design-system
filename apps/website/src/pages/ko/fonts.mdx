@@ -139,59 +139,89 @@ Variable은 모든 웨이트를 포함하는 단일 가변 파일이에요.
 
 ## React Native
 
-React Native는 CSS 콤마 폰트 스택을 지원하지 않아요. `@ghds/tokens/rn` 빌드가 각 웹 스택을
-RN이 사용할 수 있는 **단일 패밀리 이름**으로 자동 변환해요:
+React Native는 CSS 콤마 폰트 스택을 지원하지 않고, 커스텀 폰트는 웨이트마다 파일이 하나씩
+있어요. 그래서 `@ghds/tokens/rn` 빌드는 각 웹 스택을 **페이스 테이블**로 변환해요. 플랫폼별로
+GHDS가 정의한 웨이트마다 웨이트 전용 패밀리 이름이 하나씩 들어 있어요.
 
-| 토큰 | 웹 스택 (CSS) | RN 값 |
-| --- | --- | --- |
-| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu` |
-| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR` |
-| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo` |
+| 토큰 | 웹 스택 (CSS) | iOS | Android |
+| --- | --- | --- | --- |
+| `ref.fontFamily.sans` | `'Nunito Sans Variable', 'Pretendard', 'Noto Sans KR Variable', …` | `NotoSansKR-Regular` / `-Medium` / `-Bold` | iOS와 같음 |
+| `ref.fontFamily.sketch` | `'Gochi Hand', 'Gaegu', …` | `Gaegu-Regular` (400, 500) / `Gaegu-Bold` (700) | iOS와 같음 |
+| `ref.fontFamily.mono` | `ui-monospace, 'SFMono-Regular', 'Menlo', …` | `Menlo-Regular` / `Menlo-Bold` | `monospace` |
 
-선택된 RN 서체는 라틴과 한국어 글리프를 모두 포함하고 있어서, RN이 할 수 없는 글리프별
-폴백 없이도 두 언어 모두 올바르게 렌더링돼요.
+선택된 서체는 라틴과 한국어 글리프를 모두 포함하고 있어서, RN이 할 수 없는 글리프별 폴백
+없이도 두 언어 모두 올바르게 렌더링돼요.
+
+`@ghds/react-native` 테마는 현재 플랫폼에서 각 텍스트 변형의 웨이트에 맞는 패밀리를 골라요.
+`heading`과 `title`은 `Gaegu-Bold`, `body`와 `caption`은 `NotoSansKR-Regular`, `label`은
+`NotoSansKR-Medium`을 쓰고, 코드는 iOS에서 `Menlo-Regular`, Android에서 `monospace`를 써요.
+웨이트가 이미 패밀리 이름에 들어 있으므로 iOS와 Android에서는 `fontWeight`를 지정하지 않아요.
+웹(`react-native-web`)에서는 변형이 `fontWeight`를 유지해요. 그래서 웹 빌드에서 이 서체를
+등록한다면 각 `@font-face`를 PostScript 이름으로 선언하고 서체에 맞는 `font-weight` 디스크립터를
+함께 지정하세요(예: `Gaegu-Bold`에는 `font-weight: 700`). 지정하지 않으면 디스크립터가 기본값
+400이 되어, 이미 굵은 서체에 브라우저가 가짜 굵게(synthetic bold)를 한 번 더 적용해요.
 
 ### 앱에 폰트 로드하기
 
-RN 토큰 값은 **이름**일 뿐이에요. GHDS는 폰트 파일을 포함하지 않으니 앱에서 직접 로드해야
-해요. 테마는 패밀리 이름과 `fontWeight`를 따로 넘기기 때문에, 모든 웨이트를 **같은 패밀리
-이름으로** 등록해야 해요:
+GHDS는 폰트 파일을 포함하지 않으니 앱에서 직접 로드해야 해요. 패밀리 이름은 폰트의
+**PostScript 이름**이에요. Expo 권장대로 각 파일 이름을 PostScript 이름과 같게 지으면 두
+플랫폼 모두에서 같은 이름으로 찾을 수 있어요:
 
-| 패밀리 이름 | GHDS가 쓰는 웨이트 | 폰트 파일 |
+| 파일 | 사용처 | 출처 |
 | --- | --- | --- |
-| `NotoSansKR` | 400, 500 | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static `Regular`, `Medium` (700이 필요하면 `Bold` 추가) |
-| `Gaegu` | 700 (제목) | [Gaegu](https://fonts.google.com/specimen/Gaegu) `Bold` (400이 필요하면 `Regular` 추가) |
+| `NotoSansKR-Regular.ttf`, `NotoSansKR-Medium.ttf` | body, caption, label | [Noto Sans KR](https://fonts.google.com/specimen/Noto+Sans+KR) static 파일 |
+| `NotoSansKR-Bold.ttf` | sans 700 (선택) | 같음 |
+| `Gaegu-Bold.ttf` | heading, title | [Gaegu](https://fonts.google.com/specimen/Gaegu) |
+| `Gaegu-Regular.ttf` | sketch 400 (선택) | 같음 |
 
-**Expo SDK 58 이상**에서는 `useFonts`에 폰트 패밀리 정의 배열을 넘기세요:
+코드 텍스트에는 파일이 필요 없어요. `Menlo`는 iOS 시스템 폰트이고 `monospace`는 Android의
+시스템 고정폭 서체예요.
+
+**`expo-font` config 플러그인 사용 (권장).** 플러그인이 빌드할 때 파일을 앱에 포함하므로 첫
+화면부터 폰트가 적용돼요. Android는 파일 이름을, iOS는 PostScript 이름을 폰트 이름으로 쓰는데,
+위처럼 파일 이름을 지으면 둘 다 토큰과 일치해요.
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/NotoSansKR-Regular.ttf",
+            "./assets/fonts/NotoSansKR-Medium.ttf",
+            "./assets/fonts/NotoSansKR-Bold.ttf",
+            "./assets/fonts/Gaegu-Regular.ttf",
+            "./assets/fonts/Gaegu-Bold.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}
+```
+
+**런타임에 `useFonts` 사용 (모든 Expo SDK, Expo Go).** 맵 형태로 각 파일을 패밀리 이름으로
+등록하세요:
 
 ```tsx
 import { useFonts } from 'expo-font';
 
-const [loaded, error] = useFonts([
-  {
-    fontFamily: 'NotoSansKR',
-    fontDefinitions: [
-      { path: require('./assets/fonts/NotoSansKR-Regular.ttf'), weight: 400 },
-      { path: require('./assets/fonts/NotoSansKR-Medium.ttf'), weight: 500 },
-      { path: require('./assets/fonts/NotoSansKR-Bold.ttf'), weight: 700 },
-    ],
-  },
-  {
-    fontFamily: 'Gaegu',
-    fontDefinitions: [
-      { path: require('./assets/fonts/Gaegu-Regular.ttf'), weight: 400 },
-      { path: require('./assets/fonts/Gaegu-Bold.ttf'), weight: 700 },
-    ],
-  },
-]);
+const [loaded, error] = useFonts({
+  'NotoSansKR-Regular': require('./assets/fonts/NotoSansKR-Regular.ttf'),
+  'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'),
+  'NotoSansKR-Bold': require('./assets/fonts/NotoSansKR-Bold.ttf'),
+  'Gaegu-Regular': require('./assets/fonts/Gaegu-Regular.ttf'),
+  'Gaegu-Bold': require('./assets/fonts/Gaegu-Bold.ttf'),
+});
 ```
 
-이전 SDK에서는 맵 형태가 이름 하나에 파일 하나만 등록하기 때문에, 패밀리마다 웨이트 하나만
-로드돼요: `useFonts({ NotoSansKR: require('…/NotoSansKR-Regular.ttf'), Gaegu: require('…/Gaegu-Bold.ttf') })`.
+**Bare React Native.** `react-native.config.js`에 `module.exports = { assets: ['./assets/fonts'] };`를
+추가하고 `npx react-native-asset`을 실행한 뒤 두 앱을 다시 빌드하세요.
 
-> **`expo-font` config 플러그인에 파일 목록만 넘기지 마세요.** Android는 파일 이름
-> (`NotoSansKR-Regular`)을, iOS는 파일 안에 적힌 이름(`Noto Sans KR`)을 패밀리 이름으로 써요.
-> 둘 다 `NotoSansKR`과 달라서 시스템 폰트로 대체돼요.
+> **기기에서 확인하세요.** 찾을 수 없는 패밀리 이름은 오류 없이 시스템 폰트로 대체돼요. 폰트를
+> 설정한 뒤에는 실제 iOS와 Android 빌드에서 제목, 레이블, 코드 텍스트를 확인하세요.
 
 전체 설정은 `packages/react-native/AGENTS.md`를 참고하세요.
 
