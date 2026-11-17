@@ -139,8 +139,11 @@ comp.input.border.focus
   `number` tokens whose unit is **degrees** (like `ref.sketch.hachureAngle`). Consumers append
   `deg` (CSS) or use the number directly (React Native).
 - `sys.color.paper.*` (`neutral`, `primary`, `success`, `warning`, `danger`, `info`, `lined`,
-  `rule`, `margin`) is theme-specific paper colour for the sticky and lined Card. The tone and
+  `rule`, `margin`, `tape`) is theme-specific paper colour for the sticky and lined Card. The tone and
   `lined` backgrounds are contrast-checked against `text.primary` and `text.secondary` in both themes.
+- `sys.color.paper.tape` fills the Card tape fastener. The validator composites it at
+  `comp.card.fastener.tape.opacity` and requires at least 1.5:1 against every neutral background
+  surface (`bg.canvas`, `bg.surface`, `bg.muted`, `bg.subtle`) and every paper background, so the decorative tape stays visible on light and dark pages.
 
 ---
 

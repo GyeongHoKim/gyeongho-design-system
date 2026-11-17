@@ -127,7 +127,30 @@ export const StickyNone: Story = paper('sticky', 'none');
 export const StickyTape: Story = paper('sticky', 'tape');
 export const StickyPin: Story = paper('sticky', 'pin');
 export const LinedNone: Story = paper('lined', 'none');
-export const LinedTape: Story = paper('lined', 'tape');
+/** The tape is tinted (`sys.color.paper.tape`) so it reads on a light page, not only its dashed edges. */
+export const LinedTape: Story = {
+  ...paper('lined', 'tape'),
+  play: async ({ canvasElement }) => {
+    const tape = canvasElement
+      .querySelector('gh-card')
+      ?.shadowRoot?.querySelector<HTMLElement>('.fastener-tape');
+    await expect(tape).toBeTruthy();
+    if (tape) {
+      const resolve = (value: string): string => {
+        const probe = document.createElement('span');
+        probe.style.backgroundColor = value;
+        canvasElement.append(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
+      };
+      const background = getComputedStyle(tape).backgroundColor;
+      await expect(background).toBe(resolve('var(--sys-color-paper-tape)'));
+      // The tape used to be the page colour, which left only its dashed edges.
+      await expect(background).not.toBe(resolve('var(--sys-color-bg-canvas)'));
+    }
+  },
+};
 export const LinedPin: Story = paper('lined', 'pin');
 
 const tones = ['neutral', 'primary', 'success', 'warning', 'danger', 'info'];
@@ -161,6 +184,35 @@ export const Interactive: Story = {
         <p>Lifts on hover and on focus within.</p>
       </gh-card>
     </div>`,
+};
+
+/**
+ * Keyboard-focused interactive card. The ring is drawn on the paper (not the
+ * host box), so it follows the folded corner instead of a plain rectangle.
+ */
+export const InteractiveFocused: Story = {
+  ...Interactive,
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector<HTMLElement>('gh-card');
+    const content = host?.shadowRoot?.querySelector<HTMLElement>('.content');
+    await expect(content).toBeTruthy();
+    // Programmatic focus with no prior pointer input matches :focus-visible.
+    host?.focus();
+    await expect(document.activeElement).toBe(host);
+    await expect(host?.matches(':focus-visible')).toBe(true);
+    if (host && content) {
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--comp-card-focus-ring)';
+      canvasElement.append(probe);
+      const expected = getComputedStyle(probe).color;
+      probe.remove();
+      await expect(getComputedStyle(host).outlineStyle).toBe('none');
+      const style = getComputedStyle(content);
+      await expect(style.outlineStyle).toBe('solid');
+      await expect(style.outlineColor).toBe(expected);
+      await expect(style.transform).not.toBe('none');
+    }
+  },
 };
 
 const linkCard = (variant: Variant): Story => ({

@@ -181,8 +181,8 @@
           },
           "bg": {
             "$type": "color",
-            "$value": "{sys.color.bg.canvas}",
-            "$description": "Tape fill."
+            "$value": "{sys.color.paper.tape}",
+            "$description": "Tape fill: an amber masking-tape tone that stays visible on light and dark surfaces at the tape opacity."
           },
           "border": {
             "color": {

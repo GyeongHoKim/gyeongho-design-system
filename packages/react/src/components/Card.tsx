@@ -5,6 +5,7 @@ import {
   type FocusEvent,
   forwardRef,
   type HTMLAttributes,
+  type KeyboardEvent,
   type PointerEvent,
   useState,
 } from 'react';
@@ -53,7 +54,9 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Lifts the card on mouse hover and while focus is inside. Paper variants
    * also gain a raised shadow; a `plain` card only moves (no shadow change).
-   * Default `false`.
+   * Default `false`. (Independently of this prop, a card made focusable with
+   * `tabIndex` shows the `comp.card.focus.ring` outline on keyboard focus
+   * instead of the browser default.)
    */
   interactive?: boolean;
   /**
@@ -109,7 +112,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   },
   forwardedRef,
 ) {
-  const { onPointerEnter, onPointerLeave, onFocus, onBlur } = rest;
+  const { onPointerEnter, onPointerLeave, onFocus, onBlur, onKeyDown, onKeyUp } = rest;
   const {
     ref: sketchRef,
     drawable,
@@ -132,14 +135,19 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 
   // A slotted child (typically a link) is interactive by nature.
   const interactive = interactiveProp || asChild;
+  // The card itself takes focus: an `asChild` link or a `tabIndex` card. Like
+  // gh-card's `:host(:focus-visible)`, its ring replaces the browser default
+  // whether or not it is interactive.
+  const focusable = asChild || rest.tabIndex != null;
 
-  // Leave handlers are only attached while interactive, so drop any stale state
-  // when it turns off; otherwise turning it back on would lift a card that isn't hovered.
-  if (!interactive && (hovered || focused || focusVisible)) {
+  // Leave handlers are only attached while interactive (focus handlers while
+  // focusable), so drop any stale state when that turns off; otherwise turning
+  // it back on would lift a card that isn't hovered.
+  if (!interactive && (hovered || focused)) {
     setHovered(false);
     setFocused(false);
-    setFocusVisible(false);
   }
+  if (!interactive && !focusable && focusVisible) setFocusVisible(false);
 
   // Anything other than a known paper variant renders as plain.
   const paper = variant === 'sticky' || variant === 'lined' ? variant : null;
@@ -167,9 +175,46 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
           : {}),
       }
     : {};
-  // Consumer handlers stay in `rest`; when interactive they are wrapped here.
+  const focusHandlers =
+    interactive || focusable
+      ? {
+          onFocus: (event: FocusEvent<HTMLDivElement>) => {
+            if (interactive) setFocused(true);
+            // The ring marks the card itself (an `asChild` link or a `tabIndex` card),
+            // not a focused descendant.
+            setFocusVisible(
+              event.target === event.currentTarget && isFocusVisible(event.currentTarget),
+            );
+            onFocus?.(event);
+          },
+          onBlur: (event: FocusEvent<HTMLDivElement>) => {
+            const next = event.relatedTarget;
+            if (!(next instanceof Node && event.currentTarget.contains(next))) setFocused(false);
+            setFocusVisible(false);
+            onBlur?.(event);
+          },
+          // A mouse-focused card starts matching `:focus-visible` once a key is
+          // pressed (as gh-card's live `:host(:focus-visible)` does), but no new
+          // focus event fires, so re-check on key events while the card itself
+          // has focus.
+          onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => {
+            if (!focusVisible && event.target === event.currentTarget) {
+              setFocusVisible(isFocusVisible(event.currentTarget));
+            }
+            onKeyDown?.(event);
+          },
+          onKeyUp: (event: KeyboardEvent<HTMLDivElement>) => {
+            if (!focusVisible && event.target === event.currentTarget) {
+              setFocusVisible(isFocusVisible(event.currentTarget));
+            }
+            onKeyUp?.(event);
+          },
+        }
+      : {};
+  // Consumer handlers stay in `rest`; when interactive or focusable they are wrapped here.
   const handlers = interactive
     ? {
+        ...focusHandlers,
         onPointerEnter: (event: PointerEvent<HTMLDivElement>) => {
           if (event.pointerType === 'mouse') setHovered(true);
           onPointerEnter?.(event);
@@ -178,39 +223,26 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
           setHovered(false);
           onPointerLeave?.(event);
         },
-        onFocus: (event: FocusEvent<HTMLDivElement>) => {
-          setFocused(true);
-          // The ring marks the card itself (an `asChild` link), not a focused descendant.
-          setFocusVisible(
-            asChild && event.target === event.currentTarget && isFocusVisible(event.currentTarget),
-          );
-          onFocus?.(event);
-        },
-        onBlur: (event: FocusEvent<HTMLDivElement>) => {
-          const next = event.relatedTarget;
-          if (!(next instanceof Node && event.currentTarget.contains(next))) setFocused(false);
-          setFocusVisible(false);
-          onBlur?.(event);
-        },
       }
-    : {};
+    : focusHandlers;
 
-  // A slotted link must not look like inline text. The outline is only set
-  // while keyboard-focused; otherwise it is left to the UA, so a link that
-  // becomes `:focus-visible` later (mouse focus, then a key press) still shows
-  // the browser's ring instead of none.
+  // A focusable card (an `asChild` link or a `tabIndex` card) draws the token
+  // focus ring instead of the browser default; on the card itself it follows
+  // the folded corner and the tilt. The outline is only set while
+  // keyboard-focused; otherwise it is left to the UA (and the consumer's own
+  // styles), so a card that becomes `:focus-visible` later (mouse focus, then a
+  // key press) still shows the browser's ring instead of none.
+  const focusStyle: CSSProperties =
+    (interactive || focusable) && focusVisible
+      ? {
+          outline: `${FOCUS_RING_WIDTH}px solid ${c.focus.ring}`,
+          outlineOffset: tokens.sys.spacing.xs,
+        }
+      : {};
+  // A slotted link must not look like inline text.
   const linkStyle: CSSProperties = asChild
-    ? {
-        textDecoration: 'none',
-        cursor: 'pointer',
-        ...(focusVisible
-          ? {
-              outline: `${FOCUS_RING_WIDTH}px solid ${c.focus.ring}`,
-              outlineOffset: tokens.sys.spacing.xs,
-            }
-          : {}),
-      }
-    : {};
+    ? { textDecoration: 'none', cursor: 'pointer', ...focusStyle }
+    : focusStyle;
 
   const rootStyle: CSSProperties = paper
     ? {
