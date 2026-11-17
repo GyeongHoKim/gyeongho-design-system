@@ -1,5 +1,34 @@
 # @ghds/react-native
 
+## 0.13.0
+
+### Minor Changes
+
+- d576a19: **Breaking:** text variants now name a weight-specific font family for the current platform (`NotoSansKR-Medium` for `label`, `Gaegu-Bold` for `heading` and `title`, `Menlo-Regular` on iOS and `monospace` on Android for the new `code` variant) and no longer set `fontWeight` on iOS and Android. The fonts now load with the `expo-font` config plugin, bare React Native linking or the `useFonts` map form on any Expo SDK, and a new `code` text variant (from `sys.typography.code`) renders monospaced on Android. Breadcrumb's current page and the selected Tab switch to the `label` face instead of overriding `fontWeight`. On web (`react-native-web`) the variants keep `fontWeight`.
+
+  **Migration**
+
+  - Rename the font files to their PostScript names and register them under those names: `NotoSansKR-Regular`, `NotoSansKR-Medium`, `NotoSansKR-Bold`, `Gaegu-Regular`, `Gaegu-Bold`.
+    - Before: `useFonts([{ fontFamily: 'NotoSansKR', fontDefinitions: [...] }])`
+    - After: the `expo-font` config plugin with `./assets/fonts/NotoSansKR-Medium.ttf` and the other files, or `useFonts({ 'NotoSansKR-Medium': require('./assets/fonts/NotoSansKR-Medium.ttf'), … })`
+  - To emphasise text, switch the family instead of the weight.
+    - Before: `<Text variant="body" fontWeight={theme.textVariants.label.fontWeight}>`
+    - After: `<Text variant="body" fontFamily={theme.textVariants.label.fontFamily} fontWeight={theme.textVariants.label.fontWeight}>` (`fontWeight` is `undefined` on native)
+
+### Patch Changes
+
+- d41bf89: The Card tape fastener uses the new amber `comp.card.fastener.tape.bg` (`sys.color.paper.tape`) from `@ghds/tokens`, so it stays visible on light and dark pages instead of blending into the page.
+- 4226ff7: `Menu`, `ContextMenu`, `NavigationMenu`, `Popover` and `HoverCard` read their panel minimum widths from the overlay min-width tokens (new `theme.overlayMinWidths`) instead of a hardcoded `160` and `spacing['2xl']` multiples. Rendered widths are unchanged.
+- Updated dependencies [5ca3dfb]
+- Updated dependencies [757a223]
+- Updated dependencies [d41bf89]
+- Updated dependencies [4ec5c53]
+- Updated dependencies [ea550ec]
+- Updated dependencies [784ecf8]
+- Updated dependencies [e226ae8]
+  - @ghds/tokens@0.14.0
+  - @ghds/icons@0.2.0
+
 ## 0.12.0
 
 ### Minor Changes
