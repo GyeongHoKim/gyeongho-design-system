@@ -1,8 +1,8 @@
-import { setForcedSeed } from '@ghds/sketch-core';
+import { rectangle, roundedRectangle, setForcedSeed } from '@ghds/sketch-core';
 import { render } from '@testing-library/react';
 import { type JSX, useRef } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { type UseSketchResult, useSketch } from './useSketch.js';
+import { type UseSketchParams, type UseSketchResult, useSketch } from './useSketch.js';
 
 function capture(result: { current: UseSketchResult<HTMLDivElement> | null }) {
   function Probe(): JSX.Element {
@@ -66,5 +66,31 @@ describe('useSketch', () => {
     expect(b.current?.seed).toBe(0x5eed);
     expect(a.current?.drawable?.strokePaths).toEqual(b.current?.drawable?.strokePaths);
     expect(a.current?.drawable?.fillPaths).toEqual(b.current?.drawable?.fillPaths);
+  });
+
+  function drawableFor(params: UseSketchParams) {
+    const result = { current: null as UseSketchResult<HTMLDivElement> | null };
+    function Probe(): JSX.Element {
+      const sketch = useSketch<HTMLDivElement>(params);
+      result.current = sketch;
+      return <div ref={sketch.ref} />;
+    }
+    render(<Probe />);
+    return result.current?.drawable;
+  }
+
+  it('draws roundedRectangle when radius > 0 (inset applied)', () => {
+    setForcedSeed(0x5eed);
+    // The mock ResizeObserver reports 160×48; inset 2 leaves 156×44.
+    expect(drawableFor({ roughness: 1.4, bowing: 2, inset: 2, radius: 9999 })).toEqual(
+      roundedRectangle(2, 2, 156, 44, 9999, { roughness: 1.4, bowing: 2, seed: 0x5eed }),
+    );
+  });
+
+  it('without radius → unchanged rectangle output', () => {
+    setForcedSeed(0x5eed);
+    expect(drawableFor({ roughness: 1.4, bowing: 2, inset: 2 })).toEqual(
+      rectangle(2, 2, 156, 44, { roughness: 1.4, bowing: 2, seed: 0x5eed }),
+    );
   });
 });

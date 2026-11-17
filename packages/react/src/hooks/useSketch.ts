@@ -2,6 +2,7 @@ import {
   ellipse,
   forcedSeed,
   rectangle,
+  roundedRectangle,
   type SketchDrawable,
   type SketchOptions,
 } from '@ghds/sketch-core';
@@ -33,6 +34,11 @@ export interface UseSketchParams {
    * at the element's border box. Derived from a border-width token by callers.
    */
   inset?: number;
+  /**
+   * Corner radius (px) from a radius token. Only applies to `shape: 'rectangle'`;
+   * clamped to half the shorter inset side. Omit or `<= 0` for square corners.
+   */
+  radius?: number;
 }
 
 /** The measured border-box size of the observed element. */
@@ -82,6 +88,7 @@ export function useSketch<E extends Element = HTMLElement>(
     hachureGap,
     hachureAngle,
     inset = 0,
+    radius = 0,
   } = params;
 
   const seed = useMemo(randomSeed, []);
@@ -125,9 +132,13 @@ export function useSketch<E extends Element = HTMLElement>(
     };
     const w = Math.max(1, width - inset * 2);
     const h = Math.max(1, height - inset * 2);
-    const draw = shape === 'ellipse' ? ellipse : rectangle;
-    return draw(inset, inset, w, h, options);
-  }, [size, shape, roughness, bowing, seed, fillStyle, hachureGap, hachureAngle, inset]);
+    if (shape === 'ellipse') {
+      return ellipse(inset, inset, w, h, options);
+    }
+    return radius > 0
+      ? roundedRectangle(inset, inset, w, h, radius, options)
+      : rectangle(inset, inset, w, h, options);
+  }, [size, shape, roughness, bowing, seed, fillStyle, hachureGap, hachureAngle, inset, radius]);
 
   return { ref, drawable, size, seed };
 }
