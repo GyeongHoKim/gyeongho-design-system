@@ -20,7 +20,7 @@ import { withBase } from '../../../lib/withBase';
 
 `aria-haspopup="menu"`를 가진 `<button>` 트리거가 `role="menuitem"`들의 떠 있는 `role="menu"` 패널을 열어요. 트리거와 패널 모두 손그림 박스(`@ghds/sketch-core`)예요. 데이터 기반 — `{ value, label, disabled?, href? }` 형태의 `items` 배열을 전달하세요(`href`는 React / Web Components 전용이에요 — React Native에는 링크 항목이 없어요).
 
-`href`가 있는 항목은 실제 링크로 렌더링돼요 — `role="none"` 래퍼 안의 `<a role="menuitem" href>`. 그래서 외부로 이동하는 동작(예: "GitHub에서 소스 보기")도 새 탭에서 열기, 링크 주소 복사, 크롤링 같은 기본 링크 동작을 유지해요. 활성화하면 브라우저가 직접 이동하고 메뉴가 닫혀요. href 항목에서는 `onSelect` / `select`가 호출되지 않아요. `disabled`인 href 항목은 `href`를 제거해요. 빈 `href`(`''`)는 `href`가 없는 것으로 보고 일반 동작 항목으로 렌더링해요. Menu는 **동작** 메뉴로 유지돼요 — 사이트 내비게이션에는 `NavigationMenu` / `gh-navigation-menu`를 사용하세요.
+`href`가 있는 항목은 실제 링크로 렌더링돼요 — `role="none"` 래퍼 안의 `<a role="menuitem" href>`. 그래서 외부로 이동하는 동작(예: "GitHub에서 소스 보기")도 새 탭에서 열기, 링크 주소 복사, 크롤링 같은 기본 링크 동작을 유지해요. 활성화하면 브라우저가 직접 이동하고 메뉴가 닫혀요. href 항목에서는 `onSelect` / `select`가 호출되지 않아요. `disabled`인 href 항목은 `href`를 제거해요. 빈 `href`(`''`)는 `href`가 없는 것으로 보고 일반 동작 항목으로 렌더링해요. Menu는 **동작** 메뉴로 유지돼요 — 사이트 내비게이션 링크 드롭다운에는 메뉴 역할이 없는 <a href={withBase('/components/nav-menu/')}>NavMenu</a>(`gh-nav-menu`)를, 내비게이션 바 전체에는 `NavigationMenu` / `gh-navigation-menu`를 사용하세요.
 
 ## 변형 및 상태
 

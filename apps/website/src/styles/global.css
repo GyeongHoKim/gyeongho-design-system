@@ -121,16 +121,41 @@ code {
   color: var(--sys-color-text-secondary);
 }
 
-/* The nav is a <gh-navigation-menu> custom element; it owns its own item,
-   hover, dropdown, and current-page styling in shadow DOM (from
-   comp.navigationMenu.* tokens). Here we only place it in the header: let it
-   take the middle space and scroll horizontally on very narrow viewports
-   instead of forcing the header to wrap. */
+/* The header nav is a disclosure-navigation list: direct links are plain
+   <a href>; grouped sections are <gh-nav-menu> elements, which own their
+   trigger, dropdown and current-page styling in shadow DOM (comp.menu.*).
+   Here we lay the entries out in one row that wraps on narrow viewports. */
 .site-nav {
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
-  overflow-x: auto;
+}
+
+.site-nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sys-spacing-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Direct links match the gh-nav-menu trigger's box and type. */
+.site-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--comp-menu-trigger-padding-vertical) var(--comp-menu-trigger-padding-horizontal);
+  color: var(--comp-menu-trigger-text-default);
+  font-family: var(--sys-typography-label-fontFamily);
+  font-size: var(--sys-typography-label-fontSize);
+  font-weight: var(--sys-typography-label-fontWeight);
+  line-height: var(--sys-typography-label-lineHeight);
+}
+
+.site-nav-link[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: var(--sys-spacing-xs);
 }
 
 /* Theme toggle is now a <gh-button variant="neutral"> — styled by the

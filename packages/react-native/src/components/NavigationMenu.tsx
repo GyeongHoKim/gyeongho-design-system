@@ -153,7 +153,7 @@ export function NavigationMenu({
               position: 'absolute',
               top: (anchor ? anchor.y + anchor.height : 0) + theme.spacing.xs,
               left: anchor?.x ?? 0,
-              minWidth: theme.spacing['2xl'] * 5,
+              minWidth: theme.overlayMinWidths.navigationMenu,
               maxWidth: theme.spacing['2xl'] * 6,
             }}
           >

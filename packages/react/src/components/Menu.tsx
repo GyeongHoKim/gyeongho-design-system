@@ -1,4 +1,3 @@
-import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import { tokens } from '@ghds/tokens';
 import {
   type CSSProperties,
@@ -12,6 +11,7 @@ import {
   useState,
 } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside.js';
+import { useMenuFloating } from '../hooks/useMenuFloating.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -85,17 +85,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     [items],
   );
 
-  const { refs, floatingStyles } = useFloating({
-    open,
-    placement: 'bottom-start',
-    strategy: 'fixed',
-    whileElementsMounted: open ? autoUpdate : undefined,
-    middleware: [
-      offset(toPx(menu.panel.offset)),
-      flip(),
-      shift({ padding: toPx(tokens.sys.spacing.sm) }),
-    ],
-  });
+  const { refs, floatingStyles } = useMenuFloating(open);
 
   const {
     ref: sketchRef,
@@ -244,7 +234,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     flexDirection: 'column',
     gap: menu.panel.gap,
     zIndex: menu.panel.zIndex,
-    minWidth: '10rem',
+    minWidth: menu.panel.minWidth,
     boxSizing: 'border-box',
     padding: menu.panel.padding,
     background: c.panel.bg,

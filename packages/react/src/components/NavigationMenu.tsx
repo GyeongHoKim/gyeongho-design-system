@@ -123,7 +123,7 @@ export function NavigationMenu({ items, 'aria-label': ariaLabel }: NavigationMen
     flexDirection: 'column',
     gap: tokens.sys.spacing.xs,
     zIndex: tokens.sys.zIndex.dropdown,
-    minWidth: '14rem',
+    minWidth: navigationMenu.panel.minWidth,
     boxSizing: 'border-box',
     padding: navigationMenu.padding,
     background: c.bg,

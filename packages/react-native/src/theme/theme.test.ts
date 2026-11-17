@@ -52,6 +52,22 @@ describe('GHDS Restyle theme', () => {
     expect(lightTheme.selectSketch.elevation).toBe(lightTokens.comp.select.sketch.elevation);
   });
 
+  it('derives overlay panel min-widths from tokens without changing the rendered widths', () => {
+    const { overlayMinWidths } = lightTheme;
+    expect(overlayMinWidths.menu).toBe(lightTokens.comp.menu.panel.minWidth);
+    expect(overlayMinWidths.popover).toBe(lightTokens.comp.popover.minWidth);
+    expect(overlayMinWidths.contextMenu).toBe(lightTokens.sys.overlay.minWidth.md);
+    expect(overlayMinWidths.navigationMenu).toBe(lightTokens.sys.overlay.minWidth.xl);
+    expect(overlayMinWidths.hoverCard).toBe(lightTokens.sys.overlay.minWidth.xl);
+    // Previously hardcoded as 160 and `spacing['2xl']` multiples.
+    const step = lightTokens.sys.spacing['2xl'];
+    expect(overlayMinWidths.menu).toBe(160);
+    expect(overlayMinWidths.popover).toBe(step * 4);
+    expect(overlayMinWidths.contextMenu).toBe(step * 4);
+    expect(overlayMinWidths.navigationMenu).toBe(step * 5);
+    expect(overlayMinWidths.hoverCard).toBe(step * 5);
+  });
+
   it('light and dark themes share an identical structure', () => {
     const keys = (o: object): string[] => Object.keys(o).sort();
     expect(keys(lightTheme.colors)).toEqual(keys(darkTheme.colors));

@@ -146,7 +146,7 @@ export function HoverCard({
     display: open ? 'block' : 'none',
     zIndex: tokens.sys.zIndex.overlay,
     boxSizing: 'border-box',
-    minWidth: '12rem',
+    minWidth: hoverCard.minWidth,
     maxWidth: '20rem',
     padding: `${hoverCard.padding.vertical} ${hoverCard.padding.horizontal}`,
     color: c.text,

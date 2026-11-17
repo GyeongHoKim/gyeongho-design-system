@@ -46,6 +46,7 @@ export default defineConfig({
     'message-scroller': 'src/components/message-scroller.ts',
     message: 'src/components/message.ts',
     modal: 'src/components/modal.ts',
+    'nav-menu': 'src/components/nav-menu.ts',
     'native-select': 'src/components/native-select.ts',
     'navigation-menu': 'src/components/navigation-menu.ts',
     'pagination-item': 'src/components/pagination-item.ts',

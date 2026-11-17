@@ -106,7 +106,7 @@ export function ContextMenu({ trigger, triggerLabel, items, onSelect, testID }: 
               position: 'absolute',
               top: (anchor ? anchor.y + anchor.height : 0) + theme.spacing.xs,
               left: anchor?.x ?? 0,
-              minWidth: theme.spacing['2xl'] * 4,
+              minWidth: theme.overlayMinWidths.contextMenu,
             }}
           >
             <SketchBackground

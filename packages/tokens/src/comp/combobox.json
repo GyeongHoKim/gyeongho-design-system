@@ -9,6 +9,9 @@
         "default": { "$value": "{sys.color.border.default}" },
         "focus": { "$value": "{sys.color.border.focus}" }
       },
+      "field": {
+        "minWidth": { "$type": "dimension", "$value": "{sys.field.minWidth}" }
+      },
       "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
       "padding": {
         "$type": "dimension",

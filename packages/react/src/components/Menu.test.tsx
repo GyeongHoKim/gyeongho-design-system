@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -25,6 +26,12 @@ describe('Menu', () => {
       'true',
     );
     expect(screen.getAllByRole('menuitem')).toHaveLength(3);
+  });
+
+  it('sizes the panel from the comp.menu.panel.minWidth token', async () => {
+    render(<Menu label="Actions" items={ITEMS} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Actions' }));
+    expect(screen.getByRole('menu').style.minWidth).toBe(tokens.comp.menu.panel.minWidth);
   });
 
   it('selects an item on click and closes', async () => {
