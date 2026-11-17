@@ -44,6 +44,63 @@ export const Elevated: Story = {
   },
 };
 
+/**
+ * Content in the named `title` slot renders before the body with title styling.
+ * The `lined` card uses a plain `<span>` so the play test proves the
+ * `[slot='title']` rule itself (headings are also styled via `::slotted(h3)`).
+ */
+export const TitleSlot: Story = {
+  render: () =>
+    html`<div style="padding-top: var(--sys-spacing-3xl); display: flex; flex-wrap: wrap; gap: var(--sys-spacing-xl);">
+      ${(['plain', 'sticky', 'lined'] as const).map(
+        (variant) =>
+          html`<gh-card
+            variant=${variant}
+            fastener="tape"
+            label=${`${variant} card`}
+            style="width: 220px; display: block;"
+          >
+            <p>Body text comes after the title.</p>
+            ${
+              variant === 'lined'
+                ? html`<span slot="title">${variant} title</span>`
+                : html`<h3 slot="title">${variant} title</h3>`
+            }
+          </gh-card>`,
+      )}
+    </div>`,
+  play: async ({ canvasElement }) => {
+    const cards = Array.from(canvasElement.querySelectorAll('gh-card'));
+    await expect(cards.length).toBe(3);
+    for (const card of cards) {
+      const slot = card.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="title"]');
+      await expect(slot?.assignedElements().length).toBe(1);
+      const title = card.querySelector<HTMLElement>('[slot="title"]');
+      await expect(title?.getBoundingClientRect().height ?? 0).toBeGreaterThan(0);
+    }
+
+    // Resolve the title tokens through a probe so the browser normalises the
+    // expected values the same way as the slotted element's computed style.
+    const probe = document.createElement('span');
+    probe.style.fontFamily = 'var(--sys-typography-title-fontFamily)';
+    probe.style.fontSize = 'var(--sys-typography-title-fontSize)';
+    probe.style.fontWeight = 'var(--sys-typography-title-fontWeight)';
+    canvasElement.append(probe);
+    const expected = getComputedStyle(probe);
+    const span = canvasElement.querySelector<HTMLElement>(
+      'gh-card[variant="lined"] span[slot="title"]',
+    );
+    await expect(span).not.toBeNull();
+    if (span) {
+      const actual = getComputedStyle(span);
+      await expect(actual.fontFamily).toBe(expected.fontFamily);
+      await expect(actual.fontSize).toBe(expected.fontSize);
+      await expect(actual.fontWeight).toBe(expected.fontWeight);
+    }
+    probe.remove();
+  },
+};
+
 type Variant = 'plain' | 'sticky' | 'lined';
 type Fastener = 'none' | 'tape' | 'pin';
 

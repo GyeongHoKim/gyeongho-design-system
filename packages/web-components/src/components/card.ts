@@ -17,6 +17,9 @@ export type CardTilt = 'none' | 'left' | 'right';
  * the sketch engine emits an offset "drop shadow" outline (`shadowPaths`) using
  * the `sys.sketch.elevation` token to fake depth. Background, padding, radius
  * and text colour are all token-driven.
+ *
+ * @slot title - Optional heading, rendered before the body with title styling.
+ * @slot - Card body. A slotted `h1`–`h3` also gets title styling.
  */
 @customElement('gh-card')
 export class GhCard extends SketchyBase {
@@ -351,6 +354,7 @@ export class GhCard extends SketchyBase {
           : nothing
       }
       <div class="body">
+        <slot name="title"></slot>
         <slot></slot>
       </div>
     </div>`;

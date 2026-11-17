@@ -18,9 +18,10 @@ carries no built-in meaning beyond "these things belong together."
 
 ## Anatomy
 
-A sketchy rectangle outline drawn behind plain children. On Web Components, content slotted as
-`<h1>`/`<h2>`/`<h3>`/`[slot="title"]` gets special title styling (`::slotted` CSS); React and
-React Native have no equivalent title slot — content is just plain children.
+A sketchy rectangle outline drawn behind plain children. On Web Components, `gh-card` has two
+slots: a named `title` slot rendered first, and the default slot for the body. Content in the
+`title` slot, and any `<h1>`/`<h2>`/`<h3>` in the default slot, gets title styling (`::slotted`
+CSS). React and React Native have no equivalent title slot — content is just plain children.
 
 ## Variants & States
 
@@ -195,6 +196,7 @@ import { Card } from '@ghds/react/card';
   import '@ghds/web-components/card';
 </script>
 <gh-card label="Elevated" elevated>
+  <h3 slot="title">Elevated</h3>
   <p>Drop-shadow sketch outline suggests elevation.</p>
 </gh-card>
 ```
