@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Card, type CardVariant } from './Card.js';
@@ -287,6 +287,91 @@ describe('Card', () => {
       expect(root.style.transform).not.toContain('translateY');
     });
 
+    it('shows the token focus ring when a tabIndex card itself is focus-visible', () => {
+      render(
+        <Card variant="sticky" interactive tabIndex={0} data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      expect(root.style.outline).toBe('');
+      const matches = vi.spyOn(root, 'matches').mockImplementation(() => true);
+      fireEvent.focus(root);
+      expect(root.style.outline).toContain('var(--comp-card-focus-ring');
+      expect(root.style.outlineOffset).not.toBe('');
+      expect(root.style.transform).toContain('translateY');
+      fireEvent.blur(root);
+      expect(root.style.outline).toBe('');
+      // A mouse focus that is not focus-visible still lifts but draws no ring.
+      matches.mockImplementation(() => false);
+      fireEvent.focus(root);
+      expect(root.style.outline).toBe('');
+      expect(root.style.transform).toContain('translateY');
+    });
+
+    it('draws no ring on the card when a descendant has focus', () => {
+      render(
+        <Card variant="lined" interactive tabIndex={0} data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      vi.spyOn(root, 'matches').mockImplementation(() => true);
+      fireEvent.focus(screen.getByRole('button'));
+      expect(root.style.outline).toBe('');
+      expect(root.style.transform).toContain('translateY');
+    });
+
+    it('shows the token focus ring on a tabIndex card that is not interactive', () => {
+      render(
+        <Card variant="sticky" tabIndex={0} data-testid="c">
+          x
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      expect(root.style.outline).toBe('');
+      vi.spyOn(root, 'matches').mockImplementation(() => true);
+      fireEvent.focus(root);
+      expect(root.style.outline).toContain('var(--comp-card-focus-ring');
+      // Focus alone never lifts a card that is not interactive.
+      expect(root.style.transform).not.toContain('translateY');
+      fireEvent.blur(root);
+      expect(root.style.outline).toBe('');
+    });
+
+    it('shows the ring once a key is pressed on a mouse-focused card', () => {
+      const onKeyDown = vi.fn();
+      const onKeyUp = vi.fn();
+      render(
+        <Card tabIndex={0} onKeyDown={onKeyDown} onKeyUp={onKeyUp} data-testid="c">
+          <button type="button">a</button>
+        </Card>,
+      );
+      const root = screen.getByTestId('c');
+      const matches = vi.spyOn(root, 'matches').mockImplementation(() => false);
+      fireEvent.focus(root);
+      expect(root.style.outline).toBe('');
+      // A key press on a focused descendant never draws the ring on the card.
+      matches.mockImplementation(() => true);
+      fireEvent.keyDown(screen.getByRole('button'), { key: 'a' });
+      expect(root.style.outline).toBe('');
+      fireEvent.keyDown(root, { key: 'a' });
+      expect(root.style.outline).toContain('var(--comp-card-focus-ring');
+      fireEvent.blur(root);
+      matches.mockImplementation(() => false);
+      fireEvent.focus(root);
+      matches.mockImplementation(() => true);
+      fireEvent.keyUp(root, { key: 'a' });
+      expect(root.style.outline).toContain('var(--comp-card-focus-ring');
+      expect(onKeyDown).toHaveBeenCalledTimes(2);
+      expect(onKeyUp).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves the outline alone on a card that is neither focusable nor interactive', () => {
+      render(<Card data-testid="c">x</Card>);
+      expect(screen.getByTestId('c').style.outline).toBe('');
+    });
+
     it('lifts a plain card on mouse hover without changing its box shadow', () => {
       render(
         <Card interactive data-testid="c">
@@ -356,6 +441,118 @@ describe('Card', () => {
       fireEvent.pointerEnter(root, { pointerType: 'mouse' });
       expect(root.style.transform).toContain('translateY');
       expect(root.style.boxShadow).toBe('');
+    });
+  });
+
+  describe('asChild', () => {
+    beforeEach(() => {
+      vi.stubGlobal('PointerEvent', TestPointerEvent);
+    });
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('renders as the slotted link with the sketch surface inside it', () => {
+      const { container } = render(
+        <Card asChild>
+          <a href="/docs/card">
+            <h3>Card docs</h3>
+          </a>
+        </Card>,
+      );
+      const link = screen.getByRole('link', { name: 'Card docs' });
+      expect(link).toHaveAttribute('href', '/docs/card');
+      // No wrapper: the link is the card root.
+      expect(container.firstElementChild).toBe(link);
+      const svg = link.querySelector('svg');
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+      expect(link.querySelectorAll('svg path').length).toBeGreaterThan(0);
+      expect(link).toHaveStyle({ isolation: 'isolate', textDecoration: 'none' });
+      expect(link.querySelector('h3')).not.toBeNull();
+    });
+
+    it('forwards the ref to the slotted element', () => {
+      let node: HTMLElement | null = null;
+      render(
+        <Card
+          asChild
+          ref={(el) => {
+            node = el;
+          }}
+        >
+          <a href="/x">x</a>
+        </Card>,
+      );
+      expect(node).toBe(screen.getByRole('link'));
+    });
+
+    it('is keyboard-focusable and shows the focus ring only on focus-visible', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      act(() => link.focus());
+      expect(document.activeElement).toBe(link);
+      const matches = vi.spyOn(link, 'matches').mockImplementation(() => true);
+      fireEvent.focus(link);
+      expect(link.style.outline).toContain('var(--comp-card-focus-ring');
+      expect(link.style.transform).toContain('translateY');
+      fireEvent.blur(link);
+      expect(link.style.outline).toBe('');
+      matches.mockImplementation(() => false);
+      fireEvent.focus(link);
+      expect(link.style.outline).toBe('');
+    });
+
+    it('does not lift on a mouse focus that is not focus-visible', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      vi.spyOn(link, 'matches').mockImplementation(() => false);
+      fireEvent.focus(link);
+      expect(link.style.transform).toBe('');
+      expect(link.style.outline).toBe('');
+    });
+
+    it('darkens the plain stroke and lifts on mouse hover', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      const stroke = () => link.querySelector('svg path:last-of-type')?.getAttribute('stroke');
+      expect(stroke()).toContain('var(--comp-card-stroke-default');
+      fireEvent.pointerEnter(link, { pointerType: 'mouse' });
+      expect(stroke()).toContain('var(--comp-card-stroke-hover');
+      expect(link.style.transform).toContain('translateY');
+      fireEvent.pointerLeave(link, { pointerType: 'mouse' });
+      expect(stroke()).toContain('var(--comp-card-stroke-default');
+    });
+
+    it('keeps the child handlers and style, and the card decorations, on paper variants', () => {
+      // Prevent default so jsdom does not attempt a navigation.
+      const onClick = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+      render(
+        <Card asChild variant="lined" fastener="pin">
+          <a href="/x" onClick={onClick} style={{ margin: '0px' }}>
+            x
+          </a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      fireEvent.click(link);
+      expect(onClick).toHaveBeenCalled();
+      expect(link.style.margin).toBe('0px');
+      expect(link.querySelector('[data-card-margin-line]')).not.toBeNull();
+      expect(link.querySelector('svg')).not.toBeNull();
+      fireEvent.pointerEnter(link, { pointerType: 'mouse' });
+      expect(link.style.boxShadow).toContain('var(--comp-card-hover-shadow');
     });
   });
 

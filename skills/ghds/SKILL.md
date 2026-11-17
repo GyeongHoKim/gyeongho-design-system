@@ -149,6 +149,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 | Need | Component | Notes |
 |---|---|---|
 | Card-style content container | `Card` | React: no default role, you supply one |
+| Whole-card link (e.g. a docs grid) | `Card` | React `asChild` with an `<a>` child; WC `href` (+ `target`/`rel`); not on RN |
 | Collapsible sections | `Accordion` | — |
 | Single disclosure toggle | `Collapsible` | WC is `open` + `toggle` event (no `defaultOpen`/controlled split) |
 | Divider between content | `Separator` | `decorative` defaults to `true` on RN vs `false` on React/WC — changes a11y exposure |
