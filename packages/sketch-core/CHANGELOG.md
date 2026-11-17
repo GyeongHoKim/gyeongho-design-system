@@ -1,5 +1,11 @@
 # @ghds/sketch-core
 
+## 0.3.0
+
+### Minor Changes
+
+- b23f9bf: Add `roundedRectangle(x, y, w, h, r, o)`, a sketchy rectangle with arc corners. `r` is clamped to half the shorter side, so a pill radius draws semicircular ends; `r <= 0` returns the plain `rectangle()` output.
+
 ## 0.2.0
 
 ### Minor Changes
