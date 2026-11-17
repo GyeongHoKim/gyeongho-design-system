@@ -99,7 +99,7 @@ export class GhNavigationMenu extends SketchyBase {
         z-index: var(--sys-zIndex-popover, var(--sys-zIndex-dropdown));
         display: none;
         box-sizing: border-box;
-        min-width: 14rem;
+        min-width: var(--comp-navigationMenu-panel-minWidth);
         padding: var(--comp-navigationMenu-padding);
         color: var(--comp-navigationMenu-text-default);
       }

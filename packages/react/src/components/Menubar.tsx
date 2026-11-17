@@ -210,7 +210,7 @@ export function Menubar({ menus, onSelect, 'aria-label': ariaLabel }: MenubarPro
     flexDirection: 'column',
     gap: tokens.sys.spacing.xs,
     zIndex: tokens.sys.zIndex.dropdown,
-    minWidth: '10rem',
+    minWidth: menubar.panel.minWidth,
     boxSizing: 'border-box',
     padding: menubar.padding,
     background: c.bg,

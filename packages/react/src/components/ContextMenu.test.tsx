@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -42,5 +43,15 @@ describe('ContextMenu', () => {
     expect(screen.getByRole('menu')).toBeInTheDocument();
     await userEvent.keyboard('{Escape}');
     expect(screen.queryAllByRole('menuitem')).toHaveLength(0);
+  });
+
+  it('sizes the panel from the comp.contextMenu.minWidth token', () => {
+    render(
+      <ContextMenu items={ITEMS}>
+        <div>Right-click me</div>
+      </ContextMenu>,
+    );
+    fireEvent.contextMenu(screen.getByText('Right-click me'));
+    expect(screen.getByRole('menu').style.minWidth).toBe(tokens.comp.contextMenu.minWidth);
   });
 });

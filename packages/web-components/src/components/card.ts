@@ -1,8 +1,9 @@
 import type { SketchDrawable, SketchOptions } from '@ghds/sketch-core';
 import { rectangle } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
-import { css, html, nothing } from 'lit';
+import { css, html, nothing, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { type SketchParams, SketchyBase } from '../sketchy-base.js';
 
 export type CardVariant = 'plain' | 'sticky' | 'lined';
@@ -17,6 +18,13 @@ export type CardTilt = 'none' | 'left' | 'right';
  * the sketch engine emits an offset "drop shadow" outline (`shadowPaths`) using
  * the `sys.sketch.elevation` token to fake depth. Background, padding, radius
  * and text colour are all token-driven.
+ *
+ * Set `href` to make the whole card a link: the surface renders as
+ * `<a class="content">` (with `target` / `rel`), gains a hover stroke and a
+ * focus ring, and lifts like an `interactive` card.
+ *
+ * @slot title - Optional heading, rendered before the body with title styling.
+ * @slot - Card body. A slotted `h1`–`h3` also gets title styling.
  */
 @customElement('gh-card')
 export class GhCard extends SketchyBase {
@@ -43,6 +51,38 @@ export class GhCard extends SketchyBase {
 
       .content {
         --_angle: 0deg;
+      }
+
+      /* The sketch outline paints with currentColor; give it the card stroke token. */
+      .content > .sketch {
+        color: var(--comp-card-stroke-default);
+      }
+
+      a.content {
+        display: block;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /*
+       * A focusable host (tabindex on gh-card) moves its ring onto the paper:
+       * an outline on .content follows the folded corner radius and the tilt,
+       * where the browser's default host outline is an upright rectangle.
+       */
+      :host(:focus-visible) {
+        outline: none;
+      }
+
+      a.content:focus-visible,
+      :host(:focus-visible) .content {
+        outline: var(--sys-border-width-thick) solid var(--comp-card-focus-ring);
+        outline-offset: var(--sys-spacing-xs);
+      }
+
+      @media (hover: hover) {
+        a.content:hover > .sketch {
+          color: var(--comp-card-stroke-hover);
+        }
       }
 
       :host([fastener='tape']) .content,
@@ -206,43 +246,52 @@ export class GhCard extends SketchyBase {
         fill: var(--comp-card-fastener-pin-color-info);
       }
 
-      :host([interactive]) .content {
+      :host([interactive]) .content,
+      a.content {
         transition:
           transform var(--comp-card-hover-duration) var(--comp-card-hover-easing),
           box-shadow var(--comp-card-hover-duration) var(--comp-card-hover-easing);
       }
 
       @media (hover: hover) {
-        :host([interactive]) .content:hover {
+        :host([interactive]) .content:hover,
+        a.content:hover {
           transform: translateY(calc(var(--comp-card-hover-lift) * -1))
             rotate(calc(var(--_angle) - var(--comp-card-hover-rotate) * 1deg));
         }
 
         :host([interactive][variant='sticky']) .content:hover,
-        :host([interactive][variant='lined']) .content:hover {
+        :host([interactive][variant='lined']) .content:hover,
+        :host([variant='sticky']) a.content:hover,
+        :host([variant='lined']) a.content:hover {
           box-shadow: var(--comp-card-hover-shadow);
         }
       }
 
-      /* The host form also matches when the host itself is focused (tabindex on gh-card). */
-      :host([interactive]) .content:focus-within,
-      :host([interactive]:focus-within) .content {
+      /* The host form also matches when the host itself is focused (tabindex on gh-card).
+         Scoped to the div surface: a link card lifts only on keyboard focus (focus-visible). */
+      :host([interactive]) div.content:focus-within,
+      :host([interactive]:focus-within) div.content,
+      a.content:focus-visible {
         transform: translateY(calc(var(--comp-card-hover-lift) * -1))
           rotate(calc(var(--_angle) - var(--comp-card-hover-rotate) * 1deg));
       }
 
-      :host([interactive][variant='sticky']) .content:focus-within,
-      :host([interactive][variant='lined']) .content:focus-within {
+      :host([interactive][variant='sticky']) div.content:focus-within,
+      :host([interactive][variant='lined']) div.content:focus-within,
+      :host([variant='sticky']) a.content:focus-visible,
+      :host([variant='lined']) a.content:focus-visible {
         box-shadow: var(--comp-card-hover-shadow);
       }
 
-      :host([interactive][variant='sticky']:focus-within) .content,
-      :host([interactive][variant='lined']:focus-within) .content {
+      :host([interactive][variant='sticky']:focus-within) div.content,
+      :host([interactive][variant='lined']:focus-within) div.content {
         box-shadow: var(--comp-card-hover-shadow);
       }
 
       @media (prefers-reduced-motion: reduce) {
-        :host([interactive]) .content {
+        :host([interactive]) .content,
+        a.content {
           transition: none;
         }
       }
@@ -286,13 +335,50 @@ export class GhCard extends SketchyBase {
   /** Lifts on hover and while focus is inside. */
   @property({ type: Boolean, reflect: true }) interactive = false;
 
-  /** Optional accessible label; when set the card exposes a labelled group. */
+  /**
+   * Optional accessible label. A plain card exposes a labelled group; a link
+   * card puts the label on its anchor.
+   */
   @property({ type: String }) label = '';
+
+  /** When set (non-empty), the whole card renders as a link (`<a href>`). */
+  @property({ type: String }) href?: string;
+
+  /** Anchor `target`, forwarded only when `href` is set. */
+  @property({ type: String }) target?: string;
+
+  /** Anchor `rel`, forwarded only when `href` is set. */
+  @property({ type: String }) rel?: string;
+
+  /** True when the surface renders as a link. */
+  private get isLink(): boolean {
+    return this.href !== undefined && this.href !== '';
+  }
 
   private readonly internals: ElementInternals = this.attachInternals();
 
+  /** The shadow anchor of a link card, or null when the card is not a link. */
+  private get anchor(): HTMLAnchorElement | null {
+    return this.isLink ? this.renderRoot.querySelector<HTMLAnchorElement>('a.content') : null;
+  }
+
+  /** A link card forwards focus to its anchor, the real focus target. */
+  override focus(options?: FocusOptions): void {
+    const anchor = this.anchor;
+    if (anchor) anchor.focus(options);
+    else super.focus(options);
+  }
+
+  /** A link card forwards programmatic clicks to its anchor, so `click()` follows the link. */
+  override click(): void {
+    const anchor = this.anchor;
+    if (anchor) anchor.click();
+    else super.click();
+  }
+
   protected override updated(): void {
-    if (this.label) {
+    // A link card's semantics come from its anchor, so the host stays role-less.
+    if (this.label && !this.isLink) {
       this.internals.role = 'group';
       this.internals.ariaLabel = this.label;
     } else {
@@ -342,7 +428,7 @@ export class GhCard extends SketchyBase {
   }
 
   protected override render(): unknown {
-    return html`<div class="content" part="content">
+    const surface: TemplateResult = html`
       ${this.variant === 'sticky' || this.variant === 'lined' ? nothing : this.renderSketch()}
       ${this.renderFastener()}
       ${
@@ -351,9 +437,22 @@ export class GhCard extends SketchyBase {
           : nothing
       }
       <div class="body">
+        <slot name="title"></slot>
         <slot></slot>
       </div>
-    </div>`;
+    `;
+    if (this.isLink) {
+      return html`<a
+        class="content"
+        part="content"
+        href=${ifDefined(this.href)}
+        target=${ifDefined(this.target)}
+        rel=${ifDefined(this.rel)}
+        aria-label=${this.label || nothing}
+        >${surface}</a
+      >`;
+    }
+    return html`<div class="content" part="content">${surface}</div>`;
   }
 }
 

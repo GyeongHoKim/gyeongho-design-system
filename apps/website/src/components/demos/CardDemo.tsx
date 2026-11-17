@@ -25,6 +25,12 @@ export default function CardDemo(): React.JSX.Element {
         <h3>Lined</h3>
         <p>Ruled paper with a pin.</p>
       </Card>
+      <Card asChild>
+        <a href="#link-cards">
+          <h3>Link card</h3>
+          <p>The whole card is one link. Hover or tab to it.</p>
+        </a>
+      </Card>
     </div>
   );
 }
