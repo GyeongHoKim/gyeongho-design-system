@@ -1,5 +1,13 @@
 # @ghds/react-native
 
+## 0.13.1
+
+### Patch Changes
+
+- 6c1bb17: Badge outlines now follow `comp.badge.radius`, so the hand-drawn border traces the same pill shape as the background instead of a square-cornered rectangle (GHD-72). React and React Native sketch hooks accept an optional `radius`.
+- Updated dependencies [b23f9bf]
+  - @ghds/sketch-core@0.3.0
+
 ## 0.13.0
 
 ### Minor Changes
