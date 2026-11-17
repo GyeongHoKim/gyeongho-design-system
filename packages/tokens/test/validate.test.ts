@@ -141,7 +141,8 @@ function contrast(a: string, b: string): number {
 // intentionally excluded from the required matrix.
 const BG_SURFACES = ['bg.canvas', 'bg.surface', 'bg.muted', 'bg.subtle'] as const;
 const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link', 'text.danger'] as const;
-const ICON_ROLES = ['icon.default', 'icon.muted'] as const;
+// `icon.{info,tip,warning}` are the status accents a Callout draws on neutral surfaces.
+const ICON_ROLES = ['icon.default', 'icon.muted', 'icon.info', 'icon.tip', 'icon.warning'] as const;
 const PAPER_BACKGROUNDS = [
   'neutral',
   'primary',
@@ -152,7 +153,13 @@ const PAPER_BACKGROUNDS = [
   'lined',
 ].map((tone) => `paper.${tone}`);
 const PAPER_TEXT_ROLES = ['text.primary', 'text.secondary'] as const;
-const BORDER_INFO_ROLES = ['border.focus', 'border.danger'] as const;
+const BORDER_INFO_ROLES = [
+  'border.focus',
+  'border.danger',
+  'border.info',
+  'border.tip',
+  'border.warning',
+] as const;
 
 // Text drawn on filled semantic backgrounds (its own foreground/background pair).
 const ON_PAIRS: ReadonlyArray<readonly [string, string]> = [
@@ -168,6 +175,8 @@ const ON_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ['text.onWarning', 'bg.warning.hover'],
   ['text.onInfo', 'bg.info.default'],
   ['text.onInfo', 'bg.info.hover'],
+  ['text.onTip', 'bg.tip.default'],
+  ['text.onTip', 'bg.tip.hover'],
 ];
 
 interface Pair {

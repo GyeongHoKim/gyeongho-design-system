@@ -15,6 +15,7 @@ export default defineConfig({
     button: 'src/components/Button.tsx',
     'button-group': 'src/components/ButtonGroup.tsx',
     calendar: 'src/components/Calendar.tsx',
+    callout: 'src/components/Callout.tsx',
     card: 'src/components/Card.tsx',
     carousel: 'src/components/Carousel.tsx',
     chart: 'src/components/Chart.tsx',

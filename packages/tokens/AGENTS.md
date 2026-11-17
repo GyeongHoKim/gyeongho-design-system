@@ -145,6 +145,14 @@ comp.input.border.focus
   `comp.card.fastener.tape.opacity` and requires at least 1.5:1 against every neutral background
   surface (`bg.canvas`, `bg.surface`, `bg.muted`, `bg.subtle`) and every paper background, so the decorative tape stays visible on light and dark pages.
 
+## Status accents and `tip`
+
+- `tip` is its own semantic role with its own hue (`ref.palette.purple`), never a recoloured
+  `info`: `sys.color.bg.tip.{default,hover}` with `text.onTip`.
+- `sys.color.border.{info,tip,warning}` and `sys.color.icon.{info,tip,warning}` are status accents
+  drawn on neutral surfaces (the Callout's outline and icon). They are themed (600 in light, 300 in
+  dark) so they keep 3:1 against every `bg.*` surface, which the validator checks in both themes.
+
 ---
 
 ## Typography & Font Stacks

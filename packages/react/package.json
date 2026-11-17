@@ -84,6 +84,11 @@
       "import": "./dist/calendar.mjs",
       "require": "./dist/calendar.cjs"
     },
+    "./callout": {
+      "types": "./dist/components/Callout.d.ts",
+      "import": "./dist/callout.mjs",
+      "require": "./dist/callout.cjs"
+    },
     "./card": {
       "types": "./dist/components/Card.d.ts",
       "import": "./dist/card.mjs",

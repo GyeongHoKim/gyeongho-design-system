@@ -1,0 +1,131 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: Callout
+description: A hand-drawn static aside for notes, tips, and caveats in documentation content.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CalloutDemoReact from '../../../components/demos/CalloutDemo.tsx';
+import CalloutDemoLit from '../../../components/demos/CalloutDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `Callout` is a boxed aside that sets a note, a tip, or a caveat apart from the surrounding
+long-form content — a docs page, a guide, a changelog. It is static: it is part of the content, not
+a reaction to something the user did. For task or page status, use an
+<a href={withBase('/components/alert/')}>Alert</a>; for transient feedback, use a
+<a href={withBase('/components/toast/')}>Toast</a>.
+
+## Anatomy
+
+A sketchy box (`@ghds/sketch-core`) with a variant-coloured outline and icon, an optional bold
+heading, and a body. There is no dismiss button.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Info', present: true, note: 'Neutral supporting information. Blue outline, info icon.' },
+    { name: 'Tip', present: true, note: 'A recommendation or shortcut. Its own purple hue (not a recoloured info), star icon.' },
+    { name: 'Warning', present: true, note: 'A caveat or something easy to get wrong. Amber outline, warning icon.' },
+    { name: 'Dismissible', present: false, note: 'Never — a Callout is content. Use an Alert for dismissible messages.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use a Callout for asides inside docs and long-form content.',
+    'Pick the variant by intent: info for context, tip for a recommendation, warning for a pitfall.',
+    'Give it a short heading that names the point ("Recommended fonts").',
+  ]}
+  dont={[
+    "Don't use a Callout to report the result of an action — use an Alert or a Toast.",
+    "Don't stack several Callouts in a row; fold them into the main text instead.",
+    "Don't rely on colour alone; the icon and heading carry the meaning too.",
+  ]}
+/>
+
+## Accessibility
+
+- **React and Web Components**: the root has `role="note"` — content that is parenthetical to the main
+  content. It is never a live region (no `role="status"`/`"alert"`), so screen readers read it in
+  document order instead of announcing it.
+- The outline and icon use themed status accents (`sys.color.border.*` / `sys.color.icon.*`) that
+  keep at least 3:1 against every surface in light and dark themes. The heading and body text meet
+  4.5:1. The variant icon is decorative; put the meaning in the heading.
+- React: pass `role` / `aria-label` to override the default role or name the aside.
+- Web Components: set a `role` / `aria-label` attribute on `<gh-callout>` to override the default
+  role (exposed through `ElementInternals`) or name the aside.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+## Content
+
+An optional short heading plus one or two sentences. The body accepts rich content (links, inline
+code, a short list).
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'info' | 'tip' | 'warning'", default: "'info'", description: 'Kind of aside.' },
+        { name: 'heading', type: 'ReactNode', description: 'Optional bold heading.' },
+        { name: 'children', type: 'ReactNode', description: 'Body content (required).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'Forwarded to the root, including role and aria-*.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'info' | 'tip' | 'warning'", default: "'info'", description: 'Kind of aside (reflected).' },
+        { name: 'heading', type: 'string', description: 'Optional bold heading.' },
+        { name: 'default slot', type: 'Node', description: 'Body content.' },
+      ],
+    },
+  ]}
+/>
+
+React Native has no Callout yet.
+
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { Callout } from '@ghds/react/callout';
+
+<Callout variant="tip" heading="Recommended fonts">
+  Load the web fonts with Fontsource in your app.
+</Callout>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/callout';
+</script>
+<gh-callout variant="tip" heading="Recommended fonts">
+  Load the web fonts with Fontsource in your app.
+</gh-callout>
+```
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CalloutDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <CalloutDemoLit />
+  </div>
+</div>
