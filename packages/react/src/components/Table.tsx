@@ -19,7 +19,11 @@ export interface TableColumn {
   align?: 'left' | 'right' | 'center';
 }
 
-/** A row: a stable `id` plus a cell value per column key. */
+/**
+ * A row: a stable `id` plus a cell value per column key. Cell values are any
+ * `ReactNode`, so rich content works directly — e.g.
+ * `{ id: 'bg', token: <code>sys.color.bg.primary</code>, preview: <span aria-hidden /> }`.
+ */
 export interface TableRow {
   id: string;
   [key: string]: ReactNode;
