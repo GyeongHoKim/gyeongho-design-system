@@ -1,5 +1,32 @@
 # @ghds/tokens
 
+## 0.14.0
+
+### Minor Changes
+
+- 5ca3dfb: Add Callout tokens: a `ref.palette.purple` ramp, a distinct `tip` semantic role (`sys.color.bg.tip.*`, `text.onTip`), themed status accents `sys.color.border.{info,tip,warning}` and `sys.color.icon.{info,tip,warning}` that keep 3:1 on every surface in both themes, and `comp.callout.*`.
+- 757a223: Add Card link-state tokens: `comp.card.stroke.hover` (aliases `sys.color.border.strong`) and `comp.card.focus.ring` (aliases `sys.color.border.focus`).
+- d41bf89: Add `sys.color.paper.tape` (light `ref.palette.warning.400`, dark `ref.palette.warning.500`) and point `comp.card.fastener.tape.bg` at it instead of `sys.color.bg.canvas`. The canvas-coloured tape almost disappeared on a white or dark page, leaving only its dashed edges; the amber masking-tape tone, composited at the tape opacity, now keeps at least 1.5:1 against every neutral background surface (`bg.canvas`, `bg.surface`, `bg.muted`, `bg.subtle`) and every paper background in both themes (validated). React, Web Components and React Native pick it up through the comp token.
+- ea550ec: Add `comp.menu.panel.minWidth`, the minimum width of the Menu / NavMenu dropdown panel. It aliases `sys.overlay.minWidth.sm`, which resolves to `ref.overlay.minWidth.sm` (`160px`).
+- 784ecf8: Add overlay and field minimum-width tokens so components stop hardcoding them:
+
+  - `sys.overlay.minWidth.{sm,md,lg,xl}` (`160px` / `192px` / `224px` / `240px`, from `ref.overlay.minWidth.*`).
+  - `sys.field.minWidth` (`224px`, from `ref.field.minWidth`) for input-like triggers.
+  - Component aliases: `comp.contextMenu.minWidth`, `comp.menubar.panel.minWidth` (sm); `comp.popover.minWidth`, `comp.hoverCard.minWidth` (md); `comp.navigationMenu.panel.minWidth` (lg); `comp.datePicker.field.minWidth`, `comp.combobox.field.minWidth` (field).
+
+- e226ae8: **Breaking (React Native output only):** every `fontFamily` token in `@ghds/tokens/rn` is now a face table `{ ios, android }` that maps each `ref.fontWeight` (`"400"`, `"500"`, `"700"`) to a weight-specific family name, instead of one family name per stack. The names are the fonts' PostScript names, so they match the `expo-font` config plugin and bare React Native linking on both platforms. `mono` now resolves to `monospace` on Android, which has no Menlo. CSS, TS and JSON output are unchanged.
+
+  | Stack    | iOS                                        | Android     |
+  | -------- | ------------------------------------------ | ----------- |
+  | `sans`   | `NotoSansKR-Regular` / `-Medium` / `-Bold` | same        |
+  | `sketch` | `Gaegu-Regular` (400, 500) / `Gaegu-Bold`  | same        |
+  | `mono`   | `Menlo-Regular` (400, 500) / `Menlo-Bold`  | `monospace` |
+
+  **Migration**
+
+  - Before: `fontFamily: lightTokens.sys.typography.body.fontFamily` (`'NotoSansKR'`) plus `fontWeight: '400'`
+  - After: `fontFamily: lightTokens.sys.typography.body.fontFamily[Platform.OS === 'ios' ? 'ios' : 'android']['400']` (`'NotoSansKR-Regular'`), with no `fontWeight`. `@ghds/react-native`'s theme does this for you.
+
 ## 0.13.0
 
 ### Minor Changes

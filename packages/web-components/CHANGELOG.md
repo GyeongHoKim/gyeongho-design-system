@@ -1,5 +1,32 @@
 # @ghds/web-components
 
+## 0.13.0
+
+### Minor Changes
+
+- cafe23f: Add `<gh-callout>` (`@ghds/web-components/callout`): a static, non-dismissible hand-drawn aside for doc content with `variant` (`info`, `tip`, `warning`), an optional `heading` and a default slot for the body. It exposes `role="note"` instead of a live-region role.
+- 79e9d67: `gh-card` gains `href`, `target` and `rel`. With a non-empty `href` the whole card renders as a link (`<a class="content" part="content">`): it is keyboard-focusable, shows a `comp.card.focus.ring` focus ring, darkens its sketch stroke to `comp.card.stroke.hover` on mouse hover and lifts like an `interactive` card. A `label` goes on the anchor instead of a host group. The plain card's sketch outline now paints with `comp.card.stroke.default` as intended (it previously inherited the body text colour).
+- af438a6: `gh-card` now renders a named `title` slot before the body. Content with `slot="title"` previously matched no slot and never appeared; it now renders first with title styling, on every `variant`.
+- 0f7af1b: `gh-table` columns accept an optional `render(value, row)` function for rich cell content. Return a Lit `TemplateResult` (import `html` from `lit`), for example a `<code>` key name or a colour swatch. Row values stay `string | number`, and columns without `render` render exactly as before.
+- 7c09319: Menu items accept an optional `href`. `Menu` (`MenuItem`) and `gh-menu` (`GhMenuItem`) render an item with an `href` as a real link — a `role="none"` wrapper around `<a role="menuitem" href>` — so an action that links out keeps native link behaviour (open in new tab, copy link address, crawlability). Activating it navigates natively and closes the menu; `onSelect` / the `select` event is not fired for href items. Enter is left to the native link and Space clicks it, so keyboard activation navigates without `preventDefault`. A `disabled` href item drops its `href`. An empty `href` (`''`) counts as no `href`, so every item is either a link or an action, never both. Action items behave as before, and both kinds can be mixed in one menu.
+- d20f108: Add `NavMenu` (`@ghds/react/nav-menu`) and `<gh-nav-menu>` (`@ghds/web-components/nav-menu`): a hand-drawn dropdown for grouped site navigation. A `<button aria-expanded aria-controls>` trigger shows a floating panel holding a plain `<ul>` of real `<a href>` links, so entries keep native link behaviour (open in new tab, copy link address, crawlability). Unlike `Menu` / `gh-menu`, it uses no `role="menu"` / `role="menuitem"` anywhere — it follows the ARIA disclosure-navigation pattern instead of the command-menu pattern. Props: `label` and `items: { href, label }[]` (a property on the web component). Links are in the natural Tab order; ArrowDown / ArrowUp on the trigger open the panel and focus the first / last link, Arrow / Home / End move between links, Escape closes and returns focus to the trigger, and clicking outside or tabbing out closes it. Pass `current` (the active page's path) to mark the page: the link whose `href` matches it exactly gets `aria-current="page"` (bold and underlined), and the trigger label is underlined when any link is the current path or an ancestor of it (`/components/` on `/components/button/`); query strings, hashes and trailing slashes are ignored, and hash- or query-only hrefs never match. It reuses the `comp.menu.*` tokens and the same floating-ui positioning as `Menu`, now shared through an internal helper.
+
+### Patch Changes
+
+- d41bf89: The Card tape fastener uses the new amber `comp.card.fastener.tape.bg` (`sys.color.paper.tape`) from `@ghds/tokens`, so it stays visible on light and dark pages instead of blending into the page.
+- cc5c813: A focusable `gh-card` (`tabindex` on the host, typically with `interactive`) no longer shows the browser's rectangular default outline. On `:focus-visible` the host outline is replaced by the `comp.card.focus.ring` ring drawn on the paper, the same ring as link mode, so it follows a sticky card's folded corner and the tilt.
+- 3a7e450: `gh-menu` sizes its dropdown panel from the new `--comp-menu-panel-minWidth` token instead of a hardcoded `10rem`. The rendered width is unchanged at the default root font size (`160px`).
+- 6df46e1: `gh-context-menu`, `gh-navigation-menu`, `gh-popover` and `gh-hover-card` size their panels from the overlay min-width tokens (`--comp-*-minWidth` / `--sys-overlay-minWidth-lg`) instead of hardcoded `rem` values. Rendered widths are unchanged at the default root font size.
+- Updated dependencies [5ca3dfb]
+- Updated dependencies [757a223]
+- Updated dependencies [d41bf89]
+- Updated dependencies [4ec5c53]
+- Updated dependencies [ea550ec]
+- Updated dependencies [784ecf8]
+- Updated dependencies [e226ae8]
+  - @ghds/tokens@0.14.0
+  - @ghds/icons@0.2.0
+
 ## 0.12.0
 
 ### Minor Changes

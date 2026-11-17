@@ -1,5 +1,31 @@
 # @ghds/react
 
+## 0.12.0
+
+### Minor Changes
+
+- d0fff31: Add `Callout` (`@ghds/react/callout`): a static, non-dismissible hand-drawn aside for doc content with `variant` (`info`, `tip`, `warning`), an optional `heading` and `children` for the body. It renders `role="note"` instead of a live-region role.
+- 0cc64ad: `Card` gains `asChild`, following the `Button` pattern: `<Card asChild><a href="/docs">…</a></Card>` renders the child as the card root, with the sketch surface, fastener and lined margin inside it. An `asChild` card is interactive: it lifts on mouse hover and keyboard focus (matching `gh-card`, a mouse click that focuses the link does not leave it lifted), a `plain` card's stroke darkens to `comp.card.stroke.hover` on mouse hover, and keyboard focus shows a `comp.card.focus.ring` focus ring.
+- 7c09319: Menu items accept an optional `href`. `Menu` (`MenuItem`) and `gh-menu` (`GhMenuItem`) render an item with an `href` as a real link — a `role="none"` wrapper around `<a role="menuitem" href>` — so an action that links out keeps native link behaviour (open in new tab, copy link address, crawlability). Activating it navigates natively and closes the menu; `onSelect` / the `select` event is not fired for href items. Enter is left to the native link and Space clicks it, so keyboard activation navigates without `preventDefault`. A `disabled` href item drops its `href`. An empty `href` (`''`) counts as no `href`, so every item is either a link or an action, never both. Action items behave as before, and both kinds can be mixed in one menu.
+- d20f108: Add `NavMenu` (`@ghds/react/nav-menu`) and `<gh-nav-menu>` (`@ghds/web-components/nav-menu`): a hand-drawn dropdown for grouped site navigation. A `<button aria-expanded aria-controls>` trigger shows a floating panel holding a plain `<ul>` of real `<a href>` links, so entries keep native link behaviour (open in new tab, copy link address, crawlability). Unlike `Menu` / `gh-menu`, it uses no `role="menu"` / `role="menuitem"` anywhere — it follows the ARIA disclosure-navigation pattern instead of the command-menu pattern. Props: `label` and `items: { href, label }[]` (a property on the web component). Links are in the natural Tab order; ArrowDown / ArrowUp on the trigger open the panel and focus the first / last link, Arrow / Home / End move between links, Escape closes and returns focus to the trigger, and clicking outside or tabbing out closes it. Pass `current` (the active page's path) to mark the page: the link whose `href` matches it exactly gets `aria-current="page"` (bold and underlined), and the trigger label is underlined when any link is the current path or an ancestor of it (`/components/` on `/components/button/`); query strings, hashes and trailing slashes are ignored, and hash- or query-only hrefs never match. It reuses the `comp.menu.*` tokens and the same floating-ui positioning as `Menu`, now shared through an internal helper.
+
+### Patch Changes
+
+- 6ab729e: A disabled `<Button asChild>` now actually blocks activation. Previously it only set `aria-disabled`, so a disabled `<Button asChild disabled><a href="…">` still navigated and fired the child's `onClick`. Clicks, middle-clicks and keyboard Enter are now cancelled (`preventDefault`) in the capture phase, and none of the child's click handlers run (neither `onClick`/`onAuxClick` nor `onClickCapture`/`onAuxClickCapture`). The link keeps its `href`, so it can still be opened from the context menu, dragged, or followed by crawlers; drop `href` from the child while disabled if it must not be followable at all. The element keeps `aria-disabled="true"` and stays focusable so assistive technology can still find it. The `asChild` JSDoc now includes a link example.
+- e822797: A `Card` made focusable with `tabIndex` now shows the `comp.card.focus.ring` outline on keyboard focus instead of the browser default, matching `gh-card`'s `:host(:focus-visible)` and `asChild` link cards. This applies with or without `interactive`. Focus alone does not lift a card that is not `interactive`, and focus on a descendant of an `interactive` card lifts it without drawing the ring.
+- d41bf89: The Card tape fastener uses the new amber `comp.card.fastener.tape.bg` (`sys.color.paper.tape`) from `@ghds/tokens`, so it stays visible on light and dark pages instead of blending into the page.
+- 17acaa6: `Menu` sizes its dropdown panel from the new `comp.menu.panel.minWidth` token instead of a hardcoded `10rem`. The rendered width is unchanged at the default root font size (`160px`).
+- d86ea8b: `ContextMenu`, `Menubar`, `NavigationMenu`, `Popover`, `HoverCard`, `DatePicker` and `Combobox` size their panels / fields from the new `comp.*.minWidth` tokens instead of hardcoded `rem` values. Rendered widths are unchanged at the default root font size.
+- Updated dependencies [5ca3dfb]
+- Updated dependencies [757a223]
+- Updated dependencies [d41bf89]
+- Updated dependencies [4ec5c53]
+- Updated dependencies [ea550ec]
+- Updated dependencies [784ecf8]
+- Updated dependencies [e226ae8]
+  - @ghds/tokens@0.14.0
+  - @ghds/icons@0.2.0
+
 ## 0.11.0
 
 ### Minor Changes
