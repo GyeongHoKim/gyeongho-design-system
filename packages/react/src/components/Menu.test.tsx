@@ -141,33 +141,33 @@ describe('Menu', () => {
       expect(onSelect).toHaveBeenCalledWith('edit');
     });
 
-    it.each([
-      '{Enter}',
-      ' ',
-    ])('%s on a focused href item navigates without preventDefault', async (key) => {
-      const onSelect = vi.fn();
-      const nav = trackNavigation();
-      render(<Menu label="Actions" items={MIXED} onSelect={onSelect} />);
-      const trigger = screen.getByRole('button', { name: 'Actions' });
-      trigger.focus();
-      await userEvent.keyboard('{ArrowDown}');
-      await userEvent.keyboard('{ArrowDown}');
-      const link = screen.getByRole('menuitem', { name: 'View source' });
-      expect(link).toHaveFocus();
-      const keydowns: KeyboardEvent[] = [];
-      const onKey = (event: KeyboardEvent) => keydowns.push(event);
-      link.addEventListener('keydown', onKey);
-      await userEvent.keyboard(key);
-      link.removeEventListener('keydown', onKey);
-      nav.stop();
-      if (key === '{Enter}') {
-        // Enter must reach the anchor's native activation untouched.
-        expect(keydowns[0]?.defaultPrevented).toBe(false);
-      }
-      expect(onSelect).not.toHaveBeenCalled();
-      expect(nav.navigations).toEqual([{ href: 'https://example.com/source', prevented: false }]);
-      expect(trigger).toHaveAttribute('aria-expanded', 'false');
-    });
+    it.each(['{Enter}', ' '])(
+      '%s on a focused href item navigates without preventDefault',
+      async (key) => {
+        const onSelect = vi.fn();
+        const nav = trackNavigation();
+        render(<Menu label="Actions" items={MIXED} onSelect={onSelect} />);
+        const trigger = screen.getByRole('button', { name: 'Actions' });
+        trigger.focus();
+        await userEvent.keyboard('{ArrowDown}');
+        await userEvent.keyboard('{ArrowDown}');
+        const link = screen.getByRole('menuitem', { name: 'View source' });
+        expect(link).toHaveFocus();
+        const keydowns: KeyboardEvent[] = [];
+        const onKey = (event: KeyboardEvent) => keydowns.push(event);
+        link.addEventListener('keydown', onKey);
+        await userEvent.keyboard(key);
+        link.removeEventListener('keydown', onKey);
+        nav.stop();
+        if (key === '{Enter}') {
+          // Enter must reach the anchor's native activation untouched.
+          expect(keydowns[0]?.defaultPrevented).toBe(false);
+        }
+        expect(onSelect).not.toHaveBeenCalled();
+        expect(nav.navigations).toEqual([{ href: 'https://example.com/source', prevented: false }]);
+        expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      },
+    );
 
     it('an item with an empty href is a plain action item', async () => {
       const onSelect = vi.fn();

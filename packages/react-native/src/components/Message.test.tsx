@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { Text } from 'react-native';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '../test-utils.js';
 import { Bubble } from './Bubble.js';
@@ -14,7 +15,7 @@ function Row(side: 'received' | 'sent') {
   return (
     <Message side={side} testID={`msg-${side}`}>
       <MessageAvatar>
-        <span>avatar</span>
+        <Text>avatar</Text>
       </MessageAvatar>
       <MessageContent>
         <MessageAuthor>Ada</MessageAuthor>

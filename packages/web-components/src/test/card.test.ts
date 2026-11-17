@@ -40,19 +40,19 @@ describe('gh-card', () => {
     }
   });
 
-  it.each([
-    'sticky',
-    'lined',
-  ] as const)('keeps the title slot on the %s variant with a fastener', async (variant) => {
-    const el = await mount(new GhCard());
-    el.variant = variant;
-    el.fastener = 'pin';
-    el.innerHTML = '<span slot="title">Heading</span>';
-    await el.updateComplete;
-    const titleSlot = el.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="title"]');
-    expect(titleSlot?.assignedElements()).toHaveLength(1);
-    expect(el.shadowRoot?.querySelector('.fastener-pin')).not.toBeNull();
-  });
+  it.each(['sticky', 'lined'] as const)(
+    'keeps the title slot on the %s variant with a fastener',
+    async (variant) => {
+      const el = await mount(new GhCard());
+      el.variant = variant;
+      el.fastener = 'pin';
+      el.innerHTML = '<span slot="title">Heading</span>';
+      await el.updateComplete;
+      const titleSlot = el.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="title"]');
+      expect(titleSlot?.assignedElements()).toHaveLength(1);
+      expect(el.shadowRoot?.querySelector('.fastener-pin')).not.toBeNull();
+    },
+  );
 
   it('draws only an outline when flat (no shadow paths)', async () => {
     const el = await mount(new GhCard());

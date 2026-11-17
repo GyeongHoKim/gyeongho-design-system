@@ -245,15 +245,14 @@ describe('Card', () => {
   });
 
   describe('layout observation across variant switches', () => {
-    it.each([
-      'sticky',
-      'lined',
-      'plain',
-    ] as const)('attaches a layout handler at mount (%s)', (variant) => {
-      renderWithTheme(<Card variant={variant} testID="c" />);
-      const node = screen.getByTestId('c') as HTMLElement & { __reactLayoutHandler?: unknown };
-      expect(node.__reactLayoutHandler).toBeTypeOf('function');
-    });
+    it.each(['sticky', 'lined', 'plain'] as const)(
+      'attaches a layout handler at mount (%s)',
+      (variant) => {
+        renderWithTheme(<Card variant={variant} testID="c" />);
+        const node = screen.getByTestId('c') as HTMLElement & { __reactLayoutHandler?: unknown };
+        expect(node.__reactLayoutHandler).toBeTypeOf('function');
+      },
+    );
 
     it('measures a card mounted as sticky once it becomes lined', () => {
       const { rerender } = renderWithTheme(<Card variant="sticky" testID="c" />);

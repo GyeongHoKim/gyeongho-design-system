@@ -1,1 +1,41 @@
-{ "extends": "//" }
+{
+  "root": false,
+  "extends": "//",
+  "linter": {
+    "rules": {
+      "correctness": {
+        "noReactNativeRawText": {
+          "level": "error",
+          "options": {
+            "skip": [
+              "Alert",
+              "Badge",
+              "Bubble",
+              "Collapsible",
+              "InputGroupAddon",
+              "ItemDescription",
+              "ItemTitle",
+              "Kbd",
+              "Label",
+              "Marker",
+              "MessageAuthor",
+              "MessageTimestamp"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/test/react-native-svg.stub.tsx"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noReactNativeRawText": "off"
+          }
+        }
+      }
+    }
+  ]
+}
