@@ -108,11 +108,17 @@ function channel(srgb: number): number {
   return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 }
 
-function luminance(hex: string): number {
+function rgb(hex: string): [number, number, number] {
   const value = hex.replace('#', '');
-  const r = Number.parseInt(value.slice(0, 2), 16);
-  const g = Number.parseInt(value.slice(2, 4), 16);
-  const b = Number.parseInt(value.slice(4, 6), 16);
+  return [
+    Number.parseInt(value.slice(0, 2), 16),
+    Number.parseInt(value.slice(2, 4), 16),
+    Number.parseInt(value.slice(4, 6), 16),
+  ];
+}
+
+function luminance(hex: string): number {
+  const [r, g, b] = rgb(hex);
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 }
 
@@ -135,7 +141,8 @@ function contrast(a: string, b: string): number {
 // intentionally excluded from the required matrix.
 const BG_SURFACES = ['bg.canvas', 'bg.surface', 'bg.muted', 'bg.subtle'] as const;
 const TEXT_ROLES = ['text.primary', 'text.secondary', 'text.link', 'text.danger'] as const;
-const ICON_ROLES = ['icon.default', 'icon.muted'] as const;
+// `icon.{info,tip,warning}` are the status accents a Callout draws on neutral surfaces.
+const ICON_ROLES = ['icon.default', 'icon.muted', 'icon.info', 'icon.tip', 'icon.warning'] as const;
 const PAPER_BACKGROUNDS = [
   'neutral',
   'primary',
@@ -146,7 +153,13 @@ const PAPER_BACKGROUNDS = [
   'lined',
 ].map((tone) => `paper.${tone}`);
 const PAPER_TEXT_ROLES = ['text.primary', 'text.secondary'] as const;
-const BORDER_INFO_ROLES = ['border.focus', 'border.danger'] as const;
+const BORDER_INFO_ROLES = [
+  'border.focus',
+  'border.danger',
+  'border.info',
+  'border.tip',
+  'border.warning',
+] as const;
 
 // Text drawn on filled semantic backgrounds (its own foreground/background pair).
 const ON_PAIRS: ReadonlyArray<readonly [string, string]> = [
@@ -162,6 +175,8 @@ const ON_PAIRS: ReadonlyArray<readonly [string, string]> = [
   ['text.onWarning', 'bg.warning.hover'],
   ['text.onInfo', 'bg.info.default'],
   ['text.onInfo', 'bg.info.hover'],
+  ['text.onTip', 'bg.tip.default'],
+  ['text.onTip', 'bg.tip.hover'],
 ];
 
 interface Pair {
@@ -297,6 +312,42 @@ describe('WCAG 2.1 AA contrast', () => {
           resolve(`sys.color.${pair.bg}`, map),
         );
         expect(ratio).toBeGreaterThanOrEqual(pair.min);
+      });
+    }
+  }
+});
+
+// --- Decorative non-text contrast: card tape ---
+//
+// The tape fastener is decorative (no WCAG 1.4.11 requirement), but it must
+// still read as tape. Its fill is drawn at `comp.card.fastener.tape.opacity`,
+// so the composited colour is checked against every surface it can overlap:
+// every neutral background surface and every paper background. 1.5:1 keeps
+// it visible without turning the hand-made tape into a solid UI element.
+const TAPE_MIN_CONTRAST = 1.5;
+const TAPE_SURFACES = [...BG_SURFACES, ...PAPER_BACKGROUNDS];
+
+function composite(fg: string, bg: string, alpha: number): string {
+  const front = rgb(fg);
+  const back = rgb(bg);
+  return `#${front
+    .map((value, i) =>
+      Math.round(value * alpha + (back[i] as number) * (1 - alpha))
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+describe('card tape visibility', () => {
+  for (const theme of THEMES) {
+    const map = themeMap(theme);
+    const tape = resolve('comp.card.fastener.tape.bg', map);
+    const alpha = Number(resolve('comp.card.fastener.tape.opacity', map));
+    for (const surface of TAPE_SURFACES) {
+      it(`${theme}: tape on ${surface} ≥ ${TAPE_MIN_CONTRAST}:1`, () => {
+        const bg = resolve(`sys.color.${surface}`, map);
+        expect(contrast(composite(tape, bg, alpha), bg)).toBeGreaterThanOrEqual(TAPE_MIN_CONTRAST);
       });
     }
   }

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
+import { html } from 'lit';
 import '@ghds/web-components/table';
 import type { GhTableColumn, GhTableRow, GhTableSort } from '@ghds/web-components/table';
 
@@ -58,3 +59,47 @@ export default meta;
 type Story = StoryObj;
 
 export const Default: Story = {};
+
+const SWATCH_ROWS: GhTableRow[] = [
+  {
+    id: 'primary',
+    token: 'sys.color.bg.primary.default',
+    cssVar: '--sys-color-bg-primary-default',
+  },
+  {
+    id: 'success',
+    token: 'sys.color.bg.success.default',
+    cssVar: '--sys-color-bg-success-default',
+  },
+  { id: 'danger', token: 'sys.color.bg.danger.default', cssVar: '--sys-color-bg-danger-default' },
+];
+
+/**
+ * Rich cell content: a column `render(value, row)` returns a Lit
+ * `TemplateResult` — here a `<code>` token name and a colour swatch.
+ * Row values stay `string | number`.
+ */
+export const RichCells: Story = {
+  render: () => {
+    const el = document.createElement('gh-table') as HTMLElement & {
+      columns: GhTableColumn[];
+      rows: GhTableRow[];
+      caption: string;
+    };
+    el.caption = 'Semantic colours';
+    el.columns = [
+      {
+        key: 'cssVar',
+        header: 'Preview',
+        render: (value) =>
+          html`<span
+            aria-hidden="true"
+            style=${`display:inline-block;width:var(--sys-spacing-lg);height:var(--sys-spacing-lg);border-radius:var(--sys-radius-sm);border:var(--sys-border-width-default) solid var(--sys-color-border-default);background:var(${value})`}
+          ></span>`,
+      },
+      { key: 'token', header: 'Token', render: (value) => html`<code>${value}</code>` },
+    ];
+    el.rows = SWATCH_ROWS;
+    return el;
+  },
+};

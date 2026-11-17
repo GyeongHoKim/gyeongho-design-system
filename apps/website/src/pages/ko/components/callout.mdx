@@ -1,0 +1,120 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: 콜아웃
+description: 문서 콘텐츠 안의 참고, 팁, 주의 사항을 위한 손그림 스타일의 정적 보조 박스입니다.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import CalloutDemoReact from '../../../components/demos/CalloutDemo.tsx';
+import CalloutDemoLit from '../../../components/demos/CalloutDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## 개요
+
+`Callout`은 문서 페이지, 가이드, 변경 내역 같은 긴 글 안에서 참고, 팁, 주의 사항을 본문과 구분해 보여 주는 박스예요. 사용자의 동작에 대한 반응이 아니라 콘텐츠의 일부라서 정적이에요. 작업이나 페이지의 상태를 알릴 때는 <a href={withBase('/components/alert/')}>Alert</a>를, 일시적인 피드백에는 <a href={withBase('/components/toast/')}>Toast</a>를 사용하세요.
+
+## 구조
+
+변형에 따른 색상 외곽선과 아이콘, 선택적 굵은 제목, 본문을 가진 손그림 스타일의 박스(`@ghds/sketch-core`)예요. 닫기 버튼은 없어요.
+
+## 변형 및 상태
+
+<StateList
+  states={[
+    { name: 'Info', present: true, note: '보조 정보예요. 파란 외곽선과 info 아이콘을 사용해요.' },
+    { name: 'Tip', present: true, note: '추천이나 요령이에요. info의 색만 바꾼 것이 아닌 고유한 보라색과 star 아이콘을 사용해요.' },
+    { name: 'Warning', present: true, note: '주의 사항이나 실수하기 쉬운 점이에요. 주황 외곽선과 warning 아이콘을 사용해요.' },
+    { name: '닫기 가능', present: false, note: '지원하지 않아요. Callout은 콘텐츠예요. 닫을 수 있는 메시지에는 Alert를 사용하세요.' },
+  ]}
+/>
+
+## 사용법
+
+<DoDont
+  do={[
+    '문서나 긴 글 안의 보조 내용에 Callout을 사용하세요.',
+    '의도에 맞게 변형을 고르세요: 맥락은 info, 추천은 tip, 함정은 warning.',
+    '요점을 담은 짧은 제목을 붙이세요("권장 글꼴").',
+  ]}
+  dont={[
+    "동작의 결과를 알리는 데 Callout을 사용하지 마세요 — Alert나 Toast를 사용하세요.",
+    "Callout을 여러 개 연달아 쌓지 마세요. 본문에 녹여 쓰세요.",
+    "색상에만 의존하지 마세요. 아이콘과 제목도 의미를 전달해요.",
+  ]}
+/>
+
+## 접근성
+
+- **React와 웹 컴포넌트**: 루트 요소는 `role="note"`예요. 본문에 덧붙이는 내용이라는 뜻이에요. 라이브 리전(`role="status"`/`"alert"`)이 아니므로 스크린 리더가 따로 알리지 않고 문서 순서대로 읽어요.
+- 외곽선과 아이콘은 테마별 상태 강조 색(`sys.color.border.*` / `sys.color.icon.*`)을 사용해서 라이트와 다크 테마의 모든 표면에서 3:1 이상을 유지해요. 제목과 본문 텍스트는 4.5:1을 충족해요. 변형 아이콘은 장식용이므로 의미는 제목에 담으세요.
+- React: `role` / `aria-label`을 전달해서 기본 역할을 바꾸거나 이름을 붙일 수 있어요.
+- 웹 컴포넌트: `<gh-callout>`에 `role` / `aria-label` 속성을 지정하면 `ElementInternals`로 노출되는 기본 역할을 바꾸거나 이름을 붙일 수 있어요.
+- <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
+
+## 콘텐츠
+
+선택적 짧은 제목과 한두 문장의 본문이에요. 본문에는 링크, 인라인 코드, 짧은 목록 같은 리치 콘텐츠를 넣을 수 있어요.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'variant', type: "'info' | 'tip' | 'warning'", default: "'info'", description: '보조 박스의 종류.' },
+        { name: 'heading', type: 'ReactNode', description: '선택적 굵은 제목.' },
+        { name: 'children', type: 'ReactNode', description: '본문 콘텐츠(필수).' },
+        { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: 'role, aria-*를 포함해 루트로 전달돼요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'variant', type: "'info' | 'tip' | 'warning'", default: "'info'", description: '보조 박스의 종류(반영됨).' },
+        { name: 'heading', type: 'string', description: '선택적 굵은 제목.' },
+        { name: 'default slot', type: 'Node', description: '본문 콘텐츠.' },
+      ],
+    },
+  ]}
+/>
+
+React Native용 Callout은 아직 없어요.
+
+## 코드 예시
+
+```tsx
+// React — @ghds/react
+import { Callout } from '@ghds/react/callout';
+
+<Callout variant="tip" heading="권장 글꼴">
+  웹 글꼴은 앱에서 Fontsource로 불러오세요.
+</Callout>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/callout';
+</script>
+<gh-callout variant="tip" heading="권장 글꼴">
+  웹 글꼴은 앱에서 Fontsource로 불러오세요.
+</gh-callout>
+```
+
+## 라이브 데모
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <CalloutDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <CalloutDemoLit />
+  </div>
+</div>

@@ -54,3 +54,31 @@ export const SortableSelectable: Story = {
     );
   },
 };
+
+/** Rich cell content: React cell values are `ReactNode`, so pass elements directly. */
+export const RichCells: Story = {
+  args: {
+    caption: 'Semantic colours',
+    columns: [
+      { key: 'preview', header: 'Preview' },
+      { key: 'token', header: 'Token' },
+    ],
+    rows: (['primary', 'success', 'danger'] as const).map((name) => ({
+      id: name,
+      preview: (
+        <span
+          aria-hidden
+          style={{
+            display: 'inline-block',
+            width: `var(--sys-spacing-lg)`,
+            height: `var(--sys-spacing-lg)`,
+            borderRadius: 'var(--sys-radius-sm)',
+            border: 'var(--sys-border-width-default) solid var(--sys-color-border-default)',
+            background: `var(--sys-color-bg-${name}-default)`,
+          }}
+        />
+      ),
+      token: <code>{`sys.color.bg.${name}.default`}</code>,
+    })),
+  },
+};

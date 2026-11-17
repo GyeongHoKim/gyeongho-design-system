@@ -4,7 +4,7 @@ import type { Locale } from '../i18n/ui';
  * Registry of the component documentation pages, in display order. Drives the
  * "Component Documentation" list on `/components/` for both locales so the roster
  * lives in one place instead of being hand-maintained twice (en + ko) and kept
- * in sync with the 40 `components/*.mdx` pages by memory.
+ * in sync with the `components/*.mdx` pages by memory.
  *
  * `label` is the component's display name (identical across locales — they are
  * proper nouns like "AspectRatio"); only the one-line `summary` is localized.
@@ -74,6 +74,14 @@ export const COMPONENTS: readonly ComponentEntry[] = [
     summary: {
       en: 'a generic hand-drawn surface container',
       ko: '범용 손그림 스타일 표면 컨테이너',
+    },
+  },
+  {
+    slug: 'callout',
+    label: 'Callout',
+    summary: {
+      en: 'a static aside for notes, tips, and caveats in docs',
+      ko: '문서 속 참고, 팁, 주의 사항을 위한 정적 보조 박스',
     },
   },
   {
