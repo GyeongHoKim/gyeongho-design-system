@@ -1,8 +1,35 @@
+import { roundedRectangle, setForcedSeed } from '@ghds/sketch-core';
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+import { toPx } from '../lib/units.js';
 import { Badge } from './Badge.js';
 
 describe('Badge', () => {
+  afterEach(() => setForcedSeed(null));
+
+  it('draws a pill that follows comp.badge.radius', () => {
+    setForcedSeed(0x5eed);
+    const { container } = render(<Badge>New</Badge>);
+    // The mock ResizeObserver reports 160×48 (src/test/setup.ts).
+    const inset = toPx(tokens.sys.border.width.default);
+    const expected = roundedRectangle(
+      inset,
+      inset,
+      160 - 2 * inset,
+      48 - 2 * inset,
+      toPx(tokens.comp.badge.radius),
+      {
+        roughness: tokens.comp.badge.sketch.roughness,
+        bowing: tokens.comp.badge.sketch.bowing,
+        seed: 0x5eed,
+        fillStyle: 'solid',
+      },
+    );
+    const ds = [...container.querySelectorAll('svg path')].map((p) => p.getAttribute('d'));
+    expect(ds).toEqual(expect.arrayContaining(expected.strokePaths));
+  });
+
   it('renders its children', () => {
     render(<Badge>New</Badge>);
     expect(screen.getByText('New')).toBeInTheDocument();

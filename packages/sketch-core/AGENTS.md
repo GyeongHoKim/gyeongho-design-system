@@ -71,6 +71,7 @@ export interface SketchDrawable {
 
 ```ts
 rectangle(x: number, y: number, w: number, h: number, o: SketchOptions): SketchDrawable
+roundedRectangle(x: number, y: number, w: number, h: number, r: number, o: SketchOptions): SketchDrawable
 ellipse(x: number, y: number, w: number, h: number, o: SketchOptions): SketchDrawable
 line(x1: number, y1: number, x2: number, y2: number, o: SketchOptions): SketchDrawable
 polygon(points: Point[], o: SketchOptions): SketchDrawable
@@ -83,7 +84,10 @@ path(d: string, o: SketchOptions): SketchDrawable
 and sketching each one; its closed subpaths fill together with the even-odd rule
 so holes stay hollow, and **invalid `d` input degrades** to an empty drawable
 (plus a `console.warn`) rather than throwing — use `linearizePath` for strict
-parsing. Every shape except `line` emits `shadowPaths` when `o.elevation > 0`.
+parsing. `roundedRectangle` clamps `r` to half the shorter side (a pill radius
+draws semicircular ends), returns `rectangle`'s output unchanged when `r <= 0`,
+and otherwise traces arc corners through `path`. Every shape except `line` emits
+`shadowPaths` when `o.elevation > 0`.
 
 ---
 
@@ -120,9 +124,9 @@ Every random decision flows through the seeded PRNG in `src/prng.ts`, fed by
   hover/focus re-render doesn't make the shape shimmer.
 - **SSR / hydration safe.** Server and client produce byte-identical `d`
   strings — guaranteed for trig-free shapes (`line`/`rectangle`/axis-aligned
-  `polygon`). Shapes that use `Math.cos`/`Math.sin` (`ellipse`, angled
-  hachure/cross-hatch) are byte-identical only within the same JS engine, since
-  ECMAScript does not require correctly-rounded trig.
+  `polygon`). Shapes that use `Math.cos`/`Math.sin` (`ellipse`,
+  `roundedRectangle` with `r > 0`, angled hachure/cross-hatch) are
+  byte-identical only within the same JS engine, since ECMAScript does not require correctly-rounded trig.
 - **Snapshot-testable.** Fixed seed ⇒ stable golden output.
 
 The renderer generates one seed per component instance (stable across that
@@ -148,6 +152,7 @@ src/
 │   ├── double-line.ts  # the core sketchy stroke (one edge → two paths) + polyline
 │   ├── line.ts
 │   ├── rectangle.ts
+│   ├── rounded-rectangle.ts  # arc-cornered rectangle via path()
 │   ├── ellipse.ts
 │   ├── polygon.ts
 │   ├── path.ts         # SVG `d` parser + curve/arc flattening → sketchy paths

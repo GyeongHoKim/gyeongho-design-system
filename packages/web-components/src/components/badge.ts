@@ -1,5 +1,5 @@
 import type { SketchDrawable, SketchOptions } from '@ghds/sketch-core';
-import { rectangle } from '@ghds/sketch-core';
+import { roundedRectangle } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
 import { css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -11,8 +11,9 @@ export type GhBadgeVariant = 'neutral' | 'primary' | 'success' | 'warning' | 'da
 /**
  * `<gh-badge>` — a small hand-drawn status/label pill.
  *
- * Draws a sketchy rectangle outline (`@ghds/sketch-core`) over a token-driven
- * solid background. The outline stroke uses `currentColor`, set per `variant`
+ * Draws a sketchy pill outline (`@ghds/sketch-core` `roundedRectangle`, radius
+ * from `comp.badge.radius`) over a token-driven solid background of the same
+ * shape. The outline stroke uses `currentColor`, set per `variant`
  * to the badge's stroke token; the label text and background come from the
  * matching `comp.badge.*` tokens. Presentational by default — pass `label` to
  * expose it as an ARIA `status` region for live values.
@@ -104,7 +105,14 @@ export class GhBadge extends SketchyBase {
   }
 
   protected override sketch(width: number, height: number, options: SketchOptions): SketchDrawable {
-    return rectangle(0, 0, width, height, options);
+    return roundedRectangle(
+      0,
+      0,
+      width,
+      height,
+      Number.parseFloat(tokens.comp.badge.radius),
+      options,
+    );
   }
 
   protected override sketchParams(): SketchParams {

@@ -4,6 +4,21 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Modal } from './Modal.js';
 
+/** A trigger button that opens the modal, so focus restoration can be checked. */
+function Harness() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>
+        Open
+      </button>
+      <Modal open={open} onClose={() => setOpen(false)} title="Settings">
+        <button type="button">Confirm</button>
+      </Modal>
+    </>
+  );
+}
+
 describe('Modal', () => {
   it('renders nothing when closed', () => {
     render(
@@ -46,19 +61,6 @@ describe('Modal', () => {
   });
 
   it('restores focus to the trigger on close', async () => {
-    function Harness() {
-      const [open, setOpen] = useState(false);
-      return (
-        <>
-          <button type="button" onClick={() => setOpen(true)}>
-            Open
-          </button>
-          <Modal open={open} onClose={() => setOpen(false)} title="Settings">
-            <button type="button">Confirm</button>
-          </Modal>
-        </>
-      );
-    }
     render(<Harness />);
     const trigger = screen.getByRole('button', { name: 'Open' });
     await userEvent.click(trigger);

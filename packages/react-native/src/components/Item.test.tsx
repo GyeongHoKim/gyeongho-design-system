@@ -1,4 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
+import { Text } from 'react-native';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithTheme } from '../test-utils.js';
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from './Item.js';
@@ -8,14 +9,14 @@ describe('Item', () => {
     renderWithTheme(
       <Item testID="row">
         <ItemMedia>
-          <span>icon</span>
+          <Text>icon</Text>
         </ItemMedia>
         <ItemContent>
           <ItemTitle>Title text</ItemTitle>
           <ItemDescription>Description text</ItemDescription>
         </ItemContent>
         <ItemActions>
-          <span>action</span>
+          <Text>action</Text>
         </ItemActions>
       </Item>,
     );

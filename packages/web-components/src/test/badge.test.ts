@@ -1,3 +1,5 @@
+import { roundedRectangle } from '@ghds/sketch-core';
+import { tokens } from '@ghds/tokens';
 import { afterEach, describe, expect, it } from 'vitest';
 import { GhBadge } from '../components/badge.js';
 import { cleanup, mount, setSize } from './fixture.js';
@@ -33,6 +35,22 @@ describe('gh-badge', () => {
     const el = await mount(new GhBadge());
     await setSize(el, 60, 24);
     expect(el.shadowRoot?.querySelectorAll('path.sketch-stroke').length).toBeGreaterThan(0);
+  });
+
+  it('draws a pill outline that follows comp.badge.radius', async () => {
+    const el = await mount(new GhBadge());
+    el.seed = 7;
+    await setSize(el, 60, 24);
+    const expected = roundedRectangle(0, 0, 60, 24, Number.parseFloat(tokens.comp.badge.radius), {
+      roughness: tokens.comp.badge.sketch.roughness,
+      bowing: tokens.comp.badge.sketch.bowing,
+      fillStyle: 'solid',
+      seed: 7,
+    });
+    const ds = [...(el.shadowRoot?.querySelectorAll('path.sketch-stroke') ?? [])].map((p) =>
+      p.getAttribute('d'),
+    );
+    expect(ds).toEqual(expected.strokePaths);
   });
 
   it('exposes an ARIA status role only when labelled', async () => {

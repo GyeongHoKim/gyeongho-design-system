@@ -6,6 +6,7 @@ export type { Subpath } from './geometry/path.js';
 export { linearizePath, path } from './geometry/path.js';
 export { polygon } from './geometry/polygon.js';
 export { rectangle } from './geometry/rectangle.js';
+export { roundedRectangle } from './geometry/rounded-rectangle.js';
 export { mulberry32 } from './prng.js';
 export { DETERMINISTIC_SEED_GLOBAL, forcedSeed, setForcedSeed } from './seed.js';
 export { serialize } from './serialize.js';

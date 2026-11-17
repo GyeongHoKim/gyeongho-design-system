@@ -1,9 +1,29 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { renderWithTheme } from '../test-utils.js';
+import { describe, expect, it, vi } from 'vitest';
+import type { UseSketchParams } from '../sketch/useSketch.js';
+import { lightTheme, renderWithTheme } from '../test-utils.js';
 import { Badge } from './Badge.js';
 
+// jsdom never fires `onLayout`, so no path is drawn; record what Badge asks
+// useSketch for instead.
+const calls = vi.hoisted(() => [] as UseSketchParams[]);
+vi.mock('../sketch/useSketch.js', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../sketch/useSketch.js')>();
+  return {
+    ...mod,
+    useSketch: (params: UseSketchParams) => {
+      calls.push(params);
+      return mod.useSketch(params);
+    },
+  };
+});
+
 describe('Badge', () => {
+  it('passes the pill radius token to useSketch', () => {
+    renderWithTheme(<Badge>New</Badge>);
+    expect(calls.at(-1)?.radius).toBe(lightTheme.borderRadii.pill);
+  });
+
   it('renders its label', () => {
     renderWithTheme(<Badge>New</Badge>);
     expect(screen.getByText('New')).toBeInTheDocument();

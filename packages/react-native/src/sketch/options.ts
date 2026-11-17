@@ -2,6 +2,7 @@ import {
   ellipse,
   forcedSeed,
   rectangle,
+  roundedRectangle,
   type SketchDrawable,
   type SketchOptions,
 } from '@ghds/sketch-core';
@@ -35,6 +36,11 @@ export interface SketchParams {
   hachureAngle?: number;
   /** Drop-shadow offset in px expressing elevation. Omit/0 ⇒ flat. */
   elevation?: number;
+  /**
+   * Corner radius (px) from a radius token. Only applies to `shape: 'rectangle'`;
+   * clamped to half the shorter inset side. Omit or `<= 0` for square corners.
+   */
+  radius?: number;
 }
 
 /** Below this, a measured edge is too small to sketch meaningfully. */
@@ -44,7 +50,8 @@ const MIN_DIMENSION = 1;
  * Build the sketchy outline for a measured component.
  *
  * `shape` selects the sketch-core primitive (`'rectangle'` | `'ellipse'`) used
- * to trace the outline.
+ * to trace the outline; a rectangle with `params.radius > 0` gets arc corners
+ * (`roundedRectangle`).
  * The shape is inset by `inset` px on every side so the (token-driven) stroke
  * width is not clipped at the component's bounds. Returns `null` when the
  * component has not been measured yet (or is degenerate), so the renderer can
@@ -80,8 +87,13 @@ export function buildOutline(
     options.elevation = params.elevation;
   }
 
-  const draw = shape === 'ellipse' ? ellipse : rectangle;
-  return draw(inset, inset, width, height, options);
+  if (shape === 'ellipse') {
+    return ellipse(inset, inset, width, height, options);
+  }
+  const radius = params.radius ?? 0;
+  return radius > 0
+    ? roundedRectangle(inset, inset, width, height, radius, options)
+    : rectangle(inset, inset, width, height, options);
 }
 
 let seedCounter = 0;
