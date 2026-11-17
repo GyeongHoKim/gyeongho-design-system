@@ -1,6 +1,6 @@
 import { Card } from '@ghds/react/card';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 const meta = {
   title: 'Components/Card',
@@ -187,6 +187,67 @@ export const InteractiveFocused: Story = {
     await expect(card).toHaveFocus();
     await expect(card.style.transform).toContain('translateY');
   },
+};
+
+/** `asChild` with an `<a>` child: the whole card is one link. */
+export const LinkCard: Story = {
+  args: {
+    asChild: true,
+    style: { maxWidth: 320 },
+    children: (
+      <a href="#card-docs">
+        <strong>Card docs</strong>
+        <span>The whole card is one link.</span>
+      </a>
+    ),
+  },
+  render: (args) => withOverhang(<Card {...args} />),
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole('link', { name: /Card docs/ });
+    await expect(link).toHaveAttribute('href', '#card-docs');
+    // The sketch draws once the card has been measured.
+    await waitFor(() => expect(link.querySelector('svg')).not.toBeNull());
+  },
+};
+
+export const LinkCardHovered: Story = {
+  ...LinkCard,
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole('link', { name: /Card docs/ });
+    await waitFor(() => expect(link.querySelector('svg')).not.toBeNull());
+    await userEvent.hover(link);
+    await expect(link.style.transform).toContain('translateY');
+    const stroke = link.querySelector('svg path:last-of-type')?.getAttribute('stroke');
+    await expect(stroke).toContain('--comp-card-stroke-hover');
+  },
+};
+
+export const LinkCardFocused: Story = {
+  ...LinkCard,
+  play: async ({ canvasElement }) => {
+    const link = within(canvasElement).getByRole('link', { name: /Card docs/ });
+    await userEvent.tab();
+    await expect(link).toHaveFocus();
+    await expect(link.style.outline).toContain('--comp-card-focus-ring');
+    await expect(link.style.transform).toContain('translateY');
+  },
+};
+
+export const LinkCardSticky: Story = {
+  args: {
+    asChild: true,
+    variant: 'sticky',
+    tone: 'info',
+    fastener: 'pin',
+    style: { maxWidth: 320 },
+    children: (
+      <a href="#tokens">
+        <strong>Tokens</strong>
+        <span>Design values for every platform.</span>
+      </a>
+    ),
+  },
+  render: (args) => withOverhang(<Card {...args} />),
 };
 
 export const Korean: Story = {

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Card, type CardVariant } from './Card.js';
@@ -356,6 +356,118 @@ describe('Card', () => {
       fireEvent.pointerEnter(root, { pointerType: 'mouse' });
       expect(root.style.transform).toContain('translateY');
       expect(root.style.boxShadow).toBe('');
+    });
+  });
+
+  describe('asChild', () => {
+    beforeEach(() => {
+      vi.stubGlobal('PointerEvent', TestPointerEvent);
+    });
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('renders as the slotted link with the sketch surface inside it', () => {
+      const { container } = render(
+        <Card asChild>
+          <a href="/docs/card">
+            <h3>Card docs</h3>
+          </a>
+        </Card>,
+      );
+      const link = screen.getByRole('link', { name: 'Card docs' });
+      expect(link).toHaveAttribute('href', '/docs/card');
+      // No wrapper: the link is the card root.
+      expect(container.firstElementChild).toBe(link);
+      const svg = link.querySelector('svg');
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+      expect(link.querySelectorAll('svg path').length).toBeGreaterThan(0);
+      expect(link).toHaveStyle({ isolation: 'isolate', textDecoration: 'none' });
+      expect(link.querySelector('h3')).not.toBeNull();
+    });
+
+    it('forwards the ref to the slotted element', () => {
+      let node: HTMLElement | null = null;
+      render(
+        <Card
+          asChild
+          ref={(el) => {
+            node = el;
+          }}
+        >
+          <a href="/x">x</a>
+        </Card>,
+      );
+      expect(node).toBe(screen.getByRole('link'));
+    });
+
+    it('is keyboard-focusable and shows the focus ring only on focus-visible', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      act(() => link.focus());
+      expect(document.activeElement).toBe(link);
+      const matches = vi.spyOn(link, 'matches').mockImplementation(() => true);
+      fireEvent.focus(link);
+      expect(link.style.outline).toContain('var(--comp-card-focus-ring');
+      expect(link.style.transform).toContain('translateY');
+      fireEvent.blur(link);
+      expect(link.style.outline).toBe('');
+      matches.mockImplementation(() => false);
+      fireEvent.focus(link);
+      expect(link.style.outline).toBe('');
+    });
+
+    it('does not lift on a mouse focus that is not focus-visible', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      vi.spyOn(link, 'matches').mockImplementation(() => false);
+      fireEvent.focus(link);
+      expect(link.style.transform).toBe('');
+      expect(link.style.outline).toBe('');
+    });
+
+    it('darkens the plain stroke and lifts on mouse hover', () => {
+      render(
+        <Card asChild>
+          <a href="/x">x</a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      const stroke = () => link.querySelector('svg path:last-of-type')?.getAttribute('stroke');
+      expect(stroke()).toContain('var(--comp-card-stroke-default');
+      fireEvent.pointerEnter(link, { pointerType: 'mouse' });
+      expect(stroke()).toContain('var(--comp-card-stroke-hover');
+      expect(link.style.transform).toContain('translateY');
+      fireEvent.pointerLeave(link, { pointerType: 'mouse' });
+      expect(stroke()).toContain('var(--comp-card-stroke-default');
+    });
+
+    it('keeps the child handlers and style, and the card decorations, on paper variants', () => {
+      // Prevent default so jsdom does not attempt a navigation.
+      const onClick = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+      render(
+        <Card asChild variant="lined" fastener="pin">
+          <a href="/x" onClick={onClick} style={{ margin: '0px' }}>
+            x
+          </a>
+        </Card>,
+      );
+      const link = screen.getByRole('link');
+      fireEvent.click(link);
+      expect(onClick).toHaveBeenCalled();
+      expect(link.style.margin).toBe('0px');
+      expect(link.querySelector('[data-card-margin-line]')).not.toBeNull();
+      expect(link.querySelector('svg')).not.toBeNull();
+      fireEvent.pointerEnter(link, { pointerType: 'mouse' });
+      expect(link.style.boxShadow).toContain('var(--comp-card-hover-shadow');
     });
   });
 

@@ -163,6 +163,61 @@ export const Interactive: Story = {
     </div>`,
 };
 
+const linkCard = (variant: Variant): Story => ({
+  render: () =>
+    html`<div style="padding-top: var(--sys-spacing-3xl);">
+      <gh-card
+        href="#card-docs"
+        variant=${variant}
+        fastener=${variant === 'plain' ? 'none' : 'pin'}
+        style="max-width: 320px; display: block;"
+      >
+        <h3 slot="title">Card docs</h3>
+        <p>The whole card is one link.</p>
+      </gh-card>
+    </div>`,
+});
+
+/** `href` renders the surface as `<a class="content">`: the whole card is one link. */
+export const LinkCard: Story = {
+  ...linkCard('plain'),
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('gh-card');
+    const anchor = host?.shadowRoot?.querySelector<HTMLAnchorElement>('a.content');
+    await expect(anchor?.getAttribute('href')).toBe('#card-docs');
+    await expect(anchor?.querySelectorAll('path.sketch-stroke').length ?? 0).toBeGreaterThan(0);
+  },
+};
+
+export const LinkCardFocused: Story = {
+  ...linkCard('plain'),
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('gh-card');
+    const anchor = host?.shadowRoot?.querySelector<HTMLAnchorElement>('a.content');
+    await expect(anchor).toBeTruthy();
+    // testing-library's tab() does not enter shadow roots; programmatic focus
+    // with no prior pointer input matches :focus-visible like keyboard focus.
+    anchor?.focus();
+    await expect(host?.shadowRoot?.activeElement).toBe(anchor);
+    await expect(anchor?.matches(':focus-visible')).toBe(true);
+    if (anchor) {
+      // Resolve the ring token through a probe so both colours normalise the same way.
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--comp-card-focus-ring)';
+      canvasElement.append(probe);
+      const expected = getComputedStyle(probe).color;
+      probe.remove();
+      const style = getComputedStyle(anchor);
+      await expect(style.outlineStyle).toBe('solid');
+      await expect(style.outlineColor).toBe(expected);
+      await expect(style.transform).not.toBe('none');
+    }
+  },
+};
+
+export const LinkCardSticky: Story = linkCard('sticky');
+export const LinkCardLined: Story = linkCard('lined');
+
 export const Korean: Story = {
   render: () =>
     html`<div style="padding-top: var(--sys-spacing-3xl);">
