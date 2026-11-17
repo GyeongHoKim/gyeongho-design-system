@@ -1,5 +1,4 @@
 ---
-import CtaButton from '../../components/CtaButton.tsx';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { NAV } from '../../lib/nav';
 import { withBase } from '../../lib/withBase';
@@ -18,12 +17,8 @@ import { withBase } from '../../lib/withBase';
       아래 문서에서 토큰, 컴포넌트, 패턴을 살펴보세요.
     </p>
     <div class="demo-row cta-row">
-      <CtaButton href={withBase('/getting-started/')} variant="primary" client:only="react">
-        시작하기 →
-      </CtaButton>
-      <CtaButton href={withBase('/components/')} variant="neutral" client:only="react">
-        컴포넌트 보기
-      </CtaButton>
+      <gh-button href={withBase('/getting-started/')} variant="primary">시작하기 →</gh-button>
+      <gh-button href={withBase('/components/')} variant="neutral">컴포넌트 보기</gh-button>
     </div>
   </section>
 

@@ -40,4 +40,13 @@ describe('gh-hover-card', () => {
     await el.updateComplete;
     expect(el.open).toBe(false);
   });
+
+  it('sizes the panel from the --sys-overlay-minWidth-lg token', () => {
+    const cssText = ([GhHoverCard.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--sys-overlay-minWidth-lg)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });

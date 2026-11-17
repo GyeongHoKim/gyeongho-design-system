@@ -1,0 +1,20 @@
+---
+// Live NavMenu demo (Lit). Links point at in-page anchors so the demo does not navigate away.
+---
+
+<nav aria-label="Demo" style="padding: 24px;">
+  <gh-nav-menu id="demo-nav-menu" label="Design"></gh-nav-menu>
+</nav>
+
+<script>
+  import '@ghds/web-components/nav-menu';
+  const el = document.getElementById('demo-nav-menu');
+  if (el) {
+    (el as HTMLElement & { items: unknown }).items = [
+      { href: '#design-style', label: 'Design Style' },
+      { href: '#foundations', label: 'Foundations' },
+      { href: '#principles', label: 'Design Principles' },
+      { href: '#ux-writing', label: 'UX Writing' },
+    ];
+  }
+</script>

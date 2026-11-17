@@ -224,6 +224,11 @@
       "import": "./dist/modal.mjs",
       "require": "./dist/modal.cjs"
     },
+    "./nav-menu": {
+      "types": "./dist/components/NavMenu.d.ts",
+      "import": "./dist/nav-menu.mjs",
+      "require": "./dist/nav-menu.cjs"
+    },
     "./native-select": {
       "types": "./dist/components/NativeSelect.d.ts",
       "import": "./dist/native-select.mjs",

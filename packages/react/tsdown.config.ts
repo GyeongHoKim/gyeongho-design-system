@@ -43,6 +43,7 @@ export default defineConfig({
     message: 'src/components/Message.tsx',
     'message-scroller': 'src/components/MessageScroller.tsx',
     modal: 'src/components/Modal.tsx',
+    'nav-menu': 'src/components/NavMenu.tsx',
     'native-select': 'src/components/NativeSelect.tsx',
     'navigation-menu': 'src/components/NavigationMenu.tsx',
     pagination: 'src/components/Pagination.tsx',

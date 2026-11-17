@@ -54,7 +54,7 @@ export class GhPopover extends SketchyBase {
         z-index: var(--sys-zIndex-popover, var(--sys-zIndex-tooltip));
         display: none;
         box-sizing: border-box;
-        min-width: 12rem;
+        min-width: var(--comp-popover-minWidth);
         max-width: 20rem;
         padding: var(--comp-popover-padding-vertical) var(--comp-popover-padding-horizontal);
         color: var(--comp-popover-text);

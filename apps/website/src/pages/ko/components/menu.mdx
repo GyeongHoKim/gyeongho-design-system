@@ -18,7 +18,9 @@ import { withBase } from '../../../lib/withBase';
 
 ## 구조
 
-`aria-haspopup="menu"`를 가진 `<button>` 트리거가 `role="menuitem"`들의 떠 있는 `role="menu"` 패널을 열어요. 트리거와 패널 모두 손그림 박스(`@ghds/sketch-core`)예요. 데이터 기반 — `{ value, label, disabled? }` 형태의 `items` 배열을 전달하세요.
+`aria-haspopup="menu"`를 가진 `<button>` 트리거가 `role="menuitem"`들의 떠 있는 `role="menu"` 패널을 열어요. 트리거와 패널 모두 손그림 박스(`@ghds/sketch-core`)예요. 데이터 기반 — `{ value, label, disabled?, href? }` 형태의 `items` 배열을 전달하세요(`href`는 React / Web Components 전용이에요 — React Native에는 링크 항목이 없어요).
+
+`href`가 있는 항목은 실제 링크로 렌더링돼요 — `role="none"` 래퍼 안의 `<a role="menuitem" href>`. 그래서 외부로 이동하는 동작(예: "GitHub에서 소스 보기")도 새 탭에서 열기, 링크 주소 복사, 크롤링 같은 기본 링크 동작을 유지해요. 활성화하면 브라우저가 직접 이동하고 메뉴가 닫혀요. href 항목에서는 `onSelect` / `select`가 호출되지 않아요. `disabled`인 href 항목은 `href`를 제거해요. 빈 `href`(`''`)는 `href`가 없는 것으로 보고 일반 동작 항목으로 렌더링해요. Menu는 **동작** 메뉴로 유지돼요 — 사이트 내비게이션 링크 드롭다운에는 메뉴 역할이 없는 <a href={withBase('/components/nav-menu/')}>NavMenu</a>(`gh-nav-menu`)를, 내비게이션 바 전체에는 `NavigationMenu` / `gh-navigation-menu`를 사용하세요.
 
 ## 변형 및 상태
 
@@ -28,6 +30,7 @@ import { withBase } from '../../../lib/withBase';
     { name: '열림', present: true, note: '패널 표시; 포커스가 항목으로 이동해요.' },
     { name: '강조된 항목', present: true, note: '포커스된 menuitem이 강조돼요.' },
     { name: '비활성화된 항목', present: true, note: '항목별; 키보드로 건너뛰어요.' },
+    { name: '링크 항목', present: true, note: 'React / Web Components 전용. href가 있는 항목; <a role="menuitem">으로 렌더링되고 브라우저가 직접 이동해요.' },
   ]}
 />
 
@@ -47,7 +50,7 @@ import { withBase } from '../../../lib/withBase';
 
 ## 접근성
 
-- **React / Web Components**: `aria-haspopup="menu"` + `aria-expanded` 트리거; `role="menu"` 패널의 `role="menuitem"`. Enter/Space/ArrowDown이 열고 첫 항목에 포커스; Arrow/Home/End로 포커스 이동; Enter/Space로 활성화; Escape로 닫고 트리거로 포커스 복원; 외부 클릭으로 닫아요. Web Components는 `select` 이벤트를 발생시켜요.
+- **React / Web Components**: `aria-haspopup="menu"` + `aria-expanded` 트리거; `role="menu"` 패널의 `role="menuitem"`. Enter/Space/ArrowDown이 열고 첫 항목에 포커스; Arrow/Home/End로 포커스 이동; Enter/Space로 활성화(href 항목에서는 Enter를 기본 링크 동작에 맡기고 Space는 링크를 클릭해서, `preventDefault` 없이 이동해요); Escape로 닫고 트리거로 포커스 복원; 외부 클릭으로 닫아요. Web Components는 동작 항목에 대해 `select` 이벤트를 발생시켜요.
 - **React Native**: `Modal`에 고정된 패널; 탭으로 선택. `accessibilityRole="menu"`/`"menuitem"`. 화살표 키 roving은 웹 전용이에요.
 - <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
 
@@ -56,7 +59,7 @@ import { withBase } from '../../../lib/withBase';
     { keys: 'Enter / Space / ↓', action: '메뉴를 열고 첫 항목에 포커스.' },
     { keys: 'Arrow Up / Down', action: '항목 간 포커스 이동(순환).' },
     { keys: 'Home / End', action: '첫 번째 / 마지막 항목에 포커스.' },
-    { keys: 'Enter / Space', action: '포커스된 항목 활성화.' },
+    { keys: 'Enter / Space', action: '포커스된 항목 활성화(href 항목은 링크로 이동).' },
     { keys: 'Escape', action: '닫고 트리거로 포커스 복귀.' },
   ]}
 />
@@ -74,8 +77,8 @@ import { withBase } from '../../../lib/withBase';
       packageName: '@ghds/react',
       rows: [
         { name: 'label', type: 'string', description: '트리거 버튼 라벨.' },
-        { name: 'items', type: 'MenuItem[]', description: '항목별 { value, label, disabled? }.' },
-        { name: 'onSelect', type: '(value: string) => void', description: '활성화된 항목 값으로 호출돼요.' },
+        { name: 'items', type: 'MenuItem[]', description: '항목별 { value, label, disabled?, href? }. href 항목은 실제 링크로 렌더링돼요.' },
+        { name: 'onSelect', type: '(value: string) => void', description: '활성화된 동작 항목 값으로 호출돼요(href 항목 제외).' },
         { name: 'disabled', type: 'boolean', default: 'false', description: '전체 메뉴를 비활성화해요.' },
       ],
     },
@@ -83,10 +86,10 @@ import { withBase } from '../../../lib/withBase';
       platform: 'Web Components',
       packageName: '@ghds/web-components',
       rows: [
-        { name: 'items', type: 'GhMenuItem[]', description: '{ value, label, disabled? } (프로퍼티).' },
+        { name: 'items', type: 'GhMenuItem[]', description: '{ value, label, disabled?, href? } (프로퍼티). href 항목은 실제 링크로 렌더링돼요.' },
         { name: 'label', type: 'string', description: '트리거 라벨.' },
         { name: 'disabled', type: 'boolean', default: 'false', description: '전체 메뉴를 비활성화해요.' },
-        { name: 'select event', type: 'CustomEvent<string>', description: '활성화된 값으로 발생해요.' },
+        { name: 'select event', type: 'CustomEvent<string>', description: '활성화된 동작 항목 값으로 발생해요(href 항목 제외).' },
       ],
     },
     {

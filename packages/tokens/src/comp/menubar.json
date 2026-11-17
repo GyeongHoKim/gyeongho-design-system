@@ -11,6 +11,9 @@
       },
       "radius": { "$type": "dimension", "$value": "{sys.radius.md}" },
       "padding": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "panel": {
+        "minWidth": { "$type": "dimension", "$value": "{sys.overlay.minWidth.sm}" }
+      },
       "sketch": {
         "$type": "number",
         "roughness": { "$value": "{sys.sketch.roughness}" },
