@@ -1,4 +1,4 @@
-import { setForcedSeed } from '@ghds/sketch-core';
+import { rectangle, roundedRectangle, setForcedSeed } from '@ghds/sketch-core';
 import { describe, expect, it } from 'vitest';
 import { buildOutline, makeSeed, type SketchParams } from './options.js';
 
@@ -117,5 +117,25 @@ describe('makeSeed', () => {
     } finally {
       setForcedSeed(null);
     }
+  });
+});
+
+describe('buildOutline (radius)', () => {
+  it('uses roundedRectangle when radius > 0', () => {
+    expect(
+      buildOutline('rectangle', { width: 120, height: 48 }, 2, { ...PARAMS, radius: 9999 }),
+    ).toEqual(roundedRectangle(2, 2, 116, 44, 9999, { roughness: 1.4, bowing: 2, seed: 42 }));
+  });
+
+  it('without radius → unchanged rectangle output', () => {
+    expect(buildOutline('rectangle', { width: 120, height: 48 }, 2, PARAMS)).toEqual(
+      rectangle(2, 2, 116, 44, { roughness: 1.4, bowing: 2, seed: 42 }),
+    );
+  });
+
+  it('ellipse ignores radius', () => {
+    expect(
+      buildOutline('ellipse', { width: 120, height: 48 }, 2, { ...PARAMS, radius: 9999 }),
+    ).toEqual(buildOutline('ellipse', { width: 120, height: 48 }, 2, PARAMS));
   });
 });

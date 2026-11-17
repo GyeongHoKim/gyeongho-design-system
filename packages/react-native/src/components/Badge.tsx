@@ -62,6 +62,7 @@ export function Badge({ children, variant = 'neutral', testID, accessibilityLabe
     inset: theme.borderWidths.default,
     roughness: theme.badgeSketch.roughness,
     bowing: theme.badgeSketch.bowing,
+    radius: theme.borderRadii.pill,
   });
 
   return (

@@ -27,6 +27,11 @@ export interface UseSketchParams {
   hachureAngle?: number;
   /** Drop-shadow offset in px expressing elevation. Omit/0 ⇒ flat. */
   elevation?: number;
+  /**
+   * Corner radius (px) from a radius token. Only applies to `shape: 'rectangle'`;
+   * clamped to half the shorter inset side. Omit or `<= 0` for square corners.
+   */
+  radius?: number;
 }
 
 /** Output of {@link useSketch}: wire `onLayout` to the host element. */
@@ -62,6 +67,7 @@ export function useSketch(params: UseSketchParams): UseSketchResult {
     hachureGap,
     hachureAngle,
     elevation,
+    radius,
   } = params;
 
   const seedRef = useRef<number | null>(null);
@@ -87,8 +93,21 @@ export function useSketch(params: UseSketchParams): UseSketchResult {
         hachureGap,
         hachureAngle,
         elevation,
+        radius,
       }),
-    [shape, size, inset, seed, roughness, bowing, fillStyle, hachureGap, hachureAngle, elevation],
+    [
+      shape,
+      size,
+      inset,
+      seed,
+      roughness,
+      bowing,
+      fillStyle,
+      hachureGap,
+      hachureAngle,
+      elevation,
+      radius,
+    ],
   );
 
   return { onLayout, size, drawable, seed };
