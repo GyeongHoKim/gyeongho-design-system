@@ -143,6 +143,21 @@
       "width": { "$value": "{ref.sidebar.width}" },
       "rail": { "$value": "{ref.sidebar.rail}" }
     },
+    "overlay": {
+      "minWidth": {
+        "$type": "dimension",
+        "$description": "Tier 2 semantic minimum widths for floating overlays (menus, popovers, dropdown panels), compact to roomy. Theme-invariant.",
+        "sm": { "$value": "{ref.overlay.minWidth.sm}" },
+        "md": { "$value": "{ref.overlay.minWidth.md}" },
+        "lg": { "$value": "{ref.overlay.minWidth.lg}" },
+        "xl": { "$value": "{ref.overlay.minWidth.xl}" }
+      }
+    },
+    "field": {
+      "$type": "dimension",
+      "$description": "Tier 2 semantic form field sizes (input-like triggers such as DatePicker and Combobox). Theme-invariant.",
+      "minWidth": { "$value": "{ref.field.minWidth}" }
+    },
     "grid": {
       "columns": {
         "$type": "number",

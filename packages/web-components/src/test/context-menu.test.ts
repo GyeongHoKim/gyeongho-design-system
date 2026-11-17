@@ -47,4 +47,13 @@ describe('gh-context-menu', () => {
     expect((handler.mock.calls[0]?.[0] as CustomEvent<string>).detail).toBe('paste');
     expect(el.shadowRoot?.querySelector('.panel')?.classList.contains('open')).toBe(false);
   });
+
+  it('sizes the panel from the --comp-contextMenu-minWidth token', () => {
+    const cssText = ([GhContextMenu.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--comp-contextMenu-minWidth)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });

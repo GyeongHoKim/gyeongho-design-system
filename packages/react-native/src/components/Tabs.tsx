@@ -81,6 +81,7 @@ function TabButton({ item, selected, onPress }: TabButtonProps) {
       <Text
         variant="body"
         color={textKey}
+        fontFamily={selected ? theme.textVariants.label.fontFamily : undefined}
         fontWeight={selected ? theme.textVariants.label.fontWeight : undefined}
       >
         {item.label}

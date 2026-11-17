@@ -36,6 +36,33 @@ When you ship a breaking change:
 
 ## Log
 
+### `@ghds/tokens` / `@ghds/react-native`
+
+#### `@ghds/tokens` 0.14.0, `@ghds/react-native` 0.13.0 — weight-specific RN font families (GHD-63)
+
+RN font names used to resolve only through runtime `useFonts` family definitions
+(Expo SDK 58+), and `Menlo` does not exist on Android. Every `fontFamily` token in
+`@ghds/tokens/rn` is now a face table `{ ios, android }` mapping each weight
+(`"400"`, `"500"`, `"700"`) to the font's PostScript name, and the RN theme picks
+one per text variant without `fontWeight`. CSS, TS and JSON token output is unchanged.
+
+**Migration**
+
+- Fonts: name the files after their PostScript names (`NotoSansKR-Regular.ttf`,
+  `NotoSansKR-Medium.ttf`, `NotoSansKR-Bold.ttf`, `Gaegu-Regular.ttf`,
+  `Gaegu-Bold.ttf`) and embed them with the `expo-font` config plugin, bare RN
+  asset linking, or `useFonts({ 'NotoSansKR-Medium': require(…), … })`.
+  - Before: `useFonts([{ fontFamily: 'NotoSansKR', fontDefinitions: [...] }])`
+  - After: `["expo-font", { "fonts": ["./assets/fonts/NotoSansKR-Medium.ttf", …] }]`
+- Tokens read directly:
+  - Before: `fontFamily: tokens.sys.typography.label.fontFamily` (`'NotoSansKR'`) plus `fontWeight: '500'`
+  - After: `fontFamily: tokens.sys.typography.label.fontFamily[Platform.OS === 'ios' ? 'ios' : 'android']['500']` (`'NotoSansKR-Medium'`), no `fontWeight`
+- Theme overrides: emphasise with the family, not the weight.
+  - Before: `fontWeight={theme.textVariants.label.fontWeight}`
+  - After: `fontFamily={theme.textVariants.label.fontFamily}` (plus `fontWeight`, which is `undefined` on native)
+
+See `packages/react-native/AGENTS.md` → Fonts for the full setup.
+
 ### `@ghds/react` / `@ghds/react-native`
 
 #### 0.3.0 — `buildRectangleOutline` → `buildOutline` (GHD-31)

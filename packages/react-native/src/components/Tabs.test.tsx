@@ -29,4 +29,20 @@ describe('Tabs', () => {
     expect(screen.getByText('Second panel')).toBeInTheDocument();
     expect(screen.queryByText('First panel')).toBeNull();
   });
+
+  it('shows the selected tab in the label face and the others in the body face', () => {
+    // react-native-web emits atomic classes, so compare the font-family class
+    // against a Text rendered in each variant.
+    const fontClass = (el: HTMLElement) =>
+      [...el.classList].find((name) => name.startsWith('r-fontFamily-'));
+    renderWithTheme(
+      <>
+        <Tabs items={ITEMS} />
+        <Text variant="label">label face</Text>
+        <Text variant="body">body face</Text>
+      </>,
+    );
+    expect(fontClass(screen.getByText('First'))).toBe(fontClass(screen.getByText('label face')));
+    expect(fontClass(screen.getByText('Second'))).toBe(fontClass(screen.getByText('body face')));
+  });
 });

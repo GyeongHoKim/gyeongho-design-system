@@ -7,29 +7,59 @@ import { describe, expect, it } from 'vitest';
 import { darkTokens, lightTokens } from '../dist/rn/index.js';
 
 // React Native takes a single family name, not a CSS stack. The RN build maps
-// each `ref.fontFamily` stack to one face that covers both Latin and Korean.
-// A stack edit must never silently change that face.
+// each `ref.fontFamily` stack to a face that covers both Latin and Korean, as a
+// `{ ios, android }` table of weight-specific family names (the fonts'
+// PostScript names). Those names match the `expo-font` config plugin and bare
+// RN linking on both platforms. A stack edit must never silently change them.
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const EXPECTED_RN_FAMILY = {
-  sketch: 'Gaegu',
-  sans: 'NotoSansKR',
-  mono: 'Menlo',
+type WeightTable = Record<string, string>;
+interface FaceTable {
+  ios: WeightTable;
+  android: WeightTable;
+}
+
+const SANS: WeightTable = {
+  400: 'NotoSansKR-Regular',
+  500: 'NotoSansKR-Medium',
+  700: 'NotoSansKR-Bold',
+};
+// Gaegu ships Regular and Bold only; 500 resolves to Regular (CSS matching rule).
+const SKETCH: WeightTable = { 400: 'Gaegu-Regular', 500: 'Gaegu-Regular', 700: 'Gaegu-Bold' };
+
+const EXPECTED_RN_FAMILY: Record<string, FaceTable> = {
+  sketch: { ios: SKETCH, android: SKETCH },
+  sans: { ios: SANS, android: SANS },
+  mono: {
+    ios: { 400: 'Menlo-Regular', 500: 'Menlo-Regular', 700: 'Menlo-Bold' },
+    // Android has no Menlo; `monospace` is its system mono face.
+    android: { 400: 'monospace', 500: 'monospace', 700: 'monospace' },
+  },
+};
+
+const EXPECTED_ROLE_STACK = {
+  heading: 'sketch',
+  title: 'sketch',
+  body: 'sans',
+  label: 'sans',
+  caption: 'sans',
+  code: 'mono',
 } as const;
 
-const EXPECTED_ROLE_FAMILY = {
-  heading: 'Gaegu',
-  title: 'Gaegu',
-  body: 'NotoSansKR',
-  label: 'NotoSansKR',
-  caption: 'NotoSansKR',
-  code: 'Menlo',
+// The face each role resolves to at its own weight, per platform.
+const EXPECTED_ROLE_FACE = {
+  heading: { ios: 'Gaegu-Bold', android: 'Gaegu-Bold' },
+  title: { ios: 'Gaegu-Bold', android: 'Gaegu-Bold' },
+  body: { ios: 'NotoSansKR-Regular', android: 'NotoSansKR-Regular' },
+  label: { ios: 'NotoSansKR-Medium', android: 'NotoSansKR-Medium' },
+  caption: { ios: 'NotoSansKR-Regular', android: 'NotoSansKR-Regular' },
+  code: { ios: 'Menlo-Regular', android: 'monospace' },
 } as const;
 
 interface FontFamilyTokens {
-  ref: { fontFamily: Record<string, string> };
-  sys: { typography: Record<string, { fontFamily?: string }> };
+  ref: { fontFamily: Record<string, FaceTable>; fontWeight: Record<string, number> };
+  sys: { typography: Record<string, { fontFamily?: FaceTable; fontWeight?: number }> };
 }
 
 describe('React Native font families', () => {
@@ -37,19 +67,43 @@ describe('React Native font families', () => {
     ['light', lightTokens],
     ['dark', darkTokens],
   ] as const) {
-    const typed = tokens as FontFamilyTokens;
+    const typed = tokens as unknown as FontFamilyTokens;
+    const roles = Object.entries(typed.sys.typography).filter(
+      ([, style]) => style.fontFamily !== undefined,
+    );
 
-    it(`maps every ref.fontFamily stack to its RN face (${name})`, () => {
+    it(`maps every ref.fontFamily stack to its RN face table (${name})`, () => {
       expect(typed.ref.fontFamily).toEqual(EXPECTED_RN_FAMILY);
     });
 
-    it(`maps every sys.typography role to its RN face (${name})`, () => {
-      const roleFamily = Object.fromEntries(
-        Object.entries(typed.sys.typography)
-          .filter(([, style]) => style.fontFamily !== undefined)
-          .map(([role, style]) => [role, style.fontFamily]),
+    it(`names a face for every ref.fontWeight on both platforms (${name})`, () => {
+      const weights = Object.values(typed.ref.fontWeight).map(String).sort();
+      for (const table of Object.values(typed.ref.fontFamily)) {
+        expect(Object.keys(table.ios).sort()).toEqual(weights);
+        expect(Object.keys(table.android).sort()).toEqual(weights);
+      }
+    });
+
+    it(`maps every sys.typography role to its stack's face table (${name})`, () => {
+      const roleFamily = Object.fromEntries(roles.map(([role, style]) => [role, style.fontFamily]));
+      const expected = Object.fromEntries(
+        Object.entries(EXPECTED_ROLE_STACK).map(([role, stack]) => [
+          role,
+          EXPECTED_RN_FAMILY[stack],
+        ]),
       );
-      expect(roleFamily).toEqual(EXPECTED_ROLE_FAMILY);
+      expect(roleFamily).toEqual(expected);
+    });
+
+    it(`resolves every role to a weight-specific face at its own weight (${name})`, () => {
+      const roleFace = Object.fromEntries(
+        roles.map(([role, style]) => {
+          const weight = String(style.fontWeight);
+          const table = style.fontFamily as FaceTable;
+          return [role, { ios: table.ios[weight], android: table.android[weight] }];
+        }),
+      );
+      expect(roleFace).toEqual(EXPECTED_ROLE_FACE);
     });
   }
 });

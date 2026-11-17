@@ -64,4 +64,15 @@ describe('Table', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: 'Select all rows' }));
     expect(onSelectionChange).toHaveBeenCalledWith(['1', '2']);
   });
+
+  it('renders rich ReactNode cell content', () => {
+    render(
+      <Table
+        columns={[{ key: 'token', header: 'Token' }]}
+        rows={[{ id: 'bg', token: <code>sys.color.bg.primary</code> }]}
+      />,
+    );
+    const code = screen.getByRole('cell').querySelector('code');
+    expect(code?.textContent).toBe('sys.color.bg.primary');
+  });
 });

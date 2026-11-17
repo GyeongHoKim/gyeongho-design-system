@@ -1,0 +1,158 @@
+---
+layout: ../../../layouts/MarkdownLayout.astro
+title: NavMenu
+description: A hand-drawn dropdown of site-navigation links triggered by a button.
+---
+
+import PropsTable from '../../../components/PropsTable.astro';
+import StateList from '../../../components/StateList.astro';
+import DoDont from '../../../components/DoDont.astro';
+import KeyboardTable from '../../../components/KeyboardTable.astro';
+import NavMenuDemoReact from '../../../components/demos/NavMenuDemo.tsx';
+import NavMenuDemoLit from '../../../components/demos/NavMenuDemo.astro';
+import { withBase } from '../../../lib/withBase';
+
+## Overview
+
+A `NavMenu` groups related **pages** behind one header trigger — e.g. "Design" revealing Design Style,
+Foundations, Design Principles and UX Writing. Every entry is a real link, so visitors keep native link
+behaviour: open in new tab, copy link address, and crawlers can follow them.
+
+It is the navigation counterpart of <a href={withBase('/components/menu/')}>Menu</a>. Menu is an
+**action** menu (`role="menu"`, for commands like Edit / Delete); NavMenu is a **disclosure** of links and
+deliberately uses no menu roles, which the ARIA Authoring Practices reserve for command sets. For a whole
+navigation bar with several groups, `NavigationMenu` / `gh-navigation-menu` renders the full row.
+
+## Anatomy
+
+A `<button aria-expanded aria-controls>` trigger shows and hides a floating panel. The panel holds a plain
+list — `<ul>` / `<li>` — of `<a href>` links. There is no `role="menu"`, `role="menuitem"` or
+`aria-haspopup="menu"` anywhere. The trigger is a sketchy box (`@ghds/sketch-core`) and the panel reuses the
+`comp.menu.*` tokens, so it looks like Menu. Data-driven — pass an `items` array of `{ href, label }`.
+
+## Variants & States
+
+<StateList
+  states={[
+    { name: 'Closed', present: true, note: 'Default; aria-expanded=false, links hidden.' },
+    { name: 'Open', present: true, note: 'Panel shown; focus stays on the trigger unless opened with an Arrow key.' },
+    { name: 'Highlighted link', present: true, note: 'The hovered or focused link is highlighted.' },
+    { name: 'Current page', present: true, note: 'With current set, the matching link gets aria-current="page" and the trigger is underlined.' },
+    { name: 'Disabled', present: false, note: 'Not supported; omit links that are unavailable.' },
+  ]}
+/>
+
+## Usage
+
+<DoDont
+  do={[
+    'Use it in a site header to group related pages under one trigger.',
+    'Wrap the header triggers in a <nav> landmark with an aria-label.',
+    'Keep link labels short page names.',
+  ]}
+  dont={[
+    "Don't use it for actions (Edit, Delete) — use Menu.",
+    "Don't nest groups inside the panel; it is one level deep.",
+    "Don't hide the only route to an important page inside a dropdown.",
+  ]}
+/>
+
+## Accessibility
+
+- **React / Web Components**: disclosure pattern — the trigger has `aria-expanded` and `aria-controls`
+  pointing at the panel. Links are in the natural Tab order (no roving `tabindex`). Arrow keys are an
+  optional shortcut on top of Tab. Escape closes and returns focus to the trigger; clicking outside or
+  tabbing out of the component closes it. Activating a link navigates natively.
+- **Current page**: pass `current` (the page path) so the matching link carries `aria-current="page"` and
+  screen readers announce it as the current page.
+- **React Native**: no NavMenu — use `NavigationMenu` from `@ghds/react-native`.
+- See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
+
+<KeyboardTable
+  rows={[
+    { keys: 'Enter / Space', action: 'On the trigger: open or close the panel.' },
+    { keys: '↓ / ↑', action: 'On the trigger: open and focus the first / last link.' },
+    { keys: 'Tab / Shift+Tab', action: 'Move through the links; leaving the component closes it.' },
+    { keys: 'Arrow Up / Down', action: 'In the panel: move between links (wraps).' },
+    { keys: 'Home / End', action: 'In the panel: focus the first / last link.' },
+    { keys: 'Enter', action: 'On a link: follow it.' },
+    { keys: 'Escape', action: 'Close and return focus to the trigger.' },
+  ]}
+/>
+
+## Content
+
+The trigger names the group ("Design", "Components"); links use page titles.
+
+## Props API
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'label', type: 'string', description: 'Trigger button text.' },
+        { name: 'items', type: 'NavMenuItem[]', description: '{ href, label } per link. Each renders a real <a href>.' },
+        { name: 'current', type: 'string', description: 'Active page path. The exact-match link gets aria-current="page"; the trigger is underlined when a link is the current path or its ancestor. Query, hash and trailing slash are ignored.' },
+        { name: 'id', type: 'string', description: 'Trigger id; the panel id is derived from it.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'label', type: 'string', description: 'Trigger text (or slot custom trigger content).' },
+        { name: 'items', type: 'GhNavMenuItem[]', description: '{ href, label } per link (property, not attribute).' },
+        { name: 'current', type: 'string', description: 'Active page path; same matching as the React prop.' },
+      ],
+    },
+  ]}
+/>
+
+## Code examples
+
+```tsx
+// React — @ghds/react
+import { NavMenu } from '@ghds/react/nav-menu';
+
+<nav aria-label="Main">
+  <NavMenu
+    label="Design"
+    items={[
+      { href: '/design-style/', label: 'Design Style' },
+      { href: '/foundations/', label: 'Foundations' },
+      { href: '/principles/', label: 'Design Principles' },
+      { href: '/ux-writing/', label: 'UX Writing' },
+    ]}
+  />
+</nav>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components -->
+<script type="module">
+  import '@ghds/web-components/nav-menu';
+  // items is a property, not an attribute
+  document.getElementById('design').items = [
+    { href: '/design-style/', label: 'Design Style' },
+    { href: '/foundations/', label: 'Foundations' },
+  ];
+</script>
+<nav aria-label="Main">
+  <gh-nav-menu id="design" label="Design"></gh-nav-menu>
+</nav>
+```
+
+## Live Demo
+
+<div class="demo-columns">
+  <div class="demo-column">
+    <h3>React <span class="demo-tag">@ghds/react</span></h3>
+    <NavMenuDemoReact client:only="react" />
+  </div>
+  <div class="demo-column">
+    <h3>Web Components <span class="demo-tag">@ghds/web-components</span></h3>
+    <NavMenuDemoLit />
+  </div>
+</div>

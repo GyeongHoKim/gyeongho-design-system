@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -35,5 +36,15 @@ describe('NavigationMenu', () => {
       'href',
       '/analytics',
     );
+  });
+
+  it('sizes the dropdown panel from the comp.navigationMenu.panel.minWidth token', async () => {
+    render(<NavigationMenu items={ITEMS} aria-label="Primary" />);
+    await userEvent.click(screen.getByRole('button', { name: /Products/ }));
+    expect(
+      screen
+        .getByRole('menuitem', { name: 'Analytics' })
+        .closest<HTMLElement>('[style*="min-width"]')?.style.minWidth,
+    ).toBe(tokens.comp.navigationMenu.panel.minWidth);
   });
 });

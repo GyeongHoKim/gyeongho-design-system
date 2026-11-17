@@ -9,7 +9,18 @@
       },
       "stroke": {
         "$type": "color",
-        "default": { "$value": "{sys.color.border.default}" }
+        "default": { "$value": "{sys.color.border.default}" },
+        "hover": {
+          "$value": "{sys.color.border.strong}",
+          "$description": "Sketch stroke of a link card while hovered."
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$value": "{sys.color.border.focus}",
+          "$description": "Focus ring of a link card."
+        }
       },
       "text": {
         "$type": "color",
@@ -170,8 +181,8 @@
           },
           "bg": {
             "$type": "color",
-            "$value": "{sys.color.bg.canvas}",
-            "$description": "Tape fill."
+            "$value": "{sys.color.paper.tape}",
+            "$description": "Tape fill: an amber masking-tape tone that stays visible on light and dark surfaces at the tape opacity."
           },
           "border": {
             "color": {

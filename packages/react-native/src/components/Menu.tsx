@@ -118,7 +118,7 @@ export function Menu({ label, items, onSelect, disabled = false, testID }: MenuP
                 position: 'absolute',
                 top: (anchor ? anchor.y + anchor.height : 0) + theme.spacing.xs,
                 left: anchor?.x ?? 0,
-                minWidth: Math.max(anchor?.width ?? 160, 160),
+                minWidth: Math.max(anchor?.width ?? 0, theme.overlayMinWidths.menu),
                 borderWidth: theme.borderWidths.default,
                 borderColor: theme.colors.menuPanelStroke,
                 borderRadius: theme.borderRadii.md,

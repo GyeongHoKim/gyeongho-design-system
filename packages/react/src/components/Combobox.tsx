@@ -233,7 +233,7 @@ export function Combobox({
     display: 'inline-flex',
     alignItems: 'center',
     boxSizing: 'border-box',
-    minWidth: '14rem',
+    minWidth: combobox.field.minWidth,
   };
 
   const inputStyle: CSSProperties = {

@@ -139,8 +139,19 @@ comp.input.border.focus
   `number` tokens whose unit is **degrees** (like `ref.sketch.hachureAngle`). Consumers append
   `deg` (CSS) or use the number directly (React Native).
 - `sys.color.paper.*` (`neutral`, `primary`, `success`, `warning`, `danger`, `info`, `lined`,
-  `rule`, `margin`) is theme-specific paper colour for the sticky and lined Card. The tone and
+  `rule`, `margin`, `tape`) is theme-specific paper colour for the sticky and lined Card. The tone and
   `lined` backgrounds are contrast-checked against `text.primary` and `text.secondary` in both themes.
+- `sys.color.paper.tape` fills the Card tape fastener. The validator composites it at
+  `comp.card.fastener.tape.opacity` and requires at least 1.5:1 against every neutral background
+  surface (`bg.canvas`, `bg.surface`, `bg.muted`, `bg.subtle`) and every paper background, so the decorative tape stays visible on light and dark pages.
+
+## Status accents and `tip`
+
+- `tip` is its own semantic role with its own hue (`ref.palette.purple`), never a recoloured
+  `info`: `sys.color.bg.tip.{default,hover}` with `text.onTip`.
+- `sys.color.border.{info,tip,warning}` and `sys.color.icon.{info,tip,warning}` are status accents
+  drawn on neutral surfaces (the Callout's outline and icon). They are themed (600 in light, 300 in
+  dark) so they keep 3:1 against every `bg.*` surface, which the validator checks in both themes.
 
 ---
 
@@ -196,10 +207,15 @@ Font choices are design decisions made at the `ref` tier only. To change a font:
 4. Run `pnpm build --filter @ghds/tokens` and `pnpm test --filter @ghds/tokens`.
 
 > React Native does not support CSS comma-separated font stacks. The RN build
-> automatically converts each web stack to a single family name (e.g. `NotoSansKR`
-> for `sans`, `Gaegu` for `sketch`) so RN's `fontFamily` accepts it. The chosen
-> face includes both Latin and Korean glyphs. Loading the `.ttf` files in the RN
-> app is the consumer's responsibility — see `packages/react-native/AGENTS.md`.
+> converts each web stack to a face table `{ ios, android }` that maps every
+> `ref.fontWeight` value to a weight-specific family name (e.g.
+> `sans → NotoSansKR-Regular / -Medium / -Bold`, `sketch → Gaegu-Regular / -Bold`,
+> `mono → Menlo-Regular / -Bold` on iOS and `monospace` on Android). The names are the
+> fonts' PostScript names, so they match the `expo-font` config plugin and bare RN
+> linking. The chosen face includes both Latin and Korean glyphs. The mapping lives in
+> `RN_FONT_FACES_BY_STACK` in `style-dictionary.config.js`; a weight a face does not
+> ship resolves to the nearest file. Loading the `.ttf` files in the RN app is the
+> consumer's responsibility — see `packages/react-native/AGENTS.md`.
 
 ---
 

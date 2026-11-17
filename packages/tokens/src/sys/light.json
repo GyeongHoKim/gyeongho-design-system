@@ -31,6 +31,10 @@
         "info": {
           "default": { "$value": "{ref.palette.info.600}" },
           "hover": { "$value": "{ref.palette.info.700}" }
+        },
+        "tip": {
+          "default": { "$value": "{ref.palette.purple.600}" },
+          "hover": { "$value": "{ref.palette.purple.700}" }
         }
       },
       "text": {
@@ -43,19 +47,26 @@
         "onDanger": { "$value": "{ref.palette.white}" },
         "onSuccess": { "$value": "{ref.palette.white}" },
         "onWarning": { "$value": "{ref.palette.white}" },
-        "onInfo": { "$value": "{ref.palette.white}" }
+        "onInfo": { "$value": "{ref.palette.white}" },
+        "onTip": { "$value": "{ref.palette.white}" }
       },
       "border": {
         "default": { "$value": "{ref.palette.gray.300}" },
         "strong": { "$value": "{ref.palette.gray.400}" },
         "subtle": { "$value": "{ref.palette.gray.200}" },
         "focus": { "$value": "{ref.palette.brand.500}" },
-        "danger": { "$value": "{ref.palette.danger.600}" }
+        "danger": { "$value": "{ref.palette.danger.600}" },
+        "info": { "$value": "{ref.palette.info.600}" },
+        "tip": { "$value": "{ref.palette.purple.600}" },
+        "warning": { "$value": "{ref.palette.warning.600}" }
       },
       "icon": {
         "default": { "$value": "{ref.palette.gray.700}" },
         "muted": { "$value": "{ref.palette.gray.500}" },
-        "onPrimary": { "$value": "{ref.palette.white}" }
+        "onPrimary": { "$value": "{ref.palette.white}" },
+        "info": { "$value": "{ref.palette.info.600}" },
+        "tip": { "$value": "{ref.palette.purple.600}" },
+        "warning": { "$value": "{ref.palette.warning.600}" }
       },
       "paper": {
         "$description": "Paper surfaces for sticky and lined cards. Text on them uses text.primary / text.secondary.",
@@ -67,7 +78,8 @@
         "info": { "$value": "{ref.palette.info.100}" },
         "lined": { "$value": "{ref.palette.gray.50}" },
         "rule": { "$value": "{ref.palette.info.100}" },
-        "margin": { "$value": "{ref.palette.danger.200}" }
+        "margin": { "$value": "{ref.palette.danger.200}" },
+        "tape": { "$value": "{ref.palette.warning.400}" }
       },
       "chart": {
         "$description": "Categorical chart series colors. Decorative (not text pairings), exempt from contrast validation.",

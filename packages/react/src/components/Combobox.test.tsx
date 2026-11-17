@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -51,5 +52,13 @@ describe('Combobox', () => {
     render(<Combobox options={OPTIONS} label="Fruit" emptyMessage="Nothing found" />);
     await userEvent.type(screen.getByRole('combobox', { name: 'Fruit' }), 'zzz');
     expect(screen.getByText('Nothing found')).toBeInTheDocument();
+  });
+
+  it('sizes the field from the comp.combobox.field.minWidth token', () => {
+    render(<Combobox options={OPTIONS} label="Fruit" />);
+    expect(
+      screen.getByRole('combobox', { name: 'Fruit' }).closest<HTMLElement>('[style*="min-width"]')
+        ?.style.minWidth,
+    ).toBe(tokens.comp.combobox.field.minWidth);
   });
 });

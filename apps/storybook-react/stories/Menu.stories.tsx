@@ -47,6 +47,25 @@ export const Dark: Story = {
   },
 };
 
+const WITH_LINKS: MenuItem[] = [
+  { value: 'edit', label: 'Edit' },
+  { value: 'duplicate', label: 'Duplicate' },
+  { value: 'source', label: 'View source on GitHub', href: 'https://github.com/' },
+  { value: 'docs', label: 'Read the docs', href: '#docs' },
+];
+
+/** Action items mixed with `href` items, which render as real `<a role="menuitem">` links. */
+export const WithLinks: Story = {
+  args: { items: WITH_LINKS },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Actions' }));
+    const link = canvas.getByRole('menuitem', { name: 'View source on GitHub' });
+    await expect(link.tagName).toBe('A');
+    await expect(link).toHaveAttribute('href', 'https://github.com/');
+  },
+};
+
 export const Opens: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

@@ -1,4 +1,3 @@
-import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import { tokens } from '@ghds/tokens';
 import {
   type CSSProperties,
@@ -12,6 +11,7 @@ import {
   useState,
 } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside.js';
+import { useMenuFloating } from '../hooks/useMenuFloating.js';
 import { useSketch } from '../hooks/useSketch.js';
 import { cssVars } from '../lib/cssVars.js';
 import { mergeRefs } from '../lib/mergeRefs.js';
@@ -23,6 +23,22 @@ export interface MenuItem {
   value: string;
   label: string;
   disabled?: boolean;
+  /**
+   * Optional link target. When set, the item renders as a real
+   * `<a role="menuitem" href>` (inside a `role="none"` wrapper) so it keeps
+   * native link behaviour — open in new tab, copy link address, crawlability.
+   * Activating it navigates natively and closes the menu; `onSelect` is not
+   * called for href items.
+   */
+  href?: string;
+}
+
+/**
+ * Whether an item is a link item. An empty `href` counts as no link, so every
+ * item is exactly one of link or action — never both.
+ */
+function isLinkItem(item: MenuItem): boolean {
+  return item.href !== undefined && item.href !== '';
 }
 
 export interface MenuProps {
@@ -30,7 +46,7 @@ export interface MenuProps {
   label: string;
   /** Menu entries. */
   items: MenuItem[];
-  /** Called with the value of the activated item. */
+  /** Called with the value of the activated action item (not for `href` items). */
   onSelect?: (value: string) => void;
   /** Disables the whole menu. */
   disabled?: boolean;
@@ -47,6 +63,8 @@ const INSET = STROKE_WIDTH;
  * opens a floating `role="menu"` of `role="menuitem"`s. Keyboard: Enter / Space
  * / ArrowDown open and focus the first item; Arrow keys / Home / End move focus;
  * Enter / Space activate; Escape closes and restores focus to the trigger.
+ * Items with an `href` render as real links and navigate natively instead of
+ * calling `onSelect`.
  * Positioned with `@floating-ui/react-dom`; colours and sketch parameters come
  * from `@ghds/tokens` (`comp.menu.*`).
  */
@@ -60,24 +78,14 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
   const [activeIndex, setActiveIndex] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const itemsRef = useRef<(HTMLElement | null)[]>([]);
 
   const enabledIndexes = useMemo(
     () => items.map((item, i) => ({ item, i })).filter((x) => !x.item.disabled),
     [items],
   );
 
-  const { refs, floatingStyles } = useFloating({
-    open,
-    placement: 'bottom-start',
-    strategy: 'fixed',
-    whileElementsMounted: open ? autoUpdate : undefined,
-    middleware: [
-      offset(toPx(menu.panel.offset)),
-      flip(),
-      shift({ padding: toPx(tokens.sys.spacing.sm) }),
-    ],
-  });
+  const { refs, floatingStyles } = useMenuFloating(open);
 
   const {
     ref: sketchRef,
@@ -133,6 +141,12 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     if (item.disabled) {
       return;
     }
+    if (isLinkItem(item)) {
+      // Link items navigate natively (the anchor's own activation behaviour);
+      // they only close the menu and never call onSelect.
+      closeMenu();
+      return;
+    }
     onSelect?.(item.value);
     closeMenu();
   };
@@ -177,8 +191,18 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
         break;
       case 'Enter':
       case ' ': {
-        event.preventDefault();
         const item = items[activeIndex];
+        if (item && isLinkItem(item) && !item.disabled) {
+          // Enter on a focused anchor natively fires its click (→ navigation),
+          // so leave it alone. Space has no native link activation, so trigger
+          // the anchor's click ourselves (only suppressing the page scroll).
+          if (event.key === ' ') {
+            event.preventDefault();
+            itemsRef.current[activeIndex]?.click();
+          }
+          break;
+        }
+        event.preventDefault();
         if (item) {
           select(item);
         }
@@ -210,7 +234,7 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
     flexDirection: 'column',
     gap: menu.panel.gap,
     zIndex: menu.panel.zIndex,
-    minWidth: '10rem',
+    minWidth: menu.panel.minWidth,
     boxSizing: 'border-box',
     padding: menu.panel.padding,
     background: c.panel.bg,
@@ -267,20 +291,52 @@ export const Menu = forwardRef<HTMLButtonElement, MenuProps>(function Menu(
             outline: 'none',
             fontFamily: tokens.sys.typography.body.fontFamily,
             fontSize: tokens.sys.typography.body.fontSize,
+            textDecoration: 'none',
           };
+          const setItemRef = (el: HTMLElement | null) => {
+            itemsRef.current[index] = el;
+          };
+          const onMouseEnter = () => !item.disabled && setActiveIndex(index);
+          if (isLinkItem(item)) {
+            return (
+              <div
+                key={item.value}
+                role="none"
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                {/* A disabled link drops its href so it cannot navigate. */}
+                <a
+                  ref={setItemRef}
+                  role="menuitem"
+                  tabIndex={-1}
+                  href={item.disabled ? undefined : item.href}
+                  aria-disabled={item.disabled || undefined}
+                  style={itemStyle}
+                  onClick={(event) => {
+                    if (item.disabled) {
+                      event.preventDefault();
+                      return;
+                    }
+                    select(item);
+                  }}
+                  onMouseEnter={onMouseEnter}
+                >
+                  {item.label}
+                </a>
+              </div>
+            );
+          }
           return (
             // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handling lives on the parent role="menu" (Enter/Space/Arrows/Escape); items are driven by roving focus, not per-item key handlers
             <div
               key={item.value}
-              ref={(el) => {
-                itemsRef.current[index] = el;
-              }}
+              ref={setItemRef}
               role="menuitem"
               tabIndex={-1}
               aria-disabled={item.disabled || undefined}
               style={itemStyle}
               onClick={() => select(item)}
-              onMouseEnter={() => !item.disabled && setActiveIndex(index)}
+              onMouseEnter={onMouseEnter}
             >
               {item.label}
             </div>

@@ -83,6 +83,19 @@
         "700": { "$value": "#185488" },
         "800": { "$value": "#123f66" },
         "900": { "$value": "#0c2a44" }
+      },
+      "purple": {
+        "$description": "Purple ramp, a hue distinct from the indigo brand and the blue info ramp.",
+        "50": { "$value": "#f5eefc" },
+        "100": { "$value": "#e8d9f8" },
+        "200": { "$value": "#d2b4f0" },
+        "300": { "$value": "#b78ae6" },
+        "400": { "$value": "#9d62d9" },
+        "500": { "$value": "#8a49cc" },
+        "600": { "$value": "#7536b3" },
+        "700": { "$value": "#5c2a8d" },
+        "800": { "$value": "#452069" },
+        "900": { "$value": "#2e1546" }
       }
     }
   }

@@ -6,7 +6,8 @@
  *
  *   - css   → `dist/css/variables.css`  (:root light + [data-theme="dark"] + prefers-color-scheme)
  *   - ts    → `dist/ts/{light,dark}.{js,d.ts}` + `dist/index.{js,d.ts}` (web, value strings)
- *   - rn    → `dist/rn/{light,dark}.{js,d.ts}` + `dist/rn/index.{js,d.ts}` (px/ms → numbers)
+ *   - rn    → `dist/rn/{light,dark}.{js,d.ts}` + `dist/rn/index.{js,d.ts}` (px/ms → numbers,
+ *             font stacks → per-platform, per-weight family names)
  *   - json  → `dist/json/tokens.json` + `dist/json/tokens.dark.json` (platform-agnostic, resolved)
  *
  * Every output PRESERVES the semantic token path: CSS uses `--{path-with-dashes}`,
@@ -87,33 +88,94 @@ function rnShadow(value) {
 
 /**
  * React Native does not support CSS comma-separated font stacks — `fontFamily`
- * accepts a single family name. This map picks the RN-appropriate face from
- * each GHDS web stack. The chosen face must include both Latin and Korean
- * glyphs (RN cannot do per-glyph fallback across families), so the Korean
- * face is preferred for body/UI and display.
+ * accepts a single family name. The RN build replaces each GHDS web stack with
+ * one face that covers both Latin and Korean glyphs (RN cannot do per-glyph
+ * fallback across families), so the Korean face is preferred for body/UI and
+ * display:
  *
- *   sketch → Gaegu  (hand-drawn Korean, also covers Latin)
+ *   sketch → Gaegu        (hand-drawn Korean, also covers Latin)
  *   sans   → Noto Sans KR (Korean sans, also covers Latin; Pretendard fontsource
  *            ships Latin only so cannot serve as the RN Korean face)
- *   mono   → Menlo  (iOS system mono; Android has no Menlo and uses its default face)
+ *   mono   → Menlo on iOS, the `monospace` system face on Android (Android has
+ *            no Menlo)
+ *
+ * Each stack becomes a **face table** `{ ios, android }`. Each platform maps
+ * every `ref.fontWeight` value (`"400"`, `"500"`, `"700"`) to a weight-specific
+ * family name such as `NotoSansKR-Medium`. These are the fonts' PostScript
+ * names, which Expo also recommends as file names, so they resolve with the
+ * `expo-font` config plugin and bare RN asset linking (file name on Android,
+ * PostScript name on iOS) as well as with runtime `useFonts` on any Expo SDK.
+ *
+ * One family name per weight means the RN theme never needs `fontWeight` to
+ * pick a face. Android looks up `<name>_bold.ttf` when a custom font is asked
+ * for bold, so the theme leaves `fontWeight` out on native platforms.
+ *
+ * `faces` lists the files each face actually ships. A weight a face lacks
+ * resolves to the nearest available file with the CSS font-matching rule, so a
+ * new `ref.fontWeight` never yields a missing name. `ios` / `android` replace
+ * `faces` when the platforms differ.
  *
  * The map is keyed by stack name and resolved against the source stacks in
  * `src/ref/typography.json`, so editing a stack never silently breaks the RN
- * mapping. If a resolved stack is not in this map, the first quoted family
- * name is extracted.
+ * mapping. A stack missing from this map uses its first quoted family name for
+ * every platform and weight.
  */
-const RN_FONT_FAMILY_BY_STACK = {
-  sketch: 'Gaegu',
-  sans: 'NotoSansKR',
-  mono: 'Menlo',
+const RN_FONT_FACES_BY_STACK = {
+  sketch: { faces: { 400: 'Gaegu-Regular', 700: 'Gaegu-Bold' } },
+  sans: {
+    faces: { 400: 'NotoSansKR-Regular', 500: 'NotoSansKR-Medium', 700: 'NotoSansKR-Bold' },
+  },
+  mono: {
+    ios: { 400: 'Menlo-Regular', 700: 'Menlo-Bold' },
+    android: { 400: 'monospace' },
+  },
 };
 
-const SOURCE_FONT_STACKS = JSON.parse(
+const SOURCE_TYPOGRAPHY = JSON.parse(
   readFileSync(new URL('./src/ref/typography.json', import.meta.url), 'utf8'),
-).ref.fontFamily;
+).ref;
+const SOURCE_FONT_STACKS = SOURCE_TYPOGRAPHY.fontFamily;
+const RN_FONT_WEIGHTS = Object.entries(SOURCE_TYPOGRAPHY.fontWeight)
+  .filter(([key]) => !key.startsWith('$'))
+  .map(([, token]) => Number(token.$value))
+  .sort((a, b) => a - b);
 
-const RN_FONT_FAMILY_MAP = {};
-for (const [stack, family] of Object.entries(RN_FONT_FAMILY_BY_STACK)) {
+/**
+ * Pick the available weight for a requested one with the CSS font-matching
+ * rule: 400 tries 500 first and 500 tries 400 first; then weights up to 500
+ * prefer lighter faces and weights above 500 prefer heavier faces.
+ */
+function nearestWeight(requested, available) {
+  if (available.includes(requested)) return requested;
+  if (requested === 400 && available.includes(500)) return 500;
+  if (requested === 500 && available.includes(400)) return 400;
+  const lighter = available.filter((w) => w < requested).sort((a, b) => b - a);
+  const heavier = available.filter((w) => w > requested).sort((a, b) => a - b);
+  return requested <= 500 ? (lighter[0] ?? heavier[0]) : (heavier[0] ?? lighter[0]);
+}
+
+/** Expand a `{ weight: family }` file list to every `ref.fontWeight` value. */
+function rnWeightTable(faces, label) {
+  const available = Object.keys(faces).map(Number);
+  if (available.length === 0) throw new Error(`RN font map: ${label} lists no faces`);
+  return Object.fromEntries(
+    RN_FONT_WEIGHTS.map((weight) => [String(weight), faces[nearestWeight(weight, available)]]),
+  );
+}
+
+/** Expand a stack's face entry to the emitted `{ ios, android }` face table. */
+function rnFaceTable(entry, label) {
+  const ios = entry.ios ?? entry.faces;
+  const android = entry.android ?? entry.faces;
+  if (!ios || !android) throw new Error(`RN font map: ${label} needs faces or ios + android`);
+  return {
+    ios: rnWeightTable(ios, `${label}.ios`),
+    android: rnWeightTable(android, `${label}.android`),
+  };
+}
+
+const RN_FONT_FAMILY_MAP = new Map();
+for (const [stack, entry] of Object.entries(RN_FONT_FACES_BY_STACK)) {
   const value = SOURCE_FONT_STACKS[stack]?.$value;
   if (typeof value !== 'string') {
     throw new Error(`RN font map: ref.fontFamily.${stack} is missing from typography.json`);
@@ -121,23 +183,24 @@ for (const [stack, family] of Object.entries(RN_FONT_FAMILY_BY_STACK)) {
   // The transform only sees resolved values, so two stacks with the same value
   // cannot map to different RN faces. Fail the build instead of letting one
   // mapping silently overwrite the other.
-  const existing = RN_FONT_FAMILY_MAP[value];
-  if (existing !== undefined && existing !== family) {
+  const table = rnFaceTable(entry, stack);
+  const existing = RN_FONT_FAMILY_MAP.get(value);
+  if (existing !== undefined && JSON.stringify(existing) !== JSON.stringify(table)) {
     throw new Error(
-      `RN font map: ref.fontFamily.${stack} has the same value as another stack but maps to '${family}' instead of '${existing}'`,
+      `RN font map: ref.fontFamily.${stack} has the same value as another stack but maps to different RN faces`,
     );
   }
-  RN_FONT_FAMILY_MAP[value] = family;
+  RN_FONT_FAMILY_MAP.set(value, table);
 }
 
-/** Extract a single RN-compatible font family name from a CSS font stack. */
+/** Convert a CSS font stack into the RN `{ ios, android }` weight → family table. */
 function rnFontFamily(value) {
-  const mapped = RN_FONT_FAMILY_MAP[value];
-  if (mapped) return mapped;
-  // Fallback: first quoted name, or first token before a comma.
+  const mapped = RN_FONT_FAMILY_MAP.get(value);
+  if (mapped) return structuredClone(mapped);
+  // Fallback: first quoted name, or first token before a comma, for every weight.
   const quoted = /'([^']+)'/.exec(value);
-  if (quoted) return quoted[1];
-  return value.split(',')[0].trim();
+  const family = quoted ? quoted[1] : value.split(',')[0].trim();
+  return rnFaceTable({ faces: { 400: family } }, value);
 }
 
 StyleDictionary.registerTransform({

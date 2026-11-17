@@ -13,11 +13,11 @@ import { withBase } from '../../../lib/withBase';
 
 ## 개요
 
-`Card`는 관련 콘텐츠를 묶기 위한 범용 표면이에요 — 자체적으로 인터랙티브하지 않고 "이것들이 함께 속한다"는 의미 외에는 내장된 의미가 없어요.
+`Card`는 관련 콘텐츠를 묶기 위한 범용 표면이에요 — 자체적으로 인터랙티브하지 않고 "이것들이 함께 속한다"는 의미 외에는 내장된 의미가 없어요. 웹에서는 카드 전체를 링크 하나로 만들 수도 있어요. [링크 카드](#link-cards)를 참고하세요.
 
 ## 구조
 
-일반 자식 요소 뒤에 그려진 손그림 사각형 외곽선이에요. Web Components에서는 `<h1>`/`<h2>`/`<h3>`/`[slot="title"]`로 슬롯된 콘텐츠가 특별한 제목 스타일(`::slotted` CSS)을 받아요; React와 React Native에는 동등한 제목 슬롯이 없어요 — 콘텐츠는 그냥 일반 자식 요소예요.
+일반 자식 요소 뒤에 그려진 손그림 사각형 외곽선이에요. Web Components의 `gh-card`에는 슬롯이 두 개 있어요. 먼저 렌더링되는 이름 있는 `title` 슬롯과 본문용 기본 슬롯이에요. `title` 슬롯의 콘텐츠와 기본 슬롯의 `<h1>`/`<h2>`/`<h3>`는 제목 스타일(`::slotted` CSS)을 받아요. React와 React Native에는 동등한 제목 슬롯이 없어요 — 콘텐츠는 그냥 일반 자식 요소예요.
 
 ## 변형 및 상태
 
@@ -25,8 +25,8 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
 
 <StateList
   states={[
-    { name: 'Hover', present: true, note: 'interactive prop을 쓸 때만 해당해요(React, Web Components). 카드가 떠올라요. React Native에는 없어요.' },
-    { name: 'Focus', present: true, note: '카드 자체는 포커스되지 않아요. interactive를 쓰면 내부에 포커스가 있는 동안 떠올라요(React, Web Components).' },
+    { name: 'Hover', present: true, note: 'interactive를 쓰거나 링크 카드일 때 해당해요(React, Web Components). 카드가 떠오르고, 링크 카드의 plain 외곽선은 진해져요. React Native에는 없어요.' },
+    { name: 'Focus', present: true, note: '링크 카드나 tabindex로 포커스를 받게 한 카드(interactive 여부와 관계없이)는 키보드로 포커스하면 브라우저 기본 윤곽선 대신 comp.card.focus.ring 포커스 링을 종이 위에 그려요. 링은 접힌 모서리와 기울기를 따라가요. interactive를 쓰면 내부에 포커스가 있는 동안 카드가 떠올라요(React, Web Components).' },
     { name: '비활성화', present: false },
     { name: '로딩', present: false },
     { name: '오류', present: false },
@@ -76,7 +76,9 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
   ]}
 />
 
-- React Native에는 아직 `interactive`가 없어요. 카드 링크 모드와 함께 추가될 예정이에요.
+- React Native에는 아직 `interactive`와 링크 모드가 없어요.
+- 카드에 `tabindex="0"`(React에서는 `tabIndex={0}`)을 주면, 키보드로 포커스할 때 `comp.card.focus.ring` 윤곽선이 보여요. 링은 카드 종이 위에 그려지므로 접힌 모서리와 기울기를 따라가요. `interactive`가 없으면 링은 보이지만 카드가 떠오르지는 않아요.
+- 테이프는 `sys.color.paper.tape`(호박색 마스킹 테이프) 색을 `comp.card.fastener.tape.opacity` 투명도로 칠해요. 그래서 밝은 페이지와 어두운 페이지, 모든 종이 색 위에서 잘 보여요.
 - React의 `fill`과 Web Components/React Native의 `elevated`는 `plain`에만 적용돼요.
 - React Native는 값을 Restyle 테마(`theme.card.*`)에서 읽으므로 커스텀 테마로 덮어쓸 수 있어요.
 
@@ -102,6 +104,56 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
 
 줄 간격이 본문 줄 높이와 같아서 본문 글자가 줄 위에 놓여요. 이건 본문 텍스트에만 해당해요. 제목이나 요소의 여백(예: `<p>`의 기본 여백)이 있으면 그 아래 줄이 괘선에서 어긋나요. 줄 있는 카드에는 여백 없이 본문 텍스트를 넣고, `line-height`는 바꾸지 마세요.
 
+{/* 데모 링크 카드가 두 언어에서 같은 #link-cards를 가리키도록 id를 고정해요. */}
+<h2 id="link-cards">링크 카드</h2>
+
+카드 전체를 링크 하나로 만들려면 Web Components에서는 `href`를, React에서는 `<a>` 자식과 함께 `asChild`를 쓰세요(Button의 `asChild`와 같은 방식이에요). 링크가 곧 카드 표면이라 감싸는 요소가 따로 없어요.
+
+- 마우스를 올리면 `interactive`처럼 카드가 떠오르고, `plain` 카드의 스케치 외곽선이 진해져요(`comp.card.stroke.hover`).
+- 키보드로 포커스하면 포커스 링(`comp.card.focus.ring`)이 보이고 카드가 떠올라요.
+- 종이 변형, `tone`, `fastener`, `tilt`는 평소처럼 동작해요.
+
+<PropsTable
+  groups={[
+    {
+      platform: 'React',
+      packageName: '@ghds/react',
+      rows: [
+        { name: 'asChild', type: 'boolean', default: 'false', description: '하나뿐인 자식 요소(예: <a>)를 카드 루트로 렌더해요. 이때 카드는 인터랙티브해져요. 마우스를 올리거나 키보드로 포커스하면 떠오르고, 키보드 포커스에는 포커스 링이 보여요. 마우스로 클릭해 포커스되었을 때는 떠오르지 않아요.' },
+      ],
+    },
+    {
+      platform: 'Web Components',
+      packageName: '@ghds/web-components',
+      rows: [
+        { name: 'href', type: 'string', description: '비어 있지 않으면 표면이 카드 전체를 덮는 <a class="content" part="content">로 렌더돼요.' },
+        { name: 'target', type: 'string', description: '앵커 target. href가 있을 때만 쓰여요.' },
+        { name: 'rel', type: 'string', description: '앵커 rel. href가 있을 때만 쓰여요. target="_blank"에는 rel="noopener"를 함께 쓰세요.' },
+      ],
+    },
+  ]}
+/>
+
+```tsx
+// React
+<Card asChild variant="sticky" tone="info">
+  <a href="/docs/tokens">
+    <h3>토큰</h3>
+    <p>모든 플랫폼의 디자인 값.</p>
+  </a>
+</Card>
+```
+
+```html
+<!-- Web Components -->
+<gh-card href="/docs/tokens" variant="sticky" tone="info">
+  <h3 slot="title">토큰</h3>
+  <p>모든 플랫폼의 디자인 값.</p>
+</gh-card>
+```
+
+링크 카드 안에는 버튼, 입력 필드, 다른 링크를 넣지 마세요. 인터랙티브 요소는 링크 안에 중첩할 수 없어요. 카드의 텍스트 콘텐츠가 링크의 접근 가능한 이름이 되니 짧게 유지하세요.
+
 ## 사용법
 
 <DoDont
@@ -117,8 +169,8 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
 
 ## 접근성
 
-- **React**: 일반 `<div>`를 렌더해요. role이나 라벨이 자동으로 설정되지 않아요 — "어떤 ARIA role/랜드마크든 호출자가 설정해요"(컴포넌트의 문서 주석에 따름).
-- **Web Components**: `label`이 제공되면 `gh-card`가 자동으로 `internals.role = 'group'`과 `internals.ariaLabel`을 설정해요 — React가 *복제하지 않는* 실제 동작이에요.
+- **React**: 일반 `<div>`를 렌더해요. role이나 라벨이 자동으로 설정되지 않아요 — "어떤 ARIA role/랜드마크든 호출자가 설정해요"(컴포넌트의 문서 주석에 따름). `asChild`를 쓰면 자식 요소가 자신의 시맨틱(예: 링크)을 그대로 유지해요.
+- **Web Components**: `label`이 제공되면 `gh-card`가 자동으로 `internals.role = 'group'`과 `internals.ariaLabel`을 설정해요 — React가 *복제하지 않는* 실제 동작이에요. `href`를 쓰면 호스트에는 role이 없고 내부 `<a>`가 링크가 돼요. 이때 `label`은 그 링크의 `aria-label`이 되어 텍스트 콘텐츠 대신 접근 가능한 이름으로 쓰여요.
 - **React Native**: `accessibilityLabel`이 전달될 때만 `accessibilityRole="summary"`를 설정해요.
 - 일반적인 관례는 <a href={withBase('/accessibility/')}>접근성 가이드</a>를 참고하세요.
 
@@ -135,6 +187,7 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
       packageName: '@ghds/react',
       rows: [
         { name: 'fill', type: "'solid' | 'hachure'", default: "'solid'", description: '카드 본문의 채우기 스타일.' },
+        { name: 'asChild', type: 'boolean', default: 'false', description: '하나뿐인 자식 요소를 카드 루트로 렌더해요. 링크 카드를 참고하세요.' },
         { name: '...rest', type: 'HTMLAttributes<HTMLDivElement>', description: '네이티브 <div> 속성(예: role, aria-label)이 전달돼요.' },
       ],
     },
@@ -143,7 +196,9 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
       packageName: '@ghds/web-components',
       rows: [
         { name: 'elevated', type: 'boolean', default: 'false', description: '스케치 드롭 섀도우 외곽선을 렌더해요. fill prop은 없어요.' },
-        { name: 'label', type: 'string', description: '설정 시 카드를 이 라벨의 ARIA group으로 노출해요.' },
+        { name: 'label', type: 'string', description: '설정 시 카드를 이 라벨의 ARIA group으로 노출해요. 링크 카드에서는 대신 링크에 라벨을 붙여요.' },
+        { name: 'href', type: 'string', description: '카드 전체를 링크로 렌더해요. 링크 카드를 참고하세요.' },
+        { name: 'target / rel', type: 'string', description: '앵커 target과 rel. href가 있을 때만 쓰여요.' },
       ],
     },
     {
@@ -157,6 +212,39 @@ Button이나 Input과 달리 Card는 주로 **정적 컨테이너**예요 — �
     },
   ]}
 />
+
+## 코드 예시
+
+```tsx
+// React — @ghds/react (`fill`은 있고 `elevated`는 없어요)
+import { Card } from '@ghds/react/card';
+
+<Card fill="hachure">
+  <h3>Hachure</h3>
+  <p>Sketched, translucent fill.</p>
+</Card>;
+```
+
+```html
+<!-- Web Components — @ghds/web-components (`elevated`와 `label`은 있고 `fill`은 없어요) -->
+<script type="module">
+  import '@ghds/web-components/card';
+</script>
+<gh-card label="Elevated" elevated>
+  <h3 slot="title">Elevated</h3>
+  <p>Drop-shadow sketch outline suggests elevation.</p>
+</gh-card>
+```
+
+```tsx
+// React Native — @ghds/react-native (`elevated`는 있고 `fill`은 없어요)
+import { Card } from '@ghds/react-native/card';
+import { Text } from '@ghds/react-native/theme';
+
+<Card elevated accessibilityLabel="Summary">
+  <Text>Elevated card content</Text>
+</Card>;
+```
 
 ## 라이브 데모
 
@@ -172,12 +260,3 @@ React는 `fill`을 사용하고; Web Components는 `elevated` + `label`을 사�
     <CardDemoLit />
   </div>
 </div>
-
-```tsx
-// React Native
-import { Card } from '@ghds/react-native/card';
-
-<Card elevated accessibilityLabel="Summary">
-  <Text>Elevated card content</Text>
-</Card>;
-```

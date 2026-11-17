@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -26,5 +27,20 @@ describe('HoverCard', () => {
     const trigger = screen.getByRole('button', { name: '@ghds' });
     await userEvent.hover(trigger);
     await waitFor(() => expect(trigger).toHaveAttribute('aria-describedby'));
+  });
+
+  it('sizes the card from the comp.hoverCard.minWidth token', async () => {
+    render(
+      <HoverCard trigger={<button type="button">@ghds</button>}>
+        <p>A design system.</p>
+      </HoverCard>,
+    );
+    const trigger = screen.getByRole('button', { name: '@ghds' });
+    trigger.focus();
+    await waitFor(() => expect(trigger).toHaveAttribute('aria-describedby'));
+    expect(
+      screen.getByText('A design system.').closest<HTMLElement>('[style*="min-width"]')?.style
+        .minWidth,
+    ).toBe(tokens.comp.hoverCard.minWidth);
   });
 });
