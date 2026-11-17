@@ -19,7 +19,7 @@ export const Variants: Story = {
     <>
       {VARIANTS.map((variant) => (
         <Alert key={variant} variant={variant} title={variant}>
-          A {variant} message.
+          {`A ${variant} message.`}
         </Alert>
       ))}
     </>
