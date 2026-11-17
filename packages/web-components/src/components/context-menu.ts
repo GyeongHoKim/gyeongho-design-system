@@ -38,7 +38,7 @@ export class GhContextMenu extends SketchyBase {
         display: none;
         flex-direction: column;
         gap: var(--sys-spacing-xs);
-        min-width: 10rem;
+        min-width: var(--comp-contextMenu-minWidth);
         box-sizing: border-box;
         padding: var(--comp-contextMenu-padding);
       }

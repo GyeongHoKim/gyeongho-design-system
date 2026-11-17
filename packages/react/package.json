@@ -84,6 +84,11 @@
       "import": "./dist/calendar.mjs",
       "require": "./dist/calendar.cjs"
     },
+    "./callout": {
+      "types": "./dist/components/Callout.d.ts",
+      "import": "./dist/callout.mjs",
+      "require": "./dist/callout.cjs"
+    },
     "./card": {
       "types": "./dist/components/Card.d.ts",
       "import": "./dist/card.mjs",
@@ -223,6 +228,11 @@
       "types": "./dist/components/Modal.d.ts",
       "import": "./dist/modal.mjs",
       "require": "./dist/modal.cjs"
+    },
+    "./nav-menu": {
+      "types": "./dist/components/NavMenu.d.ts",
+      "import": "./dist/nav-menu.mjs",
+      "require": "./dist/nav-menu.cjs"
     },
     "./native-select": {
       "types": "./dist/components/NativeSelect.d.ts",

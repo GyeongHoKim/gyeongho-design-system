@@ -5,10 +5,12 @@ GHDS ships the same design as three separate implementations — `@ghds/react`, 
 ## Contents
 
 - Dialog family accessible title: `title` vs `heading`
+- `Callout`: React + Web Components only, `heading` on both
 - Change events: three different shapes
 - Button content: children vs `label`-only
 - Button `variant`: React Native has no `'neutral'`
 - React-Native-only props
+- Web-only components: `NavMenu` has no React Native version
 - Web-Components-only: native form participation
 - Selection groups: Web Components has no shared `value`
 - `orientation` union: React Native uses `'row' | 'column'`
@@ -37,6 +39,19 @@ React and React Native use `title` for a dialog's accessible heading. Web Compon
 **Gotcha:** `title` is also a native HTML global attribute (hover tooltip). Setting `title="Delete item?"` on `<gh-modal>` does not error — it silently renders a browser tooltip instead of wiring the dialog's accessible name. This is a wrong-behavior trap, not a compile-time catch.
 
 **Related:** `AlertDialog` also diverges on its variant model — React/React Native use a `destructive` boolean, while Web Components uses `variant: 'default' | 'danger'`. And `Drawer`/`Sheet` expose `closeOnScrimClick` on React and Web Components but **not** on React Native.
+
+## `Callout`: React + Web Components only, `heading` on both
+
+`Callout` (a static `role="note"` aside) ships in `@ghds/react` and `@ghds/web-components` only; there is **no React Native `Callout`**. Unlike its closest sibling `Alert` — which takes `title` on React and `heading` on Web Components — `Callout` takes **`heading` on both platforms**.
+
+```tsx
+// React — `heading`, not `title` (Alert's React prop)
+<Callout variant="tip" heading="Recommended fonts">...</Callout>
+```
+
+```html
+<gh-callout variant="tip" heading="Recommended fonts">...</gh-callout>
+```
 
 ## Change events: three different shapes
 
@@ -106,6 +121,10 @@ React and Web Components support `'primary' | 'danger' | 'neutral'`. React Nativ
 ## React-Native-only props
 
 `testID` and `accessibilityHint` exist only on React Native — they have no equivalent prop on React or Web Components. When porting a component's usage from React/Web Components to React Native, add them where useful for testing/accessibility; when porting the other direction, drop them (they don't exist elsewhere and TypeScript will reject them on React/Web Components).
+
+## Web-only components: `NavMenu` has no React Native version
+
+`NavMenu` (`@ghds/react/nav-menu`) and `<gh-nav-menu>` (`@ghds/web-components/nav-menu`) exist only on the web: they are a disclosure of real `<a href>` links, and React Native has no links or URLs to navigate to. On React Native, use `NavigationMenu`, which is selection-callback based (`value` + `onSelect`, no `href`).
 
 ## Web-Components-only: native form participation
 

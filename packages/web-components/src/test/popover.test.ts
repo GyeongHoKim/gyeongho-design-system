@@ -40,4 +40,13 @@ describe('gh-popover', () => {
     await el.updateComplete;
     expect(el.open).toBe(false);
   });
+
+  it('sizes the panel from the --comp-popover-minWidth token', () => {
+    const cssText = ([GhPopover.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toContain('min-width: var(--comp-popover-minWidth)');
+    expect(cssText).not.toMatch(/min-width:\s*\d/);
+  });
 });

@@ -60,6 +60,23 @@ export const AsLink: Story = {
   ),
 };
 
+/** A disabled `asChild` link is `aria-disabled` and never activates or navigates. */
+export const AsLinkDisabled: Story = {
+  args: { disabled: true },
+  render: (args) => (
+    <Button {...args} asChild>
+      <a href="#next">Go to next</a>
+    </Button>
+  ),
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const link = canvas.getByRole('link', { name: 'Go to next' });
+    await expect(link).toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(link);
+    await expect(args.onClick).not.toHaveBeenCalled();
+  },
+};
+
 export const ClickInteraction: Story = {
   args: { children: 'Click me' },
   play: async ({ args, canvasElement }) => {

@@ -22,7 +22,16 @@ instead.
 
 A `<button>` trigger (`aria-haspopup="menu"`) opens a floating `role="menu"` of `role="menuitem"`s.
 Both the trigger and the panel are sketchy boxes (`@ghds/sketch-core`). Data-driven — pass an
-`items` array of `{ value, label, disabled? }`.
+`items` array of `{ value, label, disabled?, href? }` (`href` is React / Web Components only — React
+Native has no link items).
+
+An item with an `href` renders as a real link — a `role="none"` wrapper around
+`<a role="menuitem" href>` — so an action that links out (e.g. "View source on GitHub") keeps native
+link behaviour: open in new tab, copy link address, crawlability. Activating it navigates natively and
+closes the menu; `onSelect` / `select` is not fired for href items. A `disabled` href item drops its
+`href`; an empty `href` (`''`) counts as no `href`, so the item stays a plain action. Menu stays an **action** menu — for a dropdown of site-navigation links use
+<a href={withBase('/components/nav-menu/')}>NavMenu</a> (`gh-nav-menu`), which has no menu roles, and for a
+whole navigation bar use `NavigationMenu` / `gh-navigation-menu`.
 
 ## Variants & States
 
@@ -32,6 +41,7 @@ Both the trigger and the panel are sketchy boxes (`@ghds/sketch-core`). Data-dri
     { name: 'Open', present: true, note: 'Panel shown; focus moves into the items.' },
     { name: 'Highlighted item', present: true, note: 'The focused menuitem is highlighted.' },
     { name: 'Disabled item', present: true, note: 'Per-item; skipped by keyboard.' },
+    { name: 'Link item', present: true, note: 'React / Web Components only. Item with href; renders <a role="menuitem"> and navigates natively.' },
   ]}
 />
 
@@ -53,8 +63,9 @@ Both the trigger and the panel are sketchy boxes (`@ghds/sketch-core`). Data-dri
 
 - **React / Web Components**: `aria-haspopup="menu"` + `aria-expanded` trigger; `role="menu"` panel of
   `role="menuitem"`s. Enter/Space/ArrowDown open and focus the first item; Arrow/Home/End move focus;
-  Enter/Space activate; Escape closes and restores focus to the trigger; click-outside closes. Web
-  Components dispatches a `select` event.
+  Enter/Space activate (on an href item Enter is left to the native link and Space clicks it, so it
+  navigates without `preventDefault`); Escape closes and restores focus to the trigger; click-outside closes. Web
+  Components dispatches a `select` event for action items.
 - **React Native**: a `Modal`-anchored panel; selection by tap. `accessibilityRole="menu"`/`"menuitem"`.
   Arrow-key roving is web-only.
 - See the <a href={withBase('/accessibility/')}>Accessibility Guide</a>.
@@ -64,7 +75,7 @@ Both the trigger and the panel are sketchy boxes (`@ghds/sketch-core`). Data-dri
     { keys: 'Enter / Space / ↓', action: 'Open the menu and focus the first item.' },
     { keys: 'Arrow Up / Down', action: 'Move focus between items (wraps).' },
     { keys: 'Home / End', action: 'Focus the first / last item.' },
-    { keys: 'Enter / Space', action: 'Activate the focused item.' },
+    { keys: 'Enter / Space', action: 'Activate the focused item (follows the link for href items).' },
     { keys: 'Escape', action: 'Close and return focus to the trigger.' },
   ]}
 />
@@ -82,8 +93,8 @@ Action labels (verbs). Keep them short.
       packageName: '@ghds/react',
       rows: [
         { name: 'label', type: 'string', description: 'Trigger button label.' },
-        { name: 'items', type: 'MenuItem[]', description: '{ value, label, disabled? } per entry.' },
-        { name: 'onSelect', type: '(value: string) => void', description: 'Fires with the activated item value.' },
+        { name: 'items', type: 'MenuItem[]', description: '{ value, label, disabled?, href? } per entry. An href item renders as a real link.' },
+        { name: 'onSelect', type: '(value: string) => void', description: 'Fires with the activated action item value (not for href items).' },
         { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the whole menu.' },
       ],
     },
@@ -91,10 +102,10 @@ Action labels (verbs). Keep them short.
       platform: 'Web Components',
       packageName: '@ghds/web-components',
       rows: [
-        { name: 'items', type: 'GhMenuItem[]', description: '{ value, label, disabled? } (property).' },
+        { name: 'items', type: 'GhMenuItem[]', description: '{ value, label, disabled?, href? } (property). An href item renders as a real link.' },
         { name: 'label', type: 'string', description: 'Trigger label.' },
         { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the whole menu.' },
-        { name: 'select event', type: 'CustomEvent<string>', description: 'Dispatched with the activated value.' },
+        { name: 'select event', type: 'CustomEvent<string>', description: 'Dispatched with the activated action item value (not for href items).' },
       ],
     },
     {
@@ -124,6 +135,8 @@ import { Menu } from '@ghds/react/menu';
     { value: 'duplicate', label: 'Duplicate' },
     { value: 'archive', label: 'Archive', disabled: true },
     { value: 'delete', label: 'Delete' },
+    // A real link: native navigation, no onSelect.
+    { value: 'source', label: 'View source', href: 'https://github.com/org/repo' },
   ]}
   onSelect={(value) => run(value)}
 />;
@@ -138,6 +151,7 @@ import { Menu } from '@ghds/react/menu';
   menu.items = [
     { value: 'edit', label: 'Edit' },
     { value: 'delete', label: 'Delete' },
+    { value: 'source', label: 'View source', href: 'https://github.com/org/repo' },
   ];
   menu.addEventListener('select', (e) => run(e.detail));
 </script>

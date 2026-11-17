@@ -12,6 +12,7 @@
         "horizontal": { "$value": "{sys.spacing.md}" }
       },
       "offset": { "$type": "dimension", "$value": "{sys.spacing.xs}" },
+      "minWidth": { "$type": "dimension", "$value": "{sys.overlay.minWidth.md}" },
       "shadow": { "$type": "shadow", "$value": "{sys.shadow.md}" },
       "sketch": {
         "$type": "number",

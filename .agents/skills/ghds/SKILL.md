@@ -77,7 +77,7 @@ System event, informational only              → Toast (auto-dismiss)
 
 ## Component Selection
 
-All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
+All components below exist on all three platforms (`@ghds/react`, `@ghds/web-components`, `@ghds/react-native`) unless the **Notes** column says otherwise (e.g. `NavMenu` and `Callout` are React / WC only). The **Notes** column flags the single most common cross-platform gotcha; the full, source-verified divergence list is in [rules/platform-differences.md](rules/platform-differences.md). "WC" = Web Components, "RN" = React Native.
 
 ### Forms & inputs
 
@@ -129,6 +129,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 | Page/section location trail | `Breadcrumb` | — |
 | Paged navigation control | `Pagination` | — |
 | Top-level nav with dropdown links | `NavigationMenu` | React/WC are href-based (`<a>`); RN is selection-callback (`value`+`onSelect`, no `href`) |
+| Single header dropdown of page links | `NavMenu` | React/WC only; disclosure (`aria-expanded`) of real `<a href>` links, **no** `role="menu"` — never use `Menu` for navigation; `items: { href, label }[]` (WC `items` is a property); `current?: string` page path gives the matching link `aria-current="page"` |
 | App navigation sidebar | `Sidebar` | React/RN data-driven (`sections`); WC slot-based; RN has no collapse; section heading prop React `.heading` vs RN `.title` |
 
 ### Feedback & status
@@ -137,6 +138,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 |---|---|---|
 | Transient, non-blocking notification | `Toast` | Auto-dismiss ~5s |
 | Persistent inline status message | `Alert` | `role="status"` default, `role="alert"` for `danger` |
+| Static aside in doc/long-form content (note, tip, caveat) | `Callout` | `info`/`tip`/`warning`; `role="note"`, never dismissible; React + WC only (no RN) |
 | Sequential step progress | `Progress` | Combine with `Tabs` for multi-step forms |
 | First-paint loading placeholder | `Skeleton` | Use when nothing is on screen yet |
 | Subsequent/inline loading indicator | `Spinner` | Use when existing content stays visible |
@@ -148,6 +150,7 @@ All components below exist on all three platforms (`@ghds/react`, `@ghds/web-com
 | Need | Component | Notes |
 |---|---|---|
 | Card-style content container | `Card` | React: no default role, you supply one |
+| Whole-card link (e.g. a docs grid) | `Card` | React `asChild` with an `<a>` child; WC `href` (+ `target`/`rel`); not on RN |
 | Collapsible sections | `Accordion` | — |
 | Single disclosure toggle | `Collapsible` | WC is `open` + `toggle` event (no `defaultOpen`/controlled split) |
 | Divider between content | `Separator` | `decorative` defaults to `true` on RN vs `false` on React/WC — changes a11y exposure |

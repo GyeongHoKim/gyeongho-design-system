@@ -1,3 +1,4 @@
+import { tokens } from '@ghds/tokens';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
@@ -37,5 +38,18 @@ describe('Popover', () => {
     await userEvent.keyboard('{Escape}');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
     expect(trigger).toHaveFocus();
+  });
+
+  it('sizes the panel from the comp.popover.minWidth token', async () => {
+    render(
+      <Popover trigger={<button type="button">Open</button>} aria-label="Details">
+        <button type="button">Action</button>
+      </Popover>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    expect(
+      screen.getByRole('button', { name: 'Action' }).closest<HTMLElement>('[style*="min-width"]')
+        ?.style.minWidth,
+    ).toBe(tokens.comp.popover.minWidth);
   });
 });

@@ -86,7 +86,7 @@ export function DatePicker({
     justifyContent: 'space-between',
     gap: tokens.sys.spacing.sm,
     boxSizing: 'border-box',
-    minWidth: '14rem',
+    minWidth: datePicker.field.minWidth,
     padding: `${datePicker.padding.vertical} ${datePicker.padding.horizontal}`,
     border: 'none',
     outline: 'none',

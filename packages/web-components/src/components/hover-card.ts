@@ -45,7 +45,9 @@ export class GhHoverCard extends SketchyBase {
         z-index: var(--sys-zIndex-popover, var(--sys-zIndex-tooltip));
         display: none;
         box-sizing: border-box;
-        min-width: 14rem;
+        /* gh-hover-card's card has always been wider than the React HoverCard's
+           (comp.hoverCard.minWidth, md); keep its rendered width on the lg step. */
+        min-width: var(--sys-overlay-minWidth-lg);
         max-width: 20rem;
         padding: var(--comp-hoverCard-padding-vertical) var(--comp-hoverCard-padding-horizontal);
         color: var(--comp-hoverCard-text);

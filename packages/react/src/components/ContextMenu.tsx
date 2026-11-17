@@ -166,7 +166,7 @@ export function ContextMenu({ items, onSelect, children }: ContextMenuProps) {
     flexDirection: 'column',
     gap: tokens.sys.spacing.xs,
     zIndex: contextMenu.zIndex,
-    minWidth: '10rem',
+    minWidth: contextMenu.minWidth,
     boxSizing: 'border-box',
     padding: contextMenu.padding,
     background: c.bg,

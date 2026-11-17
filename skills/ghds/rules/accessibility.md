@@ -17,7 +17,7 @@ Most components (`Button`, `Card`, `Input`, `Alert`, `Badge`, `Avatar`, `Spinner
 | Component | Pattern |
 | --- | --- |
 | `Button` | Native `<button>` role (or `aria-disabled` on the `asChild` path — see Focus Management below). |
-| `Card` | No role by default on React — you supply one. Web Components/React Native auto-expose `role="group"`/`accessibilityRole="summary"` when a `label` is given. |
+| `Card` | No role by default on React — you supply one. Web Components/React Native auto-expose `role="group"`/`accessibilityRole="summary"` when a `label` is given. A link card (React `asChild` with an `<a>` child, WC `href`) is a native link; don't nest other interactive elements inside it. |
 | `Input` | `aria-invalid` + `aria-describedby` (pointing at a `role="alert"` error message) wired automatically when used inside `FormField` with an `error` set. |
 | `Modal` | `role="dialog"` + `aria-modal="true"`, title wired via `aria-labelledby`. |
 | `Alert` | `role="status"` by default, `role="alert"` for the `danger` variant (assertive). |
