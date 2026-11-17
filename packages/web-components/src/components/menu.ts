@@ -4,6 +4,7 @@ import { rectangle } from '@ghds/sketch-core';
 import { tokens } from '@ghds/tokens';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { type SketchParams, SketchyBase } from '../sketchy-base.js';
 
 /** One menu entry. */
@@ -11,6 +12,22 @@ export interface GhMenuItem {
   value: string;
   label: string;
   disabled?: boolean;
+  /**
+   * Optional link target. When set, the item renders as a real
+   * `<a role="menuitem" href>` (inside a `role="none"` wrapper) so it keeps
+   * native link behaviour — open in new tab, copy link address, crawlability.
+   * Activating it navigates natively and closes the menu; no `select` event is
+   * dispatched for href items.
+   */
+  href?: string;
+}
+
+/**
+ * Whether an item is a link item. An empty `href` counts as no link, so every
+ * item is exactly one of link or action — never both.
+ */
+function isLinkItem(item: GhMenuItem): boolean {
+  return item.href !== undefined && item.href !== '';
 }
 
 let menuUid = 0;
@@ -21,7 +38,8 @@ let menuUid = 0;
  * A `<button>` trigger (`aria-haspopup="menu"`) opens a floating `role="menu"`
  * of `role="menuitem"`s. Enter/Space/ArrowDown open; Arrow/Home/End move focus;
  * Enter/Space activate; Escape closes and restores trigger focus. Dispatches a
- * `select` `CustomEvent<string>`. Colours and sketch parameters are token-driven
+ * `select` `CustomEvent<string>` for action items; items with an `href` render
+ * as real links and navigate natively instead. Colours and sketch parameters are token-driven
  * (`comp.menu.*`).
  */
 @customElement('gh-menu')
@@ -86,6 +104,11 @@ export class GhMenu extends SketchyBase {
         display: flex;
       }
 
+      .item-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
       .item {
         display: flex;
         align-items: center;
@@ -97,6 +120,7 @@ export class GhMenu extends SketchyBase {
         font-size: var(--sys-typography-body-fontSize);
         cursor: pointer;
         outline: none;
+        text-decoration: none;
       }
 
       .item[aria-disabled='true'] {
@@ -187,6 +211,10 @@ export class GhMenu extends SketchyBase {
     });
   }
 
+  private activeItemEl(): HTMLElement | undefined {
+    return this.panelEl?.querySelectorAll<HTMLElement>('.item')[this.activeIndex];
+  }
+
   private moveActive(direction: 1 | -1): void {
     const positions = this.enabledIndexes;
     const currentPos = positions.indexOf(this.activeIndex);
@@ -200,6 +228,12 @@ export class GhMenu extends SketchyBase {
 
   private selectItem(item: GhMenuItem): void {
     if (item.disabled) {
+      return;
+    }
+    if (isLinkItem(item)) {
+      // Link items navigate natively (the anchor's own activation behaviour);
+      // they only close the menu and never fire `select`.
+      this.close();
       return;
     }
     this.dispatchEvent(
@@ -254,8 +288,18 @@ export class GhMenu extends SketchyBase {
         break;
       case 'Enter':
       case ' ': {
-        event.preventDefault();
         const item = this.items[this.activeIndex];
+        if (item && isLinkItem(item) && !item.disabled) {
+          // Enter on a focused anchor natively fires its click (→ navigation),
+          // so leave it alone. Space has no native link activation, so trigger
+          // the anchor's click ourselves (only suppressing the page scroll).
+          if (event.key === ' ') {
+            event.preventDefault();
+            this.activeItemEl()?.click();
+          }
+          break;
+        }
+        event.preventDefault();
         if (item) {
           this.selectItem(item);
         }
@@ -274,6 +318,51 @@ export class GhMenu extends SketchyBase {
       bowing: tokens.comp.menu.sketch.bowing,
       fillStyle: 'solid',
     };
+  }
+
+  private renderItem(item: GhMenuItem, index: number): unknown {
+    const className = index === this.activeIndex ? 'item highlighted' : 'item';
+    const onMouseEnter = (): void => {
+      if (!item.disabled) {
+        // Move focus along with the highlight (like React's Menu) so the
+        // focused element always matches activeIndex; otherwise Enter/Space
+        // would pick a path for the hovered item while another one has focus.
+        this.activeIndex = index;
+        this.focusActive();
+      }
+    };
+    if (isLinkItem(item)) {
+      // A disabled link drops its href so it cannot navigate.
+      return html`<div class="item-wrapper" role="none">
+        <a
+          class=${className}
+          role="menuitem"
+          tabindex="-1"
+          href=${ifDefined(item.disabled ? undefined : item.href)}
+          aria-disabled=${item.disabled ? 'true' : 'false'}
+          @click=${(event: MouseEvent) => {
+            if (item.disabled) {
+              event.preventDefault();
+              return;
+            }
+            this.selectItem(item);
+          }}
+          @mouseenter=${onMouseEnter}
+        >
+          ${item.label}
+        </a>
+      </div>`;
+    }
+    return html`<div
+      class=${className}
+      role="menuitem"
+      tabindex="-1"
+      aria-disabled=${item.disabled ? 'true' : 'false'}
+      @click=${() => this.selectItem(item)}
+      @mouseenter=${onMouseEnter}
+    >
+      ${item.label}
+    </div>`;
   }
 
   protected override render(): unknown {
@@ -298,22 +387,7 @@ export class GhMenu extends SketchyBase {
         aria-label=${this.label}
         @keydown=${this.onPanelKeydown}
       >
-        ${this.items.map(
-          (item, index) => html`<div
-            class=${index === this.activeIndex ? 'item highlighted' : 'item'}
-            role="menuitem"
-            tabindex="-1"
-            aria-disabled=${item.disabled ? 'true' : 'false'}
-            @click=${() => this.selectItem(item)}
-            @mouseenter=${() => {
-              if (!item.disabled) {
-                this.activeIndex = index;
-              }
-            }}
-          >
-            ${item.label}
-          </div>`,
-        )}
+        ${this.items.map((item, index) => this.renderItem(item, index))}
       </div>`;
   }
 }
