@@ -227,6 +227,21 @@ describe('gh-input', () => {
       expect(requestSubmit).not.toHaveBeenCalled();
     });
 
+    it('skips a gh-button in link mode, which renders an anchor and does not submit', async () => {
+      const { el, form } = await mountInForm();
+      const link = new GhButton();
+      link.type = 'submit';
+      link.href = '/elsewhere';
+      const native = document.createElement('button');
+      native.type = 'submit';
+      form.append(link, native);
+      await link.updateComplete;
+      const submitters = captureSubmits(form);
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(submitters).toEqual([native]);
+    });
+
     it('does not submit when the default gh-button is disabled', async () => {
       const { el, form } = await mountInForm();
       const ghButton = new GhButton();
@@ -290,6 +305,26 @@ describe('gh-input', () => {
       typeInto(el, 'a@b.com');
       await el.updateComplete;
       expect(el.validity.valid).toBe(true);
+    });
+
+    it('re-checks validity on input even when the value does not change', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'number';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      const input = el.shadowRoot?.querySelector('input');
+      if (!input) {
+        throw new Error('input not rendered');
+      }
+      // A partial number such as "-" reads as "" but flags badInput; jsdom
+      // cannot produce that state, so stub it.
+      Object.defineProperty(input, 'validity', {
+        configurable: true,
+        get: () => ({ badInput: true, valid: false }),
+      });
+      typeInto(el, '');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
     });
 
     it('re-checks the value when the type changes', async () => {

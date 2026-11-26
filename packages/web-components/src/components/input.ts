@@ -34,7 +34,7 @@ function defaultButton(form: HTMLFormElement): HTMLElement | null {
   for (const element of Array.from(
     root.querySelectorAll<HTMLElement>('button, input, gh-button'),
   )) {
-    if ((element as { form?: unknown }).form !== form) {
+    if ((element as { form?: unknown }).form !== form || isLinkModeButton(element)) {
       continue;
     }
     if (element instanceof HTMLInputElement) {
@@ -46,6 +46,18 @@ function defaultButton(form: HTMLFormElement): HTMLElement | null {
     }
   }
   return null;
+}
+
+/**
+ * An enabled `gh-button` with an `href` renders an anchor, not a submit
+ * button, so it cannot be the default button.
+ */
+function isLinkModeButton(element: HTMLElement): boolean {
+  if (element.localName !== 'gh-button') {
+    return false;
+  }
+  const { href, disabled } = element as { href?: unknown; disabled?: unknown };
+  return typeof href === 'string' && href !== '' && disabled !== true;
 }
 
 /** `:disabled` also covers a button inside a disabled `<fieldset>`. */
@@ -231,6 +243,9 @@ export class GhInput extends SketchyBase {
 
   private readonly handleInput = (event: Event): void => {
     this.value = (event.target as HTMLInputElement).value;
+    // Validity can change while the value does not (a partial number such as
+    // "-" reads as "" but is badInput), and then Lit schedules no update.
+    this.syncFormValue();
     this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
   };
 
