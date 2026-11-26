@@ -12,9 +12,17 @@ let inputIdCounter = 0;
  * The form's default button (its first submit button in tree order) when it is
  * a native `<button>` or `<input>`. A form-associated custom element such as
  * `gh-button` cannot be passed to `requestSubmit()`, so it yields `null`.
+ *
+ * `form.elements` leaves out `<input type="image">`, so the candidates come
+ * from the form's root in tree order, kept when the form owns them (which also
+ * covers controls tied to the form by a `form` attribute).
  */
 function nativeDefaultButton(form: HTMLFormElement): HTMLButtonElement | HTMLInputElement | null {
-  for (const element of Array.from(form.elements)) {
+  const root = form.getRootNode() as Document | ShadowRoot;
+  for (const element of Array.from(root.querySelectorAll('button, input, gh-button'))) {
+    if ((element as { form?: unknown }).form !== form) {
+      continue;
+    }
     if (element instanceof HTMLButtonElement) {
       if (element.type === 'submit') {
         return element;

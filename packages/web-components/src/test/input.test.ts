@@ -118,6 +118,36 @@ describe('gh-input', () => {
       expect(requestSubmit).toHaveBeenCalledWith(first);
     });
 
+    it('treats an image input as the default button', async () => {
+      const { el, form } = await mountInForm();
+      const image = document.createElement('input');
+      image.type = 'image';
+      const button = document.createElement('button');
+      button.type = 'submit';
+      form.append(image, button);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledWith(image);
+    });
+
+    it('fires submit with the default button as its submitter', async () => {
+      const { el, form } = await mountInForm();
+      const button = document.createElement('button');
+      button.type = 'submit';
+      button.name = 'intent';
+      button.value = 'search';
+      form.append(button);
+      let submitter: HTMLElement | null = null;
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitter = (event as SubmitEvent).submitter;
+      });
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(submitter).toBe(button);
+    });
+
     it('falls back to a plain submit when the default button is disabled', async () => {
       const { el, form } = await mountInForm();
       const button = document.createElement('button');
