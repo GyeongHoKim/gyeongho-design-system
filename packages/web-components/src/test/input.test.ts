@@ -102,6 +102,35 @@ describe('gh-input', () => {
       expect(requestSubmit).toHaveBeenCalledTimes(1);
     });
 
+    it('submits through the enabled default button so its name, value and formaction apply', async () => {
+      const { el, form } = await mountInForm();
+      const first = document.createElement('button');
+      first.type = 'submit';
+      first.name = 'intent';
+      first.value = 'search';
+      first.formAction = '/search';
+      const second = document.createElement('button');
+      second.type = 'submit';
+      form.append(first, second);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledWith(first);
+    });
+
+    it('falls back to a plain submit when the default button is disabled', async () => {
+      const { el, form } = await mountInForm();
+      const button = document.createElement('button');
+      button.type = 'submit';
+      button.disabled = true;
+      form.append(button);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
     it('does not submit while an IME composition is in progress', async () => {
       const { el, form } = await mountInForm();
       const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});

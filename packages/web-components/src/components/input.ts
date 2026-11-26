@@ -9,6 +9,31 @@ export type GhInputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'ur
 let inputIdCounter = 0;
 
 /**
+ * The form's default button (its first submit button in tree order) when it is
+ * a native `<button>` or `<input>`. A form-associated custom element such as
+ * `gh-button` cannot be passed to `requestSubmit()`, so it yields `null`.
+ */
+function nativeDefaultButton(form: HTMLFormElement): HTMLButtonElement | HTMLInputElement | null {
+  for (const element of Array.from(form.elements)) {
+    if (element instanceof HTMLButtonElement) {
+      if (element.type === 'submit') {
+        return element;
+      }
+    } else if (element instanceof HTMLInputElement) {
+      if (element.type === 'submit' || element.type === 'image') {
+        return element;
+      }
+    } else if (
+      element.localName === 'gh-button' &&
+      (element as { type?: unknown }).type === 'submit'
+    ) {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
  * `<gh-input>` — a hand-drawn, form-associated text field.
  *
  * The box is a sketchy rectangle outline from `@ghds/sketch-core`; a real
@@ -182,8 +207,17 @@ export class GhInput extends SketchyBase {
       return;
     }
     setTimeout(() => {
-      if (!event.defaultPrevented && !this.disabled) {
-        this.form?.requestSubmit();
+      const form = this.form;
+      if (!form || event.defaultPrevented || this.disabled) {
+        return;
+      }
+      // Submit through the enabled default button, as native implicit
+      // submission does, so its name/value and form* overrides apply.
+      const submitter = nativeDefaultButton(form);
+      if (submitter && !submitter.disabled) {
+        form.requestSubmit(submitter);
+      } else {
+        form.requestSubmit();
       }
     });
   };
