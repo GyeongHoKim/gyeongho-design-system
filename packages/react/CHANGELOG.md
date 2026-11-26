@@ -1,5 +1,11 @@
 # @ghds/react
 
+## 0.12.2
+
+### Patch Changes
+
+- ec2a4d3: Horizontal toggle groups now wrap to the next row instead of overflowing narrow containers (GHD-80). Vertical groups stay in one column.
+
 ## 0.12.1
 
 ### Patch Changes

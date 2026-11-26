@@ -1,5 +1,15 @@
 # @ghds/web-components
 
+## 0.13.2
+
+### Patch Changes
+
+- 13f9579: Enter in `gh-input` no longer submits the form when its default button is disabled, matching native implicit submission (GHD-82). A `gh-button` that comes first is now recognized as the default button, and `gh-button` exposes `form` like a native button. Enter now fires `click` on the default button, so a click listener can cancel the submission as it can with a native input.
+- 880859e: Pressing Enter in `gh-input` now submits its form, like a native text input (GHD-79). A `keydown` listener can cancel this with `preventDefault()`, and Enter that confirms an IME composition does not submit.
+- a0b4995: `gh-input` now mirrors the inner input's validity, so a malformed `type="email"` or `type="url"` value is invalid and blocks form submission like a native input (GHD-81).
+- 9f5a7a4: `gh-toggle-group` now keeps every `gh-toggle` in sync with `value` after each click (GHD-78). A controlled group can keep an item pressed by setting the same `value` back in its `value-change` handler, and a change the handler does not accept is reverted.
+- ec2a4d3: Horizontal toggle groups now wrap to the next row instead of overflowing narrow containers (GHD-80). Vertical groups stay in one column.
+
 ## 0.13.1
 
 ### Patch Changes
