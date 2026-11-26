@@ -1,5 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { live } from 'lit/directives/live.js';
 import './toggle.js';
 
 /** One toggle-group item. */
@@ -72,6 +73,10 @@ export class GhToggleGroup extends LitElement {
   }
 
   private toggleItem(itemValue: string): void {
+    // The clicked `gh-toggle` has already flipped its own `pressed`. Re-render
+    // so every toggle matches `selected` again, even when a controlled
+    // `value` does not change.
+    this.requestUpdate();
     const isSelected = this.selected.includes(itemValue);
     if (this.type === 'single') {
       this.setSelected(isSelected ? [] : [itemValue]);
@@ -86,7 +91,7 @@ export class GhToggleGroup extends LitElement {
     const selected = this.selected;
     return html`${this.items.map(
       (item) => html`<gh-toggle
-        .pressed=${selected.includes(item.value)}
+        .pressed=${live(selected.includes(item.value))}
         ?disabled=${item.disabled ?? false}
         .label=${item.label}
         @change=${() => this.toggleItem(item.value)}
