@@ -263,10 +263,17 @@ export class GhInput extends SketchyBase {
       } else if (isDisabled(button)) {
         return;
       } else if (button instanceof HTMLButtonElement || button instanceof HTMLInputElement) {
-        form.requestSubmit(button);
+        // Native implicit submission clicks the default button, so its click
+        // listeners run and can cancel the submission.
+        button.click();
       } else {
-        // A form-associated custom element cannot be a submitter.
-        form.requestSubmit();
+        // gh-button handles clicks on its inner button, not on the host, so
+        // fire the click on the host for its listeners and submit unless one
+        // cancels it. A custom element cannot be a submitter.
+        const click = new MouseEvent('click', { bubbles: true, cancelable: true, composed: true });
+        if (button.dispatchEvent(click)) {
+          form.requestSubmit();
+        }
       }
     });
   };
