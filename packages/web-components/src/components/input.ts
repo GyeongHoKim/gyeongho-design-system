@@ -170,6 +170,24 @@ export class GhInput extends SketchyBase {
     this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
   };
 
+  /**
+   * Implicit submission. The browser only submits a form on Enter for inputs
+   * the form owns, and the `<input>` in this shadow root has no form owner, so
+   * the host does it. Like the native default action, it runs after dispatch
+   * finishes, so any listener (on the host or an ancestor) can cancel it with
+   * `preventDefault()`. Enter that confirms an IME composition is ignored.
+   */
+  private readonly handleKeydown = (event: KeyboardEvent): void => {
+    if (event.key !== 'Enter' || event.isComposing) {
+      return;
+    }
+    setTimeout(() => {
+      if (!event.defaultPrevented && !this.disabled) {
+        this.form?.requestSubmit();
+      }
+    });
+  };
+
   // --- Form-associated lifecycle callbacks ---------------------------------
 
   formResetCallback(): void {
@@ -214,6 +232,7 @@ export class GhInput extends SketchyBase {
           aria-label=${this.label ? nothing : this.placeholder || nothing}
           @input=${this.handleInput}
           @change=${this.handleChange}
+          @keydown=${this.handleKeydown}
         />
       </div>
     </div>`;
