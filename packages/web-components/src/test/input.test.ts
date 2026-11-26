@@ -161,6 +161,21 @@ describe('gh-input', () => {
       expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
     });
 
+    it('falls back to a plain submit when the default button is in a disabled fieldset', async () => {
+      const { el, form } = await mountInForm();
+      const fieldset = document.createElement('fieldset');
+      fieldset.disabled = true;
+      const button = document.createElement('button');
+      button.type = 'submit';
+      fieldset.append(button);
+      form.append(fieldset);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
     it('does not submit while an IME composition is in progress', async () => {
       const { el, form } = await mountInForm();
       const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});

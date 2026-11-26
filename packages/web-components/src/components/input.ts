@@ -222,7 +222,8 @@ export class GhInput extends SketchyBase {
       // Submit through the enabled default button, as native implicit
       // submission does, so its name/value and form* overrides apply.
       const submitter = nativeDefaultButton(form);
-      if (submitter && !submitter.disabled) {
+      // `:disabled` also covers a button inside a disabled `<fieldset>`.
+      if (submitter && !submitter.matches(':disabled')) {
         form.requestSubmit(submitter);
       } else {
         form.requestSubmit();
