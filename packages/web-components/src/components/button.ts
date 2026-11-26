@@ -173,6 +173,11 @@ export class GhButton extends SketchyBase {
     };
   }
 
+  /** The form this button belongs to, like a native button's `form`. */
+  get form(): HTMLFormElement | null {
+    return this.internals.form;
+  }
+
   private readonly handleClick = (event: MouseEvent): void => {
     if (this.disabled) {
       event.preventDefault();

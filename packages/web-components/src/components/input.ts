@@ -9,36 +9,35 @@ export type GhInputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'ur
 let inputIdCounter = 0;
 
 /**
- * The form's default button (its first submit button in tree order) when it is
- * a native `<button>` or `<input>`. A form-associated custom element such as
- * `gh-button` cannot be passed to `requestSubmit()`, so it yields `null`.
+ * The form's default button: its first submit button in tree order, native
+ * (`<button>`, `<input type="submit|image">`) or `gh-button`.
  *
  * `form.elements` leaves out `<input type="image">`, so the candidates come
  * from the form's root in tree order, kept when the form owns them (which also
  * covers controls tied to the form by a `form` attribute).
  */
-function nativeDefaultButton(form: HTMLFormElement): HTMLButtonElement | HTMLInputElement | null {
+function defaultButton(form: HTMLFormElement): HTMLElement | null {
   const root = form.getRootNode() as Document | ShadowRoot;
-  for (const element of Array.from(root.querySelectorAll('button, input, gh-button'))) {
+  for (const element of Array.from(
+    root.querySelectorAll<HTMLElement>('button, input, gh-button'),
+  )) {
     if ((element as { form?: unknown }).form !== form) {
       continue;
     }
-    if (element instanceof HTMLButtonElement) {
-      if (element.type === 'submit') {
-        return element;
-      }
-    } else if (element instanceof HTMLInputElement) {
+    if (element instanceof HTMLInputElement) {
       if (element.type === 'submit' || element.type === 'image') {
         return element;
       }
-    } else if (
-      element.localName === 'gh-button' &&
-      (element as { type?: unknown }).type === 'submit'
-    ) {
-      return null;
+    } else if ((element as { type?: unknown }).type === 'submit') {
+      return element;
     }
   }
   return null;
+}
+
+/** `:disabled` also covers a button inside a disabled `<fieldset>`. */
+function isDisabled(button: HTMLElement): boolean {
+  return button.matches(':disabled') || (button as { disabled?: unknown }).disabled === true;
 }
 
 /**
@@ -219,13 +218,18 @@ export class GhInput extends SketchyBase {
       if (!form || event.defaultPrevented || this.disabled) {
         return;
       }
-      // Submit through the enabled default button, as native implicit
-      // submission does, so its name/value and form* overrides apply.
-      const submitter = nativeDefaultButton(form);
-      // `:disabled` also covers a button inside a disabled `<fieldset>`.
-      if (submitter && !submitter.matches(':disabled')) {
-        form.requestSubmit(submitter);
+      // Follow native implicit submission: activate the default button, so
+      // its name/value and form* overrides apply, and do nothing when it is
+      // disabled. With no submit button at all, submit directly.
+      const button = defaultButton(form);
+      if (!button) {
+        form.requestSubmit();
+      } else if (isDisabled(button)) {
+        return;
+      } else if (button instanceof HTMLButtonElement || button instanceof HTMLInputElement) {
+        form.requestSubmit(button);
       } else {
+        // A form-associated custom element cannot be a submitter.
         form.requestSubmit();
       }
     });

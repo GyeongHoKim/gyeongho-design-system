@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { GhButton } from '../components/button.js';
 import { GhInput } from '../components/input.js';
 import { cleanup, mount, setSize } from './fixture.js';
 
@@ -148,7 +149,7 @@ describe('gh-input', () => {
       expect(submitter).toBe(button);
     });
 
-    it('falls back to a plain submit when the default button is disabled', async () => {
+    it('does not submit when the default button is disabled', async () => {
       const { el, form } = await mountInForm();
       const button = document.createElement('button');
       button.type = 'submit';
@@ -157,11 +158,10 @@ describe('gh-input', () => {
       const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
-      expect(requestSubmit).toHaveBeenCalledTimes(1);
-      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+      expect(requestSubmit).not.toHaveBeenCalled();
     });
 
-    it('falls back to a plain submit when the default button is in a disabled fieldset', async () => {
+    it('does not submit when the default button is in a disabled fieldset', async () => {
       const { el, form } = await mountInForm();
       const fieldset = document.createElement('fieldset');
       fieldset.disabled = true;
@@ -172,8 +172,35 @@ describe('gh-input', () => {
       const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+    });
+
+    it('submits without a submitter when a gh-button comes before a native button', async () => {
+      const { el, form } = await mountInForm();
+      const ghButton = new GhButton();
+      ghButton.type = 'submit';
+      const native = document.createElement('button');
+      native.type = 'submit';
+      form.append(ghButton, native);
+      await ghButton.updateComplete;
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
       expect(requestSubmit).toHaveBeenCalledTimes(1);
       expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
+    it('does not submit when the default gh-button is disabled', async () => {
+      const { el, form } = await mountInForm();
+      const ghButton = new GhButton();
+      ghButton.type = 'submit';
+      ghButton.disabled = true;
+      form.append(ghButton);
+      await ghButton.updateComplete;
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
     });
 
     it('does not submit while an IME composition is in progress', async () => {

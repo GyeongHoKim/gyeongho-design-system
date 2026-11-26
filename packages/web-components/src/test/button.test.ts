@@ -61,6 +61,16 @@ describe('gh-button', () => {
     expect(requestSubmit).toHaveBeenCalledTimes(1);
   });
 
+  it('exposes its owning form like a native button', async () => {
+    const form = document.createElement('form');
+    const el = new GhButton();
+    form.append(el);
+    document.body.append(form);
+    await el.updateComplete;
+    expect(el.form).toBe(form);
+    form.remove();
+  });
+
   it('draws a sketchy outline once sized', async () => {
     const el = await mount(new GhButton());
     await setSize(el, 140, 44);
