@@ -8,6 +8,19 @@ export type GhInputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'ur
 
 let inputIdCounter = 0;
 
+/** Validity flags mirrored from the inner `<input>` (all but `customError`). */
+const VALIDITY_FLAGS = [
+  'valueMissing',
+  'typeMismatch',
+  'patternMismatch',
+  'tooLong',
+  'tooShort',
+  'rangeUnderflow',
+  'rangeOverflow',
+  'stepMismatch',
+  'badInput',
+] as const;
+
 /**
  * The form's default button: its first submit button in tree order, native
  * (`<button>`, `<input type="submit|image">`) or `gh-button`.
@@ -177,7 +190,12 @@ export class GhInput extends SketchyBase {
   }
 
   protected override updated(changed: PropertyValues): void {
-    if (changed.has('value') || changed.has('required') || changed.has('disabled')) {
+    if (
+      changed.has('value') ||
+      changed.has('type') ||
+      changed.has('required') ||
+      changed.has('disabled')
+    ) {
       this.syncFormValue();
     }
   }
@@ -185,11 +203,29 @@ export class GhInput extends SketchyBase {
   private syncFormValue(): void {
     this.internals.setFormValue(this.value);
     const input = this.inputEl ?? null;
-    const valid = !this.required || this.value.length > 0;
+    // Before the first render there is no inner input to ask, so only
+    // `required` can be checked.
+    if (!input) {
+      const valid = !this.required || this.value.length > 0;
+      this.internals.setValidity(
+        valid ? {} : { valueMissing: true },
+        valid ? undefined : 'Please fill out this field.',
+      );
+      return;
+    }
+    // Mirror the inner input's own constraint checks (type, required, …), so
+    // a malformed email or URL is invalid as it is in a native input.
+    const flags: ValidityStateFlags = {};
+    for (const flag of VALIDITY_FLAGS) {
+      if (input.validity[flag]) {
+        flags[flag] = true;
+      }
+    }
+    const valid = Object.keys(flags).length === 0;
     this.internals.setValidity(
-      valid ? {} : { valueMissing: true },
-      valid ? undefined : 'Please fill out this field.',
-      input ?? undefined,
+      flags,
+      valid ? undefined : input.validationMessage || 'Please enter a valid value.',
+      input,
     );
   }
 

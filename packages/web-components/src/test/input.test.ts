@@ -235,6 +235,37 @@ describe('gh-input', () => {
     });
   });
 
+  describe('type validity', () => {
+    it('is invalid when an email field holds a malformed address', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'email';
+      await el.updateComplete;
+      typeInto(el, 'abc');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
+    });
+
+    it('is valid for a well-formed address and for an empty optional field', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'email';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      typeInto(el, 'a@b.com');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+    });
+
+    it('re-checks the value when the type changes', async () => {
+      const el = await mount(new GhInput());
+      typeInto(el, 'abc');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      el.type = 'email';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
+    });
+  });
+
   it('reports a valueMissing validity error when required and empty', async () => {
     const el = await mount(new GhInput());
     el.required = true;
