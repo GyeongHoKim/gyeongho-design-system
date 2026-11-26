@@ -168,6 +168,8 @@ export function ToggleGroup(props: ToggleGroupProps) {
   const rootStyle: CSSProperties = {
     display: 'inline-flex',
     flexDirection: orientation === 'vertical' ? 'column' : 'row',
+    // Horizontal groups wrap instead of overflowing narrow containers.
+    flexWrap: orientation === 'vertical' ? 'nowrap' : 'wrap',
     gap: c.gap,
   };
 

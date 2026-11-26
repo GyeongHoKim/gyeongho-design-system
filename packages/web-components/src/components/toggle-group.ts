@@ -26,11 +26,13 @@ export class GhToggleGroup extends LitElement {
     :host {
       display: inline-flex;
       flex-direction: row;
+      flex-wrap: wrap;
       gap: var(--comp-toggleGroup-gap);
     }
 
     :host([orientation='vertical']) {
       flex-direction: column;
+      flex-wrap: nowrap;
       align-items: stretch;
     }
   `;

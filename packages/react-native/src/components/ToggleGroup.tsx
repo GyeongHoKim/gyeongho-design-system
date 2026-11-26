@@ -97,6 +97,8 @@ export function ToggleGroup({
   return (
     <Box
       flexDirection={orientation}
+      // Rows wrap instead of overflowing narrow screens.
+      flexWrap={orientation === 'row' ? 'wrap' : 'nowrap'}
       gap="xs"
       alignSelf="flex-start"
       accessibilityRole={type === 'single' ? 'radiogroup' : 'toolbar'}

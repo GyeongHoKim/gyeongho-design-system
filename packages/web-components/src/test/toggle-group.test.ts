@@ -44,6 +44,15 @@ describe('gh-toggle-group', () => {
     expect((handler.mock.calls.at(-1)?.[0] as CustomEvent<string[]>).detail).toEqual(['center']);
   });
 
+  it('wraps horizontal groups and keeps vertical groups in one column', () => {
+    const cssText = ([GhToggleGroup.styles] as unknown[])
+      .flat(Infinity)
+      .map((r) => (r as { cssText: string }).cssText)
+      .join('\n');
+    expect(cssText).toMatch(/:host\s*\{[^}]*flex-wrap:\s*wrap/);
+    expect(cssText).toMatch(/:host\(\[orientation='vertical'\]\)\s*\{[^}]*flex-wrap:\s*nowrap/);
+  });
+
   it('multiple mode accumulates values', async () => {
     const el = await mountGroup('multiple');
     const handler = vi.fn();
