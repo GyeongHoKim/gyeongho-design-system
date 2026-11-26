@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { GhButton } from '../components/button.js';
 import { GhInput } from '../components/input.js';
 import { cleanup, mount, setSize } from './fixture.js';
 
@@ -85,6 +86,16 @@ describe('gh-input', () => {
       return event;
     }
 
+    /** Records each submit's submitter and stops the (unimplemented) navigation. */
+    function captureSubmits(form: HTMLFormElement): (HTMLElement | null)[] {
+      const submitters: (HTMLElement | null)[] = [];
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitters.push((event as SubmitEvent).submitter);
+      });
+      return submitters;
+    }
+
     /** Implicit submission runs after dispatch, like the native default action. */
     const afterDispatch = (): Promise<void> => new Promise((resolve) => setTimeout(resolve));
 
@@ -102,20 +113,34 @@ describe('gh-input', () => {
       expect(requestSubmit).toHaveBeenCalledTimes(1);
     });
 
-    it('submits through the enabled default button so its name, value and formaction apply', async () => {
+    it('clicks the default button, so the form submits with it as the submitter', async () => {
       const { el, form } = await mountInForm();
       const first = document.createElement('button');
       first.type = 'submit';
       first.name = 'intent';
       first.value = 'search';
-      first.formAction = '/search';
       const second = document.createElement('button');
       second.type = 'submit';
       form.append(first, second);
-      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      const onClick = vi.fn();
+      first.addEventListener('click', onClick);
+      const submitters = captureSubmits(form);
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
-      expect(requestSubmit).toHaveBeenCalledWith(first);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(submitters).toEqual([first]);
+    });
+
+    it('does not submit when a click listener on the default button cancels it', async () => {
+      const { el, form } = await mountInForm();
+      const button = document.createElement('button');
+      button.type = 'submit';
+      button.addEventListener('click', (event) => event.preventDefault());
+      form.append(button);
+      const submitters = captureSubmits(form);
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(submitters).toEqual([]);
     });
 
     it('treats an image input as the default button', async () => {
@@ -125,43 +150,32 @@ describe('gh-input', () => {
       const button = document.createElement('button');
       button.type = 'submit';
       form.append(image, button);
-      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      const onImageClick = vi.fn();
+      const onButtonClick = vi.fn();
+      image.addEventListener('click', onImageClick);
+      button.addEventListener('click', onButtonClick);
+      captureSubmits(form);
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
-      expect(requestSubmit).toHaveBeenCalledWith(image);
+      expect(onImageClick).toHaveBeenCalledTimes(1);
+      expect(onButtonClick).not.toHaveBeenCalled();
     });
 
-    it('fires submit with the default button as its submitter', async () => {
-      const { el, form } = await mountInForm();
-      const button = document.createElement('button');
-      button.type = 'submit';
-      button.name = 'intent';
-      button.value = 'search';
-      form.append(button);
-      let submitter: HTMLElement | null = null;
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        submitter = (event as SubmitEvent).submitter;
-      });
-      pressKey(el, { key: 'Enter' });
-      await afterDispatch();
-      expect(submitter).toBe(button);
-    });
-
-    it('falls back to a plain submit when the default button is disabled', async () => {
+    it('does not submit when the default button is disabled', async () => {
       const { el, form } = await mountInForm();
       const button = document.createElement('button');
       button.type = 'submit';
       button.disabled = true;
       form.append(button);
-      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      const requestSubmit = vi.spyOn(form, 'requestSubmit');
+      const submitters = captureSubmits(form);
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
-      expect(requestSubmit).toHaveBeenCalledTimes(1);
-      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+      expect(requestSubmit).not.toHaveBeenCalled();
+      expect(submitters).toEqual([]);
     });
 
-    it('falls back to a plain submit when the default button is in a disabled fieldset', async () => {
+    it('does not submit when the default button is in a disabled fieldset', async () => {
       const { el, form } = await mountInForm();
       const fieldset = document.createElement('fieldset');
       fieldset.disabled = true;
@@ -169,11 +183,76 @@ describe('gh-input', () => {
       button.type = 'submit';
       fieldset.append(button);
       form.append(fieldset);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit');
+      const submitters = captureSubmits(form);
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+      expect(submitters).toEqual([]);
+    });
+
+    it('submits without a submitter when a gh-button comes before a native button', async () => {
+      const { el, form } = await mountInForm();
+      const ghButton = new GhButton();
+      ghButton.type = 'submit';
+      const native = document.createElement('button');
+      native.type = 'submit';
+      form.append(ghButton, native);
+      await ghButton.updateComplete;
       const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
       pressKey(el, { key: 'Enter' });
       await afterDispatch();
       expect(requestSubmit).toHaveBeenCalledTimes(1);
       expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
+    it('fires click on a default gh-button and submits unless it is cancelled', async () => {
+      const { el, form } = await mountInForm();
+      const ghButton = new GhButton();
+      ghButton.type = 'submit';
+      form.append(ghButton);
+      await ghButton.updateComplete;
+      const onClick = vi.fn();
+      ghButton.addEventListener('click', onClick);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+
+      requestSubmit.mockClear();
+      ghButton.addEventListener('click', (event) => event.preventDefault());
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+    });
+
+    it('skips a gh-button in link mode, which renders an anchor and does not submit', async () => {
+      const { el, form } = await mountInForm();
+      const link = new GhButton();
+      link.type = 'submit';
+      link.href = '/elsewhere';
+      const native = document.createElement('button');
+      native.type = 'submit';
+      form.append(link, native);
+      await link.updateComplete;
+      const submitters = captureSubmits(form);
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(submitters).toEqual([native]);
+    });
+
+    it('does not submit when the default gh-button is disabled', async () => {
+      const { el, form } = await mountInForm();
+      const ghButton = new GhButton();
+      ghButton.type = 'submit';
+      ghButton.disabled = true;
+      form.append(ghButton);
+      await ghButton.updateComplete;
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
     });
 
     it('does not submit while an IME composition is in progress', async () => {
@@ -205,6 +284,57 @@ describe('gh-input', () => {
       const el = await mount(new GhInput());
       pressKey(el, { key: 'Enter' });
       await expect(afterDispatch()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('type validity', () => {
+    it('is invalid when an email field holds a malformed address', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'email';
+      await el.updateComplete;
+      typeInto(el, 'abc');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
+    });
+
+    it('is valid for a well-formed address and for an empty optional field', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'email';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      typeInto(el, 'a@b.com');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+    });
+
+    it('re-checks validity on input even when the value does not change', async () => {
+      const el = await mount(new GhInput());
+      el.type = 'number';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      const input = el.shadowRoot?.querySelector('input');
+      if (!input) {
+        throw new Error('input not rendered');
+      }
+      // A partial number such as "-" reads as "" but flags badInput; jsdom
+      // cannot produce that state, so stub it.
+      Object.defineProperty(input, 'validity', {
+        configurable: true,
+        get: () => ({ badInput: true, valid: false }),
+      });
+      typeInto(el, '');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
+    });
+
+    it('re-checks the value when the type changes', async () => {
+      const el = await mount(new GhInput());
+      typeInto(el, 'abc');
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(true);
+      el.type = 'email';
+      await el.updateComplete;
+      expect(el.validity.valid).toBe(false);
     });
   });
 

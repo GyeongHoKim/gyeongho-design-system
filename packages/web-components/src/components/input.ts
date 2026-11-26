@@ -8,37 +8,61 @@ export type GhInputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'ur
 
 let inputIdCounter = 0;
 
+/** Validity flags mirrored from the inner `<input>` (all but `customError`). */
+const VALIDITY_FLAGS = [
+  'valueMissing',
+  'typeMismatch',
+  'patternMismatch',
+  'tooLong',
+  'tooShort',
+  'rangeUnderflow',
+  'rangeOverflow',
+  'stepMismatch',
+  'badInput',
+] as const;
+
 /**
- * The form's default button (its first submit button in tree order) when it is
- * a native `<button>` or `<input>`. A form-associated custom element such as
- * `gh-button` cannot be passed to `requestSubmit()`, so it yields `null`.
+ * The form's default button: its first submit button in tree order, native
+ * (`<button>`, `<input type="submit|image">`) or `gh-button`.
  *
  * `form.elements` leaves out `<input type="image">`, so the candidates come
  * from the form's root in tree order, kept when the form owns them (which also
  * covers controls tied to the form by a `form` attribute).
  */
-function nativeDefaultButton(form: HTMLFormElement): HTMLButtonElement | HTMLInputElement | null {
+function defaultButton(form: HTMLFormElement): HTMLElement | null {
   const root = form.getRootNode() as Document | ShadowRoot;
-  for (const element of Array.from(root.querySelectorAll('button, input, gh-button'))) {
-    if ((element as { form?: unknown }).form !== form) {
+  for (const element of Array.from(
+    root.querySelectorAll<HTMLElement>('button, input, gh-button'),
+  )) {
+    if ((element as { form?: unknown }).form !== form || isLinkModeButton(element)) {
       continue;
     }
-    if (element instanceof HTMLButtonElement) {
-      if (element.type === 'submit') {
-        return element;
-      }
-    } else if (element instanceof HTMLInputElement) {
+    if (element instanceof HTMLInputElement) {
       if (element.type === 'submit' || element.type === 'image') {
         return element;
       }
-    } else if (
-      element.localName === 'gh-button' &&
-      (element as { type?: unknown }).type === 'submit'
-    ) {
-      return null;
+    } else if ((element as { type?: unknown }).type === 'submit') {
+      return element;
     }
   }
   return null;
+}
+
+/**
+ * An enabled `gh-button` with an `href` renders an anchor, not a submit
+ * button, so it cannot be the default button.
+ */
+function isLinkModeButton(element: HTMLElement): boolean {
+  if (element.localName !== 'gh-button') {
+    return false;
+  }
+  const { href, disabled } = element as { href?: unknown; disabled?: unknown };
+  return typeof href === 'string' && href !== '' && disabled !== true;
+}
+
+/** `:disabled` also covers a button inside a disabled `<fieldset>`. */
+function isDisabled(button: HTMLElement): boolean {
+  return button.matches(':disabled') || (button as { disabled?: unknown }).disabled === true;
 }
 
 /**
@@ -178,7 +202,12 @@ export class GhInput extends SketchyBase {
   }
 
   protected override updated(changed: PropertyValues): void {
-    if (changed.has('value') || changed.has('required') || changed.has('disabled')) {
+    if (
+      changed.has('value') ||
+      changed.has('type') ||
+      changed.has('required') ||
+      changed.has('disabled')
+    ) {
       this.syncFormValue();
     }
   }
@@ -186,16 +215,37 @@ export class GhInput extends SketchyBase {
   private syncFormValue(): void {
     this.internals.setFormValue(this.value);
     const input = this.inputEl ?? null;
-    const valid = !this.required || this.value.length > 0;
+    // Before the first render there is no inner input to ask, so only
+    // `required` can be checked.
+    if (!input) {
+      const valid = !this.required || this.value.length > 0;
+      this.internals.setValidity(
+        valid ? {} : { valueMissing: true },
+        valid ? undefined : 'Please fill out this field.',
+      );
+      return;
+    }
+    // Mirror the inner input's own constraint checks (type, required, …), so
+    // a malformed email or URL is invalid as it is in a native input.
+    const flags: ValidityStateFlags = {};
+    for (const flag of VALIDITY_FLAGS) {
+      if (input.validity[flag]) {
+        flags[flag] = true;
+      }
+    }
+    const valid = Object.keys(flags).length === 0;
     this.internals.setValidity(
-      valid ? {} : { valueMissing: true },
-      valid ? undefined : 'Please fill out this field.',
-      input ?? undefined,
+      flags,
+      valid ? undefined : input.validationMessage || 'Please enter a valid value.',
+      input,
     );
   }
 
   private readonly handleInput = (event: Event): void => {
     this.value = (event.target as HTMLInputElement).value;
+    // Validity can change while the value does not (a partial number such as
+    // "-" reads as "" but is badInput), and then Lit schedules no update.
+    this.syncFormValue();
     this.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
   };
 
@@ -219,14 +269,26 @@ export class GhInput extends SketchyBase {
       if (!form || event.defaultPrevented || this.disabled) {
         return;
       }
-      // Submit through the enabled default button, as native implicit
-      // submission does, so its name/value and form* overrides apply.
-      const submitter = nativeDefaultButton(form);
-      // `:disabled` also covers a button inside a disabled `<fieldset>`.
-      if (submitter && !submitter.matches(':disabled')) {
-        form.requestSubmit(submitter);
-      } else {
+      // Follow native implicit submission: activate the default button, so
+      // its name/value and form* overrides apply, and do nothing when it is
+      // disabled. With no submit button at all, submit directly.
+      const button = defaultButton(form);
+      if (!button) {
         form.requestSubmit();
+      } else if (isDisabled(button)) {
+        return;
+      } else if (button instanceof HTMLButtonElement || button instanceof HTMLInputElement) {
+        // Native implicit submission clicks the default button, so its click
+        // listeners run and can cancel the submission.
+        button.click();
+      } else {
+        // gh-button handles clicks on its inner button, not on the host, so
+        // fire the click on the host for its listeners and submit unless one
+        // cancels it. A custom element cannot be a submitter.
+        const click = new MouseEvent('click', { bubbles: true, cancelable: true, composed: true });
+        if (button.dispatchEvent(click)) {
+          form.requestSubmit();
+        }
       }
     });
   };
