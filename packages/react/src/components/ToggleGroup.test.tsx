@@ -16,6 +16,15 @@ describe('ToggleGroup', () => {
     expect(screen.getAllByRole('button')).toHaveLength(3);
   });
 
+  it('wraps horizontal groups and keeps vertical groups in one column', () => {
+    const { rerender } = render(<ToggleGroup type="single" items={ITEMS} aria-label="Alignment" />);
+    expect(screen.getByRole('group')).toHaveStyle({ flexWrap: 'wrap' });
+    rerender(
+      <ToggleGroup type="single" items={ITEMS} aria-label="Alignment" orientation="vertical" />,
+    );
+    expect(screen.getByRole('group')).toHaveStyle({ flexWrap: 'nowrap' });
+  });
+
   it('single mode selects one value at a time', async () => {
     const onValueChange = vi.fn();
     render(

@@ -15,6 +15,21 @@ describe('ToggleGroup', () => {
     expect(screen.getByRole('button', { name: 'Center' })).toBeInTheDocument();
   });
 
+  it('wraps horizontal groups and keeps vertical groups in one column', () => {
+    const { rerender } = renderWithTheme(
+      <ToggleGroup accessibilityLabel="Align" testID="grp">
+        <ToggleGroupItem value="left" label="Left" />
+      </ToggleGroup>,
+    );
+    expect(screen.getByTestId('grp')).toHaveStyle({ flexWrap: 'wrap' });
+    rerender(
+      <ToggleGroup accessibilityLabel="Align" testID="grp" orientation="column">
+        <ToggleGroupItem value="left" label="Left" />
+      </ToggleGroup>,
+    );
+    expect(screen.getByTestId('grp')).toHaveStyle({ flexWrap: 'nowrap' });
+  });
+
   it('selects a single value and reflects aria-pressed', () => {
     const onValueChange = vi.fn();
     renderWithTheme(

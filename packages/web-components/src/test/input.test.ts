@@ -60,6 +60,154 @@ describe('gh-input', () => {
     expect(el.value).toBe('a@b.com');
   });
 
+  describe('implicit submission (Enter)', () => {
+    async function mountInForm(): Promise<{ el: GhInput; form: HTMLFormElement }> {
+      const form = document.createElement('form');
+      const el = new GhInput();
+      form.append(el);
+      document.body.append(form);
+      await el.updateComplete;
+      return { el, form };
+    }
+
+    function pressKey(el: GhInput, init: KeyboardEventInit): KeyboardEvent {
+      const input = el.shadowRoot?.querySelector('input');
+      if (!input) {
+        throw new Error('input not rendered');
+      }
+      const event = new KeyboardEvent('keydown', {
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+        ...init,
+      });
+      input.dispatchEvent(event);
+      return event;
+    }
+
+    /** Implicit submission runs after dispatch, like the native default action. */
+    const afterDispatch = (): Promise<void> => new Promise((resolve) => setTimeout(resolve));
+
+    afterEach(() => {
+      for (const form of document.querySelectorAll('form')) {
+        form.remove();
+      }
+    });
+
+    it('requests submit on the owning form when Enter is pressed', async () => {
+      const { el, form } = await mountInForm();
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it('submits through the enabled default button so its name, value and formaction apply', async () => {
+      const { el, form } = await mountInForm();
+      const first = document.createElement('button');
+      first.type = 'submit';
+      first.name = 'intent';
+      first.value = 'search';
+      first.formAction = '/search';
+      const second = document.createElement('button');
+      second.type = 'submit';
+      form.append(first, second);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledWith(first);
+    });
+
+    it('treats an image input as the default button', async () => {
+      const { el, form } = await mountInForm();
+      const image = document.createElement('input');
+      image.type = 'image';
+      const button = document.createElement('button');
+      button.type = 'submit';
+      form.append(image, button);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledWith(image);
+    });
+
+    it('fires submit with the default button as its submitter', async () => {
+      const { el, form } = await mountInForm();
+      const button = document.createElement('button');
+      button.type = 'submit';
+      button.name = 'intent';
+      button.value = 'search';
+      form.append(button);
+      let submitter: HTMLElement | null = null;
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitter = (event as SubmitEvent).submitter;
+      });
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(submitter).toBe(button);
+    });
+
+    it('falls back to a plain submit when the default button is disabled', async () => {
+      const { el, form } = await mountInForm();
+      const button = document.createElement('button');
+      button.type = 'submit';
+      button.disabled = true;
+      form.append(button);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
+    it('falls back to a plain submit when the default button is in a disabled fieldset', async () => {
+      const { el, form } = await mountInForm();
+      const fieldset = document.createElement('fieldset');
+      fieldset.disabled = true;
+      const button = document.createElement('button');
+      button.type = 'submit';
+      fieldset.append(button);
+      form.append(fieldset);
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).toHaveBeenCalledTimes(1);
+      expect(requestSubmit.mock.calls[0]?.[0]).toBeUndefined();
+    });
+
+    it('does not submit while an IME composition is in progress', async () => {
+      const { el, form } = await mountInForm();
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'Enter', isComposing: true });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+    });
+
+    it('does not submit for other keys', async () => {
+      const { el, form } = await mountInForm();
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      pressKey(el, { key: 'a' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+    });
+
+    it('does not submit when a listener already handled Enter', async () => {
+      const { el, form } = await mountInForm();
+      const requestSubmit = vi.spyOn(form, 'requestSubmit').mockImplementation(() => {});
+      el.addEventListener('keydown', (event) => event.preventDefault());
+      pressKey(el, { key: 'Enter' });
+      await afterDispatch();
+      expect(requestSubmit).not.toHaveBeenCalled();
+    });
+
+    it('does nothing outside a form', async () => {
+      const el = await mount(new GhInput());
+      pressKey(el, { key: 'Enter' });
+      await expect(afterDispatch()).resolves.toBeUndefined();
+    });
+  });
+
   it('reports a valueMissing validity error when required and empty', async () => {
     const el = await mount(new GhInput());
     el.required = true;

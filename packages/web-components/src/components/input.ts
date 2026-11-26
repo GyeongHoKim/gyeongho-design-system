@@ -9,6 +9,39 @@ export type GhInputType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'ur
 let inputIdCounter = 0;
 
 /**
+ * The form's default button (its first submit button in tree order) when it is
+ * a native `<button>` or `<input>`. A form-associated custom element such as
+ * `gh-button` cannot be passed to `requestSubmit()`, so it yields `null`.
+ *
+ * `form.elements` leaves out `<input type="image">`, so the candidates come
+ * from the form's root in tree order, kept when the form owns them (which also
+ * covers controls tied to the form by a `form` attribute).
+ */
+function nativeDefaultButton(form: HTMLFormElement): HTMLButtonElement | HTMLInputElement | null {
+  const root = form.getRootNode() as Document | ShadowRoot;
+  for (const element of Array.from(root.querySelectorAll('button, input, gh-button'))) {
+    if ((element as { form?: unknown }).form !== form) {
+      continue;
+    }
+    if (element instanceof HTMLButtonElement) {
+      if (element.type === 'submit') {
+        return element;
+      }
+    } else if (element instanceof HTMLInputElement) {
+      if (element.type === 'submit' || element.type === 'image') {
+        return element;
+      }
+    } else if (
+      element.localName === 'gh-button' &&
+      (element as { type?: unknown }).type === 'submit'
+    ) {
+      return null;
+    }
+  }
+  return null;
+}
+
+/**
  * `<gh-input>` — a hand-drawn, form-associated text field.
  *
  * The box is a sketchy rectangle outline from `@ghds/sketch-core`; a real
@@ -170,6 +203,34 @@ export class GhInput extends SketchyBase {
     this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
   };
 
+  /**
+   * Implicit submission. The browser only submits a form on Enter for inputs
+   * the form owns, and the `<input>` in this shadow root has no form owner, so
+   * the host does it. Like the native default action, it runs after dispatch
+   * finishes, so any listener (on the host or an ancestor) can cancel it with
+   * `preventDefault()`. Enter that confirms an IME composition is ignored.
+   */
+  private readonly handleKeydown = (event: KeyboardEvent): void => {
+    if (event.key !== 'Enter' || event.isComposing) {
+      return;
+    }
+    setTimeout(() => {
+      const form = this.form;
+      if (!form || event.defaultPrevented || this.disabled) {
+        return;
+      }
+      // Submit through the enabled default button, as native implicit
+      // submission does, so its name/value and form* overrides apply.
+      const submitter = nativeDefaultButton(form);
+      // `:disabled` also covers a button inside a disabled `<fieldset>`.
+      if (submitter && !submitter.matches(':disabled')) {
+        form.requestSubmit(submitter);
+      } else {
+        form.requestSubmit();
+      }
+    });
+  };
+
   // --- Form-associated lifecycle callbacks ---------------------------------
 
   formResetCallback(): void {
@@ -214,6 +275,7 @@ export class GhInput extends SketchyBase {
           aria-label=${this.label ? nothing : this.placeholder || nothing}
           @input=${this.handleInput}
           @change=${this.handleChange}
+          @keydown=${this.handleKeydown}
         />
       </div>
     </div>`;
